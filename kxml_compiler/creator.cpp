@@ -867,7 +867,7 @@ void Creator::printFiles( KODE::Printer &printer )
 
     parserFile.clearCode();
     
-    mParserClass.addInclude( file().filename() + ".h" );
+    mParserClass.addHeaderInclude( file().filename() + ".h" );
     parserFile.insertClass( mParserClass );
     
     kdDebug() << "Print external parser." << endl;
