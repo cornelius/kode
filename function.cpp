@@ -45,11 +45,16 @@ void Function::setConst( bool isConst )
 void Function::setStatic( bool isStatic )
 {
   mIsStatic = isStatic;
-} 
+}
    
 void Function::addArgument( const QString &argument )
 {
   mArguments.append( argument );
+}
+
+void Function::addInitializer( const QString &initializer )
+{
+  mInitializers.append( initializer );
 }
 
 void Function::setArgumentString( const QString &argumentString )

@@ -24,6 +24,7 @@
 #include "code.h"
 #include "file.h"
 #include "style.h"
+#include "automakefile.h"
 
 #include <qvaluelist.h>
 #include <qstring.h>
@@ -44,15 +45,17 @@ class Printer
 
     void printHeader( const File & );
     void printImplementation( const File & );
+    void printAutoMakefile( const AutoMakefile & );
+
+    QString functionSignature( const Function &f,
+      const QString &className = QString::null,
+      bool includeClassQualifier = false );
 
   protected:
     QString creationWarning();
     QString licenseHeader( const File & );
     QString classHeader( const Class & );
     QString classImplementation( const Class & );
-    QString functionSignature( const Function &f,
-                               const QString &className = QString::null,
-                               bool includeClassQualifier = false );
     Code functionHeaders( const Function::List &functions,
                                    const QString &className,
                                    Function::AccessSpecifier access );

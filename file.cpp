@@ -122,6 +122,11 @@ void File::addFileFunction( const Function &f )
   mFileFunctions.append( f );
 }
 
+void File::addExternCDeclaration( const QString &s )
+{
+  mExternCDeclarations.append( s );
+}
+
 void File::clearClasses()
 {
   mClasses.clear();

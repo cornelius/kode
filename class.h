@@ -38,14 +38,16 @@ class Class
     typedef QValueList<Class> List;
     
     Class();
-    Class( const QString &name );
+    Class( const QString &name, const QString &nameSpace = QString::null );
 
     Class( const Class & );
     Class &operator=( const Class &c );
 
     bool isValid() const;
 
-    void addInclude( const QString & );
+    void addInclude( const QString &file,
+      const QString &forwardDeclaration = QString::null );
+    void addHeaderInclude( const QString &file );
     void addBaseClass( const Class & );
     void addFunction( const Function & );
     void addMemberVariable( const MemberVariable &v );
@@ -53,21 +55,34 @@ class Class
 
     void setName( const QString &name );
     QString name() const { return mName; }
+    void setNameSpace( const QString &nameSpace );
+    QString nameSpace() const { return mNameSpace; }
     QStringList includes() const { return mIncludes; }
+    QStringList headerIncludes() const { return mHeaderIncludes; }
+    QStringList forwardDeclarations() const { return mForwardDeclarations; }
     Function::List functions() const { return mFunctions; }
     MemberVariable::List memberVariables() const { return mMemberVariables; }
     Class::List baseClasses() const;
     Typedef::List typedefs() const { return mTypedefs; }
 
+    void setDocs( const QString & );
+    QString docs() const { return mDocs; }
+
     bool hasFunction( const QString &name ) const;
     
   private:
+    // WARNING: If you add member variables, you have to adjust the copy
+    //          constructor.
     QString mName;
+    QString mNameSpace;
     Function::List mFunctions;
     MemberVariable::List mMemberVariables;
     QStringList mIncludes;
+    QStringList mForwardDeclarations;
+    QStringList mHeaderIncludes;
     QPtrList<Class> mBaseClasses;
     Typedef::List mTypedefs;
+    QString mDocs;
 };
 
 }

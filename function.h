@@ -49,6 +49,9 @@ class Function
     void addArgument( const QString &argument );
     void setArgumentString( const QString &argumentString );
     
+    void addInitializer( const QString & );
+    QStringList initializers() const { return mInitializers; }
+    
     void setBody( const QString &body );
     void setBody( const Code &code );
     void addBodyLine( const QString &bodyLine );
@@ -77,6 +80,7 @@ class Function
     QString mReturnType;
     QString mName;
     QStringList mArguments;
+    QStringList mInitializers;
     QString mBody;
     QString mDocs;
 };

@@ -30,8 +30,8 @@ Class::Class()
   mBaseClasses.setAutoDelete( true );
 }
 
-Class::Class( const QString &name )
-  : mName( name )
+Class::Class( const QString &name, const QString &nameSpace )
+  : mName( name ), mNameSpace( nameSpace )
 {
 }
 
@@ -45,9 +45,12 @@ Class &Class::operator=( const Class &c )
   if ( this == &c ) return *this;
 
   mName = c.mName;
+  mNameSpace = c.mNameSpace;
   mFunctions = c.mFunctions;
   mMemberVariables = c.mMemberVariables;
   mIncludes = c.mIncludes;
+  mHeaderIncludes = c.mHeaderIncludes;
+  mForwardDeclarations = c.mForwardDeclarations;
 
   QPtrListIterator<Class> it( c.mBaseClasses );
   while( it.current() ) {
@@ -65,10 +68,29 @@ void Class::setName( const QString &name )
   mName = name;
 }
 
-void Class::addInclude( const QString &include )
+void Class::setNameSpace( const QString &nameSpace )
+{
+  mNameSpace = nameSpace;
+}
+
+void Class::addInclude( const QString &include,
+  const QString &forwardDeclaration )
 {
   if ( mIncludes.find( include ) == mIncludes.end() ) {
     mIncludes.append( include );
+  }
+
+  if( !forwardDeclaration.isEmpty() &&
+      mForwardDeclarations.find( forwardDeclaration ) ==
+      mForwardDeclarations.end() ) {
+    mForwardDeclarations.append( forwardDeclaration );
+  }
+}
+
+void Class::addHeaderInclude( const QString &include )
+{
+  if ( mHeaderIncludes.find( include ) == mHeaderIncludes.end() ) {
+    mHeaderIncludes.append( include );
   }
 }
 
@@ -118,4 +140,9 @@ bool Class::hasFunction( const QString &functionName ) const
   }
 
   return false;
+}
+
+void Class::setDocs( const QString &str )
+{
+  mDocs = str;
 }

@@ -73,6 +73,9 @@ class File
     void addFileFunction( const Function & );
     Function::List fileFunctions() const { return mFileFunctions; }
 
+    void addExternCDeclaration( const QString & );
+    QStringList externCDeclarations() const { return mExternCDeclarations; }
+
   private:
     QString mFilename;
     QString mNameSpace;
@@ -83,6 +86,7 @@ class File
     Class::List mClasses;
     Variable::List mFileVariables;
     Function::List mFileFunctions;
+    QStringList mExternCDeclarations;
 };
 
 }

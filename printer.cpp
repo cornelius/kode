@@ -22,6 +22,7 @@
 #include "printer.h"
 
 #include <kdebug.h>
+#include <ksavefile.h>
 
 #include <qfile.h>
 #include <qtextstream.h>
@@ -177,8 +178,12 @@ QString Printer::classHeader( const Class &c )
     txt += " : ";
     Class::List::ConstIterator it;
     for( it = baseClasses.begin(); it != baseClasses.end(); ++it ) {
+      Class bc = *it;
+      
       if ( it != baseClasses.begin() ) txt +=", ";
-      txt += "public " + (*it).name();
+      txt += "public ";
+      if ( !bc.nameSpace().isEmpty() ) txt += bc.nameSpace() + "::";
+      txt += bc.name();
     }
   }
   code += txt;
@@ -259,13 +264,18 @@ QString Printer::classImplementation( const Class &c )
     Function f = *it;
 
     code += functionSignature( f, c.name(), true );
+
+    if ( !f.initializers().isEmpty() ) {
+      code += ": " + f.initializers().join( ", " );
+    }
+
     code += "{";
     code.addBlock( f.body(), 2 );
     code += "}";
     code += "";
   }
 
-  return code.text();  
+  return code.text();
 }
 
 void Printer::printHeader( const File &f )
@@ -291,22 +301,35 @@ void Printer::printHeader( const File &f )
 
 
   // Create includes
-  QStringList processedIncludes;
-
+  QStringList processed;
   Class::List classes = f.classes();
   Class::List::ConstIterator it;
   for( it = classes.begin(); it != classes.end(); ++it ) {
-    QStringList includes = (*it).includes();
+    QStringList includes = (*it).headerIncludes();
     QStringList::ConstIterator it2;
     for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
-      if ( processedIncludes.find( *it2 ) == processedIncludes.end() ) {
+      if ( processed.find( *it2 ) == processed.end() ) {
         out += "#include <" + *it2 + ">";
-        processedIncludes.append( *it2 );
+        processed.append( *it2 );
       }
     }
   }
+  if ( !processed.isEmpty() ) out.newLine();
 
-  if ( !processedIncludes.isEmpty() ) out.newLine();
+
+  // Create forward declarations
+  processed.clear();
+  for( it = classes.begin(); it != classes.end(); ++it ) {
+    QStringList decls = (*it).forwardDeclarations();
+    QStringList::ConstIterator it2;
+    for( it2 = decls.begin(); it2 != decls.end(); ++it2 ) {
+      if ( processed.find( *it2 ) == processed.end() ) {
+        out += *it2 + ";";
+        processed.append( *it2 );
+      }
+    }
+  }
+  if ( !processed.isEmpty() ) out.newLine();
 
 
   if ( !f.nameSpace().isEmpty() ) {
@@ -333,6 +356,8 @@ void Printer::printHeader( const File &f )
   QString filename = f.filename() + ".h";
 
   if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
+
+  KSaveFile::backupFile( filename, QString::null, ".backup" );
 
   QFile header( filename );
   if ( !header.open( IO_WriteOnly ) ) {
@@ -369,8 +394,37 @@ void Printer::printImplementation( const File &f )
   }
   if ( !includes.isEmpty() ) out.newLine();
 
+  // Create class includes
+  QStringList processed;
+  Class::List classes = f.classes();
+  Class::List::ConstIterator it;
+  for( it = classes.begin(); it != classes.end(); ++it ) {
+    QStringList includes = (*it).includes();
+    QStringList::ConstIterator it2;
+    for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
+      if ( processed.find( *it2 ) == processed.end() ) {
+        out += "#include <" + *it2 + ">";
+        processed.append( *it2 );
+      }
+    }
+  }
+  if ( !processed.isEmpty() ) out.newLine();
+
   if ( !f.nameSpace().isEmpty() ) {
     out += "using namespace " + f.nameSpace() + ";";
+    out.newLine();
+  }
+
+  // 'extern "C"' declarations
+  QStringList externCDeclarations = f.externCDeclarations();
+  if ( !externCDeclarations.isEmpty() ) {
+    out += "extern \"C\" {";
+    QStringList::ConstIterator it;
+    for( it = externCDeclarations.begin(); it != externCDeclarations.end();
+         ++it ) {
+      out += *it + ";";
+    }
+    out += "}";
     out.newLine();
   }
 
@@ -395,11 +449,10 @@ void Printer::printImplementation( const File &f )
     out += "{";
     out.addBlock( f.body(), 2 );
     out += "}";
+    out.newLine();
   }
 
   // Classes
-  Class::List classes = f.classes();
-  Class::List::ConstIterator it;
   for( it = classes.begin(); it != classes.end(); ++it ) {
     QString str = classImplementation( *it );
     if ( !str.isEmpty() ) out += classImplementation( *it );
@@ -409,6 +462,8 @@ void Printer::printImplementation( const File &f )
   QString filename = f.filename() + ".cpp";
 
   if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
+
+  KSaveFile::backupFile( filename, QString::null, ".backup" );
 
   QFile implementation( filename );
   if ( !implementation.open( IO_WriteOnly ) ) {
@@ -421,4 +476,23 @@ void Printer::printImplementation( const File &f )
   h << out.text();
 
   implementation.close();
+}
+
+void Printer::printAutoMakefile( const AutoMakefile &am )
+{
+  QString filename = "Makefile.am";
+
+  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
+
+  KSaveFile::backupFile( filename, QString::null, ".backup" );
+
+  QFile file( filename );
+  if ( !file.open( IO_WriteOnly ) ) {
+    kdError() << "Can't open '" << filename << "' for writing." << endl;
+    return;
+  }
+
+  QTextStream ts( &file );
+
+  ts << am.text();
 }
