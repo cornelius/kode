@@ -370,6 +370,11 @@ void Creator::createElementParserCustom( KODE::Class &c, Element *e )
     sm.setState( "TAG", stateCode );
 
     stateCode.clear();
+    if ( e->attributes.isEmpty() ) {
+      stateCode += " if ( c == '/' ) {";
+      stateCode += "    return result;";
+      stateCode += " }";
+    }
     stateCode += "if ( c == '>' ) {";
     stateCode += "  state = WHITESPACE;";
     Element::List::ConstIterator it;
@@ -418,6 +423,8 @@ void Creator::createElementParserCustom( KODE::Class &c, Element *e )
         bool first = it2 == e->attributes.begin();
         stateCode.addBlock( createAttributeScanner( *it2, first ) );
       }
+      stateCode += "} else if ( c =='/' ) {";
+      stateCode += "  return result;";
       stateCode += "}";
 
       sm.setState( "ATTRIBUTES", stateCode );
