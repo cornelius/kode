@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir) -I$(top_builddir)/libkdepim $(all_includes)
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 
 bin_PROGRAMS = kxml_compiler
 

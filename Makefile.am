@@ -1,6 +1,6 @@
 SUBDIRS = . kxml_compiler
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir)/libkdepim $(all_includes)
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 
 lib_LTLIBRARIES = libkode.la
 
