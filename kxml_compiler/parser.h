@@ -64,8 +64,12 @@ class Pattern
 class Reference
 {
   public:
+    Reference() : substituted( false ) {}
+  
     QString name;
     Pattern pattern;
+
+    bool substituted;
 };
 
 class Attribute
@@ -113,7 +117,9 @@ class Parser
     void dumpAttributes( const QValueList<Attribute *> &attributes,
                          int indent );
     void dumpElements( const QValueList<Element *> &elements, int indent );
+    void dumpElement( Element *element, int indent );
     void dumpTree( Element *s );
+    void dumpDefinitionMap();
 
   private:
     QMap<QString,QValueList<Element *> > mDefinitionMap;

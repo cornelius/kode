@@ -182,6 +182,13 @@ void Parser::substituteReferences( Element *s )
       kdDebug() << "Don't resolve self reference" << endl;
       return;
     }
+    if ( r->substituted ) {
+      kdDebug() << "Already substituted." << endl;
+      ++it;
+      continue;
+    } else {
+      r->substituted = true;
+    }
     QMap<QString,QValueList<Element *> >::ConstIterator it1;
     it1 = mDefinitionMap.find( r->name );
     if ( it1 != mDefinitionMap.end() ) {
@@ -252,20 +259,25 @@ void Parser::dumpElements( const QValueList<Element *> &elements, int indent )
   QValueList<Element *>::ConstIterator it;
   for( it = elements.begin(); it != elements.end(); ++it ) {
     Element *e = *it;
-    doIndent( indent );
-    std::cout << "ELEMENT " << e->name.utf8();
-    dumpPattern( e->pattern );
-    std::cout << std::endl;
-
-    if ( e->hasText ) {
-      doIndent( indent + 2 );
-      std::cout << "TEXT" << std::endl;
-    }
-
-    dumpAttributes( e->attributes, indent + 2 );
-    dumpElements( e->elements, indent + 2 );
-    dumpReferences( e->references, indent + 2 );
+    dumpElement( e, indent );
   }
+}
+
+void Parser::dumpElement( Element *e, int indent )
+{
+  doIndent( indent );
+  std::cout << "ELEMENT " << e->name.utf8();
+  dumpPattern( e->pattern );
+  std::cout << std::endl;
+
+  if ( e->hasText ) {
+    doIndent( indent + 2 );
+    std::cout << "TEXT" << std::endl;
+  }
+
+  dumpAttributes( e->attributes, indent + 2 );
+  dumpElements( e->elements, indent + 2 );
+  dumpReferences( e->references, indent + 2 );
 }
 
 void Parser::dumpTree( Element *s )
@@ -273,4 +285,13 @@ void Parser::dumpTree( Element *s )
   std::cout << "START " << s->name.utf8() << std::endl;
   dumpElements( s->elements, 2 );
   dumpReferences( s->references, 2 );
+}
+
+void Parser::dumpDefinitionMap()
+{
+  std::cout << "DEFINITION MAP" << std::endl;
+  QMap<QString,QValueList<Element *> >::ConstIterator it;
+  for( it = mDefinitionMap.begin(); it != mDefinitionMap.end(); ++it ) {
+    dumpElements( *it, 2 );
+  }
 }

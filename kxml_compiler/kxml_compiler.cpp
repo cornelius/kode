@@ -107,11 +107,16 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  p.substituteReferences( start );
+  p.dumpDefinitionMap();
   
+//  return 0;
+
+  p.substituteReferences( start );
+
+#if 0  
   std::cout << "--- TREE:" << std::endl;
   p.dumpTree( start );
-
+#endif
 
   kdDebug() << "Begin creating code" << endl;
   Creator c;
