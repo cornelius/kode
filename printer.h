@@ -52,7 +52,7 @@ class Printer
     QString functionSignature( const Function &f,
                                const QString &className = QString::null,
                                bool includeClassQualifier = false );
-    Code Printer::functionHeaders( const Function::List &functions,
+    Code functionHeaders( const Function::List &functions,
                                    const QString &className,
                                    Function::AccessSpecifier access );
 
