@@ -21,8 +21,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-
-#include <kode/kode.h>
+#include <kode/code.h>
 #include <kode/printer.h>
 #include <kode/typedef.h>
 
@@ -64,6 +63,8 @@ class Pattern
 class Reference
 {
   public:
+    typedef QValueList<Reference *> List;
+  
     Reference() : substituted( false ) {}
   
     QString name;
@@ -75,6 +76,8 @@ class Reference
 class Attribute
 {
   public:
+    typedef QValueList<Attribute *> List;
+  
     QString name;
     QValueList<QString> choices;
     QString defaultValue;
@@ -84,12 +87,14 @@ class Attribute
 class Element
 {
   public:
+    typedef QValueList<Element *> List;
+  
     Element();
   
     QString name;
-    QValueList<Element *> elements;
-    QValueList<Attribute *> attributes;
-    QValueList<Reference *> references;
+    Element::List elements;
+    Attribute::List attributes;
+    Reference::List references;
     Pattern pattern;
     bool hasText;
     bool isEmpty;
@@ -113,17 +118,17 @@ class Parser
     void doIndent( int cols );
 
     void dumpPattern( Pattern pattern );
-    void dumpReferences( const QValueList<Reference *> &references,
+    void dumpReferences( const Reference::List &references,
                          int indent );
-    void dumpAttributes( const QValueList<Attribute *> &attributes,
+    void dumpAttributes( const Attribute::List &attributes,
                          int indent );
-    void dumpElements( const QValueList<Element *> &elements, int indent );
+    void dumpElements( const Element::List &elements, int indent );
     void dumpElement( Element *element, int indent );
     void dumpTree( Element *s );
     void dumpDefinitionMap();
 
   private:
-    QMap<QString,QValueList<Element *> > mDefinitionMap;
+    QMap<QString,Element::List> mDefinitionMap;
 };
 
 #endif

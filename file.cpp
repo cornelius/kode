@@ -121,3 +121,25 @@ void File::addFileFunction( const Function &f )
 {
   mFileFunctions.append( f );
 }
+
+void File::clearClasses()
+{
+  mClasses.clear();
+}
+
+void File::clearFileFunctions()
+{
+  mFileFunctions.clear();
+}
+
+void File::clearFileVariables()
+{
+  mFileVariables.clear();
+}
+
+void File::clearCode()
+{
+  clearClasses();
+  clearFileFunctions();
+  clearFileVariables();
+}

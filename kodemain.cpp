@@ -19,7 +19,7 @@
     Boston, MA 02111-1307, USA.
 */
 
-#include "kode.h"
+#include "code.h"
 #include "printer.h"
 #include "license.h"
 
@@ -35,6 +35,9 @@
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 
+#include <qfile.h>
+#include <qtextstream.h>
+
 #include <iostream>
 
 static const KCmdLineOptions options[] =
@@ -43,6 +46,8 @@ static const KCmdLineOptions options[] =
   { "create-class", I18N_NOOP("Create class"), 0 },
   { "d", 0, 0 },
   { "create-dialog", I18N_NOOP("Create dialog"), 0 },
+  { "y", 0, 0 },
+  { "codify", I18N_NOOP("Create generator code for given source"), 0 },
   { "author-email <name>", I18N_NOOP("Add author with given email address"), 0 },
   { "project <name>", I18N_NOOP("Name of project"), 0 },
   { "gpl", I18N_NOOP("Use GPL as license"), 0 },
@@ -52,13 +57,44 @@ static const KCmdLineOptions options[] =
   { "warning", I18N_NOOP("Create warning about code generation"), 0 },
   { "qt-exception", I18N_NOOP("Add Qt excpetion to GPL"), 0 },
   { "singleton", I18N_NOOP("Create a singleton class"), 0 },
+  { "+[filename]", I18N_NOOP("Source code file name"), 0 },
   KCmdLineLastOption
 };
+
+int codify( KCmdLineArgs *args )
+{
+  if ( args->count() != 1 ) {
+    std::cerr << "Usage: kode --codify <sourcecodefile>" << std::endl;
+    return 1;
+  }
+
+  QString filename = args->arg( 0 );
+
+  QFile f( filename );
+  if ( !f.open( IO_ReadOnly ) ) {
+    kdError() << "Unable to open file '" << filename << "'." << endl;
+    return 1;            
+  } else {
+    std::cout << "KODE::Code code;" << std::endl;
+    QTextStream ts( &f );
+    QString line;
+    while( !( line = ts.readLine() ).isNull() ) {
+      line.replace( "\\", "\\\\" ); 
+      line.replace( "\"", "\\\"" );
+      line = "code += \"" + line;
+      line.append( "\";" );
+      std::cout << line.local8Bit() << std::endl;
+    }
+  }
+
+  return 0;
+}
 
 int create( KCmdLineArgs *args )
 {
   if ( !args->isSet( "classname" ) ) {
     std::cerr << "Error: No class name given." << std::endl;
+    return 1;
   }
 
   KODE::File file;
@@ -152,6 +188,8 @@ int main(int argc,char **argv)
 
   if ( args->isSet( "create-class" ) || args->isSet( "create-dialog" ) ) {
     return create( args );
+  } else if ( args->isSet( "codify" ) ) {
+    return codify( args );
   } else {
     std::cerr << "Error: No command given." << std::endl;
     return 1;

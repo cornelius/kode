@@ -21,7 +21,7 @@
 
 #include "parser.h"
 
-#include <kode/kode.h>
+#include <kode/code.h>
 #include <kode/printer.h>
 #include <kode/typedef.h>
 
@@ -95,8 +95,8 @@ Element *Parser::parse( const QDomElement &docElement )
       Element *d = new Element;
       d->name = e1.attribute( "name" );
       parseElement( e1, d, Pattern() );
-      QValueList<Element *> definitions;
-      QMap<QString,QValueList<Element *> >::ConstIterator it; 
+      Element::List definitions;
+      QMap<QString,Element::List >::ConstIterator it; 
       it = mDefinitionMap.find( d->name );
       if ( it != mDefinitionMap.end() ) definitions = *it;
       definitions.append( d );
@@ -176,7 +176,7 @@ bool Parser::parseElement( const QDomElement &elementElement, Element *e,
 void Parser::substituteReferences( Element *s )
 {
   kdDebug() << "substituteReferences for '" << s->name << "'" << endl;
-  QValueList<Reference *>::Iterator it = s->references.begin();
+  Reference::List::Iterator it = s->references.begin();
   while( it != s->references.end() ) {
     Reference *r = *it;
     kdDebug() << "REF " << r->name << endl;
@@ -191,22 +191,22 @@ void Parser::substituteReferences( Element *s )
     } else {
       r->substituted = true;
     }
-    QMap<QString,QValueList<Element *> >::ConstIterator it1;
+    QMap<QString,Element::List >::ConstIterator it1;
     it1 = mDefinitionMap.find( r->name );
     if ( it1 != mDefinitionMap.end() ) {
-      QValueList<Element *> elements = *it1;
-      QValueList<Element *>::ConstIterator it4;
+      Element::List elements = *it1;
+      Element::List::ConstIterator it4;
       for( it4 = elements.begin(); it4 != elements.end(); ++it4 ) {
         Element *d = *it4;
         substituteReferences( d );
-        QValueList<Element *>::ConstIterator it2;
+        Element::List::ConstIterator it2;
         for( it2 = d->elements.begin(); it2 != d->elements.end(); ++it2 ) {
           Element *e = *it2;
           e->pattern.merge( r->pattern );
           substituteReferences( e );
           s->elements.append( e );
         }
-        QValueList<Attribute *>::ConstIterator it3;
+        Attribute::List::ConstIterator it3;
         for( it3 = d->attributes.begin(); it3 != d->attributes.end();
              ++it3 ) {
           Attribute *a = *it3;
@@ -232,9 +232,9 @@ void Parser::dumpPattern( Pattern pattern )
   std::cout << pattern.asString().utf8();
 }
 
-void Parser::dumpReferences( const QValueList<Reference *> &references, int indent )
+void Parser::dumpReferences( const Reference::List &references, int indent )
 {
-  QValueList<Reference *>::ConstIterator it;
+  Reference::List::ConstIterator it;
   for( it = references.begin(); it != references.end(); ++it ) {
     Reference *r = *it;
     doIndent( indent );
@@ -244,9 +244,9 @@ void Parser::dumpReferences( const QValueList<Reference *> &references, int inde
   }
 }
 
-void Parser::dumpAttributes( const QValueList<Attribute *> &attributes, int indent )
+void Parser::dumpAttributes( const Attribute::List &attributes, int indent )
 {
-  QValueList<Attribute *>::ConstIterator it;
+  Attribute::List::ConstIterator it;
   for( it = attributes.begin(); it != attributes.end(); ++it ) {
     Attribute *a = *it;
     doIndent( indent );
@@ -256,9 +256,9 @@ void Parser::dumpAttributes( const QValueList<Attribute *> &attributes, int inde
   }
 }
 
-void Parser::dumpElements( const QValueList<Element *> &elements, int indent )
+void Parser::dumpElements( const Element::List &elements, int indent )
 {
-  QValueList<Element *>::ConstIterator it;
+  Element::List::ConstIterator it;
   for( it = elements.begin(); it != elements.end(); ++it ) {
     Element *e = *it;
     dumpElement( e, indent );
@@ -292,7 +292,7 @@ void Parser::dumpTree( Element *s )
 void Parser::dumpDefinitionMap()
 {
   std::cout << "DEFINITION MAP" << std::endl;
-  QMap<QString,QValueList<Element *> >::ConstIterator it;
+  QMap<QString,Element::List >::ConstIterator it;
   for( it = mDefinitionMap.begin(); it != mDefinitionMap.end(); ++it ) {
     dumpElements( *it, 2 );
   }

@@ -51,12 +51,15 @@ class Class
     void addMemberVariable( const MemberVariable &v );
     void addTypedef( const Typedef & );
 
+    void setName( const QString &name );
     QString name() const { return mName; }
     QStringList includes() const { return mIncludes; }
     Function::List functions() const { return mFunctions; }
     MemberVariable::List memberVariables() const { return mMemberVariables; }
     Class::List baseClasses() const;
     Typedef::List typedefs() const { return mTypedefs; }
+
+    bool hasFunction( const QString &name ) const;
     
   private:
     QString mName;

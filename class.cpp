@@ -37,6 +37,13 @@ Class::Class( const QString &name )
 
 Class::Class( const Class &c )
 {
+  *this = c;
+}
+
+Class &Class::operator=( const Class &c )
+{
+  if ( this == &c ) return *this;
+
   mName = c.mName;
   mFunctions = c.mFunctions;
   mMemberVariables = c.mMemberVariables;
@@ -49,15 +56,13 @@ Class::Class( const Class &c )
   }
 
   mTypedefs = c.mTypedefs;
+  
+  return *this;
 }
 
-Class &Class::operator=( const Class &c )
+void Class::setName( const QString &name )
 {
-  if ( this == &c ) return *this;
-  
-  *this = Class( c );
-
-  return *this;
+  mName = name;
 }
 
 void Class::addInclude( const QString &include )
@@ -103,4 +108,14 @@ void Class::addTypedef( const Typedef &t )
 bool Class::isValid() const
 {
   return !mName.isEmpty();
+}
+
+bool Class::hasFunction( const QString &functionName ) const
+{
+  Function::List::ConstIterator it;
+  for( it = mFunctions.begin(); it != mFunctions.end(); ++it ) {
+    if ( (*it).name() == functionName ) return true;
+  }
+
+  return false;
 }

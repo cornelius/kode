@@ -4,9 +4,10 @@ INCLUDES = -I$(top_srcdir) $(all_includes)
 
 lib_LTLIBRARIES = libkode.la
 
-libkode_la_SOURCES = kode.cpp printer.cpp license.cpp file.cpp class.cpp \
+libkode_la_SOURCES = code.cpp style.cpp printer.cpp license.cpp file.cpp \
+                     class.cpp \
                      function.cpp variable.cpp membervariable.cpp \
-                     typedef.cpp
+                     typedef.cpp statemachine.cpp
 libkode_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) \
                      -version-info 1:0:0 -no-undefined
 libkode_la_LIBADD = -lkdecore

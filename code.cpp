@@ -19,7 +19,7 @@
     Boston, MA 02111-1307, USA.
 */
 
-#include "kode.h"
+#include "code.h"
 
 #include <kdebug.h>
 
@@ -27,32 +27,6 @@
 #include <qtextstream.h>
 
 using namespace KODE;
-
-Style::Style()
-{
-}
-
-Style::~Style()
-{
-}
-
-QString Style::className( const QString &str )
-{
-  return upperFirst( str );
-}
-
-QString Style::upperFirst( const QString &str )
-{
-  if ( str.isEmpty() ) return str;
-  return str[ 0 ].upper() + str.mid( 1 );
-}
-
-QString Style::lowerFirst( const QString &str )
-{
-  if ( str.isEmpty() ) return str;
-  return str[ 0 ].lower() + str.mid( 1 );
-}
-
 
 Code::Code()
   : mIndent( 0 )

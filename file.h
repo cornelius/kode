@@ -22,7 +22,7 @@
 #define KODE_FILE_H
 
 #include "license.h"
-#include "kode.h"
+#include "code.h"
 #include "class.h"
 #include "membervariable.h"
 
@@ -60,6 +60,12 @@ class File
     bool hasClass( const QString &className );
 
     Class findClass( const QString &name );
+
+    void clearClasses();
+    void clearFileFunctions();
+    void clearFileVariables();
+
+    void clearCode();
 
     void addFileVariable( const Variable & );
     Variable::List fileVariables() const { return mFileVariables; }

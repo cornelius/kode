@@ -18,8 +18,8 @@
     the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
     Boston, MA 02111-1307, USA.
 */
-#ifndef KODE_H
-#define KODE_H
+#ifndef KODE_CODE_H
+#define KODE_CODE_H
 
 #include "license.h"
 
@@ -28,18 +28,6 @@
 #include <qstringlist.h>
 
 namespace KODE {
-
-class Style
-{
-  public:
-    Style();
-    virtual ~Style();
-
-    virtual QString className( const QString &str );
-
-    static QString upperFirst( const QString &str );
-    static QString lowerFirst( const QString &str );
-};
 
 class Code
 {

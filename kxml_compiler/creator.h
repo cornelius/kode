@@ -23,7 +23,7 @@
 
 #include "parser.h"
 
-#include <kode/kode.h>
+#include <kode/code.h>
 #include <kode/printer.h>
 #include <kode/typedef.h>
 #include <kode/file.h>
@@ -49,7 +49,17 @@
 class Creator
 {
   public:
-    Creator();
+    enum XmlParserType { XmlParserDom, XmlParserDomExternal,
+                         XmlParserCustomExternal };
+    enum XmlWriterType { XmlWriterCustom, XmlWriterCustomExternal };
+
+    Creator( XmlParserType p = XmlParserDom,
+             XmlWriterType w = XmlWriterCustom );
+
+    void setExternalClassPrefix( const QString & );
+
+    bool externalParser() const;
+    bool externalWriter() const;
 
     KODE::File &file();
 
@@ -60,20 +70,46 @@ class Creator
                          const QString &name );
     void createElementFunctions( KODE::Class &c, Element *e );
     void createClass( Element *element );
-    void createElementParser( KODE::Class &c, Element *e );
-    void createElementWriter( KODE::Class &c, Element *e );
 
     void registerListTypedef( const QString &type );
 
     void createListTypedefs();
 
     void createFileParser( Element *element );
+
     void createFileWriter( Element *element, const QString &dtd );
 
+    void printFiles( KODE::Printer & );
+
+  protected:
+    void setExternalClassNames();
+
+    void createFileParserDom( Element *element );
+    void createFileParserCustom( Element *element );
+
+    void createElementParser( KODE::Class &c, Element *e );
+
+    void createElementParserDom( KODE::Class &c, Element *e );
+
+    void createElementParserCustom( KODE::Class &c, Element *e );
+    void createTextElementParserCustom( KODE::Class &c, Element *e );
+    KODE::Code createAttributeScanner( Attribute *a, bool firstAttribute );
+    void createFoundTextFunction( const QString &text );
+
+    void createElementWriter( KODE::Class &c, Element *e );
+
+    void createIndenter( KODE::File & );
+
   private:
+    XmlParserType mXmlParserType;
+    XmlWriterType mXmlWriterType;
+    QString mExternalClassPrefix;
+
     KODE::File mFile;
+    KODE::Class mParserClass;
+    KODE::Class mWriterClass;
     QStringList mProcessedClasses;
-    QStringList mListTypedefs;    
+    QStringList mListTypedefs;
 };
 
 #endif

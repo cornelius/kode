@@ -21,7 +21,7 @@
 #ifndef KODE_FUNCTION_H
 #define KODE_FUNCTION_H
 
-#include "kode.h"
+#include "code.h"
 
 #include <qvaluelist.h>
 #include <qstring.h>

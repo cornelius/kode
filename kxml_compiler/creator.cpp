@@ -21,9 +21,10 @@
 
 #include "creator.h"
 
-#include <kode/kode.h>
+#include <kode/code.h>
 #include <kode/printer.h>
 #include <kode/typedef.h>
+#include <kode/statemachine.h>
 
 #include <kaboutdata.h>
 #include <kapplication.h>
@@ -43,22 +44,35 @@
 
 #include <iostream>
 
-Creator::Creator()
+Creator::Creator( XmlParserType p, XmlWriterType w )
+  : mXmlParserType( p ), mXmlWriterType( w )
 {
+  setExternalClassNames();
+}
+
+void Creator::setExternalClassPrefix( const QString &prefix )
+{
+  mExternalClassPrefix = prefix;
+
+  setExternalClassNames();
+}
+
+void Creator::setExternalClassNames()
+{
+  mParserClass.setName( mExternalClassPrefix + "Parser" );
+  mWriterClass.setName( mExternalClassPrefix + "Writer" );
 }
 
 KODE::File &Creator::file() { return mFile; }
 
 QString Creator::upperFirst( const QString &str )
 {
-  if ( str.isEmpty() ) return str;
-  return str[ 0 ].upper() + str.mid( 1 );
+  return KODE::Style::upperFirst( str );
 }
 
 QString Creator::lowerFirst( const QString &str )
 {
-  if ( str.isEmpty() ) return str;
-  return str[ 0 ].lower() + str.mid( 1 );
+  return KODE::Style::lowerFirst( str );
 }
 
 void Creator::createProperty( KODE::Class &c, const QString &type,
@@ -82,6 +96,9 @@ void Creator::createElementFunctions( KODE::Class &c, Element *e )
 {
   if ( e->hasText ) {
     createProperty( c, "QString", e->name );
+    if ( mXmlParserType == XmlParserCustomExternal ) {
+      createTextElementParserCustom( c, e );
+    }
     return;
   }
 
@@ -237,7 +254,258 @@ void Creator::createElementWriter( KODE::Class &c, Element *element )
 
 void Creator::createElementParser( KODE::Class &c, Element *e )
 {
-  KODE::Function parser( "parseElement", c.name() + " *" );
+  switch ( mXmlParserType ) {
+    case XmlParserDom:
+    case XmlParserDomExternal:
+      createElementParserDom( c, e );
+      break;
+    case XmlParserCustomExternal:
+      createElementParserCustom( c, e );
+      break;
+  }
+}
+
+void Creator::createTextElementParserCustom( KODE::Class &, Element *e )
+{
+  KODE::Function parser( "parseElement" + upperFirst( e->name ), "QString" );
+
+  KODE::Code code;
+  
+  code += "QString result;";
+  code.newLine();
+
+  KODE::StateMachine sm;
+
+  KODE::Code stateCode;
+
+  stateCode += "if ( c == '<' ) {";
+  stateCode += "  state = TAG;";
+  stateCode += "  tagStart = mRunning;";
+  stateCode += "} else if ( c == '&' ) {";
+  stateCode += "  entityStart = mRunning + 1;";
+  stateCode += "} else if ( entityStart >= 0 && c == ';' ) {";
+  stateCode += "  QString entity = mBuffer.mid( entityStart, mRunning - entityStart );";
+  stateCode += "  if ( entity == \"quot\" ) result += '\"';";
+  stateCode += "  entityStart = -1;";
+  stateCode += "} else if ( entityStart < 0 ) {";
+  stateCode += "  result += c;";
+  stateCode += "}";
+
+  sm.setState( "TEXT", stateCode );
+
+  stateCode.clear();
+  stateCode += "if ( c == '/' ) {";
+  stateCode += "  state = ENDTAG;";
+  stateCode += "} else {";
+  stateCode += "  state = STARTTAG;";
+  stateCode += "}";
+
+  sm.setState( "TAG", stateCode );
+
+  stateCode.clear();
+  stateCode += "if ( c == '>' ) {";
+  stateCode += "  state = TEXT;";
+  stateCode += "  result += mBuffer.mid( tagStart, mRunning - tagStart + 1 );";
+  stateCode += "}";
+
+  sm.setState( "STARTTAG", stateCode );
+
+  stateCode.clear();
+  stateCode += "if ( c == '>' ) {";
+  stateCode += "  state = TEXT;";
+  stateCode += "  result += mBuffer.mid( tagStart, mRunning - tagStart + 1 );";
+  stateCode += "} else if ( foundText" + upperFirst( e->name ) + "() ) {";
+  stateCode += "  return result;";
+  stateCode += "}";
+
+  sm.setState( "ENDTAG", stateCode );
+
+  sm.setInitialState( "STARTTAG" );
+
+  code.addBlock( sm.stateDefinition() );
+  code.newLine();
+  code += "int tagStart = -1;";
+  code += "int entityStart = -1;";
+  code.newLine();
+  code += "while ( mRunning < mBuffer.length() ) {";
+  code.indent();
+  code += "QChar c = mBuffer[ mRunning ];";
+  code.addBlock( sm.transitionLogic() );
+  code += "++mRunning;";
+  code.unindent();
+  code += "}";
+  code.newLine();
+  code += "return result;";
+
+  parser.setBody( code );
+
+  mParserClass.addFunction( parser );
+}
+
+void Creator::createElementParserCustom( KODE::Class &c, Element *e )
+{
+  KODE::Function parser( "parseElement" + upperFirst( e->name ),
+                         c.name() + " *" );
+
+  KODE::Code code;
+  
+  code += c.name() + " *result = new " + c.name() + "();";
+  code.newLine();
+
+  KODE::StateMachine sm;
+  
+  if ( !e->isEmpty ) {
+    KODE::Code stateCode;
+    stateCode += "if ( c == '<' ) state = TAG;";
+
+    sm.setState( "WHITESPACE", stateCode );
+    
+    stateCode.clear();
+    stateCode += "if ( c == '/' ) {";
+    stateCode += "  state = ENDTAG;";
+    stateCode += "} else {";
+    stateCode += "  state = STARTTAG;";
+    stateCode += "}";
+  
+    sm.setState( "TAG", stateCode );
+
+    stateCode.clear();
+    stateCode += "if ( c == '>' ) {";
+    stateCode += "  state = WHITESPACE;";
+    Element::List::ConstIterator it;
+    for( it = e->elements.begin(); it != e->elements.end(); ++it ) { 
+      createFoundTextFunction( (*it)->name );
+
+      QString eName = upperFirst( (*it)->name );
+      stateCode += "} else if ( foundText" + eName + "() ) {";
+      QString line = "  result->";
+      if ( (*it)->hasText ) line += "set";
+      else line += "add";
+      line += eName + "( parseElement" + eName + "() );";
+      stateCode += line;
+      stateCode += "  state = WHITESPACE;";
+    }
+    Reference::List::ConstIterator it3;
+    for( it3 = e->references.begin(); it3 != e->references.end(); ++it3 ) { 
+      createFoundTextFunction( (*it3)->name );
+
+      QString eName = upperFirst( (*it3)->name );
+      stateCode += "} else if ( foundText" + eName + "() ) {";
+      stateCode += "  result->add" + eName + "( parseElement" + eName + "() );";
+      stateCode += "  state = WHITESPACE;";
+    }
+    stateCode += "}";
+
+    sm.setState( "STARTTAG", stateCode );
+
+    stateCode.clear();
+    stateCode += "if ( c == '>' ) {";
+    stateCode += "  state = WHITESPACE;";
+    stateCode += "} else if ( foundText" + c.name() + "() ) {";
+    stateCode += "  return result;";
+    stateCode += "}";
+
+    sm.setState( "ENDTAG", stateCode );
+
+    if ( !e->attributes.isEmpty() ) {
+      stateCode.clear();
+      stateCode += "if ( c == '>' ) {";
+      stateCode += "  state = WHITESPACE;";
+      stateCode += "}";
+
+      Attribute::List::ConstIterator it2;
+      for( it2 = e->attributes.begin(); it2 != e->attributes.end(); ++it2 ) {
+        bool first = it2 == e->attributes.begin();
+        stateCode.addBlock( createAttributeScanner( *it2, first ) );
+      }
+      stateCode += "}";
+
+      sm.setState( "ATTRIBUTES", stateCode );
+
+      sm.setInitialState( "ATTRIBUTES" );
+    } else {
+      sm.setInitialState( "STARTTAG" );
+    }
+
+    code.addBlock( sm.stateDefinition() );
+    code.newLine();
+  }
+  
+  if ( !e->attributes.isEmpty() ) {
+    Attribute::List::ConstIterator it;
+    for( it = e->attributes.begin(); it != e->attributes.end(); ++it ) {
+      code += "bool found" + upperFirst( (*it)->name ) + " = false;";
+    }
+    code.newLine();
+    code += "int attrValueStart = -1;";
+    code.newLine();
+  }
+
+  code += "while ( mRunning < mBuffer.length() ) {";
+  code.indent();
+  code += "QChar c = mBuffer[ mRunning ];";
+
+  if ( e->isEmpty ) {
+    code += "if ( c == '>' ) {";
+    code += "  return result;";
+    code += "}";
+
+    if ( !e->attributes.isEmpty() ) {
+      Attribute::List::ConstIterator it;
+      for( it = e->attributes.begin(); it != e->attributes.end(); ++it ) {
+        code.addBlock( createAttributeScanner( *it,
+                                               it == e->attributes.begin() ) );
+      }
+      code += "}";
+    }
+  } else {
+    code.addBlock( sm.transitionLogic() );
+  }
+
+  code += "++mRunning;";
+  code.unindent();
+  code += "}";
+  code.newLine();
+  code += "return result;";
+
+  parser.setBody( code );
+  
+  mParserClass.addFunction( parser );
+}
+
+KODE::Code Creator::createAttributeScanner( Attribute *a, bool firstAttribute )
+{
+  KODE::Code code;
+
+  QString aName = upperFirst( a->name );
+
+  createFoundTextFunction( a->name );
+
+  QString line;
+  if ( !firstAttribute ) line = "} else ";
+  line += "if ( foundText" + aName + "() ) {";
+  code += line;
+  code += "  found" + aName + "= true;";
+  code += "} else if ( found" + aName + " && c == '\"' ) {";
+  code += "  if ( attrValueStart < 0 ) {";
+  code += "    attrValueStart = mRunning + 1;";
+  code += "  } else {";
+  code += "    result->set" + aName + "( mBuffer.mid( attrValueStart,";
+  code += "                                  mRunning - attrValueStart ) );";
+  code += "    attrValueStart = -1;";
+  code += "    found" + aName + " = false;";
+  code += "  }";
+
+  return code;  
+}
+
+void Creator::createElementParserDom( KODE::Class &c, Element *e )
+{
+  QString functionName;
+  if ( externalParser() ) functionName = "parseElement" + c.name();
+  else functionName = "parseElement";
+
+  KODE::Function parser( functionName, c.name() + " *" );
   parser.setStatic( true );
   parser.setDocs( "Parse XML object from DOM element." );
 
@@ -277,7 +545,15 @@ void Creator::createElementParser( KODE::Class &c, Element *e )
     if ( (*it)->hasText ) {
       code += "result->set" + className + "( e.text() );"; 
     } else {
-      code += className + " *o = " + className + "::parseElement( e );";
+      QString line = className + " *o = ";
+      if ( externalParser() ) {
+        line += "parseElement" + className;
+      } else {
+        line += className + "::parseElement";
+      }
+      line += "( e );";
+      code += line;
+      
       code += "if ( o ) result->add" + className + "( o );";
     }
 
@@ -298,7 +574,15 @@ void Creator::createElementParser( KODE::Class &c, Element *e )
 
     QString className = upperFirst( (*it3)->name );
 
-    code += className + " *o = " + className + "::parseElement( e );";
+    QString line = className + " *o = ";
+    if ( externalParser() ) {
+      line += "parseElement" + className;
+    } else {
+      line += className + "::parseElement";
+    }
+    line += "( e );";
+    code += line;
+
     code += "if ( o ) result->add" + className + "( o );";
 
     code.unindent();
@@ -320,7 +604,11 @@ void Creator::createElementParser( KODE::Class &c, Element *e )
 
   parser.setBody( code );
 
-  c.addFunction( parser );
+  if ( externalParser() ) {
+    mParserClass.addFunction( parser );
+  } else {
+    c.addFunction( parser );
+  }
 }
 
 void Creator::registerListTypedef( const QString &type )
@@ -339,12 +627,8 @@ void Creator::createListTypedefs()
   }
 }
 
-void Creator::createFileWriter( Element *element, const QString &dtd )
+void Creator::createIndenter( KODE::File &file )
 {
-  QString className = upperFirst( element->name );
-
-  KODE::Class c = mFile.findClass( className );
-
   KODE::Function indenter( "indent", "QString" );
   indenter.addArgument( "int n = 0" );
   
@@ -357,8 +641,22 @@ void Creator::createFileWriter( Element *element, const QString &dtd )
 
   indenter.setBody( code );
 
-  mFile.addFileFunction( indenter );
+  file.addFileFunction( indenter );
+}
 
+void Creator::createFileWriter( Element *element, const QString &dtd )
+{
+  QString className = upperFirst( element->name );
+
+  KODE::Class c = mFile.findClass( className );
+
+  c.addInclude( "kdebug.h" );
+  c.addInclude( "qtextstream.h" );
+  c.addInclude( "qfile.h" );
+
+  if ( !externalWriter() ) {
+    createIndenter( mFile );
+  }
 
   KODE::Function writer( "writeFile", "bool" );
 
@@ -366,7 +664,7 @@ void Creator::createFileWriter( Element *element, const QString &dtd )
 
   c.addInclude( "qfile.h" );
 
-  code.clear();
+  KODE::Code code;
 
   code += "QFile file( filename );";
   code += "if ( !file.open( IO_WriteOnly ) ) {";
@@ -393,9 +691,126 @@ void Creator::createFileWriter( Element *element, const QString &dtd )
 
 void Creator::createFileParser( Element *element )
 {
+  switch ( mXmlParserType ) {
+    case XmlParserDom:
+    case XmlParserDomExternal:
+      createFileParserDom( element );
+      break;
+    case XmlParserCustomExternal:
+      createFileParserCustom( element );
+      break;
+  }
+}
+
+void Creator::createFileParserCustom( Element *element )
+{
+  kdDebug() << "Creator::createFileParserCustom()" << endl;
+
   QString className = upperFirst( element->name );
 
-  KODE::Class c = mFile.findClass( className );
+  KODE::Function parser( "parseFile", className + " *" );
+
+  parser.addArgument( "const QString &filename" );
+
+  mParserClass.addInclude( "qfile.h" );
+  mParserClass.addInclude( "kdebug.h" );
+
+  mParserClass.addMemberVariable( KODE::MemberVariable( "mBuffer",
+                                                        "QString" ) );
+  mParserClass.addMemberVariable( KODE::MemberVariable( "mRunning",
+                                                        "unsigned int" ) );
+
+  KODE::Code code;
+
+  code += "QFile file( filename );";
+  code += "if ( !file.open( IO_ReadOnly ) ) {";
+  code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  return 0;";
+  code += "}";
+  code += "";
+  code += "QTextStream ts( &file );";
+  code += "mBuffer = ts.read();";
+  code += "";
+  code += "mRunning = 0;";
+  code.newLine();
+
+  KODE::StateMachine sm;
+  
+  KODE::Code stateCode;
+  
+  stateCode += "if ( c == '<' ) state = TAG;";
+
+  sm.setState( "WHITESPACE", stateCode );
+  
+  stateCode.clear();
+  
+  stateCode += "if ( c == '>' ) {";
+  stateCode += "  state = WHITESPACE;";
+  stateCode += "} else if ( foundText" + className + "() ) {";
+  stateCode += "  features = parseElement" + className + "();";
+  stateCode += "  state = WHITESPACE;";
+  stateCode += "}";
+
+  createFoundTextFunction( element->name );
+
+  sm.setState( "TAG", stateCode );
+
+  code.addBlock( sm.stateDefinition() );
+  code.newLine();
+  
+  code += className + " *" + element->name + " = 0;";
+  code.newLine();
+
+  code += "while ( mRunning < mBuffer.length() ) {";
+  code.indent();
+  code += "QChar c = mBuffer[ mRunning ];";
+  code.addBlock( sm.transitionLogic() );
+  code += "++mRunning;";
+  code.unindent();
+  code += "}";
+  code.newLine();
+
+  code += "return " + element->name + ";";
+
+  parser.setBody( code );
+  
+  mParserClass.addFunction( parser );
+}
+
+void Creator::createFoundTextFunction( const QString &text )
+{
+  QString functionName = "foundText" + upperFirst( text );
+
+  if ( mParserClass.hasFunction( functionName ) ) return;
+
+  KODE::Function f( functionName, "bool" );
+
+  KODE::Code code;
+
+  code += "if ( mBuffer[ mRunning ] != '" + text.right( 1 ) + "' ) return false;";
+  code += "";
+  code += "return mBuffer.mid( mRunning - " +
+          QString::number( text.length() - 1 ) + ", " +
+          QString::number( text.length() ) + " ) == \"" + text + "\";";
+
+  f.setBody( code );
+  
+  mParserClass.addFunction( f );
+}
+
+void Creator::createFileParserDom( Element *element )
+{
+  kdDebug() << "Creator::createFileParserDom()" << endl;
+
+  QString className = upperFirst( element->name );
+
+  KODE::Class c;
+
+  if ( externalParser() ) {
+    c = mParserClass;
+  } else {
+    c = mFile.findClass( className );
+  }
 
   KODE::Function parser( "parseFile", className + " *" );
   parser.setStatic( true );
@@ -425,12 +840,56 @@ void Creator::createFileParser( Element *element )
   code += "kdDebug() << \"CONTENT:\" << doc.toString() << endl;";
 
   code += "";
-  code += className + " *c = parseElement( doc.documentElement() );";
+  
+  QString line = className + " *c = parseElement";
+  if ( externalParser() ) line += className;
+  line += "( doc.documentElement() );";
+  code += line;
+  
   code += "return c;";
 
   parser.setBody( code );
 
   c.addFunction( parser );
 
-  mFile.insertClass( c );
+  if ( externalParser() ) {
+    mParserClass = c;
+  } else {
+    mFile.insertClass( c );
+  }
+}
+
+void Creator::printFiles( KODE::Printer &printer )
+{
+  if ( externalParser() ) {
+    KODE::File parserFile( file() );
+    parserFile.setFilename( file().filename() + "_parser" );
+
+    parserFile.clearCode();
+    
+    mParserClass.addInclude( file().filename() + ".h" );
+    parserFile.insertClass( mParserClass );
+    
+    kdDebug() << "Print external parser." << endl;
+    printer.printHeader( parserFile );
+    printer.printImplementation( parserFile );
+  }
+
+  kdDebug() << "Print header" << endl;
+  printer.printHeader( file() );
+
+  kdDebug() << "Print implementation" << endl;
+  printer.printImplementation( file() );
+
+}
+
+bool Creator::externalParser() const
+{
+  return mXmlParserType == XmlParserDomExternal ||
+         mXmlParserType == XmlParserCustomExternal;
+}
+
+bool Creator::externalWriter() const
+{
+  return mXmlWriterType == XmlWriterCustomExternal;
 }

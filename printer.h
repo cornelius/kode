@@ -21,8 +21,9 @@
 #ifndef KODE_PRINTER_H
 #define KODE_PRINTER_H
 
-#include "kode.h"
+#include "code.h"
 #include "file.h"
+#include "style.h"
 
 #include <qvaluelist.h>
 #include <qstring.h>

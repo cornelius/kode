@@ -22,7 +22,7 @@
 #include "parser.h"
 #include "creator.h"
 
-#include <kode/kode.h>
+#include <kode/code.h>
 #include <kode/printer.h>
 #include <kode/typedef.h>
 
@@ -49,6 +49,9 @@ static const KCmdLineOptions options[] =
   { "d", 0, 0 },
   { "directory <dir>", I18N_NOOP("Directory to generate files in"), "." },
   { "+dtd", I18N_NOOP("DTD of XML file"), 0 },
+  { "external-parser", I18N_NOOP("Generate parser in separate source file."),
+    0 },
+  { "custom-parser", I18N_NOOP("Generate parser customized for schema."), 0 },
   KCmdLineLastOption
 };
 
@@ -119,7 +122,17 @@ int main( int argc, char **argv )
 #endif
 
   kdDebug() << "Begin creating code" << endl;
-  Creator c;
+
+  Creator::XmlParserType pt;
+  if ( args->isSet( "custom-parser" ) ) {
+    pt = Creator::XmlParserCustomExternal;
+  } else if ( args->isSet( "external-parser" ) ) {
+    pt = Creator::XmlParserDomExternal;
+  } else {
+    pt = Creator::XmlParserDom;
+  }
+
+  Creator c( pt );
 
   kdDebug() << "Create classes" << endl;
   QValueList<Element *>::ConstIterator it;
@@ -128,6 +141,7 @@ int main( int argc, char **argv )
   }
   kdDebug() << "Create parser" << endl;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
+    c.setExternalClassPrefix( c.upperFirst( (*it)->name ) );
     c.createFileParser( *it );
     c.createFileWriter( *it, dtdFilename.replace( "rng", "dtd" ) );
   }
@@ -147,7 +161,8 @@ int main( int argc, char **argv )
 
   kdDebug() << "Begin printing code" << endl;
 
-  KODE::File f = c.file();
+  KODE::File &f = c.file();
+  
   f.setFilename( baseName );
 
   KODE::Printer printer;
@@ -156,11 +171,7 @@ int main( int argc, char **argv )
   printer.setOutputDirectory( baseDir );
   printer.setSourceFile( args->url( 0 ).fileName() );
 
-  kdDebug() << "Print header" << endl;
-  printer.printHeader( f );
-
-  kdDebug() << "Print implementation" << endl;
-  printer.printImplementation( f );
+  c.printFiles( printer );
 
   kdDebug() << "Finished." << endl;
 }
