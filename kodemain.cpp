@@ -76,10 +76,13 @@ void addPropertyFunctions( QString &out, const QString &type,
 {
   // FIXME: Use KODE::Function
 
+  bool isReference = type.endsWith( "*" ) || type.endsWith( "&" );
+
   QString argument;
   QString upper = KODE::Style::upperFirst( name );
-  if ( !type.endsWith( "*" ) ) argument = "const " + type + " &";
-  else argument = type;
+  if ( !isReference ) {
+    argument = "const " + type + " &";
+  } else argument = type;
 
   KODE::Code code;
   code.setIndent( 4 );
@@ -92,9 +95,9 @@ void addPropertyFunctions( QString &out, const QString &type,
   code += "}";
   
   code += "/**";
-  code += "  Get .";
+  code += "  Get " + name + ". See set" + upper + "().";
   code += "*/";
-  code += type + " " + name + "() const";
+  code += type + ( isReference ? "" : " " ) + name + "() const";
   code += "{";
   code += "  return m" + upper + ";";
   code += "}";
@@ -106,10 +109,11 @@ void addPropertyVariable( QString &out, const QString &type,
   const QString &name )
 {
   QString upper = KODE::Style::upperFirst( name );
+  bool isReference = type.endsWith( "*" ) || type.endsWith( "&" );
 
   KODE::Code code;
   code.setIndent( 4 );
-  code += type + " m" + upper + ";"; 
+  code += type + ( isReference ? "" : " " ) + "m" + upper + ";"; 
 
   out += code.text();
 }
@@ -155,6 +159,7 @@ int addProperty( KCmdLineArgs *args )
   while ( !( line = in.readLine() ).isNull() ) {
 //    std::cout << line.utf8() << std::endl;
     kdDebug() << state << " LINE: " << line << endl;
+    QString readAheadPrevious = readAhead;
     readAhead += line + "\n";
 //    out += line + "\n";
     switch( state ) {
@@ -195,8 +200,10 @@ int addProperty( KCmdLineArgs *args )
                     readAhead = QString::null;
                   } else {
                     kdDebug() << "CREATE PROPERTY" << endl;
-                    out += "\n";
+                    out += readAheadPrevious;
                     addPropertyFunctions( out, type, name );
+                    out += "\n";
+                    readAhead = line + "\n";
                     state = FindPrivate;
                   }
                 }
