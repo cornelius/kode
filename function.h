@@ -26,10 +26,11 @@
 #include <qvaluelist.h>
 #include <qstring.h>
 #include <qstringlist.h>
+#include <kdepimmacros.h>
 
 namespace KODE {
 
-class Function
+class KDE_EXPORT Function
 {
   public:
     typedef QValueList<Function> List;

@@ -27,9 +27,11 @@
 #include <qstring.h>
 #include <qstringlist.h>
 
+#include <kdepimmacros.h>
+
 namespace KODE {
 
-class Style
+class KDE_EXPORT Style
 {
   public:
     Style();

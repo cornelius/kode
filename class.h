@@ -25,6 +25,7 @@
 #include "function.h"
 #include "typedef.h"
 
+#include <kdepimmacros.h>
 #include <qvaluelist.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -32,7 +33,7 @@
 
 namespace KODE {
 
-class Class
+class KDE_EXPORT Class
 {
   public:
     typedef QValueList<Class> List;

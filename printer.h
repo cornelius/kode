@@ -26,13 +26,14 @@
 #include "style.h"
 #include "automakefile.h"
 
+#include <kdepimmacros.h>
 #include <qvaluelist.h>
 #include <qstring.h>
 #include <qstringlist.h>
 
 namespace KODE {
 
-class Printer
+class KDE_EXPORT Printer
 {
   public:
     Printer();

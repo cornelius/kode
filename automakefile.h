@@ -26,12 +26,14 @@
 #include <qmap.h>
 #include <qstringlist.h>
 
+#include <kdepimmacros.h>
+
 namespace KODE {
 
-class AutoMakefile
+class KDE_EXPORT AutoMakefile
 {
   public:
-    class Target
+    class KDE_EXPORT Target
     {
       public:
         typedef QValueList<Target> List;

@@ -28,10 +28,11 @@
 
 #include <qstring.h>
 #include <qstringlist.h>
+#include <kdepimmacros.h>
 
 namespace KODE {
 
-class File
+class KDE_EXPORT File
 {
   public:
     File();

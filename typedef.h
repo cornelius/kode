@@ -22,10 +22,11 @@
 #define KODE_TYPEDEF_H
 
 #include <qvaluelist.h>
+#include <kdepimmacros.h>
 
 namespace KODE {
 
-class Typedef
+class KDE_EXPORT Typedef
 {
   public:
     typedef QValueList<Typedef> List;

@@ -25,10 +25,11 @@
 
 #include <qvaluelist.h>
 #include <qstring.h>
+#include <kdepimmacros.h>
 
 namespace KODE {
 
-class MemberVariable : public Variable
+class KDE_EXPORT MemberVariable : public Variable
 {
   public:
     typedef QValueList<MemberVariable> List;

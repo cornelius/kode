@@ -25,10 +25,11 @@
 
 #include <qstring.h>
 #include <qmap.h>
+#include <kdepimmacros.h>
 
 namespace KODE {
 
-class StateMachine
+class KDE_EXPORT StateMachine
 {
   public:
     StateMachine();

@@ -22,10 +22,11 @@
 #define KODE_LICENSE_H
 
 #include <qstring.h>
+#include <kdepimmacros.h>
 
 namespace KODE {
 
-class License
+class KDE_EXPORT License
 {
   public:
     enum Type { GPL, LGPL };

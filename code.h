@@ -26,10 +26,10 @@
 #include <qvaluelist.h>
 #include <qstring.h>
 #include <qstringlist.h>
-
+#include <kdepimmacros.h>
 namespace KODE {
 
-class Code
+class KDE_EXPORT Code
 {
   public:
     Code();
