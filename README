@@ -1,0 +1,6 @@
+libkode is a helper library for programmatic generation of C++ code. It includes
+a program kode for generation of C++ template files and kxml_compiler for
+generation of C++ classes representing XML data described by RelaxNG schemes.
+
+If you have questions or comments please contact Cornelius Schumacher
+<schumacher@kde.org>.
