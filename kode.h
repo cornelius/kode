@@ -47,6 +47,8 @@ class Code
     Code();
     Code( int indent );
 
+    void clear();
+
     void setIndent( int indent );
     void indent();
     void unindent();

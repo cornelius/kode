@@ -129,6 +129,7 @@ int main( int argc, char **argv )
   kdDebug() << "Create parser" << endl;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
     c.createFileParser( *it );
+    c.createFileWriter( *it, dtdFilename.replace( "rng", "dtd" ) );
   }
 
   c.createListTypedefs();

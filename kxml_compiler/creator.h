@@ -61,12 +61,14 @@ class Creator
     void createElementFunctions( KODE::Class &c, Element *e );
     void createClass( Element *element );
     void createElementParser( KODE::Class &c, Element *e );
+    void createElementWriter( KODE::Class &c, Element *e );
 
     void registerListTypedef( const QString &type );
 
     void createListTypedefs();
 
     void createFileParser( Element *element );
+    void createFileWriter( Element *element, const QString &dtd );
 
   private:
     KODE::File mFile;

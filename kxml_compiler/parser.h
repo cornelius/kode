@@ -92,6 +92,7 @@ class Element
     QValueList<Reference *> references;
     Pattern pattern;
     bool hasText;
+    bool isEmpty;
 };
 
 class Parser

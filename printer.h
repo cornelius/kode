@@ -50,7 +50,7 @@ class Printer
     QString classHeader( const Class & );
     QString classImplementation( const Class & );
     QString functionSignature( const Function &f,
-                               const QString &className,
+                               const QString &className = QString::null,
                                bool includeClassQualifier = false );
     Code Printer::functionHeaders( const Function::List &functions,
                                    const QString &className,

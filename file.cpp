@@ -116,3 +116,8 @@ void File::addFileVariable( const Variable &v )
 {
   mFileVariables.append( v );
 }
+
+void File::addFileFunction( const Function &f )
+{
+  mFileFunctions.append( f );
+}

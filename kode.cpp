@@ -64,6 +64,12 @@ Code::Code( int indent )
 {
 }
 
+void Code::clear()
+{
+  mIndent = 0;
+  mText = QString::null;
+}
+
 void Code::setIndent( int indent )
 {
   mIndent = indent;
@@ -131,7 +137,7 @@ void Code::addBlock( const Code &c )
 void Code::addWrappedText( const QString &txt )
 {
   int maxWidth = 80 - mIndent;
-  int pos = 0;
+  unsigned int pos = 0;
   while ( pos < txt.length() ) {
     QString line = txt.mid( pos, maxWidth );
     addLine( line );

@@ -151,8 +151,88 @@ void Creator::createClass( Element *element )
   }
 
   createElementParser( c, element );
+  createElementWriter( c, element );
 
   mFile.insertClass( c );
+}
+
+void Creator::createElementWriter( KODE::Class &c, Element *element )
+{
+  KODE::Function writer( "writeElement", "QString" );
+  
+  KODE::Code code;
+  
+  code += "QString xml;";
+  
+  QString tag = "<" + element->name;
+
+  QValueList<Attribute *>::ConstIterator it3;
+  for( it3 = element->attributes.begin(); it3 != element->attributes.end();
+        ++it3 ) {
+    tag += " " + (*it3)->name + "=\\\"\" + " + (*it3)->name + "() + \"\\\"";
+  }
+
+  if ( element->isEmpty ) {
+    tag += "/";
+  }
+
+  tag += ">\\n";
+
+  code += "xml += indent() + \"" + tag + "\";";
+
+  if ( !element->isEmpty ) {
+    code += "indent( 2 );";
+
+    QValueList<Element *>::ConstIterator it;
+    for( it = element->elements.begin(); it != element->elements.end(); ++it ) {
+      Element *e = *it;
+      QString type = upperFirst( e->name );
+      if ( e->pattern.oneOrMore || e->pattern.zeroOrMore ) {
+        code += type + "::List list = " + e->name + "List();";
+        code += type + "::List::ConstIterator it;";
+        code += "for( it = list.begin(); it != list.end(); ++it ) {";
+        code.indent();
+        code += "xml += (*it)->writeElement();";
+        code.unindent();
+        code += "}";
+      } else {
+        if ( e->hasText ) {
+          code += "xml += indent() + \"<" + e->name + ">\" + " + e->name + "() + \"</" +
+                  e->name + ">\\n\";";
+        } else {
+          code += "xml += " + type + "()->writeElement()";
+        }
+      }
+    }
+
+    QValueList<Reference *>::ConstIterator it2;
+    for( it2 = element->references.begin(); it2 != element->references.end();
+         ++it2 ) {
+      Reference *r = *it2;
+      QString type = upperFirst( r->name );
+      if ( r->pattern.oneOrMore || r->pattern.zeroOrMore ) {
+        code += type + "::List list2 = " + r->name + "List();";
+        code += type + "::List::ConstIterator it2;";
+        code += "for( it2 = list2.begin(); it2 != list2.end(); ++it2 ) {";
+        code.indent();
+        code += "xml += (*it2)->writeElement();";
+        code.unindent();
+        code += "}";
+      } else {
+        code += "xml += " + type + "()->writeElement()";
+      }
+    }
+
+    code += "indent( -2 );";
+
+    code += "xml += indent() + \"</" + element->name + ">\\n\";";
+  }
+
+  code += "return xml;";
+
+  writer.setBody( code );
+  
+  c.addFunction( writer );
 }
 
 void Creator::createElementParser( KODE::Class &c, Element *e )
@@ -257,6 +337,58 @@ void Creator::createListTypedefs()
     c.addTypedef( KODE::Typedef( "QValueList<" + *it + " *>", "List" ) );
     mFile.insertClass( c );
   }
+}
+
+void Creator::createFileWriter( Element *element, const QString &dtd )
+{
+  QString className = upperFirst( element->name );
+
+  KODE::Class c = mFile.findClass( className );
+
+  KODE::Function indenter( "indent", "QString" );
+  indenter.addArgument( "int n = 0" );
+  
+  KODE::Code code;
+
+  code += "static int i = 0;";
+  code += "i += n;";
+  code += "QString space;";
+  code += "return space.fill( ' ', i );"; 
+
+  indenter.setBody( code );
+
+  mFile.addFileFunction( indenter );
+
+
+  KODE::Function writer( "writeFile", "bool" );
+
+  writer.addArgument( "const QString &filename" );
+
+  c.addInclude( "qfile.h" );
+
+  code.clear();
+
+  code += "QFile file( filename );";
+  code += "if ( !file.open( IO_WriteOnly ) ) {";
+  code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  return false;";
+  code += "}";
+  code += "";
+  code += "QTextStream ts( &file );";
+
+  code += "ts << \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\\n\";";
+  code += "ts << \"<!DOCTYPE features SYSTEM \\\"" + dtd + "\\\">\\n\";";
+
+  code += "ts << writeElement();";
+  code += "file.close();";
+  code += "";
+  code += "return true;";
+
+  writer.setBody( code );
+
+  c.addFunction( writer );
+
+  mFile.insertClass( c );
 }
 
 void Creator::createFileParser( Element *element )

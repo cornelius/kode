@@ -386,6 +386,17 @@ void Printer::printImplementation( const File &f )
   }
   if ( !vars.isEmpty() ) out.newLine();
 
+  // File functions
+  Function::List funcs = f.fileFunctions();
+  Function::List::ConstIterator itF;
+  for( itF = funcs.begin(); itF != funcs.end(); ++itF ) {
+    Function f = *itF;
+    out += functionSignature( f );
+    out += "{";
+    out.addBlock( f.body(), 2 );
+    out += "}";
+  }
+
   // Classes
   Class::List classes = f.classes();
   Class::List::ConstIterator it;

@@ -64,6 +64,9 @@ class File
     void addFileVariable( const Variable & );
     Variable::List fileVariables() const { return mFileVariables; }
 
+    void addFileFunction( const Function & );
+    Function::List fileFunctions() const { return mFileFunctions; }
+
   private:
     QString mFilename;
     QString mNameSpace;
@@ -73,6 +76,7 @@ class File
     QStringList mIncludes;
     Class::List mClasses;
     Variable::List mFileVariables;
+    Function::List mFileFunctions;
 };
 
 }

@@ -75,7 +75,7 @@ void Pattern::merge( Pattern p )
 }
 
 Element::Element()
-  : hasText( false )
+  : hasText( false ), isEmpty( false )
 {
 }
 
@@ -155,6 +155,8 @@ bool Parser::parseElement( const QDomElement &elementElement, Element *e,
       e->references.append( r );
     } else if ( e1.tagName() == "text" ) {
       e->hasText = true;
+    } else if ( e1.tagName() == "empty" ) {
+      e->isEmpty = true;
     } else {
       Pattern p = pattern;
       if ( e1.tagName() == "optional" ) p.optional = true;
