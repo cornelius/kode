@@ -339,7 +339,7 @@ int create( KCmdLineArgs *args )
   QString authorEmail = args->getOption( "author-email" );
   if ( !authorEmail.isEmpty() ) {
     KABC::Addressee::List a =
-        KABC::StdAddressBook::self()->findByEmail( authorEmail );
+        KABC::StdAddressBook::self( true )->findByEmail( authorEmail );
     QString authorName;
     if ( a.isEmpty() ) {
       kdDebug() << "Unable to find '" << authorEmail << "' in address book."
