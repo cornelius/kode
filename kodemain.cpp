@@ -37,10 +37,12 @@
 #include <kstandarddirs.h>
 #include <ksimpleconfig.h>
 #include <ksavefile.h>
+#include <kprocess.h>
 
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qfileinfo.h>
+#include <qregexp.h>
 
 #include <iostream>
 
@@ -53,6 +55,8 @@ static const KCmdLineOptions options[] =
   { "create-kioslave", I18N_NOOP("Create kioslave"), 0 },
   { "y", 0, 0 },
   { "codify", I18N_NOOP("Create generator code for given source"), 0 },
+  { "add-property", I18N_NOOP("Add property to class"), 0 },
+  { "inplace", I18N_NOOP("Change file in place"), 0 },
   { "author-email <name>", I18N_NOOP("Add author with given email address"), 0 },
   { "project <name>", I18N_NOOP("Name of project"), 0 },
   { "gpl", I18N_NOOP("Use GPL as license"), 0 },
@@ -62,10 +66,210 @@ static const KCmdLineOptions options[] =
   { "warning", I18N_NOOP("Create warning about code generation"), 0 },
   { "qt-exception", I18N_NOOP("Add Qt excpetion to GPL"), 0 },
   { "singleton", I18N_NOOP("Create a singleton class"), 0 },
-  { "protocol", I18N_NOOP("kioslave protocol"), 0 }, 
+  { "protocol", I18N_NOOP("kioslave protocol"), 0 },
   { "+[filename]", I18N_NOOP("Source code file name"), 0 },
   KCmdLineLastOption
 };
+
+void addPropertyFunctions( QString &out, const QString &type,
+  const QString &name )
+{
+  // FIXME: Use KODE::Function
+
+  QString argument;
+  QString upper = KODE::Style::upperFirst( name );
+  if ( !type.endsWith( "*" ) ) argument = "const " + type + " &";
+  else argument = type;
+
+  KODE::Code code;
+  code.setIndent( 4 );
+  code += "/**";
+  code += "  Set .";
+  code += "*/";
+  code += "void set" + upper + "( " + argument + "v )";
+  code += "{";
+  code += "  m" + upper + " = v;";
+  code += "}";
+  
+  code += "/**";
+  code += "  Get .";
+  code += "*/";
+  code += type + " " + name + "() const";
+  code += "{";
+  code += "  return m" + upper + ";";
+  code += "}";
+
+  out += code.text();
+}
+
+void addPropertyVariable( QString &out, const QString &type,
+  const QString &name )
+{
+  QString upper = KODE::Style::upperFirst( name );
+
+  KODE::Code code;
+  code.setIndent( 4 );
+  code += type + " m" + upper + ";"; 
+
+  out += code.text();
+}
+
+int addProperty( KCmdLineArgs *args )
+{
+  if ( args->count() != 3 ) {
+    std::cerr << "Usage: kode --add-property <class> <proprerty-type> "
+      << "<property-name>" << std::endl;
+    return 1;
+  }
+  
+  QString className = args->arg( 0 );
+  QString type = args->arg( 1 );
+  QString name = args->arg( 2 );
+
+  kdDebug() << "Add property: class " << className << ": " << type << " " <<
+    name << endl;
+
+  QString headerFileName = className.lower() + ".h";
+  
+  QFile headerFile( headerFileName );
+  if ( !headerFile.open( IO_ReadOnly ) ) {
+    std::cerr << "Unable to open file '" << headerFileName.utf8() << "'" <<
+      std::endl;
+    return 1;
+  }
+  
+  QTextStream in( &headerFile );
+
+  enum State { FindClass, FindConstructor, FindProperties, FindPrivate,
+    FindVariables, Finish };
+  State state = FindClass;
+
+  QString accessor;
+  QString mutator;
+  
+  QString out;
+  
+  QString readAhead;
+  
+  QString line;
+  while ( !( line = in.readLine() ).isNull() ) {
+//    std::cout << line.utf8() << std::endl;
+    kdDebug() << state << " LINE: " << line << endl;
+    readAhead += line + "\n";
+//    out += line + "\n";
+    switch( state ) {
+      case FindClass:
+//        if ( line.find( QRegExp( className ) ) >= 0 ) {
+        if ( line.find( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
+          kdDebug() << "  FOUND CLASS" << endl;
+          state = FindConstructor;
+        }
+        break;
+      case FindConstructor:
+        if ( line.find( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
+          kdDebug() << "  FOUND CONSTRUCTOR" << endl;
+          out += readAhead;
+          readAhead = QString::null;
+          state = FindProperties;
+        }
+        break;
+      case FindProperties:
+        {
+          QRegExp re( "(\\w+)\\s*\\(" );
+          if ( re.search( line ) >= 0 ) {
+            QString function = re.cap( 1 ).lower();
+            if ( !function.isEmpty() ) {
+              kdDebug() << "Function: " << function << endl;
+              if ( function == className || function == "~" + className ) {
+                out += readAhead;
+                readAhead = QString::null;
+              } else {
+                if ( function.startsWith( "set" ) ) {
+                  mutator = function.mid( 3 );
+                  kdDebug() << "MUTATOR: " << mutator << endl;
+                } else {
+                  if ( function == mutator ) {
+                    accessor = function;
+                    kdDebug() << "ACCESSOR: " << accessor << endl;
+                    out += readAhead;
+                    readAhead = QString::null;
+                  } else {
+                    kdDebug() << "CREATE PROPERTY" << endl;
+                    out += "\n";
+                    addPropertyFunctions( out, type, name );
+                    state = FindPrivate;
+                  }
+                }
+              }
+            }
+          } else if ( line.find( QRegExp( "\\s*protected" ) ) >= 0 ) {
+            state = FindPrivate;
+          } else if ( line.find( QRegExp( "\\s*private" ) ) >= 0 ) {
+            if ( accessor.isEmpty() ) {
+              addPropertyVariable( out, type, name );
+              state = Finish;
+            } else {
+              state = FindVariables;
+            }
+          }
+        }
+        break;
+      case FindPrivate:
+        if ( line.find( QRegExp( "\\s*private" ) ) >= 0 ) {
+          if ( accessor.isEmpty() ) {
+            out += readAhead;
+            readAhead = QString::null;
+            addPropertyVariable( out, type, name );
+            state = Finish;
+          } else {
+            state = FindVariables;
+          }
+        }
+        break;
+      case FindVariables:
+        {
+          if ( line.find( "m" + accessor.lower(), 0, false ) >= 0 ) {
+            out += readAhead;
+            readAhead = QString::null;
+            addPropertyVariable( out, type, name );
+            state = Finish;
+          }
+        }
+        break;
+      case Finish:
+        break;
+    }
+  }
+
+  headerFile.close();
+
+  out += readAhead;
+
+  if ( args->isSet( "inplace" ) ) {
+    QString headerFileNameOut = headerFileName + ".kodeorig" ;
+
+    KProcess proc;
+    proc << "cp" << QFile::encodeName( headerFileName ) <<
+      QFile::encodeName( headerFileNameOut );
+    
+    if ( !proc.start( KProcess::Block ) ) {
+      kdError() << "Copy failed" << endl;
+    } else {
+      kdDebug() << "Write to original file." << endl;
+      if ( !headerFile.open( IO_WriteOnly ) ) {
+        kdError() << "Unable to open file '" << headerFileName <<
+          "' for writing." << endl;
+        return 1;
+      }
+      QTextStream o( &headerFile );
+      o << out << endl;
+    }
+  } else {
+    std::cout << out.utf8() << std::endl;
+  }
+
+  return 0;
+}
 
 int codify( KCmdLineArgs *args )
 {
@@ -337,6 +541,8 @@ int main(int argc,char **argv)
     return create( args );
   } else if ( args->isSet( "codify" ) ) {
     return codify( args );
+  } else if ( args->isSet( "add-property" ) ) {
+    return addProperty( args );
   } else {
     std::cerr << "Error: No command given." << std::endl;
     return 1;
