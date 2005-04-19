@@ -337,16 +337,25 @@ int create( KCmdLineArgs *args )
   file.setProject( args->getOption( "project" ) );
 
   QString authorEmail = args->getOption( "author-email" );
-  if ( !authorEmail.isEmpty() ) {
-    KABC::Addressee::List a =
-        KABC::StdAddressBook::self( true )->findByEmail( authorEmail );
-    QString authorName;
-    if ( a.isEmpty() ) {
+  QString authorName;
+  KABC::Addressee a;
+  if ( authorEmail.isEmpty() ) {
+    a = KABC::StdAddressBook::self()->whoAmI();
+    authorEmail = a.preferredEmail();
+  } else {
+    KABC::Addressee::List as =
+        KABC::StdAddressBook::self()->findByEmail( authorEmail );
+    if ( as.isEmpty() ) {
       kdDebug() << "Unable to find '" << authorEmail << "' in address book."
                 << endl;
     } else {
-      authorName = a.first().realName();
+      a = as.first();
     }
+  }
+  if ( !a.isEmpty() ) {
+      authorName = a.realName();
+  }
+  if ( !authorEmail.isEmpty() ) {
     file.addCopyright( QDate::currentDate().year(), authorName, authorEmail );
   }
 
