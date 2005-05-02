@@ -118,6 +118,7 @@ void addPropertyVariable( QString &out, const QString &type,
   out += code.text();
 }
 
+// FIXME: Put addProperty in PropertyAdder class and add endReadAhead function.
 int addProperty( KCmdLineArgs *args )
 {
   if ( args->count() != 3 ) {
@@ -213,9 +214,19 @@ int addProperty( KCmdLineArgs *args )
             state = FindPrivate;
           } else if ( line.find( QRegExp( "\\s*private" ) ) >= 0 ) {
             if ( accessor.isEmpty() ) {
+              addPropertyFunctions( out, type, name );
+              out += readAhead;
+              readAhead = QString::null;
               addPropertyVariable( out, type, name );
               state = Finish;
             } else {
+              if ( accessor == mutator ) {
+                out += readAheadPrevious;
+                addPropertyFunctions( out, type, name );
+                out += "\n";
+                out += line + "\n";
+                readAhead = QString::null;
+              }
               state = FindVariables;
             }
           }
