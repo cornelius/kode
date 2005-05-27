@@ -35,11 +35,11 @@ class KDE_EXPORT Function
   public:
     typedef QValueList<Function> List;
 
-    enum AccessSpecifier { Public, Protected, Private };
+    enum AccessSpecifier { Public = 1, Protected = 2, Private = 4, Signal = 8, Slot = 16 };
 
     Function();
     Function( const QString &name, const QString &returnType = QString::null,
-              AccessSpecifier access = Public, bool isStatic = false );
+              int access = Public, bool isStatic = false );
 
     void setConst( bool isConst );
     bool isConst() const { return mIsConst; }
@@ -57,8 +57,8 @@ class KDE_EXPORT Function
     void setBody( const Code &code );
     void addBodyLine( const QString &bodyLine );
 
-    void setAccess( AccessSpecifier );
-    AccessSpecifier access() const { return mAccess; }
+    void setAccess( int );
+    int access() const { return mAccess; }
     QString accessAsString() const;
 
     void setReturnType( const QString & );
@@ -75,7 +75,7 @@ class KDE_EXPORT Function
     QString docs() const { return mDocs; }
 
   private:
-    AccessSpecifier mAccess;
+    int mAccess;
     bool mIsConst;
     bool mIsStatic;
     QString mReturnType;

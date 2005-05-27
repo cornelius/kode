@@ -134,7 +134,7 @@ QString Printer::licenseHeader( const File &file )
 
 Code Printer::functionHeaders( const Function::List &functions,
                                const QString &className,
-                               Function::AccessSpecifier access )
+                               int access )
 {
   bool needNewLine = false;
   bool hasAccess = false;
@@ -153,7 +153,7 @@ Code Printer::functionHeaders( const Function::List &functions,
       if ( !(*it).docs().isEmpty() ) {
         code += "/**";
         code.indent();
-        code.addWrappedText( (*it).docs() );
+        code.addFormattedText( (*it).docs() );
         code.unindent();
         code += "*/";
       }
@@ -170,6 +170,14 @@ Code Printer::functionHeaders( const Function::List &functions,
 QString Printer::classHeader( const Class &c )
 {
   Code code;
+
+  if ( !c.docs().isEmpty() ) {
+    code += "/**";
+    code.indent();
+    code.addFormattedText( c.docs() );
+    code.unindent();
+    code += "*/";
+  }
 
   QString txt = "class " + mStyle.className( c.name() );
 
@@ -191,6 +199,11 @@ QString Printer::classHeader( const Class &c )
   code += "{";
   code.indent();
 
+  if ( c.isQObject() ) {
+    code += "Q_OBJECT";
+    code.newLine();
+  }
+
   Function::List functions = c.functions();
 
   Typedef::List typedefs = c.typedefs();
@@ -205,9 +218,25 @@ QString Printer::classHeader( const Class &c )
     code.newLine();
   }
 
+  Enum::List enums = c.enums();
+  if ( enums.count() > 0 ) {
+    code += "public:";
+    code.indent();
+    Enum::List::ConstIterator it;
+    for( it = enums.begin(); it != enums.end(); ++it ) {
+      code += (*it).declaration();
+    }
+    code.unindent();
+    code.newLine();
+  }
+
   code.addBlock( functionHeaders( functions, c.name(), Function::Public ) );
+  code.addBlock( functionHeaders( functions, c.name(), Function::Public | Function::Slot ) );
+  code.addBlock( functionHeaders( functions, c.name(), Function::Signal ) );
   code.addBlock( functionHeaders( functions, c.name(), Function::Protected ) );
+  code.addBlock( functionHeaders( functions, c.name(), Function::Protected | Function::Slot ) );
   code.addBlock( functionHeaders( functions, c.name(), Function::Private ) );
+  code.addBlock( functionHeaders( functions, c.name(), Function::Private | Function::Slot ) );
 
   if ( !c.memberVariables().isEmpty() ) {
     Function::List::ConstIterator it;
@@ -263,6 +292,10 @@ QString Printer::classImplementation( const Class &c )
   for( it = functions.begin(); it != functions.end(); ++it ) {
     Function f = *it;
 
+    // Omit signals
+    if ( f.access() == Function::Signal )
+      continue;
+
     code += functionSignature( f, c.name(), true );
 
     if ( !f.initializers().isEmpty() ) {
@@ -273,6 +306,11 @@ QString Printer::classImplementation( const Class &c )
     code.addBlock( f.body(), 2 );
     code += "}";
     code += "";
+  }
+
+  if ( c.isQObject() ) {
+    code.newLine();
+    code += "#include \"" + c.name().lower() + ".moc\"";
   }
 
   return code.text();
@@ -324,7 +362,7 @@ void Printer::printHeader( const File &f )
     QStringList::ConstIterator it2;
     for( it2 = decls.begin(); it2 != decls.end(); ++it2 ) {
       if ( processed.find( *it2 ) == processed.end() ) {
-        out += *it2 + ";";
+        out += "class " + *it2 + ";";
         processed.append( *it2 );
       }
     }

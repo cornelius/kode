@@ -119,6 +119,29 @@ void Code::addWrappedText( const QString &txt )
   }
 }
 
+void Code::addFormattedText( const QString &text )
+{
+  int maxWidth = 80 - mIndent;
+  int lineLength = 0;
+
+  QString line;
+  const QStringList words = QStringList::split( ' ', text, false );
+
+  QStringList::ConstIterator it;
+  for ( it = words.begin(); it != words.end(); ++it ) {
+    if ( (int)(*it).length() + lineLength >= maxWidth ) {
+      addLine( line );
+      line.truncate( 0 );
+      lineLength = 0;
+    }
+
+    line += *it + " ";
+    lineLength += (*it).length() + 1;
+  }
+
+  addLine( line );
+}
+
 Code &Code::operator+=( const QString &str )
 {
   addLine( str );
@@ -129,5 +152,11 @@ Code &Code::operator+=( const QString &str )
 Code &Code::operator+=( const char *str )
 {
   addLine( QString::fromLocal8Bit( str ) );
+  return *this;
+}
+
+Code &Code::operator+=( const Code &code )
+{
+  mText += code.mText;
   return *this;
 }

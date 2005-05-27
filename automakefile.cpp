@@ -24,7 +24,7 @@
 using namespace KODE;
 
 AutoMakefile::Target::Target( const QString &type, const QString &name )
-  : type( type ), name( name )
+  : mType( type ), mName( name )
 {
 }
 
@@ -35,8 +35,8 @@ AutoMakefile::AutoMakefile()
 void AutoMakefile::addTarget( const Target &t )
 {
   mTargets.append( t );
-  if ( mTargetTypes.find( t.type ) == mTargetTypes.end() ) {
-    mTargetTypes.append( t.type );
+  if ( mTargetTypes.find( t.type() ) == mTargetTypes.end() ) {
+    mTargetTypes.append( t.type() );
   }
 }
 
@@ -87,22 +87,25 @@ QString AutoMakefile::text() const
     Target::List::ConstIterator it2;
     for( it2 = mTargets.begin(); it2 != mTargets.end(); ++it2 ) {
       Target t = *it2;
-      if ( t.type != targetType ) continue;
+      if ( t.type() != targetType ) continue;
       
-      out += " " + t.name;
+      out += " " + t.name();
     }
     out += "\n\n";
   
     for( it2 = mTargets.begin(); it2 != mTargets.end(); ++it2 ) {
       Target t = *it2;
-      if ( t.type != targetType ) continue;
+      if ( t.type() != targetType ) continue;
 
-      QString name = t.name;
+      QString name = t.name();
       name.replace( '.', '_' );
       
-      out += name + "_SOURCES = " + t.sources + '\n';
-      out += name + "_LIBADD = " + t.libadd + '\n';
-      out += name + "_LDFLAGS = " + t.ldflags + '\n';
+      out += name + "_SOURCES = " + t.sources() + '\n';
+      if ( !t.libAdd().isEmpty() )
+        out += name + "_LIBADD = " + t.libAdd() + '\n';
+      else
+        out += name + "_LDADD = " + t.ldAdd() + '\n';
+      out += name + "_LDFLAGS = " + t.ldFlags() + '\n';
     }
     out += '\n';
   

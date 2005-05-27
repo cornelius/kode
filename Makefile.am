@@ -4,7 +4,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 
 lib_LTLIBRARIES = libkode.la
 
-libkode_la_SOURCES = code.cpp style.cpp printer.cpp license.cpp file.cpp \
+libkode_la_SOURCES = code.cpp enum.cpp style.cpp printer.cpp license.cpp file.cpp \
                      class.cpp \
                      function.cpp variable.cpp membervariable.cpp \
                      typedef.cpp statemachine.cpp automakefile.cpp

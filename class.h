@@ -21,8 +21,9 @@
 #ifndef KODE_CLASS_H
 #define KODE_CLASS_H
 
-#include "membervariable.h"
+#include "enum.h"
 #include "function.h"
+#include "membervariable.h"
 #include "typedef.h"
 
 #include <kdepimmacros.h>
@@ -49,10 +50,12 @@ class KDE_EXPORT Class
     void addInclude( const QString &file,
       const QString &forwardDeclaration = QString::null );
     void addHeaderInclude( const QString &file );
+    void addHeaderIncludes( const QStringList &files );
     void addBaseClass( const Class & );
     void addFunction( const Function & );
     void addMemberVariable( const MemberVariable &v );
     void addTypedef( const Typedef & );
+    void addEnum( const Enum & );
 
     void setName( const QString &name );
     QString name() const { return mName; }
@@ -65,11 +68,14 @@ class KDE_EXPORT Class
     MemberVariable::List memberVariables() const { return mMemberVariables; }
     Class::List baseClasses() const;
     Typedef::List typedefs() const { return mTypedefs; }
+    Enum::List enums() const { return mEnums; }
 
     void setDocs( const QString & );
     QString docs() const { return mDocs; }
 
     bool hasFunction( const QString &name ) const;
+    
+    bool isQObject() const;
     
   private:
     // WARNING: If you add member variables, you have to adjust the copy
@@ -83,6 +89,7 @@ class KDE_EXPORT Class
     QStringList mHeaderIncludes;
     QPtrList<Class> mBaseClasses;
     Typedef::List mTypedefs;
+    Enum::List mEnums;
     QString mDocs;
 };
 

@@ -31,7 +31,7 @@ Function::Function()
 }
 
 Function::Function( const QString &name, const QString &returnType,
-                    AccessSpecifier access, bool isStatic )
+                    int access, bool isStatic )
   :  mAccess( access ), mIsConst( false ), mIsStatic( isStatic ),
      mReturnType( returnType ), mName( name )
 {
@@ -83,22 +83,28 @@ void Function::addBodyLine( const QString &bodyLine )
   if ( bodyLine.right( 1 ) != "\n" ) mBody.append( '\n' );
 }
 
-void Function::setAccess( AccessSpecifier a )
+void Function::setAccess( int a )
 {
   mAccess = a;
 }
 
 QString Function::accessAsString() const
 {
-  switch( mAccess ) {
-    case Public:
-      return "public";
-    case Protected:
-      return "protected";
-    case Private:
-      return "private";
-  }
-  return QString::null;
+  QString access;
+
+  if ( mAccess & Public )
+    access = "public";
+  if ( mAccess & Protected )
+    access = "protected";
+  if ( mAccess & Private )
+    access = "private";
+
+  if ( mAccess & Signal )
+    access = "signals";
+  if ( mAccess & Slot )
+    access += " slots";
+
+  return access;
 }
 
 void Function::setReturnType( const QString &str )

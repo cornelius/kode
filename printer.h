@@ -58,8 +58,8 @@ class KDE_EXPORT Printer
     QString classHeader( const Class & );
     QString classImplementation( const Class & );
     Code functionHeaders( const Function::List &functions,
-                                   const QString &className,
-                                   Function::AccessSpecifier access );
+                          const QString &className,
+                          int access );
 
   private:
     Style mStyle;

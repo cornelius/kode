@@ -516,9 +516,9 @@ int create( KCmdLineArgs *args )
 
     KODE::AutoMakefile::Target t( "kde_module_LTLIBRARIES",
       "kio_" + protocol + ".la" );
-    t.sources = className.lower() + ".cpp";
-    t.libadd = "$(LIB_KIO)";
-    t.ldflags = "$(all_libraries) -module $(KDE_PLUGIN)";
+    t.setSources( className.lower() + ".cpp" );
+    t.setLibAdd( "$(LIB_KIO)" );
+    t.setLdFlags( "$(all_libraries) -module $(KDE_PLUGIN)" );
   
     am.addTarget( t );
 

@@ -51,6 +51,8 @@ Class &Class::operator=( const Class &c )
   mIncludes = c.mIncludes;
   mHeaderIncludes = c.mHeaderIncludes;
   mForwardDeclarations = c.mForwardDeclarations;
+  mEnums = c.mEnums;
+  mDocs = c.mDocs;
 
   QPtrListIterator<Class> it( c.mBaseClasses );
   while( it.current() ) {
@@ -89,9 +91,19 @@ void Class::addInclude( const QString &include,
 
 void Class::addHeaderInclude( const QString &include )
 {
+  if ( include.isEmpty() )
+    return;
+
   if ( mHeaderIncludes.find( include ) == mHeaderIncludes.end() ) {
     mHeaderIncludes.append( include );
   }
+}
+
+void Class::addHeaderIncludes( const QStringList &includes )
+{
+  QStringList::ConstIterator it;
+  for ( it = includes.begin(); it != includes.end(); ++it )
+    addHeaderInclude( *it );
 }
 
 void Class::addBaseClass( const Class &c )
@@ -127,6 +139,11 @@ void Class::addTypedef( const Typedef &t )
   mTypedefs.append( t );
 }
 
+void Class::addEnum( const Enum &e )
+{
+  mEnums.append( e );
+}
+
 bool Class::isValid() const
 {
   return !mName.isEmpty();
@@ -137,6 +154,17 @@ bool Class::hasFunction( const QString &functionName ) const
   Function::List::ConstIterator it;
   for( it = mFunctions.begin(); it != mFunctions.end(); ++it ) {
     if ( (*it).name() == functionName ) return true;
+  }
+
+  return false;
+}
+
+bool Class::isQObject() const
+{
+  Function::List::ConstIterator it;
+  for( it = mFunctions.begin(); it != mFunctions.end(); ++it ) {
+    if ( (*it).access() & Function::Signal || (*it).access() & Function::Slot )
+      return true;
   }
 
   return false;

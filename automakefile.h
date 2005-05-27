@@ -40,14 +40,33 @@ class KDE_EXPORT AutoMakefile
 
         Target() {}
         Target( const QString &type, const QString &name );
-           
-        QString type;
-      
-        QString name;
-      
-        QString sources;
-        QString libadd;
-        QString ldflags;
+
+        void setType( const QString &type ) { mType = type; }
+        QString type() const { return mType; }
+
+        void setName( const QString &name ) { mName = name; }
+        QString name() const { return mName; }
+
+        void setSources( const QString &sources ) { mSources = sources; }
+        QString sources() const { return mSources; }
+
+        void setLibAdd( const QString &libAdd ) { mLibAdd = libAdd; }
+        QString libAdd() const { return mLibAdd; }
+
+        void setLdAdd( const QString &ldAdd ) { mLdAdd = ldAdd; }
+        QString ldAdd() const { return mLdAdd; }
+
+        void setLdFlags( const QString &ldFlags ) { mLdFlags = ldFlags; }
+        QString ldFlags() const { return mLdFlags; }
+
+      private:
+        QString mType;
+        QString mName;
+
+        QString mSources;
+        QString mLibAdd;
+        QString mLdAdd;
+        QString mLdFlags;
     };
   
     AutoMakefile();
@@ -56,7 +75,7 @@ class KDE_EXPORT AutoMakefile
     Target::List targets() const { return mTargets; }
 
     void addEntry( const QString &variable,
-      const QString &value = QString::null );
+                   const QString &value = QString::null );
 
     void newLine();
 
