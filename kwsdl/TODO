@@ -1,0 +1,6 @@
+- support marshal/demarshal of attributes in complex types
+
+- correct namespace handling
+- implement 'list' and 'union' properties of SimpleType
+- fix the type vs. element issue (introduce anonymous types again)
+- code refactoring

@@ -1,4 +1,4 @@
-SUBDIRS = . kxml_compiler
+SUBDIRS = . kxml_compiler #kwsdl
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 
