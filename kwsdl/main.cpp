@@ -42,8 +42,8 @@
 static const KCmdLineOptions options[] =
 {
   { "d", 0, 0 },
-  { "directory <dir>", I18N_NOOP("Directory to generate files in"), "." },
-  { "+dtd", I18N_NOOP("DTD of XML file"), 0 },
+  { "directory <dir>", I18N_NOOP( "Directory to generate files in" ), "." },
+  { "+wsdl", I18N_NOOP( "WSDL file" ), 0 },
   KCmdLineLastOption
 };
 
@@ -71,18 +71,18 @@ int main( int argc, char **argv )
   if ( !baseDir.endsWith( "/" ) )
     baseDir.append( "/" );
 
-  QString dtdFilename = args->url( 0 ).path();
-  QFile dtdFile( dtdFilename );
+  QString wsdlFilename = args->url( 0 ).path();
+  QFile wsdlFile( wsdlFilename );
 
-  if ( !dtdFile.open( IO_ReadOnly ) ) {
-    kdError() << "Unable to open '" << "GoogleSearch.wsdl" << "'" << endl;
+  if ( !wsdlFile.open( IO_ReadOnly ) ) {
+    kdError() << "Unable to open '" << wsdlFilename << "'" << endl;
     return 1;
   }
 
   QString errorMsg;
   int errorLine, errorCol;
   QDomDocument doc;
-  if ( !doc.setContent( &dtdFile, true, &errorMsg, &errorLine, &errorCol ) ) {
+  if ( !doc.setContent( &wsdlFile, true, &errorMsg, &errorLine, &errorCol ) ) {
     kdError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
     return 1;
   }
