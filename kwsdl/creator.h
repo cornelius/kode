@@ -34,10 +34,14 @@ class Creator
     void setOutputDirectory( const QString &outputDirectory ) { mOutputDirectory = outputDirectory; }
     QString outputDirectory() const { return mOutputDirectory; }
 
+    void setNameSpace( const QString &nameSpace ) { mNameSpace = nameSpace; }
+    QString nameSpace() const { return mNameSpace; }
+
     void create( const KODE::Class::List &list );
 
   private:
     QString mOutputDirectory;
+    QString mNameSpace;
 };
 
 }

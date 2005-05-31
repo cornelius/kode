@@ -57,6 +57,13 @@ class SimpleType : public XSDType
       COLLAPSE
     };
 
+    enum SubType
+    {
+      Restriction,
+      List,
+      Union
+    };
+
     SimpleType( const QString &nameSpace );
     ~SimpleType();
 
@@ -73,6 +80,12 @@ class SimpleType : public XSDType
 
     void setBaseType( int baseType );
     int baseType() const;
+
+    void setSubType( SubType subType );
+    SubType subType() const;
+
+    void setListType( int listType );
+    int listType() const;
 
     void setContentModel( int contentModel );
     int contentModel() const;
@@ -110,6 +123,9 @@ class SimpleType : public XSDType
     bool mAnonymous;
     QStringList mEnums;
     int *mValidFacets;
+    SubType mSubType;
+
+    int mListType;
 
     typedef struct
     {

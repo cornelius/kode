@@ -26,7 +26,8 @@ using namespace Schema;
 
 SimpleType::SimpleType( const QString &nameSpace )
   : mNameSpace( nameSpace ), mBaseType( 0 ), mContentModel( SIMPLE ),
-    mRestriction( false ), mFacetId( NONE ), mAnonymous( false )
+    mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
+    mSubType( Restriction ), mListType( INVALID )
 {
   mValidFacets = new int[ ANYURI + 1 ];
 
@@ -103,6 +104,26 @@ void SimpleType::setBaseType( int baseType )
 int SimpleType::baseType() const 
 {
   return mBaseType;
+}
+
+void SimpleType::setSubType( SubType subType )
+{
+  mSubType = subType;
+}
+
+SimpleType::SubType SimpleType::subType() const
+{
+  return mSubType;
+}
+
+void SimpleType::setListType( int listType )
+{
+  mListType = listType;
+}
+
+int SimpleType::listType() const
+{
+  return mListType;
 }
 
 void SimpleType::setContentModel( int contentModel )

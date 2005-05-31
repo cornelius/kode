@@ -1,5 +1,5 @@
-/*
-    This file is part of KDE.
+/* 
+    This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
 
@@ -17,29 +17,39 @@
     along with this library; see the file COPYING.LIB.  If not, write to
     the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
     Boston, MA 02111-1307, USA.
-*/
+ */
 
-#include "namemapper.h"
+#ifndef SCHEMA_FILEPROVIDER_H
+#define SCHEMA_FILEPROVIDER_H
 
-using namespace KWSDL;
+#include <qobject.h>
 
-NameMapper::NameMapper()
-{
-  mKeyWords << "delete" << "class" << "default" << "new" << "not";
+namespace KIO {
+class Job;
 }
 
-QString NameMapper::escape( const QString &name ) const
+namespace Schema {
+
+class FileProvider : QObject
 {
-  if ( mKeyWords.contains( name ) )
-    return "_" + name;
-  else
-    return name;
+  Q_OBJECT
+
+  public:
+    FileProvider();
+
+    bool get( const QString &url, QString &target );
+    void cleanUp();
+
+  private slots:
+    void slotData( KIO::Job*, const QByteArray& );
+    void slotResult( KIO::Job* );
+
+  private:
+    QString mFileName;
+    QByteArray mData;
+    bool mBlocked;
+};
+
 }
 
-QString NameMapper::unescape( const QString &name ) const
-{
-  if ( name.startsWith( "_" ) )
-    return name.mid( 1 );
-  else
-    return name;
-}
+#endif

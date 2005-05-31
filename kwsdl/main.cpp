@@ -19,13 +19,7 @@
     Boston, MA 02111-1307, USA.
 */
 
-#include "parser.h"
-#include "converter.h"
-#include "creator.h"
-
-#include <kode/code.h>
-#include <kode/printer.h>
-#include <kode/typedef.h>
+#include "compiler.h"
 
 #include <kaboutdata.h>
 #include <kapplication.h>
@@ -33,16 +27,16 @@
 #include <kdebug.h>
 #include <klocale.h>
 
+#include <qdir.h>
 #include <qfile.h>
-#include <qtextstream.h>
-#include <qdom.h>
-#include <qregexp.h>
-#include <qmap.h>
+#include <qtimer.h>
 
 static const KCmdLineOptions options[] =
 {
   { "d", 0, 0 },
   { "directory <dir>", I18N_NOOP( "Directory to generate files in" ), "." },
+  { "n", 0, 0 },
+  { "namespace <namespace>", I18N_NOOP( "Namespace of the created classes" ), "." },
   { "+wsdl", I18N_NOOP( "WSDL file" ), 0 },
   KCmdLineLastOption
 };
@@ -61,48 +55,23 @@ int main( int argc, char **argv )
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   if ( args->count() < 1 || args->count() > 1 ) {
-    kdError() << "Invalid arguments, try --help." << endl;
+    qDebug( "Invalid arguments, try --help." );
     return 1;
   }
 
-  KInstance app( &aboutData );
+  KApplication app( false, false );
 
-  QString baseDir = QFile::decodeName( args->getOption( "directory" ) );
-  if ( !baseDir.endsWith( "/" ) )
-    baseDir.append( "/" );
+  QString outputDirectory = QFile::decodeName( args->getOption( "directory" ) );
+  if ( outputDirectory.isEmpty() )
+    outputDirectory = QDir::current().path();
 
-  QString wsdlFilename = args->url( 0 ).path();
-  QFile wsdlFile( wsdlFilename );
+  KWSDL::Compiler compiler;
+  compiler.setWSDLUrl( args->url( 0 ).path() );
+  compiler.setOutputDirectory( outputDirectory );
+  if ( args->isSet( "namespace" ) )
+    compiler.setNameSpace( args->getOption( "namespace" ) );
 
-  if ( !wsdlFile.open( IO_ReadOnly ) ) {
-    kdError() << "Unable to open '" << wsdlFilename << "'" << endl;
-    return 1;
-  }
+  QTimer::singleShot( 0, &compiler, SLOT( run() ) );
 
-  QString errorMsg;
-  int errorLine, errorCol;
-  QDomDocument doc;
-  if ( !doc.setContent( &wsdlFile, true, &errorMsg, &errorLine, &errorCol ) ) {
-    kdError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
-    return 1;
-  }
-
-  kdDebug() << "Begin parsing" << endl;
-
-  KWSDL::Parser parser;
-  parser.parse( doc.documentElement() );
-
-  KWSDL::Converter converter;
-  converter.setBindings( parser.bindings() );
-  converter.setMessages( parser.messages() );
-  converter.setPorts( parser.ports() );
-  converter.setService( parser.service() );
-  converter.setTypes( parser.types() );
-  converter.setParser( &parser.parser() );
-
-  converter.convert();
-
-  KWSDL::Creator creator;
-  creator.setOutputDirectory( baseDir );
-  creator.create( converter.classes() );
+  return app.exec();
 }

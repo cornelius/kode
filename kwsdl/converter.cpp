@@ -112,43 +112,81 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
   if ( !type->documentation().isEmpty() )
     newClass.setDocs( type->documentation().simplifyWhiteSpace() );
 
-  /**
-    Use setter and getter method for enums as well.
-   */
-  if ( type->facetType() & Schema::SimpleType::ENUM ) {
-    QStringList enums = type->facetEnums();
-    for ( uint i = 0; i < enums.count(); ++i )
-      enums[ i ] = escapeEnum( enums[ i ] );
+  if ( type->subType() == Schema::SimpleType::Restriction ) {
+    /**
+      Use setter and getter method for enums as well.
+     */
+    if ( type->facetType() & Schema::SimpleType::ENUM ) {
+      QStringList enums = type->facetEnums();
+      for ( uint i = 0; i < enums.count(); ++i )
+        enums[ i ] = escapeEnum( enums[ i ] );
 
-    newClass.addEnum( KODE::Enum( "Type", enums ) );
+      newClass.addEnum( KODE::Enum( "Type", enums ) );
 
-    // member variables
-    KODE::MemberVariable variable( "type", "Type" );
-    newClass.addMemberVariable( variable );
+      // member variables
+      KODE::MemberVariable variable( "type", "Type" );
+      newClass.addMemberVariable( variable );
 
-    // setter method
-    KODE::Function setter( "setType", "void" );
-    setter.addArgument( "Type type" );
-    setter.setBody( variable.name() + " = type;" );
+      // setter method
+      KODE::Function setter( "setType", "void" );
+      setter.addArgument( "Type type" );
+      setter.setBody( variable.name() + " = type;" );
 
-    // getter method
-    KODE::Function getter( "type", capitalize( newClass.name() ) + "::Type" );
-    getter.setBody( " return " + variable.name() + ";" );
-    getter.setConst( "true" );
+      // getter method
+      KODE::Function getter( "type", capitalize( newClass.name() ) + "::Type" );
+      getter.setBody( " return " + variable.name() + ";" );
+      getter.setConst( true );
 
-    newClass.addFunction( setter );
-    newClass.addFunction( getter );
-  }
+      newClass.addFunction( setter );
+      newClass.addFunction( getter );
+    }
 
-  /**
-    A class can't derive from basic types (e.g. int or unsigned char), so
-    we add setter and getter methods to set the value of this class.
-   */
-  if ( type->baseType() != Schema::XSDType::ANYTYPE &&
-       type->baseType() != Schema::XSDType::INVALID &&
-       !(type->facetType() & Schema::SimpleType::ENUM) ) {
+    /**
+      A class can't derive from basic types (e.g. int or unsigned char), so
+      we add setter and getter methods to set the value of this class.
+     */
+    if ( type->baseType() != Schema::XSDType::ANYTYPE &&
+         type->baseType() != Schema::XSDType::INVALID &&
+         !(type->facetType() & Schema::SimpleType::ENUM) ) {
 
-    const QString baseName = mParser->typeName( type->baseType() );
+      const QString baseName = mParser->typeName( type->baseType() );
+      const QString typeName = mTypeMapper.type( baseName );
+
+      // include header
+      QMap<QString, QString> headerDec = mTypeMapper.headerDec( baseName );
+      QMap<QString, QString>::ConstIterator it;
+      for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
+        if ( !it.key().isEmpty() )
+          newClass.addInclude( it.key(), it.data() );
+
+        if ( it.data().isEmpty() )
+          newClass.addHeaderInclude( it.key() );
+      }
+
+      // member variables
+      KODE::MemberVariable variable( "value", typeName + "*" );
+      newClass.addMemberVariable( variable );
+
+      ctorCode += variable.name() + " = 0;";
+      dtorCode += "delete " + variable.name() + ";";
+      dtorCode += variable.name() + " = 0;";
+
+      // setter method
+      KODE::Function setter( "setValue", "void" );
+      setter.addArgument( mTypeMapper.argument( "value", baseName ) );
+      setter.setBody( variable.name() + " = value;" );
+
+      // getter method
+      KODE::Function getter( "value", typeName + "*" );
+      getter.setBody( " return " + variable.name() + ";" );
+      getter.setConst( true );
+
+      newClass.addFunction( setter );
+      newClass.addFunction( getter );
+    }
+  } else if ( type->subType() == Schema::SimpleType::List ) {
+    newClass.addHeaderInclude( "qvaluelist.h" );
+    const QString baseName = mParser->typeName( type->listType() );
     const QString typeName = mTypeMapper.type( baseName );
 
     // include header
@@ -163,7 +201,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     }
 
     // member variables
-    KODE::MemberVariable variable( "value", typeName + "*" );
+    KODE::MemberVariable variable( "entries", "QValueList<" + typeName + ">*" );
     newClass.addMemberVariable( variable );
 
     ctorCode += variable.name() + " = 0;";
@@ -171,14 +209,14 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     dtorCode += variable.name() + " = 0;";
 
     // setter method
-    KODE::Function setter( "setValue", "void" );
-    setter.addArgument( mTypeMapper.argument( "value", baseName ) );
-    setter.setBody( variable.name() + " = value;" );
+    KODE::Function setter( "setEntries", "void" );
+    setter.addArgument( mTypeMapper.argument( "entries", baseName, true ) );
+    setter.setBody( variable.name() + " = entries;" );
 
     // getter method
-    KODE::Function getter( "value", typeName + "*" );
+    KODE::Function getter( "entries", "QValueList<" + typeName + ">*" );
     getter.setBody( " return " + variable.name() + ";" );
-    getter.setConst( "true" );
+    getter.setConst( true );
 
     newClass.addFunction( setter );
     newClass.addFunction( getter );
@@ -228,98 +266,138 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
       mSerializer.addHeaderInclude( it.key() );
   }
 
-  // is an enumeration
-  if ( type->facetType() & Schema::SimpleType::ENUM ) {
-    QStringList enums = type->facetEnums();
-    QStringList escapedEnums;
-    for ( uint i = 0; i < enums.count(); ++i )
-      escapedEnums.append( escapeEnum( enums[ i ] ) );
+  if ( type->subType() == Schema::SimpleType::Restriction ) {
+    // is an enumeration
+    if ( type->facetType() & Schema::SimpleType::ENUM ) {
+      QStringList enums = type->facetEnums();
+      QStringList escapedEnums;
+      for ( uint i = 0; i < enums.count(); ++i )
+        escapedEnums.append( escapeEnum( enums[ i ] ) );
 
-    // marshal value
-    KODE::Function marshalValue( "marshalValue", "QString" );
-    marshalValue.setStatic( true );
-    marshalValue.addArgument( "const " + typeName + "* value" );
-    code += "switch ( value->type() ) {";
-    code.indent();
-    for ( uint i = 0; i < enums.count(); ++i ) {
-      code += "case " + typeName + "::" + escapedEnums[ i ] + ":";
+      // marshal value
+      KODE::Function marshalValue( "marshalValue", "QString" );
+      marshalValue.setStatic( true );
+      marshalValue.addArgument( "const " + typeName + "* value" );
+      code += "switch ( value->type() ) {";
       code.indent();
-      code += "return \"" + enums[ i ] + "\";";
+      for ( uint i = 0; i < enums.count(); ++i ) {
+        code += "case " + typeName + "::" + escapedEnums[ i ] + ":";
+        code.indent();
+        code += "return \"" + enums[ i ] + "\";";
+        code += "break;";
+        code.unindent();
+      }
+      code += "default:";
+      code.indent();
+      code += "qDebug( \"Unknown enum %d passed.\", value->type() );";
       code += "break;";
       code.unindent();
-    }
-    code += "default:";
-    code.indent();
-    code += "qDebug( \"Unknown enum %d passed.\", value->type() );";
-    code += "break;";
-    code.unindent();
-    code.unindent();
-    code += "}";
-    code.newLine();
-    code += "return QString();";
-    marshalValue.setBody( code );
-
-    // marshal
-    marshalCode += "QDomElement root = doc.createElement( name );";
-    marshalCode += "root.setAttribute( \"xsi:type\", \"ns1:" + type->name() + "\" );";
-    marshalCode += "parent.appendChild( root );";
-    marshalCode += "root.appendChild( doc.createTextNode( Serializer::marshalValue( value ) ) );";
-
-    // demarshal value
-    KODE::Function demarshalValue( "demarshalValue", "void" );
-    demarshalValue.setStatic( true );
-    demarshalValue.addArgument( "const QString &str" );
-    demarshalValue.addArgument( typeName + "* value" );
-    code.clear();
-    for ( uint i = 0; i < enums.count(); ++i ) {
-      code += "if ( str == \"" + enums[ i ] + "\" )";
-      code.indent();
-      code += "value->setType( " + typeName + "::" + escapedEnums[ i ] + " );";
       code.unindent();
+      code += "}";
       code.newLine();
+      code += "return QString();";
+      marshalValue.setBody( code );
+
+      // marshal
+      marshalCode += "QDomElement root = doc.createElement( name );";
+      marshalCode += "root.setAttribute( \"xsi:type\", \"ns1:" + type->name() + "\" );";
+      marshalCode += "parent.appendChild( root );";
+      marshalCode += "root.appendChild( doc.createTextNode( Serializer::marshalValue( value ) ) );";
+
+      // demarshal value
+      KODE::Function demarshalValue( "demarshalValue", "void" );
+      demarshalValue.setStatic( true );
+      demarshalValue.addArgument( "const QString &str" );
+      demarshalValue.addArgument( typeName + "* value" );
+      code.clear();
+      for ( uint i = 0; i < enums.count(); ++i ) {
+        code += "if ( str == \"" + enums[ i ] + "\" )";
+        code.indent();
+        code += "value->setType( " + typeName + "::" + escapedEnums[ i ] + " );";
+        code.unindent();
+        code.newLine();
+      }
+      demarshalValue.setBody( code );
+
+      // demarshal
+      demarshalCode += "Serializer::demarshalValue( parent.text(), value );";
+
+      mSerializer.addFunction( marshalValue );
+      mSerializer.addFunction( demarshalValue );
+    } else if ( type->baseType() != Schema::XSDType::INVALID ) {
+      marshalCode += "if ( value->value() ) {";
+      marshalCode.indent();
+      marshalCode += "Serializer::marshal( doc, parent, name, value->value() );";
+      marshalCode.unindent();
+      marshalCode += "}";
+
+      demarshalCode += "const QString text = parent.text();";
+      demarshalCode.newLine();
+      demarshalCode += "if ( !text.isEmpty() ) {";
+      demarshalCode.indent();
+      demarshalCode += baseType + "* data = new " + baseType + ";";
+      demarshalCode += "Serializer::demarshal( parent, value );";
+      demarshalCode += "value->setValue( data );";
+      demarshalCode.unindent();
+      demarshalCode += "}";
+
+      KODE::Function marshalValue( "marshalValue", "QString" );
+      marshalValue.setStatic( true );
+      marshalValue.addArgument( "const " + typeName + "* value" );
+      marshalValue.setBody( "return Serializer::marshalValue( value->value() );" );
+
+      mSerializer.addFunction( marshalValue );
+
+      KODE::Function demarshalValue( "demarshalValue", "void" );
+      demarshalValue.setStatic( true );
+      demarshalValue.addArgument( "const QString &str" );
+      demarshalValue.addArgument( typeName + "* value" );
+      KODE::Code code;
+      code += baseType + "* data = new " + baseType + ";";
+      code += "Serializer::demarshalValue( str, data );";
+      code += "value->setValue( data );";
+      demarshalValue.setBody( code );
+
+      mSerializer.addFunction( demarshalValue );
     }
-    demarshalValue.setBody( code );
+  } else if ( type->subType() == Schema::SimpleType::List ) {
+    const QString listType = mTypeMapper.type( mParser->typeName( type->listType() ) );
 
-    // demarshal
-    demarshalCode += "Serializer::demarshalValue( parent.text(), value );";
+    mSerializer.addInclude( "qstringlist.h" );
 
-    mSerializer.addFunction( marshalValue );
-    mSerializer.addFunction( demarshalValue );
-  } else if ( type->baseType() != Schema::XSDType::INVALID ) {
-    marshalCode += "if ( value->value() ) {";
+    marshalCode += "if ( value->entries() ) {";
     marshalCode.indent();
-    marshalCode += "Serializer::marshal( doc, parent, name, value->value() );";
+    marshalCode += "QStringList list;";
+    marshalCode += "QValueList<" + listType + ">* entries = value->entries();";
+    marshalCode += "QValueList<" + listType + ">::ConstIterator it;";
+    marshalCode += "for ( it = entries->begin(); it != entries->end(); ++it ) {";
+    marshalCode.indent();
+    marshalCode += "list.append( Serializer::marshalValue( &*it ) );";
+    marshalCode.unindent();
+    marshalCode += "}";
+    marshalCode.newLine();
+    marshalCode += "QDomElement element = doc.createElement( name );";
+    marshalCode += "parent.appendChild( element );";
+    marshalCode += "element.appendChild( doc.createTextNode( list.join( \" \" ) ) );";
     marshalCode.unindent();
     marshalCode += "}";
 
-    demarshalCode += "const QString text = parent.text();";
-    demarshalCode.newLine();
-    demarshalCode += "if ( !text.isEmpty() ) {";
+    demarshalCode += "const QStringList list = QStringList::split( \" \", parent.text(), false );";
+    demarshalCode += "if ( !list.isEmpty() ) {";
     demarshalCode.indent();
-    demarshalCode += baseType + "* data = new " + baseType + ";";
-    demarshalCode += "Serializer::demarshal( parent, value );";
-    demarshalCode += "value->setValue( data );";
+    demarshalCode += "QValueList<" + listType + ">* entries = new QValueList<" + listType + ">;";
+    demarshalCode += "QStringList::ConstIterator it;";
+    demarshalCode += "for ( it = list.begin(); it != list.end(); ++it ) {";
+    demarshalCode.indent();
+    demarshalCode += listType + " entry;";
+    demarshalCode += "Serializer::demarshalValue( *it, &entry );";
+    demarshalCode += "entries->append( entry );";
     demarshalCode.unindent();
     demarshalCode += "}";
-
-    KODE::Function marshalValue( "marshalValue", "QString" );
-    marshalValue.setStatic( true );
-    marshalValue.addArgument( "const " + typeName + "* value" );
-    marshalValue.setBody( "return Serializer::marshalValue( value->value() );" );
-
-    mSerializer.addFunction( marshalValue );
-
-    KODE::Function demarshalValue( "demarshalValue", "void" );
-    demarshalValue.setStatic( true );
-    demarshalValue.addArgument( "const QString &str" );
-    demarshalValue.addArgument( typeName + "* value" );
-    KODE::Code code;
-    code += baseType + "* data = new " + baseType + ";";
-    code += "Serializer::demarshalValue( str, data );";
-    code += "value->setValue( data );";
-    demarshalValue.setBody( code );
-
-    mSerializer.addFunction( demarshalValue );
+    demarshalCode.newLine();
+    demarshalCode += "value->setEntries( entries );";
+    demarshalCode.unindent();
+    demarshalCode += "}";
   }
 
   marshal.setBody( marshalCode );
@@ -375,7 +453,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     // getter method
     KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
     getter.setBody( " return " + variable.name() + ";" );
-    getter.setConst( "true" );
+    getter.setConst( true );
 
     newClass.addFunction( setter );
     newClass.addFunction( getter );
@@ -419,7 +497,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     // getter method
     KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
     getter.setBody( " return " + variable.name() + ";" );
-    getter.setConst( "true" );
+    getter.setConst( true );
 
     newClass.addFunction( setter );
     newClass.addFunction( getter );
@@ -825,7 +903,9 @@ void Converter::createUtilClasses()
     { "int", "xsd:int", "QString::number( *value )", "str.toInt()" },
     { "unsigned int", "xsd:unsignedByte", "QString::number( *value )", "str.toUInt()" },
     { "double", "xsd:double", "QString::number( *value )", "str.toDouble()" },
+    { "char", "xsd:byte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
     { "unsigned char", "xsd:unsignedByte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
+    { "short", "xsd:short", "QString::number( *value )", "str.toShort()" },
     { "QByteArray", "xsd:base64Binary", "QString::fromUtf8( KCodecs::base64Encode( *value ) )", "KCodecs::base64Decode( str.utf8() )" },
     { "QDateTime", "xsd:dateTime", "value->toString( Qt::ISODate )", "QDateTime::fromString( str, Qt::ISODate )" },
     { "QDate", "xsd:date", "value->toString( Qt::ISODate )", "QDate::fromString( str, Qt::ISODate )" }

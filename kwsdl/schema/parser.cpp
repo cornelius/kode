@@ -20,6 +20,11 @@
     Boston, MA 02111-1307, USA.
  */
 
+#include <qdir.h>
+#include <qfile.h>
+#include <qurl.h>
+
+#include "fileprovider.h"
 #include "parser.h"
 
 using namespace Schema;
@@ -42,14 +47,19 @@ Parser::~Parser()
 
 void Parser::clear()
 {
-  // clear the Types table
   mTypesTable.clear();
+  mImportedSchemas.clear();
 
   for ( uint i = 0; i < mElements.count(); ++i )
     delete mElements[ i ];
 
   for ( uint i = 0; i < mAttributes.count(); ++i )
     delete mAttributes[ i ];
+}
+
+void Parser::setSchemaBaseUrl( const QString &url )
+{
+  mSchemaBaseUrl = url;
 }
 
 void Parser::parseNameSpace( const QDomElement &element )
@@ -96,7 +106,9 @@ bool Parser::parseSchemaTag( const QDomElement &root )
     if ( !element.isNull() ) {
 
       QualifiedName name = element.tagName();
-      if ( name.localName() == "element" ) {
+      if ( name.localName() == "import" ) {
+        parseImport( element );
+      } else if ( name.localName() == "element" ) {
         parseElement( element );
       } else if ( name.localName() == "complexType" ) {
         XSDType *type = parseComplexType( element );
@@ -127,6 +139,19 @@ bool Parser::parseSchemaTag( const QDomElement &root )
   return true;
 }
 
+void Parser::parseImport( const QDomElement &element )
+{
+  QString location = element.attribute( "schemaLocation" );
+  if ( !location.isEmpty() ) {
+    // don't import a schema twice
+    if ( mImportedSchemas.contains( location ) )
+      return;
+    else
+      mImportedSchemas.append( location );
+
+    importSchema( location );
+  }
+}
 
 void Parser::parseAnnotation( const QDomElement& )
 {
@@ -513,15 +538,25 @@ XSDType *Parser::parseSimpleType( const QDomElement &element )
 
       QualifiedName name = childElement.tagName();
       if ( name.localName() == "restriction" ) {
+        st->setSubType( SimpleType::Restriction );
+
         QualifiedName typeName( childElement.attribute( "base" ) );
 //        typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
         st->setBaseType( basetype_id = typeId( typeName, true ) );
 
         parseRestriction( childElement, st );
       } else if ( name.localName() == "union" ) {
+        st->setSubType( SimpleType::Union );
         qDebug( "simpletype::union not supported" );
       } else if ( name.localName() == "list" ) {
-        qDebug( "simpletype::list not supported" );
+        st->setSubType( SimpleType::List );
+        if ( childElement.hasAttribute( "itemType" ) ) {
+          QualifiedName typeName( childElement.attribute( "itemType" ) );
+          int type = typeId( typeName, true );
+          st->setListType( type );
+        } else {
+          // TODO: add support for anonymous types
+        }
       } else if ( name.localName() == "annotation" ) {
         parseAnnotation( childElement, st );
       }
@@ -972,4 +1007,46 @@ int Parser::numAttributes() const
 bool Parser::shouldResolve()
 {
   return true;
+}
+
+void Parser::importSchema( const QString &location )
+{
+  FileProvider provider;
+  QString fileName;
+  QString schemaLocation( location );
+
+  QUrl url( location );
+  QDir dir( location );
+
+  if ( (url.protocol().isEmpty() || url.protocol() == "file") && dir.isRelative() )
+    schemaLocation = mSchemaBaseUrl + "/" + location;
+
+  if ( provider.get( schemaLocation, fileName ) ) {
+    QFile file( fileName );
+    if ( !file.open( IO_ReadOnly ) ) {
+      qDebug( "Unable to open file %s", file.name().latin1() );
+      return;
+    }
+
+    QDomDocument doc( "kwsdl" );
+    QString errorMsg;
+    int errorLine, errorColumn;
+    bool ok = doc.setContent( &file, true, &errorMsg, &errorLine, &errorColumn );
+    if ( !ok ) {
+      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, errorMsg.latin1() );
+      return;
+    }
+
+    QDomNodeList nodes = doc.elementsByTagName( "schema" );
+    if ( nodes.count() > 0 ) {
+      QDomElement schemaElement = nodes.item( 0 ).toElement();
+      parseSchemaTag( schemaElement );
+    } else {
+      qDebug( "No schema tag found in schema file" );
+    }
+
+    file.close();
+
+    provider.cleanUp();
+  }
 }

@@ -35,6 +35,7 @@ TypeMapper::TypeMapper()
   mMap.insert( "base64Binary", TypeInfo( "base64Binary", "QByteArray", "qcstring.h", true ) );
   mMap.insert( "boolean", TypeInfo( "boolean", "bool", "", false ) );
   mMap.insert( "int", TypeInfo( "int", "int", "", false ) );
+  mMap.insert( "short", TypeInfo( "short", "short", "", false ) );
   mMap.insert( "unsignedInt", TypeInfo( "unsignedInt", "unsigned int", "", false ) );
   mMap.insert( "double", TypeInfo( "double", "double", "", false ) );
   mMap.insert( "date", TypeInfo( "date", "QDate", "qdatetime.h", true ) );
@@ -42,6 +43,7 @@ TypeMapper::TypeMapper()
   mMap.insert( "anyURI", TypeInfo( "anyUri", "QString", "qstring.h", true ) );
   mMap.insert( "decimal", TypeInfo( "decimal", "float", "", false ) );
   mMap.insert( "language", TypeInfo( "language", "QString", "qstring.h", true ) );
+  mMap.insert( "duration", TypeInfo( "duration", "QString", "qstring.h", true ) ); // TODO: add duration class
   mMap.insert( "any", TypeInfo( "any", "QString", "qstring.h", true ) );
 }
 
@@ -323,6 +325,16 @@ QString TypeMapper::argument( const QString &name, const QString &typeName ) con
 {
   QString type = this->type( typeName );
   return type + "* " + name;
+}
+
+QString TypeMapper::argument( const QString &name, const QString &typeName, bool isList ) const
+{
+  QString type = this->type( typeName );
+  if ( isList ) {
+    return "QValueList<" + type + ">* " + name;
+  } else {
+    return type + "* " + name;
+  }
 }
 
 bool TypeMapper::isBaseType( const QString &type ) const

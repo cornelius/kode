@@ -76,6 +76,11 @@ void Parser::reset()
   mParser.clear();
 }
 
+void Parser::setSchemaBaseUrl( const QString &url )
+{
+  mParser.setSchemaBaseUrl( url );
+}
+
 void Parser::parse( const QDomElement &root )
 {
   reset();

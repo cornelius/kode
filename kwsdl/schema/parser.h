@@ -40,6 +40,7 @@ class Parser
     ~Parser();
 
     void clear();
+    void setSchemaBaseUrl( const QString& );
 
     void parseNameSpace( const QDomElement &element );
     bool parseSchemaTag( const QDomElement &element );
@@ -75,6 +76,7 @@ class Parser
     int attributeType( const QualifiedName &type );
 
   private:
+    void parseImport( const QDomElement& );
     void parseElement( const QDomElement& );
     void parseAttribute( const QDomElement& );
 
@@ -105,6 +107,7 @@ class Parser
     void resolveForwardDerivations();
     bool shouldResolve();
 
+    void importSchema( const QString &location );
 
     bool mElementQualified;
     bool mAttributeQualified;
@@ -126,6 +129,8 @@ class Parser
     } ForwardDerivation;
 
     QValueList<ForwardDerivation> mForwardDerivations;
+    QStringList mImportedSchemas;
+    QString mSchemaBaseUrl;
 };
 
 }

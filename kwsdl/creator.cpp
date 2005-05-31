@@ -41,6 +41,10 @@ void Creator::create( const KODE::Class::List &list )
   KODE::Class::List::ConstIterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     KODE::File file;
+
+    if ( !mNameSpace.isEmpty() )
+      file.setNameSpace( mNameSpace );
+
     file.setFilename( (*it).name().lower() );
     file.addCopyright( 2005, "Tobias Koenig", "tokoe@kde.org" );
     file.setLicense( KODE::License( KODE::License::GPL ) );

@@ -19,52 +19,42 @@
     Boston, MA 02111-1307, USA.
 */
 
-#ifndef KWSDL_PARSER_H
-#define KWSDL_PARSER_H
+#ifndef KWSDL_COMPILER_H
+#define KWSDL_COMPILER_H
 
 #include <qdom.h>
-#include <qvaluelist.h>
+#include <qobject.h>
 
-#include <schema/parser.h>
-
-#include "binding.h"
-#include "message.h"
-#include "port.h"
-#include "service.h"
+#include "parser.h"
 
 namespace KWSDL {
 
-class Parser
+class Compiler : public QObject
 {
+  Q_OBJECT
+
   public:
-    Parser();
+    Compiler();
 
-    void parse( const QDomElement &element );
-    void reset();
+    void setWSDLUrl( const QString &wsdlUrl );
+    void setOutputDirectory( const QString &outputDirectory );
+    void setNameSpace( const QString &nameSpace );
 
-    void setSchemaBaseUrl( const QString& );
+  public slots:
+    void run();
 
-    Binding::List bindings() const;
-    Message::List messages() const;
-    Port::List ports() const;
-    Service service() const;
-    Schema::XSDType::List types() const;
-    const Schema::Parser &parser() const;
+  private slots:
+    void download();
+    void parse( const QDomElement& );
+    void create();
 
   private:
-    void parseTypes( const QDomElement& );
-    void parseMessage( const QDomElement&, Message& );
-    void parsePortType( const QDomElement&, Port& );
-    void parseBinding( const QDomElement& );
-    void parseService( const QDomElement& );
+    QString mWSDLUrl;
+    QString mOutputDirectory;
+    QString mNameSpace;    
 
-    void parseSchema( const QDomElement& );
-
-    Binding::List mBindings;
-    Message::List mMessages;
-    Port::List mPorts;
-    Service mService;
-    Schema::Parser mParser;
+    Parser mParser;
+    QString mWSDLBaseUrl;
 };
 
 }

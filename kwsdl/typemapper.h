@@ -72,6 +72,7 @@ class TypeMapper
     QString argument( const QString &name, const Schema::Element *element ) const;
     QString argument( const QString &name, const Schema::Attribute *attribute ) const;
     QString argument( const QString &name, const QString &typeName ) const;
+    QString argument( const QString &name, const QString &typeName, bool isList ) const;
 
   private:
     bool isBaseType( const QString& ) const;
