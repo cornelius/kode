@@ -415,16 +415,15 @@ int create( KCmdLineArgs *args )
     main.addArgument( "char **argv" );
 
     code.clear();
-    code += "  KAboutData aboutData(\"test\",\"Test\",\"0.1\");";
-    code += "  KCmdLineArgs::init(argc,argv,&aboutData);";
-    code += "  KCmdLineArgs::addCmdLineOptions( options );";
+    code += "KAboutData aboutData(\"test\",\"Test\",\"0.1\");";
+    code += "KCmdLineArgs::init(argc,argv,&aboutData);";
+    code += "KCmdLineArgs::addCmdLineOptions( options );";
     code += "";
-    code += "  KApplication app;";
+    code += "KApplication app;";
     code += "";
-    code += "  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();";
+    code += "KCmdLineArgs *args = KCmdLineArgs::parsedArgs();";
     code += "";
-    code += "  Q_UNUSED( args );";
-    code += "}";
+    code += "Q_UNUSED( args );";
     main.setBody( code );
     
     file.addFileFunction( main );
