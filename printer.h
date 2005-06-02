@@ -45,7 +45,7 @@ class KDE_EXPORT Printer
     void setSourceFile( const QString & );
 
     void printHeader( const File & );
-    void printImplementation( const File & );
+    void printImplementation( const File &, bool createHeaderInclude = true );
     void printAutoMakefile( const AutoMakefile & );
 
     QString functionSignature( const Function &f,

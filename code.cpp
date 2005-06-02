@@ -44,6 +44,11 @@ void Code::clear()
   mText = QString::null;
 }
 
+bool Code::isEmpty() const
+{
+  return mText.isEmpty();
+}
+
 void Code::setIndent( int indent )
 {
   mIndent = indent;

@@ -53,6 +53,7 @@ static const KCmdLineOptions options[] =
   { "d", 0, 0 },
   { "create-dialog", I18N_NOOP("Create dialog"), 0 },
   { "create-kioslave", I18N_NOOP("Create kioslave"), 0 },
+  { "create-main", I18N_NOOP("Create main function template"), 0 },
   { "y", 0, 0 },
   { "codify", I18N_NOOP("Create generator code for given source"), 0 },
   { "add-property", I18N_NOOP("Add property to class"), 0 },
@@ -62,6 +63,7 @@ static const KCmdLineOptions options[] =
   { "gpl", I18N_NOOP("Use GPL as license"), 0 },
   { "lgpl", I18N_NOOP("Use LGPL as license"), 0 },
   { "classname <name>", I18N_NOOP("Name of class"), 0 },
+  { "filename <name>", I18N_NOOP("Name of file"), 0 },
   { "namespace <name>", I18N_NOOP("Namespace"), 0 },
   { "warning", I18N_NOOP("Create warning about code generation"), 0 },
   { "qt-exception", I18N_NOOP("Add Qt excpetion to GPL"), 0 },
@@ -321,12 +323,27 @@ int codify( KCmdLineArgs *args )
 int create( KCmdLineArgs *args )
 {
   KODE::Printer p;
+  if ( args->isSet( "warning" ) ) p.setCreationWarning( true );
 
   bool createKioslave = args->isSet( "create-kioslave" );
+  bool createMain = args->isSet( "create-main" );
 
-  if ( !args->isSet( "classname" ) ) {
-    kdError() << "Error: No class name given." << endl;
-    return 1;
+  QString filename = args->getOption( "filename" );
+
+  if ( createMain ) {
+    if ( filename.isEmpty() ) {
+      kdError() << "Error: No file name given." << endl;
+      return 1;
+    }
+
+    if ( filename.endsWith( ".cpp" ) ) {
+      filename = filename.left( filename.length() - 4 );
+    }
+  } else {
+    if ( !args->isSet( "classname" ) ) {
+      kdError() << "Error: No class name given." << endl;
+      return 1;
+    }
   }
 
   QString className = args->getOption( "classname" );
@@ -377,6 +394,47 @@ int create( KCmdLineArgs *args )
   file.setLicense( l );
 
   file.setNameSpace( args->getOption( "namespace" ) );
+
+  if ( createMain ) {
+    file.addInclude( "kaboutdata.h" );
+    file.addInclude( "kapplication.h" );
+    file.addInclude( "kdebug" );
+    file.addInclude( "klocale" );
+    file.addInclude( "kcmdlineargs" );
+
+    KODE::Code code;
+    code += "static const KCmdLineOptions options[] =";
+    code += "{";
+    code += "  { \"verbose\", \"Verbose output\", 0 },";
+    code += "  KCmdLineLastOption";
+    code += "};";
+    file.addFileCode( code );
+
+    KODE::Function main( "main", "int" );
+    main.addArgument( "int argc" );
+    main.addArgument( "char **argv" );
+
+    code.clear();
+    code += "  KAboutData aboutData(\"test\",\"Test\",\"0.1\");";
+    code += "  KCmdLineArgs::init(argc,argv,&aboutData);";
+    code += "  KCmdLineArgs::addCmdLineOptions( options );";
+    code += "";
+    code += "  KApplication app;";
+    code += "";
+    code += "  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();";
+    code += "";
+    code += "  Q_UNUSED( args );";
+    code += "}";
+    main.setBody( code );
+    
+    file.addFileFunction( main );
+    
+    file.setFilename( filename );
+    
+    p.printImplementation( file, false );
+    
+    return 0;
+  }
 
   KODE::Class c( className );
 
@@ -497,7 +555,6 @@ int create( KCmdLineArgs *args )
 
   file.insertClass( c );
 
-  if ( args->isSet( "warning" ) ) p.setCreationWarning( true );
   p.printHeader( file );
   p.printImplementation( file );
 
@@ -564,7 +621,7 @@ int main(int argc,char **argv)
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   if ( args->isSet( "create-class" ) || args->isSet( "create-dialog" ) ||
-       args->isSet( "create-kioslave" ) ) {
+       args->isSet( "create-kioslave" ) || args->isSet( "create-main" ) ) {
     return create( args );
   } else if ( args->isSet( "codify" ) ) {
     return codify( args );

@@ -410,7 +410,7 @@ void Printer::printHeader( const File &f )
   header.close();
 }
 
-void Printer::printImplementation( const File &f )
+void Printer::printImplementation( const File &f, bool createHeaderInclude )
 {
   Code out;
 
@@ -421,9 +421,10 @@ void Printer::printImplementation( const File &f )
   out.newLine();
 
   // Create includes
-  out += "#include \"" + f.filename() + ".h\"";
-
-  out.newLine();
+  if ( createHeaderInclude ) {
+    out += "#include \"" + f.filename() + ".h\"";
+    out.newLine();
+  }
 
   QStringList includes = f.includes();
   QStringList::ConstIterator it2;
@@ -477,6 +478,12 @@ void Printer::printImplementation( const File &f )
     out += str;
   }
   if ( !vars.isEmpty() ) out.newLine();
+
+  // File code
+  if ( !f.fileCode().isEmpty() ) {
+    out += f.fileCode();
+    out.newLine();
+  }
 
   // File functions
   Function::List funcs = f.fileFunctions();

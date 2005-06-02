@@ -77,6 +77,9 @@ class KDE_EXPORT File
     void addExternCDeclaration( const QString & );
     QStringList externCDeclarations() const { return mExternCDeclarations; }
 
+    void addFileCode( const Code & );
+    Code fileCode() const { return mFileCode; }
+
   private:
     QString mFilename;
     QString mNameSpace;
@@ -88,6 +91,7 @@ class KDE_EXPORT File
     Variable::List mFileVariables;
     Function::List mFileFunctions;
     QStringList mExternCDeclarations;
+    Code mFileCode;
 };
 
 }

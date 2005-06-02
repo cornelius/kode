@@ -37,6 +37,8 @@ class KDE_EXPORT Code
 
     void clear();
 
+    bool isEmpty() const;
+
     void setIndent( int indent );
     void indent();
     void unindent();

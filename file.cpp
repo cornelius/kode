@@ -73,8 +73,11 @@ void File::setLicense( const License &l )
   mLicense = l;
 }
 
-void File::addInclude( const QString &include )
+void File::addInclude( const QString &i )
 {
+  QString include = i;
+  if( !include.endsWith( ".h" ) ) include.append( ".h" );
+
   if ( mIncludes.find( include ) == mIncludes.end() ) {
     mIncludes.append( include );
   }
@@ -147,4 +150,9 @@ void File::clearCode()
   clearClasses();
   clearFileFunctions();
   clearFileVariables();
+}
+
+void File::addFileCode( const Code &c )
+{
+  mFileCode = c;
 }
