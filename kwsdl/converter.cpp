@@ -709,7 +709,7 @@ void Converter::convertService( const Service &service )
       convertOutputMessage( port, outputMessage, newClass );
 
       KODE::MemberVariable transport( inputMessage.name() + "Transport", "Transport" );
-      ctorCode += transport.name() + " = new Transport( \"" + (*it).mName + "\" );";
+      ctorCode += transport.name() + " = new Transport( \"" + (*it).mLocation + "\" );";
 
       ctorCode += "connect( " + transport.name() + ", SIGNAL( result( const QString& ) ),";
       ctorCode.indent();
@@ -752,7 +752,7 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
   KODE::Code code;
   code += "QDomDocument doc( \"kwsdl\" );";
   code += "doc.appendChild( doc.createProcessingInstruction( \"xml\", \"version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"\" ) );";
-  code += "QDomElement env = doc.createElement( \"SOAP-ENV:Envolpe\" );";
+  code += "QDomElement env = doc.createElement( \"SOAP-ENV:Envelope\" );";
   code += "env.setAttribute( \"xmlns:SOAP-ENV\", \"http://schemas.xmlsoap.org/soap/envelope/\" );";
   code += "env.setAttribute( \"xmlns:xsi\", \"http://www.w3.org/1999/XMLSchema-instance\" );";
   code += "env.setAttribute( \"xmlns:xsd\", \"http://www.w3.org/1999/XMLSchema\" );";
@@ -1041,7 +1041,8 @@ void Converter::createTransportClass()
   KODE::Code slotResultCode;
   slotResultCode += "if ( job->error() != 0 ) {";
   slotResultCode.indent();
-  slotResultCode += "kdWarning() << \"Error occured\" << endl;";
+  slotResultCode += "kdWarning() << \"Error occured \" << job->errorText() << endl;";
+  slotResultCode += "kdWarning() << " + slotDataVar.name() + " << endl;";
   slotResultCode += "return;";
   slotResultCode.unindent();
   slotResultCode += "}";
