@@ -50,6 +50,7 @@ class Parser
     int numTypes() const;
 
     QString typeName( int id ) const;
+    QMap<int, QString> typeMap() const;
 
     XSDType::List allTypes() const;
 

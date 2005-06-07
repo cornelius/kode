@@ -777,6 +777,11 @@ QString Parser::typeName( int id ) const
   return mTypesTable.typeName( id );
 }
 
+QMap<int, QString> Parser::typeMap() const
+{
+  return mTypesTable.typeMap();
+}
+
 bool Parser::finalize()
 {
   if ( mTypesTable.detectUndefinedTypes() )
