@@ -22,7 +22,9 @@
 #ifndef KWSDL_TYPEMAPPER_H
 #define KWSDL_TYPEMAPPER_H
 
-#include <schema/parser.h>
+#include <schema/attribute.h>
+#include <schema/element.h>
+#include <schema/xsdtype.h>
 #include <qstringlist.h>
 
 namespace KWSDL {
@@ -33,14 +35,13 @@ class TypeInfo
     TypeInfo()
     {}
 
-    TypeInfo( const QString &_xsdType, const QString &_type, const QString &_header, bool _complex )
-      : xsdType( _xsdType ), type( _type ), header( _header ), isComplex( _complex )
+    TypeInfo( const QString &_xsdType, const QString &_type, const QString &_header )
+      : xsdType( _xsdType ), type( _type ), header( _header )
     {}
 
     QString xsdType;
     QString type;
     QString header;
-    bool isComplex;
 };
 
 class TypeMapper
@@ -50,16 +51,12 @@ class TypeMapper
 
     void setTypes( const Schema::XSDType::List &types );
     void setElements( const Schema::Element::PtrList &elements );
-    void setParser( const Schema::Parser *parser );
+    void setTypeMap( const QMap<int, QString> &typeMap );
 
     QString type( const Schema::XSDType *type ) const;
-    QString type( const Schema::XSDType *type, bool &isComplex ) const;
     QString type( const Schema::Element *element ) const;
-    QString type( const Schema::Element *element, bool &isComplex ) const;
     QString type( const Schema::Attribute *attribute ) const;
-    QString type( const Schema::Attribute *attribute, bool &isComplex ) const;
     QString type( const QString &typeName ) const;
-    QString type( const QString &typeName, bool &isComplex ) const;
 
     QStringList header( const Schema::XSDType *type ) const;
     QStringList header( const Schema::Element *element ) const;
@@ -71,16 +68,15 @@ class TypeMapper
 
     QString argument( const QString &name, const Schema::Element *element ) const;
     QString argument( const QString &name, const Schema::Attribute *attribute ) const;
-    QString argument( const QString &name, const QString &typeName ) const;
-    QString argument( const QString &name, const QString &typeName, bool isList ) const;
+    QString argument( const QString &name, const QString &typeName, bool isList = false ) const;
 
   private:
     bool isBaseType( const QString& ) const;
 
-    const Schema::Parser *mParser;
     Schema::XSDType::List mTypes;
     Schema::Element::PtrList mElements;
     QMap<QString, TypeInfo> mMap;
+    QMap<int, QString> mTypeMap;
 };
 
 }

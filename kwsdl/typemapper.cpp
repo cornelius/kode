@@ -21,6 +21,9 @@
 
 #include <qmap.h>
 
+#include <schema/complextype.h>
+#include <schema/simpletype.h>
+
 #include "typemapper.h"
 
 using namespace KWSDL;
@@ -28,23 +31,23 @@ using namespace KWSDL;
 
 TypeMapper::TypeMapper()
 {
-  mMap.insert( "string", TypeInfo( "string", "QString", "qstring.h", true ) );
-  mMap.insert( "byte", TypeInfo( "byte", "char", "", false ) );
-  mMap.insert( "unsignedByte", TypeInfo( "unsignedByte", "unsigned char", "", false ) );
-  mMap.insert( "binary", TypeInfo( "binary", "QByteArray", "qcstring.h", true ) );
-  mMap.insert( "base64Binary", TypeInfo( "base64Binary", "QByteArray", "qcstring.h", true ) );
-  mMap.insert( "boolean", TypeInfo( "boolean", "bool", "", false ) );
-  mMap.insert( "int", TypeInfo( "int", "int", "", false ) );
-  mMap.insert( "short", TypeInfo( "short", "short", "", false ) );
-  mMap.insert( "unsignedInt", TypeInfo( "unsignedInt", "unsigned int", "", false ) );
-  mMap.insert( "double", TypeInfo( "double", "double", "", false ) );
-  mMap.insert( "date", TypeInfo( "date", "QDate", "qdatetime.h", true ) );
-  mMap.insert( "dateTime", TypeInfo( "dateTime", "QDateTime", "qdatetime.h", true ) );
-  mMap.insert( "anyURI", TypeInfo( "anyUri", "QString", "qstring.h", true ) );
-  mMap.insert( "decimal", TypeInfo( "decimal", "float", "", false ) );
-  mMap.insert( "language", TypeInfo( "language", "QString", "qstring.h", true ) );
-  mMap.insert( "duration", TypeInfo( "duration", "QString", "qstring.h", true ) ); // TODO: add duration class
-  mMap.insert( "any", TypeInfo( "any", "QString", "qstring.h", true ) );
+  mMap.insert( "any", TypeInfo( "any", "QString", "qstring.h" ) );
+  mMap.insert( "anyURI", TypeInfo( "anyUri", "QString", "qstring.h" ) );
+  mMap.insert( "base64Binary", TypeInfo( "base64Binary", "QByteArray", "qcstring.h" ) );
+  mMap.insert( "binary", TypeInfo( "binary", "QByteArray", "qcstring.h" ) );
+  mMap.insert( "boolean", TypeInfo( "boolean", "bool", "" ) );
+  mMap.insert( "byte", TypeInfo( "byte", "char", "" ) );
+  mMap.insert( "date", TypeInfo( "date", "QDate", "qdatetime.h" ) );
+  mMap.insert( "dateTime", TypeInfo( "dateTime", "QDateTime", "qdatetime.h" ) );
+  mMap.insert( "decimal", TypeInfo( "decimal", "float", "" ) );
+  mMap.insert( "double", TypeInfo( "double", "double", "" ) );
+  mMap.insert( "duration", TypeInfo( "duration", "QString", "qstring.h" ) ); // TODO: add duration class
+  mMap.insert( "int", TypeInfo( "int", "int", "" ) );
+  mMap.insert( "language", TypeInfo( "language", "QString", "qstring.h" ) );
+  mMap.insert( "short", TypeInfo( "short", "short", "" ) );
+  mMap.insert( "string", TypeInfo( "string", "QString", "qstring.h" ) );
+  mMap.insert( "unsignedByte", TypeInfo( "unsignedByte", "unsigned char", "" ) );
+  mMap.insert( "unsignedInt", TypeInfo( "unsignedInt", "unsigned int", "" ) );
 }
 
 void TypeMapper::setTypes( const Schema::XSDType::List &types )
@@ -57,21 +60,13 @@ void TypeMapper::setElements( const Schema::Element::PtrList &elements )
   mElements = elements;
 }
 
-void TypeMapper::setParser( const Schema::Parser *parser )
+void TypeMapper::setTypeMap( const QMap<int, QString> &typeMap )
 {
-  mParser = parser;
+  mTypeMap = typeMap;
 }
 
 QString TypeMapper::type( const Schema::XSDType *type ) const
 {
-  bool isComplex;
-  return this->type( type, isComplex );
-}
-
-QString TypeMapper::type( const Schema::XSDType *type, bool &isComplex ) const
-{
-  isComplex = true;
-
   QString typeName = type->name();
   typeName[ 0 ] = typeName[ 0 ].upper();
 
@@ -80,13 +75,7 @@ QString TypeMapper::type( const Schema::XSDType *type, bool &isComplex ) const
 
 QString TypeMapper::type( const Schema::Element *element ) const
 {
-  bool isComplex;
-  return type( element, isComplex );
-}
-
-QString TypeMapper::type( const Schema::Element *element, bool &isComplex ) const
-{
-  QString typeName = mParser->typeName( element->type() );
+  QString typeName = mTypeMap[ element->type() ];
 
   QString type;
   // check basic types
@@ -95,27 +84,16 @@ QString TypeMapper::type( const Schema::Element *element, bool &isComplex ) cons
     type = it.data().type;
 
   if ( type.isEmpty() ) {
-    isComplex = true;
     type = typeName;
     type[ 0 ] = type[ 0 ].upper();
-  } else
-    isComplex = it.data().isComplex;
-
-  if ( element->maxOccurs() > 1 )
-    isComplex = true;
+  }
 
   return type;
 }
 
 QString TypeMapper::type( const Schema::Attribute *attribute ) const
 {
-  bool isComplex;
-  return type( attribute, isComplex );
-}
-
-QString TypeMapper::type( const Schema::Attribute *attribute, bool &isComplex ) const
-{
-  QString typeName = mParser->typeName( attribute->type() );
+  QString typeName = mTypeMap[ attribute->type() ];
 
   QString type;
   // check basic types
@@ -124,37 +102,27 @@ QString TypeMapper::type( const Schema::Attribute *attribute, bool &isComplex ) 
     type = it.data().type;
 
   if ( type.isEmpty() ) {
-    isComplex = true;
     type = typeName;
     type[ 0 ] = type[ 0 ].upper();
-  } else
-    isComplex = it.data().isComplex;
+  }
 
   return type;
 }
 
 QString TypeMapper::type( const QString &typeName ) const
 {
-  bool isComplex;
-  return type( typeName, isComplex );
-}
-
-QString TypeMapper::type( const QString &typeName, bool &isComplex ) const
-{
   // check basic types
   QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
-  if ( it != mMap.end() ) {
-    isComplex = it.data().isComplex;
+  if ( it != mMap.end() )
     return it.data().type;
-  }
 
   Schema::XSDType::List::ConstIterator typeIt;
   for ( typeIt = mTypes.begin(); typeIt != mTypes.end(); ++typeIt ) {
     if ( (*typeIt)->name() == typeName ) {
       if ( (*typeIt)->isSimple() ) {
-        return type( static_cast<const Schema::SimpleType*>( *typeIt ), isComplex );
+        return type( static_cast<const Schema::SimpleType*>( *typeIt ) );
       } else {
-        return type( static_cast<const Schema::ComplexType*>( *typeIt ), isComplex );
+        return type( static_cast<const Schema::ComplexType*>( *typeIt ) );
       }
     }
   }
@@ -162,11 +130,10 @@ QString TypeMapper::type( const QString &typeName, bool &isComplex ) const
   Schema::Element::PtrList::ConstIterator elemIt;
   for ( elemIt = mElements.begin(); elemIt != mElements.end(); ++elemIt ) {
     if ( (*elemIt)->name() == typeName ) {
-      return type( *elemIt, isComplex );
+      return type( *elemIt );
     }
   }
 
-  isComplex = false;
   return QString();
 }
 
@@ -177,7 +144,7 @@ QStringList TypeMapper::header( const Schema::XSDType *type ) const
 
 QStringList TypeMapper::header( const Schema::Element *element ) const
 {
-  QString typeName = mParser->typeName( element->type() );
+  QString typeName = mTypeMap[ element->type() ];
 
   QStringList headers;
 
@@ -197,7 +164,7 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
 
 QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) const
 {
-  QString typeName = mParser->typeName( element->type() );
+  QString typeName = mTypeMap[ element->type() ];
 
   QMap<QString, QString> headers;
 
@@ -223,7 +190,7 @@ QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) c
 
 QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mParser->typeName( attribute->type() );
+  QString typeName = mTypeMap[ attribute->type() ];
 
   QStringList headers;
 
@@ -240,7 +207,7 @@ QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
 
 QMap<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mParser->typeName( attribute->type() );
+  QString typeName = mTypeMap[ attribute->type() ];
 
   QMap<QString, QString> headers;
 
@@ -302,38 +269,25 @@ QMap<QString, QString> TypeMapper::headerDec( const QString &typeName ) const
 
 QString TypeMapper::argument( const QString &name, const Schema::Element *element ) const
 {
-  bool isComplex = false;
-
-  QString typeName = type( element, isComplex );
+  QString typeName = type( element );
 
   if ( element->maxOccurs() > 1 )
-    return "QValueList<" + type( element ) + ">* " + name;
+    return "QValueList<" + typeName + ">* " + name;
   else
-    return type( element ) + "* " + name;
+    return typeName + "* " + name;
 }
 
 QString TypeMapper::argument( const QString &name, const Schema::Attribute *attribute ) const
 {
-  bool isComplex = false;
-
-  QString typeName = type( attribute, isComplex );
-
   return type( attribute ) + "* " + name;
-}
-
-QString TypeMapper::argument( const QString &name, const QString &typeName ) const
-{
-  QString type = this->type( typeName );
-  return type + "* " + name;
 }
 
 QString TypeMapper::argument( const QString &name, const QString &typeName, bool isList ) const
 {
-  QString type = this->type( typeName );
   if ( isList ) {
-    return "QValueList<" + type + ">* " + name;
+    return "QValueList<" + type( typeName ) + ">* " + name;
   } else {
-    return type + "* " + name;
+    return type( typeName ) + "* " + name;
   }
 }
 

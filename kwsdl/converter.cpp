@@ -70,7 +70,7 @@ void Converter::setTypes( const Schema::XSDType::List &types )
 void Converter::setParser( const Schema::Parser *parser )
 {
   mParser = parser;
-  mTypeMapper.setParser( parser );
+  mTypeMapper.setTypeMap( parser->typeMap() );
   mTypeMapper.setElements( parser->elements() );
 }
 
