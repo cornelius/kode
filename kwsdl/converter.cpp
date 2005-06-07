@@ -769,8 +769,8 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
   for ( it = parts.begin(); it != parts.end(); ++it ) {
     QString lowerName = (*it).name();
     lowerName[ 0 ] = lowerName[ 0 ].lower();
-    code += "Serializer::marshal( doc, method, \"" + (*it).name() + "\", " + mNameMapper.escape( (*it).name() ) + " );";
-    code += "delete " + mNameMapper.escape( (*it).name() ) + ";";
+    code += "Serializer::marshal( doc, method, \"" + (*it).name() + "\", " + mNameMapper.escape( lowerName ) + " );";
+    code += "delete " + mNameMapper.escape( lowerName ) + ";";
   }
 
   code += "qDebug( \"%s\", doc.toString().latin1() );";
@@ -788,6 +788,13 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
   QString messageName = message.name();
   messageName[ 0 ] = messageName[ 0 ].lower();
   KODE::Function respSignal( messageName, "void", KODE::Function::Signal );
+
+  /**
+    If one output message is used by two input messages, don't define
+    it twice.
+   */
+  if ( newClass.hasFunction( respSignal.name() ) )
+    return;
 
   const Message::Part::List parts = message.parts();
   Message::Part::List::ConstIterator it;
