@@ -21,13 +21,15 @@
 
 #include <qmap.h>
 
+#include <schema/attribute.h>
 #include <schema/complextype.h>
+#include <schema/element.h>
 #include <schema/simpletype.h>
+#include <schema/xsdtype.h>
 
 #include "typemapper.h"
 
 using namespace KWSDL;
-
 
 TypeMapper::TypeMapper()
 {
@@ -50,19 +52,9 @@ TypeMapper::TypeMapper()
   mMap.insert( "unsignedInt", TypeInfo( "unsignedInt", "unsigned int", "" ) );
 }
 
-void TypeMapper::setTypes( const Schema::XSDType::List &types )
+void TypeMapper::setTypes( const Schema::Types &types )
 {
   mTypes = types;
-}
-
-void TypeMapper::setElements( const Schema::Element::PtrList &elements )
-{
-  mElements = elements;
-}
-
-void TypeMapper::setTypeMap( const QMap<int, QString> &typeMap )
-{
-  mTypeMap = typeMap;
 }
 
 QString TypeMapper::type( const Schema::XSDType *type ) const
@@ -75,7 +67,7 @@ QString TypeMapper::type( const Schema::XSDType *type ) const
 
 QString TypeMapper::type( const Schema::Element *element ) const
 {
-  QString typeName = mTypeMap[ element->type() ];
+  QString typeName = mTypes.typeName( element->type() );
 
   QString type;
   // check basic types
@@ -93,7 +85,7 @@ QString TypeMapper::type( const Schema::Element *element ) const
 
 QString TypeMapper::type( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mTypeMap[ attribute->type() ];
+  QString typeName = mTypes.typeName( attribute->type() );
 
   QString type;
   // check basic types
@@ -116,21 +108,27 @@ QString TypeMapper::type( const QString &typeName ) const
   if ( it != mMap.end() )
     return it.data().type;
 
-  Schema::XSDType::List::ConstIterator typeIt;
-  for ( typeIt = mTypes.begin(); typeIt != mTypes.end(); ++typeIt ) {
-    if ( (*typeIt)->name() == typeName ) {
-      if ( (*typeIt)->isSimple() ) {
-        return type( static_cast<const Schema::SimpleType*>( *typeIt ) );
-      } else {
-        return type( static_cast<const Schema::ComplexType*>( *typeIt ) );
-      }
+  Schema::SimpleType::List simpleTypes = mTypes.simpleTypes();
+  Schema::SimpleType::List::ConstIterator simpleIt;
+  for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt ) {
+    if ( (*simpleIt).name() == typeName ) {
+      return type( &(*simpleIt) );
     }
   }
 
-  Schema::Element::PtrList::ConstIterator elemIt;
-  for ( elemIt = mElements.begin(); elemIt != mElements.end(); ++elemIt ) {
-    if ( (*elemIt)->name() == typeName ) {
-      return type( *elemIt );
+  Schema::ComplexType::List complexTypes = mTypes.complexTypes();
+  Schema::ComplexType::List::ConstIterator complexIt;
+  for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
+    if ( (*complexIt).name() == typeName ) {
+      return type( &(*complexIt) );
+    }
+  }
+
+  Schema::Element::List elements = mTypes.elements();
+  Schema::Element::List::ConstIterator elemIt;
+  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+    if ( (*elemIt).name() == typeName ) {
+      return type( &(*elemIt) );
     }
   }
 
@@ -144,7 +142,7 @@ QStringList TypeMapper::header( const Schema::XSDType *type ) const
 
 QStringList TypeMapper::header( const Schema::Element *element ) const
 {
-  QString typeName = mTypeMap[ element->type() ];
+  QString typeName = mTypes.typeName( element->type() );
 
   QStringList headers;
 
@@ -164,7 +162,7 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
 
 QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) const
 {
-  QString typeName = mTypeMap[ element->type() ];
+  QString typeName = mTypes.typeName( element->type() );
 
   QMap<QString, QString> headers;
 
@@ -190,7 +188,7 @@ QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) c
 
 QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mTypeMap[ attribute->type() ];
+  QString typeName = mTypes.typeName( attribute->type() );
 
   QStringList headers;
 
@@ -207,7 +205,7 @@ QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
 
 QMap<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mTypeMap[ attribute->type() ];
+  QString typeName = mTypes.typeName( attribute->type() );
 
   QMap<QString, QString> headers;
 

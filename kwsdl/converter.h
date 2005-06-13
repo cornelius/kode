@@ -25,12 +25,16 @@
 #include <kode/class.h>
 #include <schema/parser.h>
 
+/*
 #include "binding.h"
 #include "message.h"
-#include "namemapper.h"
 #include "port.h"
 #include "service.h"
+*/
+
+#include "namemapper.h"
 #include "typemapper.h"
+#include "wsdl.h"
 
 namespace KWSDL {
 
@@ -39,19 +43,14 @@ class Converter
   public:
     Converter();
 
-    void setBindings( const Binding::List &bindings );
-    void setMessages( const Message::List &messages );
-    void setPorts( const Port::List &ports );
-    void setService( const Service &service );
-    void setTypes( const Schema::XSDType::List &types );
-    void setParser( const Schema::Parser *parser );
+    void setWSDL( const WSDL &wsdl );
 
     void convert();
 
     KODE::Class::List classes() const;
 
   private:
-    void convertTypes( const Schema::XSDType::List& );
+    void convertTypes( const Schema::Types& );
     void convertSimpleType( const Schema::SimpleType* );
     void convertComplexType( const Schema::ComplexType* );
 
@@ -64,17 +63,7 @@ class Converter
     void createUtilClasses();
     void createTransportClass();
 
-    Message findMessage( const QString& ) const;
-    Port findPort( const QString& ) const;
-    Binding findBinding( const QString& ) const;
-    Binding::Operation findBindingOperation( const QString&, const QString& ) const;
-
-    Binding::List mBindings;
-    Message::List mMessages;
-    Port::List mPorts;
-    Service mService;
-    Schema::XSDType::List mTypes;
-    const Schema::Parser *mParser;
+    WSDL mWSDL;
 
     KODE::Class::List mClasses;
     KODE::Class mSerializer;

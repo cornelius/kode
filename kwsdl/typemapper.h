@@ -22,10 +22,15 @@
 #ifndef KWSDL_TYPEMAPPER_H
 #define KWSDL_TYPEMAPPER_H
 
-#include <schema/attribute.h>
-#include <schema/element.h>
-#include <schema/xsdtype.h>
 #include <qstringlist.h>
+
+#include <schema/types.h>
+
+namespace Schema {
+class Attribute;
+class Element;
+class XSDType;
+};
 
 namespace KWSDL {
 
@@ -49,9 +54,7 @@ class TypeMapper
   public:
     TypeMapper();
 
-    void setTypes( const Schema::XSDType::List &types );
-    void setElements( const Schema::Element::PtrList &elements );
-    void setTypeMap( const QMap<int, QString> &typeMap );
+    void setTypes( const Schema::Types &types );
 
     QString type( const Schema::XSDType *type ) const;
     QString type( const Schema::Element *element ) const;
@@ -73,10 +76,8 @@ class TypeMapper
   private:
     bool isBaseType( const QString& ) const;
 
-    Schema::XSDType::List mTypes;
-    Schema::Element::PtrList mElements;
     QMap<QString, TypeInfo> mMap;
-    QMap<int, QString> mTypeMap;
+    Schema::Types mTypes;
 };
 
 }

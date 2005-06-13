@@ -45,6 +45,40 @@ Parser::~Parser()
   clear();
 }
 
+Types Parser::types() const
+{
+  Types types;
+
+  SimpleType::List simpleTypes;
+  ComplexType::List complexTypes;
+
+  for ( int i = 0; i < numTypes(); i++ ) {
+    const XSDType *pType = type( i + XSDType::ANYURI + 1 );
+    if ( pType != 0 ) {
+      if ( pType->isSimple() ) {
+        const SimpleType *simpleType = static_cast<const SimpleType*>( pType );
+        simpleTypes.append( *simpleType );
+      } else {
+        const ComplexType *complexType = static_cast<const ComplexType*>( pType );
+        complexTypes.append( *complexType );
+      }
+    }
+  }
+
+  Element::List elements;
+
+  for ( uint i = 0; i < mElements.count(); ++i ) {
+    elements.append( *mElements[ i ] );
+  }
+
+  types.setSimpleTypes( simpleTypes );
+  types.setComplexTypes( complexTypes );
+  types.setNameMap( mTypesTable.typeMap() );
+  types.setElements( elements );
+
+  return types;
+}
+
 void Parser::clear()
 {
   mTypesTable.clear();
@@ -538,7 +572,7 @@ XSDType *Parser::parseSimpleType( const QDomElement &element )
 
       QualifiedName name = childElement.tagName();
       if ( name.localName() == "restriction" ) {
-        st->setSubType( SimpleType::Restriction );
+        st->setSubType( SimpleType::TypeRestriction );
 
         QualifiedName typeName( childElement.attribute( "base" ) );
 //        typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
@@ -546,10 +580,10 @@ XSDType *Parser::parseSimpleType( const QDomElement &element )
 
         parseRestriction( childElement, st );
       } else if ( name.localName() == "union" ) {
-        st->setSubType( SimpleType::Union );
+        st->setSubType( SimpleType::TypeUnion );
         qDebug( "simpletype::union not supported" );
       } else if ( name.localName() == "list" ) {
-        st->setSubType( SimpleType::List );
+        st->setSubType( SimpleType::TypeList );
         if ( childElement.hasAttribute( "itemType" ) ) {
           QualifiedName typeName( childElement.attribute( "itemType" ) );
           int type = typeId( typeName, true );
@@ -979,19 +1013,6 @@ const XSDType *Parser::type( const QualifiedName &type )
     return 0;
   else
     return (const XSDType *)mTypesTable.typePtr( id );
-}
-
-XSDType::List Parser::allTypes() const
-{
-  XSDType::List types;
-
-  for ( int i = 0; i < numTypes(); i++ ) {
-    const XSDType *pType = type( i + XSDType::ANYURI + 1 );
-    if ( pType != 0 )
-      types.append( pType );
-  }
-
-  return types;
 }
 
 int Parser::numTypes() const

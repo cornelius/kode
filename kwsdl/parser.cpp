@@ -38,34 +38,17 @@ Parser::Parser()
 {
 }
 
-Binding::List Parser::bindings() const
+WSDL Parser::wsdl() const
 {
-  return mBindings;
-}
+  WSDL wsdl;
 
-Message::List Parser::messages() const
-{
-  return mMessages;
-}
+  wsdl.setBindings( mBindings );
+  wsdl.setMessages( mMessages );
+  wsdl.setPorts( mPorts );
+  wsdl.setService( mService );
+  wsdl.setTypes( mParser.types() );
 
-Port::List Parser::ports() const
-{
-  return mPorts;
-}
-
-Service Parser::service() const
-{
-  return mService;
-}
-
-Schema::XSDType::List Parser::types() const
-{
-  return mParser.allTypes();
-}
-
-const Schema::Parser &Parser::parser() const
-{
-  return mParser;
+  return wsdl;
 }
 
 void Parser::reset()

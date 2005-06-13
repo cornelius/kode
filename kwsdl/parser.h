@@ -27,10 +27,7 @@
 
 #include <schema/parser.h>
 
-#include "binding.h"
-#include "message.h"
-#include "port.h"
-#include "service.h"
+#include "wsdl.h"
 
 namespace KWSDL {
 
@@ -44,12 +41,7 @@ class Parser
 
     void setSchemaBaseUrl( const QString& );
 
-    Binding::List bindings() const;
-    Message::List messages() const;
-    Port::List ports() const;
-    Service service() const;
-    Schema::XSDType::List types() const;
-    const Schema::Parser &parser() const;
+    WSDL wsdl() const;
 
   private:
     void parseTypes( const QDomElement& );

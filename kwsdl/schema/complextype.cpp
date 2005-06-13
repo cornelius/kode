@@ -35,6 +35,17 @@ ComplexType::ComplexType( const QString &nameSpace )
   mBaseType.type = 0;
 }
 
+ComplexType::ComplexType()
+  : mType ( 0 ), mContentModel( COMPLEX ),
+    mMixed( false ), mAnonymous( false ), mIsArray( false ), mContentType( 0 ),
+    mTopLevelGroup( ALL ), mCurrentGroup( 0 ), mPreviousGroup( 0 ),
+    mForwardElementRef( false ), mForwardAttributeRef( false )
+{
+  mBaseType.typeId = XSDType::ANYTYPE;
+  mBaseType.derivation = Extension;
+  mBaseType.type = 0;
+}
+
 ComplexType::~ComplexType()
 {
 }

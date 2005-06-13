@@ -24,38 +24,22 @@
 
 using namespace Schema;
 
+SimpleType::SimpleType()
+  : mBaseType( 0 ), mContentModel( SIMPLE ),
+    mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
+    mSubType( TypeRestriction ), mListType( INVALID )
+{
+}
+
 SimpleType::SimpleType( const QString &nameSpace )
   : mNameSpace( nameSpace ), mBaseType( 0 ), mContentModel( SIMPLE ),
     mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
-    mSubType( Restriction ), mListType( INVALID )
+    mSubType( TypeRestriction ), mListType( INVALID )
 {
-  mValidFacets = new int[ ANYURI + 1 ];
-
-  // this table maintains a flag which indicates what facets are valid  for a simple type
-  mValidFacets[STRING] = mValidFacets[NMTOKEN] = mValidFacets[NMTOKENS] =
-    mValidFacets[TOKEN] =
-    LENGTH | MINLEN | MAXLEN | ENUM | WSP | PATTERN;
-  mValidFacets[INTEGER] = mValidFacets[INT] = mValidFacets[UINT] =
-    mValidFacets[BYTE] = mValidFacets[POSINT] =
-    ENUM | WSP | MAXEX | MINEX | MAXINC | MININC | TOT | FRAC |
-    PATTERN;
-  mValidFacets[LONG] = mValidFacets[ULONG] = mValidFacets[DECIMAL] =
-    mValidFacets[INT];
-  mValidFacets[SHORT] = mValidFacets[USHORT] = mValidFacets[INT];
-  mValidFacets[FLOAT] = mValidFacets[DOUBLE] =
-    ENUM | WSP | MAXEX | MINEX | MAXINC | MININC | PATTERN;
-  mValidFacets[BOOLEAN] = WSP | PATTERN;
-  mValidFacets[TIME] = mValidFacets[DATETIME] = mValidFacets[DATE] =
-    ENUM | WSP | MAXEX | MINEX | MAXINC | MININC | PATTERN;
-  mValidFacets[QNAME] = mValidFacets[NCNAME] = mValidFacets[ANYURI] =
-    LENGTH | MINLEN | MAXLEN | ENUM | WSP | PATTERN;
-  mValidFacets[ANY] = mValidFacets[ANYTYPE] = NONE | PATTERN;
-  mValidFacets[BASE64BIN] = mValidFacets[STRING];
 }
 
 SimpleType::~SimpleType()
 {
-  delete[] mValidFacets;
 }
 
 void SimpleType::setName( const QString &name )
@@ -181,9 +165,6 @@ bool SimpleType::isValidFacet( const QString &facet )
     mFacetId = NONE;
     return false;
   }
-
-  if ( mValidFacets[mBaseType] | mFacetId )
-    return true;
 
   return true;
 }

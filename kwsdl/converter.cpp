@@ -36,42 +36,14 @@ static QString escapeEnum( const QString &str )
 }
 
 Converter::Converter()
-  : mParser( 0 )
 {
   mQObject = KODE::Class( "QObject" );
 }
 
-void Converter::setBindings( const Binding::List &bindings )
+void Converter::setWSDL( const WSDL &wsdl )
 {
-  mBindings = bindings;
-}
-
-void Converter::setMessages( const Message::List &messages )
-{
-  mMessages = messages;
-}
-
-void Converter::setPorts( const Port::List &ports )
-{
-  mPorts = ports;
-}
-
-void Converter::setService( const Service &service )
-{
-  mService = service;
-}
-
-void Converter::setTypes( const Schema::XSDType::List &types )
-{
-  mTypes = types;
-  mTypeMapper.setTypes( types );
-}
-
-void Converter::setParser( const Schema::Parser *parser )
-{
-  mParser = parser;
-  mTypeMapper.setTypeMap( parser->typeMap() );
-  mTypeMapper.setElements( parser->elements() );
+  mWSDL = wsdl;
+  mTypeMapper.setTypes( wsdl.types() );
 }
 
 KODE::Class::List Converter::classes() const
@@ -84,22 +56,24 @@ void Converter::convert()
   createUtilClasses();
   createTransportClass();
 
-  convertTypes( mTypes );
+  convertTypes( mWSDL.types() );
 
   mClasses.append( mSerializer );
 
-  convertService( mService );
+  convertService( mWSDL.service() );
 }
 
-void Converter::convertTypes( const Schema::XSDType::List &types )
+void Converter::convertTypes( const Schema::Types &types )
 {
-  Schema::XSDType::List::ConstIterator it;
-  for ( it = types.begin(); it != types.end(); ++it ) {
-    if ( (*it)->isSimple() )
-      convertSimpleType( static_cast<const Schema::SimpleType*>( *it ) );
-    else
-      convertComplexType( static_cast<const Schema::ComplexType*>( *it ) );
-  }
+  Schema::SimpleType::List simpleTypes = types.simpleTypes();
+  Schema::SimpleType::List::ConstIterator simpleIt;
+  for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt )
+    convertSimpleType( &(*simpleIt) );
+
+  Schema::ComplexType::List complexTypes = types.complexTypes();
+  Schema::ComplexType::List::ConstIterator complexIt;
+  for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt )
+    convertComplexType( &(*complexIt) );
 }
 
 void Converter::convertSimpleType( const Schema::SimpleType *type )
@@ -112,7 +86,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
   if ( !type->documentation().isEmpty() )
     newClass.setDocs( type->documentation().simplifyWhiteSpace() );
 
-  if ( type->subType() == Schema::SimpleType::Restriction ) {
+  if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
     /**
       Use setter and getter method for enums as well.
      */
@@ -149,7 +123,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
          type->baseType() != Schema::XSDType::INVALID &&
          !(type->facetType() & Schema::SimpleType::ENUM) ) {
 
-      const QString baseName = mParser->typeName( type->baseType() );
+      const QString baseName = mWSDL.types().typeName( type->baseType() );
       const QString typeName = mTypeMapper.type( baseName );
 
       // include header
@@ -184,9 +158,9 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
       newClass.addFunction( setter );
       newClass.addFunction( getter );
     }
-  } else if ( type->subType() == Schema::SimpleType::List ) {
+  } else if ( type->subType() == Schema::SimpleType::TypeList ) {
     newClass.addHeaderInclude( "qvaluelist.h" );
-    const QString baseName = mParser->typeName( type->listType() );
+    const QString baseName = mWSDL.types().typeName( type->listType() );
     const QString typeName = mTypeMapper.type( baseName );
 
     // include header
@@ -239,7 +213,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
 void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
 {
   const QString typeName = mTypeMapper.type( type );
-  const QString baseType = mTypeMapper.type( mParser->typeName( type->baseType() ) );
+  const QString baseType = mTypeMapper.type( mWSDL.types().typeName( type->baseType() ) );
 
   KODE::Function marshal( "marshal", "void" );
   marshal.setStatic( true );
@@ -266,7 +240,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
       mSerializer.addHeaderInclude( it.key() );
   }
 
-  if ( type->subType() == Schema::SimpleType::Restriction ) {
+  if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
     // is an enumeration
     if ( type->facetType() & Schema::SimpleType::ENUM ) {
       QStringList enums = type->facetEnums();
@@ -360,8 +334,8 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
 
       mSerializer.addFunction( demarshalValue );
     }
-  } else if ( type->subType() == Schema::SimpleType::List ) {
-    const QString listType = mTypeMapper.type( mParser->typeName( type->listType() ) );
+  } else if ( type->subType() == Schema::SimpleType::TypeList ) {
+    const QString listType = mTypeMapper.type( mWSDL.types().typeName( type->listType() ) );
 
     mSerializer.addInclude( "qstringlist.h" );
 
@@ -415,9 +389,9 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
   KODE::Code ctorCode, dtorCode;
 
   if ( type->baseType() != Schema::XSDType::ANYTYPE && !type->isArray() ) {
-    QString baseName = mTypeMapper.type( mParser->typeName( type->baseType() ) );
+    QString baseName = mTypeMapper.type( mWSDL.types().typeName( type->baseType() ) );
     newClass.addBaseClass( KODE::Class( baseName ) );
-    newClass.addHeaderIncludes( mTypeMapper.header( mParser->typeName( type->baseType() ) ) );
+    newClass.addHeaderIncludes( mTypeMapper.header( mWSDL.types().typeName( type->baseType() ) ) );
   }
 
   if ( !type->documentation().isEmpty() )
@@ -696,14 +670,14 @@ void Converter::convertService( const Service &service )
   const Service::Port::List servicePorts = service.ports();
   Service::Port::List::ConstIterator it;
   for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
-    Binding binding = findBinding( (*it).mBinding );
+    Binding binding = mWSDL.findBinding( (*it).mBinding );
 
-    Port port = findPort( binding.type() );
+    Port port = mWSDL.findPort( binding.type() );
     const Port::Operation::List operations = port.operations();
     Port::Operation::List::ConstIterator opIt;
     for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
-      Message inputMessage = findMessage( (*opIt).input() );
-      Message outputMessage = findMessage( (*opIt).output() );
+      Message inputMessage = mWSDL.findMessage( (*opIt).input() );
+      Message outputMessage = mWSDL.findMessage( (*opIt).output() );
 
       convertInputMessage( port, inputMessage, newClass );
       convertOutputMessage( port, outputMessage, newClass );
@@ -760,7 +734,7 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
   code += "QDomElement body = doc.createElement( \"SOAP-ENV:Body\" );";
   code += "env.appendChild( body );";
   code += "QDomElement method = doc.createElement( \"ns1:" + message.name() + "\" );";
-  QString nameSpace = findBindingOperation( port.name(), message.name() ).input().nameSpace();
+  QString nameSpace = mWSDL.findBindingOperation( port.name(), message.name() ).input().nameSpace();
   code += "method.setAttribute( \"xmlns:ns1\", \"" + nameSpace + "\" );";
   code += "method.setAttribute( \"SOAP-ENV:encodingStyle\", \"http://schemas.xmlsoap.org/soap/encoding/\" );";
   code += "body.appendChild( method );";
@@ -834,52 +808,6 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
   respSlot.setBody( code );
 
   newClass.addFunction( respSlot );
-}
-
-Message Converter::findMessage( const QString &name ) const
-{
-  Message::List::ConstIterator it;
-  for ( it = mMessages.begin(); it != mMessages.end(); ++it ) {
-    if ( (*it).name() == name ) {
-      return *it;
-    }
-  }
-
-  return Message();
-}
-
-Port Converter::findPort( const QString &name ) const
-{
-  Port::List::ConstIterator it;
-  for ( it = mPorts.begin(); it != mPorts.end(); ++it ) {
-    if ( (*it).name() == name )
-      return *it;
-  }
-
-  return Port();
-}
-
-Binding Converter::findBinding( const QString &name ) const
-{
-  Binding::List::ConstIterator it;
-  for ( it = mBindings.begin(); it != mBindings.end(); ++it ) {
-    if ( (*it).name() == name )
-      return *it;
-  }
-
-  return Binding();
-}
-
-Binding::Operation Converter::findBindingOperation( const QString &portName, const QString &operationName ) const
-{
-  Binding::List::ConstIterator it;
-  for ( it = mBindings.begin(); it != mBindings.end(); ++it ) {
-    if ( (*it).type() == portName ) {
-      return (*it).operation( operationName );
-    }
-  }
-
-  return Binding::Operation();
 }
 
 void Converter::createUtilClasses()

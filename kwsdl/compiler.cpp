@@ -98,12 +98,7 @@ void Compiler::parse( const QDomElement &element )
 void Compiler::create()
 {
   KWSDL::Converter converter;
-  converter.setBindings( mParser.bindings() );
-  converter.setMessages( mParser.messages() );
-  converter.setPorts( mParser.ports() );
-  converter.setService( mParser.service() );
-  converter.setTypes( mParser.types() );
-  converter.setParser( &mParser.parser() );
+  converter.setWSDL( mParser.wsdl() );
 
   converter.convert();
 

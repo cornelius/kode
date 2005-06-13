@@ -33,6 +33,8 @@ namespace Schema {
 class SimpleType : public XSDType
 {
   public:
+    typedef QValueList<SimpleType> List;
+
     enum FacetType
     {
       NONE = 0,
@@ -59,11 +61,12 @@ class SimpleType : public XSDType
 
     enum SubType
     {
-      Restriction,
-      List,
-      Union
+      TypeRestriction,
+      TypeList,
+      TypeUnion
     };
 
+    SimpleType();
     SimpleType( const QString &nameSpace );
     ~SimpleType();
 
@@ -122,7 +125,6 @@ class SimpleType : public XSDType
     int mFacetId;
     bool mAnonymous;
     QStringList mEnums;
-    int *mValidFacets;
     SubType mSubType;
 
     int mListType;

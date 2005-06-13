@@ -25,6 +25,7 @@
 
 #include <qstring.h>
 #include <qvaluelist.h>
+#include <qmap.h>
 
 #include "qualifiedname.h"
 
@@ -36,6 +37,7 @@ class XSDType
 {
   public:
     typedef QValueList<const XSDType*> List;
+    typedef QMap<int, QString> NameMap;
 
     enum
     {

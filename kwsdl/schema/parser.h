@@ -26,8 +26,7 @@
 #include <qdom.h>
 #include <qvaluelist.h>
 
-#include "complextype.h"
-#include "simpletype.h"
+#include "types.h"
 #include "typestable.h"
 
 namespace Schema {
@@ -38,6 +37,8 @@ class Parser
     Parser( const QString &nameSpace = QString() );
 
     ~Parser();
+
+    Types types() const;
 
     void clear();
     void setSchemaBaseUrl( const QString& );
@@ -51,8 +52,6 @@ class Parser
 
     QString typeName( int id ) const;
     QMap<int, QString> typeMap() const;
-
-    XSDType::List allTypes() const;
 
     Element *element( const QualifiedName &element ) const;
     Element *element( int id ) const;

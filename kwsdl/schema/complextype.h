@@ -32,9 +32,11 @@
 
 namespace Schema {
 
-class ComplexType:public XSDType
+class ComplexType : public XSDType
 {
   public:
+    typedef QValueList<ComplexType> List;
+
     typedef enum { 
       SEQ = 0, 
       CHOICE, 
@@ -46,6 +48,7 @@ class ComplexType:public XSDType
       Extension
     } Derivation;
        
+    ComplexType();
     ComplexType( const QString& );
     ~ComplexType();
 
@@ -141,7 +144,7 @@ class ComplexType:public XSDType
     {
       int typeId;
       Derivation derivation;
-     const  XSDType *type;
+      const  XSDType *type;
     } mBaseType;
   
     struct CompositorStruct
