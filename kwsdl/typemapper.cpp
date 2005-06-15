@@ -155,7 +155,7 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
     headers.append( typeName.lower() + ".h" );
   
   if ( element->maxOccurs() > 1 )
-    headers.append( "qvaluelist.h" );
+    headers.append( "qptrlist.h" );
 
   return headers;
 }
@@ -181,7 +181,7 @@ QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) c
   }
 
   if ( element->maxOccurs() > 1 )
-    headers.insert( "qvaluelist.h", QString() );
+    headers.insert( "qptrlist.h", QString() );
 
   return headers;
 }
@@ -270,7 +270,7 @@ QString TypeMapper::argument( const QString &name, const Schema::Element *elemen
   QString typeName = type( element );
 
   if ( element->maxOccurs() > 1 )
-    return "QValueList<" + typeName + ">* " + name;
+    return "QPtrList<" + typeName + ">* " + name;
   else
     return typeName + "* " + name;
 }
@@ -283,7 +283,7 @@ QString TypeMapper::argument( const QString &name, const Schema::Attribute *attr
 QString TypeMapper::argument( const QString &name, const QString &typeName, bool isList ) const
 {
   if ( isList ) {
-    return "QValueList<" + type( typeName ) + ">* " + name;
+    return "QPtrList<" + type( typeName ) + ">* " + name;
   } else {
     return type( typeName ) + "* " + name;
   }

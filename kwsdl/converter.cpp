@@ -159,7 +159,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
       newClass.addFunction( getter );
     }
   } else if ( type->subType() == Schema::SimpleType::TypeList ) {
-    newClass.addHeaderInclude( "qvaluelist.h" );
+    newClass.addHeaderInclude( "qptrlist.h" );
     const QString baseName = mWSDL.types().typeName( type->listType() );
     const QString typeName = mTypeMapper.type( baseName );
 
@@ -175,7 +175,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     }
 
     // member variables
-    KODE::MemberVariable variable( "entries", "QValueList<" + typeName + ">*" );
+    KODE::MemberVariable variable( "entries", "QPtrList<" + typeName + ">*" );
     newClass.addMemberVariable( variable );
 
     ctorCode += variable.name() + " = 0;";
@@ -188,7 +188,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     setter.setBody( variable.name() + " = entries;" );
 
     // getter method
-    KODE::Function getter( "entries", "QValueList<" + typeName + ">*" );
+    KODE::Function getter( "entries", "QPtrList<" + typeName + ">*" );
     getter.setBody( " return " + variable.name() + ";" );
     getter.setConst( true );
 
@@ -342,11 +342,12 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
     marshalCode += "if ( value->entries() ) {";
     marshalCode.indent();
     marshalCode += "QStringList list;";
-    marshalCode += "QValueList<" + listType + ">* entries = value->entries();";
-    marshalCode += "QValueList<" + listType + ">::ConstIterator it;";
-    marshalCode += "for ( it = entries->begin(); it != entries->end(); ++it ) {";
+    marshalCode += "QPtrList<" + listType + ">* entries = value->entries();";
+    marshalCode += "QPtrListIterator<" + listType + "> it( *entries );";
+    marshalCode += "while ( it.current() != 0 ) {";
     marshalCode.indent();
-    marshalCode += "list.append( Serializer::marshalValue( &*it ) );";
+    marshalCode += "list.append( Serializer::marshalValue( it.current() ) );";
+    marshalCode += "++it;";
     marshalCode.unindent();
     marshalCode += "}";
     marshalCode.newLine();
@@ -359,12 +360,13 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
     demarshalCode += "const QStringList list = QStringList::split( \" \", parent.text(), false );";
     demarshalCode += "if ( !list.isEmpty() ) {";
     demarshalCode.indent();
-    demarshalCode += "QValueList<" + listType + ">* entries = new QValueList<" + listType + ">;";
+    demarshalCode += "QPtrList<" + listType + ">* entries = new QPtrList<" + listType + ">;";
+    demarshalCode += "entries->setAutoDelete( true );";
     demarshalCode += "QStringList::ConstIterator it;";
     demarshalCode += "for ( it = list.begin(); it != list.end(); ++it ) {";
     demarshalCode.indent();
-    demarshalCode += listType + " entry;";
-    demarshalCode += "Serializer::demarshalValue( *it, &entry );";
+    demarshalCode += listType + " *entry = new " + listType + ";";
+    demarshalCode += "Serializer::demarshalValue( *it, entry );";
     demarshalCode += "entries->append( entry );";
     demarshalCode.unindent();
     demarshalCode += "}";
@@ -404,7 +406,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     QString typeName = mTypeMapper.type( &*elemIt );
 
     if ( (*elemIt).maxOccurs() > 1 )
-      typeName = "QValueList<" + typeName + ">";
+      typeName = "QPtrList<" + typeName + ">";
 
     // member variables
     KODE::MemberVariable variable( (*elemIt).name(), typeName + "*" );
@@ -559,7 +561,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
     if ( (*elemIt).maxOccurs() > 1 ) {
       marshalCode += "if ( value->" + mNameMapper.escape( lowerName ) + "() ) {";
       marshalCode.indent();
-      marshalCode += "const QValueList<" + typeName + ">* list = value->" + mNameMapper.escape( lowerName ) + "();";
+      marshalCode += "const QPtrList<" + typeName + ">* list = value->" + mNameMapper.escape( lowerName ) + "();";
       marshalCode.newLine();
       marshalCode += "QDomElement element = doc.createElement( name );";
       // no idea about the namespaces here...
@@ -568,10 +570,11 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
       marshalCode += "element.setAttribute( \"ns1:arrayType\", \"ns1:" + typeName + "[\" + QString::number( list->count() ) + \"]\" );";
       marshalCode += "parent.appendChild( element );";
       marshalCode.newLine();
-      marshalCode += "QValueList<" + typeName + ">::ConstIterator it;";
-      marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
+      marshalCode += "QPtrListIterator<" + typeName + "> it( *list );";
+      marshalCode += "while ( it.current() != 0 ) {";
       marshalCode.indent();
-      marshalCode += "Serializer::marshal( doc, element, \"item\", &*it );";
+      marshalCode += "Serializer::marshal( doc, element, \"item\", it.current() );";
+      marshalCode += "++it;";
       marshalCode.unindent();
       marshalCode += "}";
       marshalCode.unindent();
@@ -580,13 +583,14 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
       const QString listName = mNameMapper.escape( lowerName ) + "List";
       // TODO: prepend the code somehow
       KODE::Code code;
-      code += "QValueList<" + typeName + ">* " + listName + " = new QValueList<" + typeName + ">();";
+      code += "QPtrList<" + typeName + ">* " + listName + " = new QPtrList<" + typeName + ">();";
+      code += listName + "->setAutoDelete( true );";
       code += demarshalCode;
       demarshalCode = code;
-      demarshalCode += "if ( element.tagName() == \"" + (*elemIt).name() + "\" ) {";
+      demarshalCode += "if ( element.tagName() == \"item\" ) {";
       demarshalCode.indent();
-      demarshalCode += typeName + " item;";
-      demarshalCode += "Serializer::demarshal( element, &item );";
+      demarshalCode += typeName + " *item = new " + typeName + ";";
+      demarshalCode += "Serializer::demarshal( element, item );";
       demarshalCode += listName + "->append( item );";
       demarshalCode.unindent();
       demarshalCode += "}";
@@ -820,7 +824,7 @@ void Converter::createUtilClasses()
   mSerializer.addHeaderInclude( "qdom.h" );
   mSerializer.addHeaderInclude( "qdatetime.h" );
   mSerializer.addHeaderInclude( "qstring.h" );
-  mSerializer.addHeaderInclude( "qvaluelist.h" );
+  mSerializer.addHeaderInclude( "qptrlist.h" );
   mSerializer.addInclude( "kmdcodec.h" );
 
   typedef struct {
