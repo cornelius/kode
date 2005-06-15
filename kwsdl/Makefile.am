@@ -1,4 +1,4 @@
-SUBDIRS = . schema wscl #kung
+SUBDIRS = . schema wscl tests output
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 
