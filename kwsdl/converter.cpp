@@ -794,7 +794,7 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
   code.newLine();
   code += "qDebug( \"%s\", xml.latin1() );";
   code.newLine();
-  code += "if ( !doc.setContent( xml, false, &errorMsg, &row, &column ) ) {";
+  code += "if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {";
   code.indent();
   code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", errorMsg.latin1(), row, column );";
   code += "return;";
@@ -802,7 +802,10 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
   code += "}";
   code.newLine();
   code += mTypeMapper.type( part.type() ) + "* value = new " + mTypeMapper.type( part.type() ) + ";";
-  code += "Serializer::demarshal( doc.documentElement().firstChild().toElement(), value );";
+  code += "QDomElement envelope = doc.documentElement();";
+  code += "QDomElement body = envelope.firstChild().toElement();";
+  code += "QDomElement method = body.firstChild().toElement();";
+  code += "Serializer::demarshal( method.firstChild().toElement(), value );";
   code.newLine();
   code += "emit " + respSignal.name() + "( value );";
   respSlot.setBody( code );
@@ -937,9 +940,7 @@ void Converter::createTransportClass()
   queryCode += "}";
   queryCode.newLine();
   queryCode += "job->addMetaData( \"UserAgent\", \"KWSDL\" );";
-  queryCode += "job->addMetaData( \"Content-Type\", \"Content-Type: text/xml; charset=utf-8\" );";
-  queryCode += "job->addMetaData( \"Content-Length\", \"Content-Length: \" + QString::number( xml.utf8().length() ) );";
-  queryCode += "job->addMetaData( \"ConnectTimeout\", \"50\" );";
+  queryCode += "job->addMetaData( \"content-type\", \"Content-Type: text/xml; charset=utf-8\" );";
   queryCode.newLine();
   queryCode += "connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ), this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );";
   queryCode += "connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotResult( KIO::Job* ) ) );";
@@ -983,7 +984,7 @@ void Converter::createTransportClass()
   slotResultCode += "}";
   slotResultCode.newLine();
 
-  slotResultCode += "emit result( QString::fromUtf8( " + slotDataVar.name() + " ) );";
+  slotResultCode += "emit result( QString::fromUtf8( " + slotDataVar.name() + ".data(), " + slotDataVar.name() + ".size() ) );";
 
   slotResult.setBody( slotResultCode );
 
