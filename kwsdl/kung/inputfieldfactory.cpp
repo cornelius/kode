@@ -24,7 +24,9 @@
 #include <schema/types.h>
 
 #include "boolinputfield.h"
+#include "complexbaseinputfield.h"
 #include "dateinputfield.h"
+#include "enuminputfield.h"
 #include "integerinputfield.h"
 #include "simplebaseinputfield.h"
 #include "stringinputfield.h"
@@ -56,15 +58,14 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
       return new SimpleBaseInputField( name, &(*simpleIt) );
     }
   }
-/*
-    Schema::ComplexType::List complexTypes = mTypes.complexTypes();
-    Schema::ComplexType::List::ConstIterator complexIt;
-    for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
-      if ( (*complexIt).name() == type ) {
-        return new ComplexInputField( name, &(*complexIt) );
-      }
+
+  Schema::ComplexType::List complexTypes = mTypes.complexTypes();
+  Schema::ComplexType::List::ConstIterator complexIt;
+  for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
+    if ( (*complexIt).name() == typeName ) {
+      return new ComplexBaseInputField( name, &(*complexIt) );
     }
-*/
+  }
 
   return createBasicField( name, typeName, 0 );
 }
@@ -72,7 +73,10 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
 InputField *InputFieldFactory::createBasicField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
 {
   if ( typeName == "string" ) {
-    return new StringInputField( name, type );
+    if ( type && type->facetType() & Schema::SimpleType::ENUM )
+      return new EnumInputField( name, type );
+    else
+      return new StringInputField( name, type );
   } else if ( typeName == "int" || typeName == "unsignedInt" || typeName == "integer" ) {
     return new IntegerInputField( name, type );
   } else if ( typeName == "boolean" ) {

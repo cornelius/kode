@@ -19,6 +19,10 @@
     Boston, MA 02111-1307, USA.
 */
 
+#include <qgroupbox.h>
+#include <qlabel.h>
+#include <qlayout.h>
+
 #include <schema/complextype.h>
 
 #include "inputfieldfactory.h"
@@ -58,8 +62,46 @@ void ComplexBaseInputField::setXMLData( const QDomElement &element )
 
 QDomElement ComplexBaseInputField::xmlData( QDomDocument &document )
 {
+  QDomElement element = document.createElement( mName );
+
+  Schema::Element::List elements = mType->elements();
+  Schema::Element::List::ConstIterator elemIt;
+  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+    InputField *field = childField( (*elemIt).name() );
+    if ( !field ) {
+      qDebug( "ComplexBaseInputField: No child found" );
+    } else {
+      element.appendChild( field->xmlData( document ) );
+    }
+  }
+
+  Schema::Attribute::List attributes = mType->attributes();
+  Schema::Attribute::List::ConstIterator attrIt;
+  for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
+    InputField *field = childField( (*attrIt).name() );
+    if ( !field ) {
+      qDebug( "ComplexBaseInputField: No child found" );
+    } else {
+      element.setAttribute( field->name(), "TODO:" );
+    }
+  }
+
+  return element;
 }
 
 QWidget *ComplexBaseInputField::createWidget( QWidget *parent )
 {
+  QGroupBox *inputWidget = new QGroupBox( mName, parent );
+  inputWidget->setColumnLayout( 0, Qt::Horizontal );
+  QGridLayout *layout = new QGridLayout( inputWidget->layout(), 2, 2, 6 );
+
+  InputField::List::Iterator it;
+  int row = 0;
+  for ( it = mFields.begin(); it != mFields.end(); ++it, ++row ) {
+    QLabel *label = new QLabel( (*it)->name(), inputWidget );
+    layout->addWidget( label, row, 0 );
+    layout->addWidget( (*it)->createWidget( inputWidget ), row, 1 );
+  }
+
+  return inputWidget;
 }
