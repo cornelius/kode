@@ -67,7 +67,7 @@ QString TypeMapper::type( const Schema::XSDType *type ) const
 
 QString TypeMapper::type( const Schema::Element *element ) const
 {
-  QString typeName = mTypes.typeName( element->type() );
+  QString typeName = element->typeName();
 
   QString type;
   // check basic types
@@ -85,7 +85,7 @@ QString TypeMapper::type( const Schema::Element *element ) const
 
 QString TypeMapper::type( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mTypes.typeName( attribute->type() );
+  QString typeName = attribute->typeName();
 
   QString type;
   // check basic types
@@ -142,7 +142,7 @@ QStringList TypeMapper::header( const Schema::XSDType *type ) const
 
 QStringList TypeMapper::header( const Schema::Element *element ) const
 {
-  QString typeName = mTypes.typeName( element->type() );
+  QString typeName = element->typeName();
 
   QStringList headers;
 
@@ -162,7 +162,7 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
 
 QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) const
 {
-  QString typeName = mTypes.typeName( element->type() );
+  QString typeName = element->typeName();
 
   QMap<QString, QString> headers;
 
@@ -188,7 +188,7 @@ QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) c
 
 QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mTypes.typeName( attribute->type() );
+  QString typeName = attribute->typeName();
 
   QStringList headers;
 
@@ -205,7 +205,7 @@ QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
 
 QMap<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribute ) const
 {
-  QString typeName = mTypes.typeName( attribute->type() );
+  QString typeName = attribute->typeName();
 
   QMap<QString, QString> headers;
 

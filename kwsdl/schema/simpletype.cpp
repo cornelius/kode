@@ -90,6 +90,16 @@ int SimpleType::baseType() const
   return mBaseType;
 }
 
+void SimpleType::setBaseTypeName( const QString &baseTypeName )
+{
+  mBaseTypeName = baseTypeName;
+}
+
+QString SimpleType::baseTypeName() const
+{
+  return mBaseTypeName;
+}
+
 void SimpleType::setSubType( SubType subType )
 {
   mSubType = subType;
@@ -108,6 +118,16 @@ void SimpleType::setListType( int listType )
 int SimpleType::listType() const
 {
   return mListType;
+}
+
+void SimpleType::setListTypeName( const QString &name )
+{
+  mListTypeName = name;
+}
+
+QString SimpleType::listTypeName() const
+{
+  return mListTypeName;
 }
 
 void SimpleType::setContentModel( int contentModel )

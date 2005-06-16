@@ -127,6 +127,16 @@ bool ComplexType::isAnonymous() const
   return mAnonymous;
 }
 
+void ComplexType::setBaseTypeName( const QString &baseTypeName )
+{
+  mBaseType.name = baseTypeName;
+}
+
+QString ComplexType::baseTypeName() const
+{
+  return mBaseType.name;
+}
+
 int ComplexType::baseType() const
 {
   return mBaseType.typeId;
@@ -199,12 +209,22 @@ Attribute *ComplexType::attribute( int id )
   return 0;
 }
 
-Element::List ComplexType::allElements() const
+void ComplexType::setElements( const Element::List &elements )
+{
+  mElements = elements;
+}
+
+Element::List ComplexType::elements() const
 {
   return mElements;
 }
 
-Attribute::List ComplexType::allAttributes() const
+void ComplexType::setAttributes( const Attribute::List &attributes )
+{
+  mAttributes = attributes;
+}
+
+Attribute::List ComplexType::attributes() const
 {
   return mAttributes;
 }

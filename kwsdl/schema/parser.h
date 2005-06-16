@@ -51,7 +51,6 @@ class Parser
     int numTypes() const;
 
     QString typeName( int id ) const;
-    QMap<int, QString> typeMap() const;
 
     Element *element( const QualifiedName &element ) const;
     Element *element( int id ) const;

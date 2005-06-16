@@ -47,6 +47,9 @@ class Element
     void setType( int id );
     int type() const;
 
+    void setTypeName( const QString &typeName );
+    QString typeName() const;
+
     void setDocumentation( const QString &documentation );
     QString documentation() const;
 
@@ -70,6 +73,7 @@ class Element
   private:
     QString mName;
     int mType;
+    QString mTypeName;
     QString mDocumentation;
     int mMinOccurs;
     int mMaxOccurs;

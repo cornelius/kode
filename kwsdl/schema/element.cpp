@@ -54,6 +54,16 @@ int Element::type() const
   return mType;
 }
 
+void Element::setTypeName( const QString &typeName )
+{
+  mTypeName = typeName;
+}
+
+QString Element::typeName() const
+{
+  return mTypeName;
+}
+
 void Element::setDocumentation( const QString &documentation )
 {
   mDocumentation = documentation;

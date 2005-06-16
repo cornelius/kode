@@ -166,21 +166,6 @@ QString TypesTable::typeName( int id ) const
   return "<unknown type>";
 }
 
-QMap<int, QString> TypesTable::typeMap() const
-{
-  QMap<int, QString> typeMap;
-
-  QMap<QString, int>::ConstIterator it;
-
-  for ( it = mBasicTypes.begin(); it != mBasicTypes.end(); ++it )
-    typeMap.insert( it.data(), it.key() );
-
-  for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
-    typeMap.insert( it.data(), it.key() );
-
-  return typeMap;
-}
-
 int TypesTable::addExternalTypeId( const QualifiedName &type, XSDType *pType )
 {
   for ( int i = 0; i < (int)mExternRefs.count(); i++ )

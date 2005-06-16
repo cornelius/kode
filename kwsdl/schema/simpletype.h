@@ -84,11 +84,17 @@ class SimpleType : public XSDType
     void setBaseType( int baseType );
     int baseType() const;
 
+    void setBaseTypeName( const QString &baseTypeName );
+    QString baseTypeName() const;
+
     void setSubType( SubType subType );
     SubType subType() const;
 
     void setListType( int listType );
+    void setListTypeName( const QString &name );
+
     int listType() const;
+    QString listTypeName() const;
 
     void setContentModel( int contentModel );
     int contentModel() const;
@@ -120,6 +126,7 @@ class SimpleType : public XSDType
     QString mDocumentation;
     int mType;
     int mBaseType;
+    QString mBaseTypeName;
     int mContentModel;
     bool mRestriction;
     int mFacetId;
@@ -128,6 +135,7 @@ class SimpleType : public XSDType
     SubType mSubType;
 
     int mListType;
+    QString mListTypeName;
 
     typedef struct
     {

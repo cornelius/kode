@@ -84,8 +84,11 @@ class ComplexType : public XSDType
     bool isAnonymous() const;
 
     void setBaseType( int type, Derivation derivation, const XSDType *ptr );
+    void setBaseTypeName( const QString &baseTypeName );
+
     int baseType() const;
     int baseDerivation() const;
+    QString baseTypeName() const;
 
     Compositor topLevelGroup() const;
     Compositor groupType( int groupId ) const;
@@ -95,8 +98,11 @@ class ComplexType : public XSDType
     Element *element( int id );
     Attribute *attribute( int id );
 
-    Element::List allElements() const;
-    Attribute::List allAttributes() const;
+    void setElements( const Element::List &elements );
+    Element::List elements() const;
+
+    void setAttributes( const Attribute::List &attributes );
+    Attribute::List attributes() const;
 
     void setIsArray( bool isArray );
     bool isArray() const;
@@ -129,10 +135,7 @@ class ComplexType : public XSDType
     int mType;
 
     Element::List mElements;
-    int num_elems;
-
     Attribute::List mAttributes;
-    int num_atts;
 
     int mContentModel;
     bool mMixed;
@@ -145,6 +148,7 @@ class ComplexType : public XSDType
       int typeId;
       Derivation derivation;
       const  XSDType *type;
+      QString name;
     } mBaseType;
   
     struct CompositorStruct

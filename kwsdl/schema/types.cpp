@@ -43,21 +43,6 @@ ComplexType::List Types::complexTypes() const
   return mComplexTypes;
 }
 
-void Types::setNameMap( const XSDType::NameMap &nameMap )
-{
-  mNameMap = nameMap;
-}
-
-XSDType::NameMap Types::nameMap() const
-{
-  return mNameMap;
-}
-
-QString Types::typeName( int type ) const
-{
-  return mNameMap[ type ];
-}
-
 void Types::setElements( const Element::List &elements )
 {
   mElements = elements;

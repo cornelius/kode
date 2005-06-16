@@ -49,6 +49,16 @@ int Attribute::type() const
   return mType;
 }
 
+void Attribute::setTypeName( const QString &typeName )
+{
+  mTypeName = typeName;
+}
+
+QString Attribute::typeName() const
+{
+  return mTypeName;
+}
+
 QString Attribute::defaultValue() const
 {
   return mDefaultValue;

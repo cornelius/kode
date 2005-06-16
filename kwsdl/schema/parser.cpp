@@ -57,10 +57,31 @@ Types Parser::types() const
     if ( pType != 0 ) {
       if ( pType->isSimple() ) {
         const SimpleType *simpleType = static_cast<const SimpleType*>( pType );
-        simpleTypes.append( *simpleType );
+
+        SimpleType type = *simpleType;
+        type.setBaseTypeName( mTypesTable.typeName( type.baseType() ) );
+        type.setListTypeName( mTypesTable.typeName( type.listType() ) );
+
+        simpleTypes.append( type );
       } else {
         const ComplexType *complexType = static_cast<const ComplexType*>( pType );
-        complexTypes.append( *complexType );
+
+        ComplexType type = *complexType;
+        type.setBaseTypeName( mTypesTable.typeName( type.baseType() ) );
+
+        Schema::Element::List elements = type.elements();
+        Schema::Element::List::Iterator elemIt;
+        for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt )
+          (*elemIt).setTypeName( mTypesTable.typeName( (*elemIt).type() ) );
+        type.setElements( elements );
+
+        Schema::Attribute::List attributes = type.attributes();
+        Schema::Attribute::List::Iterator attrIt;
+        for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt )
+          (*attrIt).setTypeName( mTypesTable.typeName( (*attrIt).type() ) );
+        type.setAttributes( attributes );
+
+        complexTypes.append( type );
       }
     }
   }
@@ -68,12 +89,13 @@ Types Parser::types() const
   Element::List elements;
 
   for ( uint i = 0; i < mElements.count(); ++i ) {
-    elements.append( *mElements[ i ] );
+    Element element = *mElements[ i ];
+    element.setTypeName( mTypesTable.typeName( element.type() ) );
+    elements.append( element );
   }
 
   types.setSimpleTypes( simpleTypes );
   types.setComplexTypes( complexTypes );
-  types.setNameMap( mTypesTable.typeMap() );
   types.setElements( elements );
 
   return types;
@@ -809,11 +831,6 @@ int Parser::typeId( const QualifiedName &type, bool create )
 QString Parser::typeName( int id ) const
 {
   return mTypesTable.typeName( id );
-}
-
-QMap<int, QString> Parser::typeMap() const
-{
-  return mTypesTable.typeMap();
 }
 
 bool Parser::finalize()

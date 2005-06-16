@@ -37,18 +37,12 @@ class Types
     void setComplexTypes( const ComplexType::List &complexTypes );
     ComplexType::List complexTypes() const;
 
-    void setNameMap( const XSDType::NameMap &nameMap );
-    XSDType::NameMap nameMap() const;
-
-    QString typeName( int type ) const;
-
     void setElements( const Element::List &elements );
     Element::List elements() const;
 
   private:
     SimpleType::List mSimpleTypes;
     ComplexType::List mComplexTypes;
-    XSDType::NameMap mNameMap;
     Element::List mElements;
 };
 

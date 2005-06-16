@@ -44,6 +44,9 @@ class Attribute
     QString name() const;
     int type() const;
 
+    void setTypeName( const QString &typeName );
+    QString typeName() const;
+
     QString defaultValue() const;
     QString fixedValue() const;
 
@@ -53,6 +56,7 @@ class Attribute
   private:
     QString mName;
     int mType;
+    QString mTypeName;
     bool mQualified;
     QString mDefaultValue;
     QString mFixedValue;

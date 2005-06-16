@@ -123,7 +123,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
          type->baseType() != Schema::XSDType::INVALID &&
          !(type->facetType() & Schema::SimpleType::ENUM) ) {
 
-      const QString baseName = mWSDL.types().typeName( type->baseType() );
+      const QString baseName = type->baseTypeName();
       const QString typeName = mTypeMapper.type( baseName );
 
       // include header
@@ -160,7 +160,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     }
   } else if ( type->subType() == Schema::SimpleType::TypeList ) {
     newClass.addHeaderInclude( "qptrlist.h" );
-    const QString baseName = mWSDL.types().typeName( type->listType() );
+    const QString baseName = type->listTypeName();
     const QString typeName = mTypeMapper.type( baseName );
 
     // include header
@@ -213,7 +213,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
 void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
 {
   const QString typeName = mTypeMapper.type( type );
-  const QString baseType = mTypeMapper.type( mWSDL.types().typeName( type->baseType() ) );
+  const QString baseType = mTypeMapper.type( type->baseTypeName() );
 
   KODE::Function marshal( "marshal", "void" );
   marshal.setStatic( true );
@@ -335,7 +335,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
       mSerializer.addFunction( demarshalValue );
     }
   } else if ( type->subType() == Schema::SimpleType::TypeList ) {
-    const QString listType = mTypeMapper.type( mWSDL.types().typeName( type->listType() ) );
+    const QString listType = mTypeMapper.type( type->listTypeName() );
 
     mSerializer.addInclude( "qstringlist.h" );
 
@@ -391,16 +391,16 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
   KODE::Code ctorCode, dtorCode;
 
   if ( type->baseType() != Schema::XSDType::ANYTYPE && !type->isArray() ) {
-    QString baseName = mTypeMapper.type( mWSDL.types().typeName( type->baseType() ) );
+    QString baseName = mTypeMapper.type( type->baseTypeName() );
     newClass.addBaseClass( KODE::Class( baseName ) );
-    newClass.addHeaderIncludes( mTypeMapper.header( mWSDL.types().typeName( type->baseType() ) ) );
+    newClass.addHeaderIncludes( mTypeMapper.header( type->baseTypeName() ) );
   }
 
   if ( !type->documentation().isEmpty() )
     newClass.setDocs( type->documentation().simplifyWhiteSpace() );
 
   // elements
-  Schema::Element::List elements = type->allElements();
+  Schema::Element::List elements = type->elements();
   Schema::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     QString typeName = mTypeMapper.type( &*elemIt );
@@ -447,7 +447,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
   }
 
   // attributes
-  Schema::Attribute::List attributes = type->allAttributes();
+  Schema::Attribute::List attributes = type->attributes();
   Schema::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     const QString typeName = mTypeMapper.type( &*attrIt );
@@ -545,7 +545,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
   demarshalCode.indent();
 
   // elements
-  Schema::Element::List elements = type->allElements();
+  Schema::Element::List elements = type->elements();
   Schema::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     const QString typeName = mTypeMapper.type( &*elemIt );
@@ -614,7 +614,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
   }
 
   // attributes
-  Schema::Attribute::List attributes = type->allAttributes();
+  Schema::Attribute::List attributes = type->attributes();
   Schema::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     const QString typeName = mTypeMapper.type( &*attrIt );

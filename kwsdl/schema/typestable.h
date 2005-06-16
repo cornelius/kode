@@ -45,7 +45,6 @@ class TypesTable
     int typeId( const QualifiedName &name, bool create = false );
 
     QString typeName( int id ) const;
-    QMap<int, QString> typeMap() const;
 
     int addExternalTypeId( const QualifiedName &type, XSDType *type );
 

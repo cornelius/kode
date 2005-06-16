@@ -37,7 +37,6 @@ class XSDType
 {
   public:
     typedef QValueList<const XSDType*> List;
-    typedef QMap<int, QString> NameMap;
 
     enum
     {
