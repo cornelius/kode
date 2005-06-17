@@ -27,7 +27,7 @@
 #include "pageinputfield.h"
 
 PageInputField::PageInputField( const QString &name, const KWSDL::Message &message )
- : QObject( 0, QString( "PageInputField(" + name + ")" ).latin1() ), InputField( name ),
+ : InputField( name ),
    mMessage( message )
 {
   KWSDL::Message::Part::List parts = message.parts();
@@ -65,15 +65,24 @@ void PageInputField::setXMLData( const QDomElement &element )
   }
 }
 
-QDomElement PageInputField::xmlData( QDomDocument &document )
+void PageInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
 
   InputField::List::Iterator it;
   for ( it = mFields.begin(); it != mFields.end(); ++it )
-    element.appendChild( (*it)->xmlData( document ) );
+    (*it)->xmlData( document, element );
 
-  return element;
+  parent.appendChild( element );
+}
+
+void PageInputField::setData( const QString& )
+{
+}
+
+QString PageInputField::data() const
+{
+  return QString();
 }
 
 QWidget *PageInputField::createWidget( QWidget *parent )

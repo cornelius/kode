@@ -24,7 +24,7 @@
 #include "boolinputfield.h"
 
 BoolInputField::BoolInputField( const QString &name, const Schema::SimpleType *type )
-  : QObject( 0, "BoolInputField" ), SimpleInputField( name, type ),
+  : SimpleInputField( name, type ),
     mValue( false )
 {
 }
@@ -36,17 +36,27 @@ void BoolInputField::setXMLData( const QDomElement &element )
     return;
   }
 
-  mValue = ( element.text().lower() == "true" );
+  setData( element.text() );
 }
 
-QDomElement BoolInputField::xmlData( QDomDocument &document )
+void BoolInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
   element.setAttribute( "xsi:type", "xsd:boolean" );
-  QDomText text = document.createTextNode( mValue ? "true" : "false" );
+  QDomText text = document.createTextNode( data() );
   element.appendChild( text );
 
-  return element;
+  parent.appendChild( element );
+}
+
+void BoolInputField::setData( const QString &data )
+{
+  mValue = ( data.lower() == "true" );
+}
+
+QString BoolInputField::data() const
+{
+  return ( mValue ? "true" : "false" );
 }
 
 QWidget *BoolInputField::createWidget( QWidget *parent )
@@ -64,6 +74,8 @@ QWidget *BoolInputField::createWidget( QWidget *parent )
 void BoolInputField::inputChanged( bool value )
 {
   mValue = value;
+
+  emit modified();
 }
 
 #include "boolinputfield.moc"

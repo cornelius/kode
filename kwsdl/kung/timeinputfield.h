@@ -19,21 +19,22 @@
     Boston, MA 02111-1307, USA.
 */
 
-#ifndef STRING_INPUTFIELD_H
-#define STRING_INPUTFIELD_H
+#ifndef TIME_INPUTFIELD_H
+#define TIME_INPUTFIELD_H
 
+#include <qdatetime.h>
 #include <qobject.h>
 
 #include "inputfield.h"
 
-class QLineEdit;
+class KTimeWidget;
 
-class StringInputField : public SimpleInputField
+class TimeInputField : public SimpleInputField
 {
   Q_OBJECT
 
   public:
-    StringInputField( const QString &name, const Schema::SimpleType *type );
+    TimeInputField( const QString &name, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );
@@ -44,11 +45,11 @@ class StringInputField : public SimpleInputField
     virtual QWidget *createWidget( QWidget *parent );
 
   private slots:
-    void inputChanged( const QString& );
+    void inputChanged( const QTime& );
 
   private:
-    QLineEdit *mInputWidget;
-    QString mValue;
+    KTimeWidget *mInputWidget;
+    QTime mValue;
 };
 
 #endif

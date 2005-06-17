@@ -26,7 +26,7 @@
 #include "enuminputfield.h"
 
 EnumInputField::EnumInputField( const QString &name, const Schema::SimpleType *type )
-  : QObject( 0, "EnumInputField" ), SimpleInputField( name, type )
+  : SimpleInputField( name, type )
 {
   mEnums = type->facetEnums();
 
@@ -40,17 +40,27 @@ void EnumInputField::setXMLData( const QDomElement &element )
     return;
   }
 
-  mValue = element.text();
+  setData( element.text() );
 }
 
-QDomElement EnumInputField::xmlData( QDomDocument &document )
+void EnumInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
   element.setAttribute( "xsi:type", "xsd:string" );
-  QDomText text = document.createTextNode( mValue );
+  QDomText text = document.createTextNode( data() );
   element.appendChild( text );
 
-  return element;
+  parent.appendChild( element );
+}
+
+void EnumInputField::setData( const QString &data )
+{
+  mValue = data;
+}
+
+QString EnumInputField::data() const
+{
+  return mValue;
 }
 
 QWidget *EnumInputField::createWidget( QWidget *parent )
@@ -69,6 +79,8 @@ QWidget *EnumInputField::createWidget( QWidget *parent )
 void EnumInputField::inputChanged( int value )
 {
   mValue = mEnums[ value ];
+
+  emit modified();
 }
 
 #include "enuminputfield.moc"

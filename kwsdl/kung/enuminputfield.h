@@ -28,7 +28,7 @@
 
 class KComboBox;
 
-class EnumInputField : public QObject, public SimpleInputField
+class EnumInputField : public SimpleInputField
 {
   Q_OBJECT
 
@@ -36,7 +36,10 @@ class EnumInputField : public QObject, public SimpleInputField
     EnumInputField( const QString &name, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
-    virtual QDomElement xmlData( QDomDocument &document );
+    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+
+    virtual void setData( const QString &data );
+    virtual QString data() const;
 
     virtual QWidget *createWidget( QWidget *parent );
 

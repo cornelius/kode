@@ -30,7 +30,11 @@ class SimpleBaseInputField : public SimpleInputField
     SimpleBaseInputField( const QString &name, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
-    virtual QDomElement xmlData( QDomDocument &document );
+    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+
+    virtual void setData( const QString &data );
+    virtual QString data() const;
+
     virtual QWidget *createWidget( QWidget *parent );
 };
 

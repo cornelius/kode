@@ -23,25 +23,25 @@
 
 #include <schema/simpletype.h>
 
-#include "integerinputfield.h"
+#include "doubleinputfield.h"
 
-IntegerInputField::IntegerInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+DoubleInputField::DoubleInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
   : SimpleInputField( name, type ),
     mValue( 0 ), mTypeName( typeName )
 {
 }
 
-void IntegerInputField::setXMLData( const QDomElement &element )
+void DoubleInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "IntegerInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "DoubleInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
     return;
   }
 
   setData( element.text() );
 }
 
-void IntegerInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void DoubleInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
   element.setAttribute( "xsi:type", "xsd:" + mTypeName );
@@ -51,19 +51,19 @@ void IntegerInputField::xmlData( QDomDocument &document, QDomElement &parent )
   parent.appendChild( element );
 }
 
-void IntegerInputField::setData( const QString &data )
+void DoubleInputField::setData( const QString &data )
 {
-  mValue = data.toInt();
+  mValue = data.toDouble();
 }
 
-QString IntegerInputField::data() const
+QString DoubleInputField::data() const
 {
   return QString::number( mValue );
 }
 
-QWidget *IntegerInputField::createWidget( QWidget *parent )
+QWidget *DoubleInputField::createWidget( QWidget *parent )
 {
-  mInputWidget = new KIntSpinBox( parent );
+  mInputWidget = new KDoubleSpinBox( parent );
 
   if ( mType ) {
     if ( mType->facetType() & Schema::SimpleType::MININC )
@@ -78,17 +78,17 @@ QWidget *IntegerInputField::createWidget( QWidget *parent )
 
   mInputWidget->setValue( mValue );
 
-  connect( mInputWidget, SIGNAL( valueChanged( int ) ),
-           this, SLOT( inputChanged( int ) ) );
+  connect( mInputWidget, SIGNAL( valueChanged( double ) ),
+           this, SLOT( inputChanged( double ) ) );
 
   return mInputWidget;
 }
 
-void IntegerInputField::inputChanged( int value )
+void DoubleInputField::inputChanged( double value )
 {
   mValue = value;
 
   emit modified();
 }
 
-#include "integerinputfield.moc"
+#include "doubleinputfield.moc"

@@ -19,63 +19,63 @@
     Boston, MA 02111-1307, USA.
 */
 
-#include <kdatepicker.h>
+#include <ktimewidget.h>
 
-#include "dateinputfield.h"
+#include "timeinputfield.h"
 
-DateInputField::DateInputField( const QString &name, const Schema::SimpleType *type )
+TimeInputField::TimeInputField( const QString &name, const Schema::SimpleType *type )
   : SimpleInputField( name, type ),
-    mValue( QDate::currentDate() )
+    mValue( QTime::currentTime() )
 {
 }
 
-void DateInputField::setXMLData( const QDomElement &element )
+void TimeInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "DateInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "TimeInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
     return;
   }
 
   setData( element.text() );
 }
 
-void DateInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void TimeInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
-  element.setAttribute( "xsi:type", "xsd:date" );
+  element.setAttribute( "xsi:type", "xsd:time" );
   QDomText text = document.createTextNode( data() );
   element.appendChild( text );
 
   parent.appendChild( element );
 }
 
-void DateInputField::setData( const QString &data )
+void TimeInputField::setData( const QString &data )
 {
-  mValue = QDate::fromString( data, Qt::ISODate );
+  mValue = QTime::fromString( data, Qt::ISODate );
 }
 
-QString DateInputField::data() const
+QString TimeInputField::data() const
 {
   return mValue.toString( Qt::ISODate );
 }
 
-QWidget *DateInputField::createWidget( QWidget *parent )
+QWidget *TimeInputField::createWidget( QWidget *parent )
 {
-  mInputWidget = new KDatePicker( parent );
+  mInputWidget = new KTimeWidget( parent );
 
-  mInputWidget->setDate( mValue );
+  mInputWidget->setTime( mValue );
 
-  connect( mInputWidget, SIGNAL( dateChanged( QDate ) ),
-           this, SLOT( inputChanged( QDate ) ) );
+  connect( mInputWidget, SIGNAL( valueChanged( const QTime& ) ),
+           this, SLOT( inputChanged( const QTime& ) ) );
 
   return mInputWidget;
 }
 
-void DateInputField::inputChanged( QDate date )
+void TimeInputField::inputChanged( const QTime &time )
 {
-  mValue = date;
+  mValue = time;
 
   emit modified();
 }
 
-#include "dateinputfield.moc"
+#include "timeinputfield.moc"

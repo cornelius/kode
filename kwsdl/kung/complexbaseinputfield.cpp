@@ -53,14 +53,47 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema:
       appendChild( field );
     }
   }
-
 }
 
 void ComplexBaseInputField::setXMLData( const QDomElement &element )
 {
+  if ( mName != element.tagName() ) {
+    qDebug( "ComplexBaseInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    return;
+  }
+
+  // elements
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() ) {
+    QDomElement child = node.toElement();
+    if ( !child.isNull() ) {
+      InputField *field = childField( child.tagName() );
+      if ( !field ) {
+        qDebug( "ComplexBaseInputField: Child field %s does not exists", child.tagName().latin1() );
+      } else {
+        field->setXMLData( child );
+      }
+    }
+
+    node = node.nextSibling();
+  }
+
+  // attributes
+  QDomNamedNodeMap nodes = element.attributes();
+  for ( uint i = 0; i < nodes.count(); ++i ) {
+    QDomNode node = nodes.item( i );
+    QDomAttr attr = node.toAttr();
+
+    InputField *field = childField( attr.name() );
+    if ( !field ) {
+      qDebug( "ComplexBaseInputField: Child field %s does not exists", attr.name().latin1() );
+    } else {
+      field->setData( attr.value() );
+    }
+  }
 }
 
-QDomElement ComplexBaseInputField::xmlData( QDomDocument &document )
+void ComplexBaseInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
 
@@ -71,7 +104,7 @@ QDomElement ComplexBaseInputField::xmlData( QDomDocument &document )
     if ( !field ) {
       qDebug( "ComplexBaseInputField: No child found" );
     } else {
-      element.appendChild( field->xmlData( document ) );
+      field->xmlData( document, element );
     }
   }
 
@@ -82,11 +115,20 @@ QDomElement ComplexBaseInputField::xmlData( QDomDocument &document )
     if ( !field ) {
       qDebug( "ComplexBaseInputField: No child found" );
     } else {
-      element.setAttribute( field->name(), "TODO:" );
+      element.setAttribute( field->name(), field->data() );
     }
   }
 
-  return element;
+  parent.appendChild( element );
+}
+
+void ComplexBaseInputField::setData( const QString& )
+{
+}
+
+QString ComplexBaseInputField::data() const
+{
+  return QString();
 }
 
 QWidget *ComplexBaseInputField::createWidget( QWidget *parent )

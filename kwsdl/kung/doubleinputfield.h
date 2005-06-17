@@ -19,21 +19,21 @@
     Boston, MA 02111-1307, USA.
 */
 
-#ifndef STRING_INPUTFIELD_H
-#define STRING_INPUTFIELD_H
+#ifndef DOUBLE_INPUTFIELD_H
+#define DOUBLE_INPUTFIELD_H
 
 #include <qobject.h>
 
 #include "inputfield.h"
 
-class QLineEdit;
+class KDoubleSpinBox;
 
-class StringInputField : public SimpleInputField
+class DoubleInputField : public SimpleInputField
 {
   Q_OBJECT
 
   public:
-    StringInputField( const QString &name, const Schema::SimpleType *type );
+    DoubleInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );
@@ -44,11 +44,12 @@ class StringInputField : public SimpleInputField
     virtual QWidget *createWidget( QWidget *parent );
 
   private slots:
-    void inputChanged( const QString& );
+    void inputChanged( double );
 
   private:
-    QLineEdit *mInputWidget;
-    QString mValue;
+    KDoubleSpinBox *mInputWidget;
+    double mValue;
+    QString mTypeName;
 };
 
 #endif

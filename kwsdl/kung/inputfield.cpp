@@ -25,7 +25,8 @@
 #include "inputfield.h"
 
 InputField::InputField( const QString &name )
-  : mName( name )
+  : QObject( 0, QString( "InputField( %1 )" ).arg( name ).latin1() ),
+    mName( name )
 {
 }
 
@@ -87,3 +88,5 @@ ComplexInputField::~ComplexInputField()
   delete mType;
   mType = 0;
 }
+
+#include "inputfield.moc"

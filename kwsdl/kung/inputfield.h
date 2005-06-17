@@ -23,6 +23,7 @@
 #define INPUTFIELD_H
 
 #include <qdom.h>
+#include <qobject.h>
 #include <qstring.h>
 #include <qvaluelist.h>
 
@@ -36,8 +37,10 @@ class ComplexType;
 /**
   Abstract base class for all kinds of input fields.
  */
-class InputField
+class InputField : public QObject
 {
+  Q_OBJECT
+
   public:
     typedef QValueList<InputField*> List;
 
@@ -64,7 +67,17 @@ class InputField
     /**
       Returns the xml value of this field.
      */
-    virtual QDomElement xmlData( QDomDocument &document ) = 0;
+    virtual void xmlData( QDomDocument &document, QDomElement &parent ) = 0;
+
+    /**
+      Sets the plain data of this field as string.
+     */
+    virtual void setData( const QString &data ) = 0;
+
+    /**
+      Returns the data of this field as string.
+     */
+    virtual QString data() const = 0;
 
     /**
       Returns a pointer to a new created input widget which can be used to
@@ -82,6 +95,12 @@ class InputField
       exists.
      */
     virtual InputField *childField( const QString &name ) const;
+
+  signals:
+    /**
+      This signal is emitted whenever the value is changed by the user.
+     */
+    void modified();
 
   protected:
     QString mName;

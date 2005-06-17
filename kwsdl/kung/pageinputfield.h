@@ -28,7 +28,7 @@
 
 #include "inputfield.h"
 
-class PageInputField : public QObject, public InputField
+class PageInputField : public InputField
 {
   Q_OBJECT
 
@@ -36,7 +36,10 @@ class PageInputField : public QObject, public InputField
     PageInputField( const QString &name, const KWSDL::Message &message );
 
     virtual void setXMLData( const QDomElement &element );
-    virtual QDomElement xmlData( QDomDocument &document );
+    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+
+    virtual void setData( const QString &data );
+    virtual QString data() const;
 
     virtual QWidget *createWidget( QWidget *parent );
 

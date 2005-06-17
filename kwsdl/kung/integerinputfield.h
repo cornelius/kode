@@ -28,15 +28,18 @@
 
 class KIntSpinBox;
 
-class IntegerInputField : public QObject, public SimpleInputField
+class IntegerInputField : public SimpleInputField
 {
   Q_OBJECT
 
   public:
-    IntegerInputField( const QString &name, const Schema::SimpleType *type );
+    IntegerInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
-    virtual QDomElement xmlData( QDomDocument &document );
+    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+
+    virtual void setData( const QString &data );
+    virtual QString data() const;
 
     virtual QWidget *createWidget( QWidget *parent );
 
@@ -46,6 +49,7 @@ class IntegerInputField : public QObject, public SimpleInputField
   private:
     KIntSpinBox *mInputWidget;
     int mValue;
+    QString mTypeName;
 };
 
 #endif

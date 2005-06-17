@@ -26,10 +26,12 @@
 #include "boolinputfield.h"
 #include "complexbaseinputfield.h"
 #include "dateinputfield.h"
+#include "doubleinputfield.h"
 #include "enuminputfield.h"
 #include "integerinputfield.h"
 #include "simplebaseinputfield.h"
 #include "stringinputfield.h"
+#include "timeinputfield.h"
 
 #include "inputfieldfactory.h"
 
@@ -78,11 +80,15 @@ InputField *InputFieldFactory::createBasicField( const QString &name, const QStr
     else
       return new StringInputField( name, type );
   } else if ( typeName == "int" || typeName == "unsignedInt" || typeName == "integer" ) {
-    return new IntegerInputField( name, type );
+    return new IntegerInputField( name, typeName, type );
+  } else if ( typeName == "double" || typeName == "float" ) {
+    return new DoubleInputField( name, typeName, type );
   } else if ( typeName == "boolean" ) {
     return new BoolInputField( name, type );
   } else if ( typeName == "date" ) {
     return new DateInputField( name, type );
+  } else if ( typeName == "time" ) {
+    return new TimeInputField( name, type );
   } else {
     qDebug( "InputFieldFactory: Unknown type %s", typeName.latin1() );
     return 0;

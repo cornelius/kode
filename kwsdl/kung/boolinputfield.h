@@ -28,7 +28,7 @@
 
 class QCheckBox;
 
-class BoolInputField : public QObject, public SimpleInputField
+class BoolInputField : public SimpleInputField
 {
   Q_OBJECT
 
@@ -36,7 +36,10 @@ class BoolInputField : public QObject, public SimpleInputField
     BoolInputField( const QString &name, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
-    virtual QDomElement xmlData( QDomDocument &document );
+    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+
+    virtual void setData( const QString &data );
+    virtual QString data() const;
 
     virtual QWidget *createWidget( QWidget *parent );
 
