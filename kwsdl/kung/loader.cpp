@@ -80,10 +80,10 @@ void Loader::parse( const QDomElement &element )
 
 void Loader::execute()
 {
-  Dispatcher dispatcher;
-  dispatcher.setWSDL( mParser.wsdl() );
+  mDispatcher = new Dispatcher;
+  mDispatcher->setWSDL( mParser.wsdl() );
 
-  dispatcher.run();
+  mDispatcher->run();
 }
 
 #include "loader.moc"

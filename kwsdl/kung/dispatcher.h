@@ -26,22 +26,33 @@
 
 #include <kwsdl/wsdl.h>
 
+class ConversationManager;
+class Transport;
+
 class Dispatcher : public QObject
 {
   Q_OBJECT
 
   public:
     Dispatcher();
+    ~Dispatcher();
 
     void setWSDL( const KWSDL::WSDL &wsdl );
 
     void run();
 
+  private slots:
+    void nextMessage();
+    void result( const QString &xml );
+    void error( const QString &errorMsg );
+
   private:
     KWSDL::WSDL mWSDL;
 
-    KWSDL::Message::List mInputMessages;
-    KWSDL::Message::List mOutputMessages;
+    QString mCurrentMessage;
+    QString mLastMessage;
+    ConversationManager *mConversationManager;
+    Transport *mTransport;
 };
 
 #endif

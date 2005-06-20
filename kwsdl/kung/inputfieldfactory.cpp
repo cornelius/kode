@@ -23,6 +23,7 @@
 
 #include <schema/types.h>
 
+#include "binaryinputfield.h"
 #include "boolinputfield.h"
 #include "complexbaseinputfield.h"
 #include "dateinputfield.h"
@@ -89,6 +90,8 @@ InputField *InputFieldFactory::createBasicField( const QString &name, const QStr
     return new DateInputField( name, type );
   } else if ( typeName == "time" ) {
     return new TimeInputField( name, type );
+  } else if ( typeName == "base64Binary" ) {
+    return new BinaryInputField( name, typeName, type );
   } else {
     qDebug( "InputFieldFactory: Unknown type %s", typeName.latin1() );
     return 0;

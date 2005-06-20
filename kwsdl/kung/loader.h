@@ -24,6 +24,8 @@
 
 #include <kwsdl/parser.h>
 
+class Dispatcher;
+
 class Loader : public QObject
 {
   Q_OBJECT
@@ -46,6 +48,8 @@ class Loader : public QObject
 
     KWSDL::Parser mParser;
     QString mWSDLBaseUrl;
+
+    Dispatcher *mDispatcher;
 };
 
 #endif

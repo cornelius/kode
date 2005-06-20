@@ -67,7 +67,7 @@ void PageInputField::setXMLData( const QDomElement &element )
 
 void PageInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
-  QDomElement element = document.createElement( mName );
+  QDomElement element = document.createElement( "ns1:" + mName );
 
   InputField::List::Iterator it;
   for ( it = mFields.begin(); it != mFields.end(); ++it )
@@ -94,9 +94,12 @@ QWidget *PageInputField::createWidget( QWidget *parent )
   int row = 0;
   for ( it = mFields.begin(); it != mFields.end(); ++it, ++row ) {
     QLabel *label = new QLabel( (*it)->name(), mInputWidget );
+    label->setAlignment( Qt::AlignTop );
     layout->addWidget( label, row, 0 );
     layout->addWidget( (*it)->createWidget( mInputWidget ), row, 1 );
   }
+
+  layout->setRowStretch( ++row, 1 );
 
   return mInputWidget;
 }

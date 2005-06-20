@@ -19,25 +19,14 @@
     Boston, MA 02111-1307, USA.
 */
 
-#ifndef GENERAL_CONVERSATIONMANAGER_H
-#define GENERAL_CONVERSATIONMANAGER_H
+#include <klocale.h>
 
-#include <kwsdl/wsdl.h>
+#include "inputdialog.h"
 
-#include "conversationmanager.h"
-
-class GeneralConversationManager : public ConversationManager
+InputDialog::InputDialog( QWidget *page, QWidget *parent )
+  : KDialogBase( Swallow, "", Ok | Cancel, Ok, parent, "", true, true )
 {
-  public:
-    GeneralConversationManager( const KWSDL::WSDL &wsdl );
+  setMainWidget( page );
 
-    virtual QStringList nextActions( const QString &currentAction, const QString &condition = QString() );
-
-  private:
-    KWSDL::WSDL mWSDL;
-
-    KWSDL::Message::List mInputMessages;
-    KWSDL::Message::List mOutputMessages;
-};
-
-#endif
+  setButtonText( Ok, i18n( "Send" ) );
+}

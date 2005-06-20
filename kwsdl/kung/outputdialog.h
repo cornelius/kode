@@ -19,25 +19,15 @@
     Boston, MA 02111-1307, USA.
 */
 
-#ifndef GENERAL_CONVERSATIONMANAGER_H
-#define GENERAL_CONVERSATIONMANAGER_H
+#ifndef OUTPUTDIALOG_H
+#define OUTPUTDIALOG_H
 
-#include <kwsdl/wsdl.h>
+#include <kdialogbase.h>
 
-#include "conversationmanager.h"
-
-class GeneralConversationManager : public ConversationManager
+class OutputDialog : public KDialogBase
 {
   public:
-    GeneralConversationManager( const KWSDL::WSDL &wsdl );
-
-    virtual QStringList nextActions( const QString &currentAction, const QString &condition = QString() );
-
-  private:
-    KWSDL::WSDL mWSDL;
-
-    KWSDL::Message::List mInputMessages;
-    KWSDL::Message::List mOutputMessages;
+    OutputDialog( QWidget *page, QWidget *parent );
 };
 
 #endif
