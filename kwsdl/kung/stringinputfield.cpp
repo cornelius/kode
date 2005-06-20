@@ -26,8 +26,9 @@
 
 #include "stringinputfield.h"
 
-StringInputField::StringInputField( const QString &name, const Schema::SimpleType *type )
-  : SimpleInputField( name, type )
+StringInputField::StringInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+  : SimpleInputField( name, type ),
+    mTypeName( typeName )
 {
 }
 
@@ -44,7 +45,7 @@ void StringInputField::setXMLData( const QDomElement &element )
 void StringInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
   QDomElement element = document.createElement( mName );
-  element.setAttribute( "xsi:type", "xsd:string" );
+  element.setAttribute( "xsi:type", "xsd:" + mTypeName );
   QDomText text = document.createTextNode( data() );
   element.appendChild( text );
 

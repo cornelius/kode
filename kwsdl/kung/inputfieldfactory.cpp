@@ -86,14 +86,19 @@ InputField *InputFieldFactory::createBasicField( const QString &name, const QStr
   if ( isList )
     return new ListInputField( name, typeName, 0 );
 
-  if ( typeName == "string" ) {
+  if ( typeName == "string" || typeName == "language" ) {
     if ( type && type->facetType() & Schema::SimpleType::ENUM )
       return new EnumInputField( name, type );
     else
-      return new StringInputField( name, type );
-  } else if ( typeName == "int" || typeName == "unsignedInt" || typeName == "integer" ) {
+      return new StringInputField( name, typeName, type );
+  } else if ( typeName == "int" || typeName == "unsignedInt" ||
+              typeName == "byte" || typeName == "unsignedByte" ||
+              typeName == "integer" || typeName == "positiveInteger" || typeName == "negativeInteger" ||
+              typeName == "nonNegativeInteger" || typeName == "nonPositiveInteger" ||
+              typeName == "long" || typeName == "unsignedLong" ||
+              typeName == "short" || typeName == "unsignedShort" ) {
     return new IntegerInputField( name, typeName, type );
-  } else if ( typeName == "double" || typeName == "float" ) {
+  } else if ( typeName == "double" || typeName == "float" || typeName == "decimal" ) {
     return new DoubleInputField( name, typeName, type );
   } else if ( typeName == "boolean" ) {
     return new BoolInputField( name, type );

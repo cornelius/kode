@@ -23,6 +23,8 @@
 
 #include <schema/simpletype.h>
 
+#include <limits.h>
+
 #include "integerinputfield.h"
 
 IntegerInputField::IntegerInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
@@ -64,6 +66,42 @@ QString IntegerInputField::data() const
 QWidget *IntegerInputField::createWidget( QWidget *parent )
 {
   mInputWidget = new KIntSpinBox( parent );
+
+  // basic restrictions
+  if ( mTypeName == "byte" ) {
+    mInputWidget->setMinValue( CHAR_MIN );
+    mInputWidget->setMaxValue( CHAR_MAX );
+  } else if ( mTypeName == "unsignedByte" ) {
+    mInputWidget->setMinValue( 0 );
+    mInputWidget->setMaxValue( UCHAR_MAX );
+  } else if ( mTypeName == "integer" || mTypeName == "int" ) {
+    mInputWidget->setMinValue( INT_MIN );
+    mInputWidget->setMaxValue( INT_MAX );
+  } else if ( mTypeName == "positiveInteger" ) {
+    mInputWidget->setMinValue( 1 );
+    mInputWidget->setMaxValue( UINT_MAX );
+  } else if ( mTypeName == "negativeInteger" ) {
+    mInputWidget->setMinValue( INT_MIN );
+    mInputWidget->setMaxValue( -1 );
+  } else if ( mTypeName == "nonNegativeInteger" || mTypeName == "unsignedInt" ) {
+    mInputWidget->setMinValue( 0 );
+    mInputWidget->setMaxValue( UINT_MAX );
+  } else if ( mTypeName == "nonPositiveInteger" ) {
+    mInputWidget->setMinValue( INT_MIN );
+    mInputWidget->setMaxValue( 0 );
+  } else if ( mTypeName == "long" ) {
+    mInputWidget->setMinValue( LONG_MIN );
+    mInputWidget->setMaxValue( LONG_MAX );
+  } else if ( mTypeName == "unsignedlong" ) {
+    mInputWidget->setMinValue( 0 );
+    mInputWidget->setMaxValue( ULONG_MAX );
+  } else if ( mTypeName == "short" ) {
+    mInputWidget->setMinValue( SHRT_MIN );
+    mInputWidget->setMaxValue( SHRT_MAX );
+  } else if ( mTypeName == "unsignedShort" ) {
+    mInputWidget->setMinValue( 0 );
+    mInputWidget->setMaxValue( USHRT_MAX );
+  }
 
   if ( mType ) {
     if ( mType->facetType() & Schema::SimpleType::MININC )

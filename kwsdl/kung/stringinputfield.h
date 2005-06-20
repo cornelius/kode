@@ -33,7 +33,7 @@ class StringInputField : public SimpleInputField
   Q_OBJECT
 
   public:
-    StringInputField( const QString &name, const Schema::SimpleType *type );
+    StringInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );
@@ -49,6 +49,7 @@ class StringInputField : public SimpleInputField
   private:
     QLineEdit *mInputWidget;
     QString mValue;
+    QString mTypeName;
 };
 
 #endif
