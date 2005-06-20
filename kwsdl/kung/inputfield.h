@@ -91,10 +91,20 @@ class InputField : public QObject
     virtual void appendChild( InputField *field );
 
     /**
+      Removes a child field.
+     */
+    virtual void removeChild( InputField *field );
+
+    /**
       Returns a field with the given name or 0 when no field with this name
       exists.
      */
     virtual InputField *childField( const QString &name ) const;
+
+    /**
+      Returns a list of all child fields.
+     */
+    virtual InputField::List childFields() const;
 
   signals:
     /**

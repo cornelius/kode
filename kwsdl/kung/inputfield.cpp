@@ -49,6 +49,11 @@ void InputField::appendChild( InputField *field )
   mFields.append( field );
 }
 
+void InputField::removeChild( InputField *field )
+{
+  mFields.remove( field );
+}
+
 InputField *InputField::childField( const QString &name ) const
 {
   InputField::List::ConstIterator it;
@@ -57,6 +62,11 @@ InputField *InputField::childField( const QString &name ) const
       return *it;
 
   return 0;
+}
+
+InputField::List InputField::childFields() const
+{
+  return mFields;
 }
 
 SimpleInputField::SimpleInputField( const QString &name, const Schema::SimpleType *type )

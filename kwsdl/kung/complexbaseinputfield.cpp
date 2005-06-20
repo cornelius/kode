@@ -35,7 +35,8 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema:
   Schema::Element::List elements = type->elements();
   Schema::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
-    InputField *field = InputFieldFactory::self()->createField( (*elemIt).name(), (*elemIt).typeName() );
+    bool isList = ((*elemIt).maxOccurs() == UNBOUNDED);
+    InputField *field = InputFieldFactory::self()->createField( (*elemIt).name(), (*elemIt).typeName(), isList );
     if ( !field ) {
       qDebug( "ComplexBaseInputField: Unable to create field of type %s", type->baseTypeName().latin1() );
     } else {
@@ -63,19 +64,24 @@ void ComplexBaseInputField::setXMLData( const QDomElement &element )
   }
 
   // elements
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement child = node.toElement();
-    if ( !child.isNull() ) {
-      InputField *field = childField( child.tagName() );
-      if ( !field ) {
-        qDebug( "ComplexBaseInputField: Child field %s does not exists", child.tagName().latin1() );
-      } else {
-        field->setXMLData( child );
+  if ( mType->isArray() ) {
+    InputField *field = childField( "item" );
+    field->setXMLData( element );
+  } else {
+    QDomNode node = element.firstChild();
+    while ( !node.isNull() ) {
+      QDomElement child = node.toElement();
+      if ( !child.isNull() ) {
+        InputField *field = childField( child.tagName() );
+        if ( !field ) {
+          qDebug( "ComplexBaseInputField: Child field %s does not exists", child.tagName().latin1() );
+        } else {
+          field->setXMLData( child );
+        }
       }
-    }
 
-    node = node.nextSibling();
+      node = node.nextSibling();
+    }
   }
 
   // attributes

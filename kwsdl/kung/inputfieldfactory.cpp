@@ -30,6 +30,7 @@
 #include "doubleinputfield.h"
 #include "enuminputfield.h"
 #include "integerinputfield.h"
+#include "listinputfield.h"
 #include "simplebaseinputfield.h"
 #include "stringinputfield.h"
 #include "timeinputfield.h"
@@ -52,13 +53,16 @@ void InputFieldFactory::setTypes( const Schema::Types &types )
   mTypes = types;
 }
 
-InputField *InputFieldFactory::createField( const QString &name, const QString &typeName )
+InputField *InputFieldFactory::createField( const QString &name, const QString &typeName, bool isList )
 {
   Schema::SimpleType::List simpleTypes = mTypes.simpleTypes();
   Schema::SimpleType::List::ConstIterator simpleIt;
   for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt ) {
     if ( (*simpleIt).name() == typeName ) {
-      return new SimpleBaseInputField( name, &(*simpleIt) );
+      if ( isList )
+        return new ListInputField( name, typeName, 0 );
+      else
+        return new SimpleBaseInputField( name, &(*simpleIt) );
     }
   }
 
@@ -66,15 +70,22 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
   Schema::ComplexType::List::ConstIterator complexIt;
   for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
     if ( (*complexIt).name() == typeName ) {
-      return new ComplexBaseInputField( name, &(*complexIt) );
+      if ( isList )
+        return new ListInputField( name, typeName, 0 );
+      else
+        return new ComplexBaseInputField( name, &(*complexIt) );
     }
   }
 
-  return createBasicField( name, typeName, 0 );
+  return createBasicField( name, typeName, 0, isList );
 }
 
-InputField *InputFieldFactory::createBasicField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+InputField *InputFieldFactory::createBasicField( const QString &name, const QString &typeName,
+                                                 const Schema::SimpleType *type, bool isList )
 {
+  if ( isList )
+    return new ListInputField( name, typeName, 0 );
+
   if ( typeName == "string" ) {
     if ( type && type->facetType() & Schema::SimpleType::ENUM )
       return new EnumInputField( name, type );

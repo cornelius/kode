@@ -44,12 +44,12 @@ class InputFieldFactory
     /**
       Creates an input field of the given type with the given name.
      */
-    InputField *createField( const QString &name, const QString &typeName );
+    InputField *createField( const QString &name, const QString &typeName, bool isList = false );
 
     /**
       Creates an input field of the given type with the given name.
      */
-    InputField *createBasicField( const QString &name, const QString &typeName, const Schema::SimpleType *type );
+    InputField *createBasicField( const QString &name, const QString &typeName, const Schema::SimpleType *type, bool isList = false );
 
     /**
       Sets the types description, so that the factory can pass
