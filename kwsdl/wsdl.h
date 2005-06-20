@@ -50,6 +50,7 @@ class WSDL
     Schema::Types types() const;
 
     Message findMessage( const QString& ) const;
+    Message findOutputMessage( const QString& ) const;
     Port findPort( const QString& ) const;
     Binding findBinding( const QString& ) const;
     Binding::Operation findBindingOperation( const QString&, const QString& ) const;

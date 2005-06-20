@@ -85,6 +85,21 @@ Message WSDL::findMessage( const QString &name ) const
   return Message();
 }
 
+Message WSDL::findOutputMessage( const QString &name ) const
+{
+  Port::List::ConstIterator it;
+  for ( it = mPorts.begin(); it != mPorts.end(); ++it ) {
+    Port::Operation::List operations = (*it).operations();
+    Port::Operation::List::ConstIterator opIt;
+    for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
+      if ( (*opIt).input() == name )
+        return findMessage( (*opIt).output() );
+    }
+  }
+
+  return Message();
+}
+
 Port WSDL::findPort( const QString &name ) const
 {
   Port::List::ConstIterator it;
