@@ -685,7 +685,7 @@ void Parser::parseComplexContent( const QDomElement &element, ComplexType *ct )
 
           QualifiedName arrayType( arrayElement.attribute( "arrayType" ) );
 //          arrayType.setNamespace(xParser->getNamespace(arrayType.getPrefix()));
-          ct->addElement( "items", typeId( arrayType, true ), 0, UNBOUNDED );
+          ct->addElement( "item", typeId( arrayType, true ), 0, UNBOUNDED );
         } else {
           QDomNode childNode = childElement.firstChild();
           while ( !childNode.isNull() ) {
