@@ -981,7 +981,7 @@ void Converter::createTransportClass()
   KODE::Code slotResultCode;
   slotResultCode += "if ( job->error() != 0 ) {";
   slotResultCode.indent();
-  slotResultCode += "kdWarning() << \"Error occured \" << job->errorText() << endl;";
+  slotResultCode += "kdWarning() << \"Error occurred \" << job->errorText() << endl;";
   slotResultCode += "kdWarning() << " + slotDataVar.name() + " << endl;";
   slotResultCode += "return;";
   slotResultCode.unindent();

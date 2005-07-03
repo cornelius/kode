@@ -337,7 +337,7 @@ void ComplexType::matchElementRef( const QString &name, Element &element )
   if ( mForwardElementRef ) {
     Element *elementPtr = (Element*)this->element( name );
     if ( elementPtr ) {
-      // these values are specific to the occurence of the element inside another XML type
+      // these values are specific to the occurrence of the element inside another XML type
       // so we shouldnt delete them
       int min = elementPtr->minOccurs(); 
       int max = elementPtr->maxOccurs();

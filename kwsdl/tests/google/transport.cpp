@@ -62,7 +62,7 @@ void Transport::slotData( KIO::Job*, const QByteArray &data )
 void Transport::slotResult( KIO::Job* job )
 {
   if ( job->error() != 0 ) {
-    kdWarning() << "Error occured " << job->errorText() << endl;
+    kdWarning() << "Error occurred " << job->errorText() << endl;
     kdWarning() << mData << endl;
     return;
   }
