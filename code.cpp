@@ -94,7 +94,7 @@ void Code::addBlock( const QString &block )
   }
   QStringList::ConstIterator it;
   for( it = lines.begin(); it != lines.end(); ++it ) {
-    mText += spaces( mIndent );
+    if ( !(*it).isEmpty() ) mText += spaces( mIndent );
     mText += *it;
     mText += '\n';
   }
