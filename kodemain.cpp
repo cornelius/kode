@@ -66,7 +66,7 @@ static const KCmdLineOptions options[] =
   { "filename <name>", I18N_NOOP("Name of file"), 0 },
   { "namespace <name>", I18N_NOOP("Namespace"), 0 },
   { "warning", I18N_NOOP("Create warning about code generation"), 0 },
-  { "qt-exception", I18N_NOOP("Add Qt excpetion to GPL"), 0 },
+  { "qt-exception", I18N_NOOP("Add Qt exception to GPL"), 0 },
   { "singleton", I18N_NOOP("Create a singleton class"), 0 },
   { "protocol", I18N_NOOP("kioslave protocol"), 0 },
   { "+[filename]", I18N_NOOP("Source code file name"), 0 },

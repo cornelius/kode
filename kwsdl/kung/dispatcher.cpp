@@ -79,7 +79,7 @@ void Dispatcher::nextMessage()
 
   mCurrentMessage = QString();
   if ( items.count() > 1 ) {
-    mCurrentMessage = KInputDialog::getItem( i18n( "Select a functionality of the service" ), i18n( "Functions" ),
+    mCurrentMessage = KInputDialog::getItem( i18n( "Select a functionality of the service:" ), i18n( "Functions" ),
                                          items );
   } else
     mCurrentMessage = items.first();
