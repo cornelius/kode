@@ -167,7 +167,7 @@ int main( int argc, char **argv )
 
   KODE::Printer printer;
   printer.setCreationWarning( true );
-  printer.setGenerator( "kxml_compiler" );
+  printer.setGenerator( argv[0] );
   printer.setOutputDirectory( baseDir );
   printer.setSourceFile( args->url( 0 ).fileName() );
 
