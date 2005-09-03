@@ -229,7 +229,7 @@ void Parser::doIndent( int cols )
 
 void Parser::dumpPattern( Pattern pattern )
 {
-  std::cout << pattern.asString().utf8();
+  std::cout << pattern.asString().data();
 }
 
 void Parser::dumpReferences( const Reference::List &references, int indent )
@@ -238,7 +238,7 @@ void Parser::dumpReferences( const Reference::List &references, int indent )
   for( it = references.begin(); it != references.end(); ++it ) {
     Reference *r = *it;
     doIndent( indent );
-    std::cout << "REFERENCE " << r->name.utf8();
+    std::cout << "REFERENCE " << r->name.data();
     dumpPattern( r->pattern );
     std::cout << std::endl;
   }
@@ -250,7 +250,7 @@ void Parser::dumpAttributes( const Attribute::List &attributes, int indent )
   for( it = attributes.begin(); it != attributes.end(); ++it ) {
     Attribute *a = *it;
     doIndent( indent );
-    std::cout << "ATTRIBUTE " << a->name.utf8();
+    std::cout << "ATTRIBUTE " << a->name.data();
     dumpPattern( a->pattern );
     std::cout << std::endl;
   }
@@ -268,7 +268,7 @@ void Parser::dumpElements( const Element::List &elements, int indent )
 void Parser::dumpElement( Element *e, int indent )
 {
   doIndent( indent );
-  std::cout << "ELEMENT " << e->name.utf8();
+  std::cout << "ELEMENT " << e->name.data();
   dumpPattern( e->pattern );
   std::cout << std::endl;
 
@@ -284,7 +284,7 @@ void Parser::dumpElement( Element *e, int indent )
 
 void Parser::dumpTree( Element *s )
 {
-  std::cout << "START " << s->name.utf8() << std::endl;
+  std::cout << "START " << s->name.data() << std::endl;
   dumpElements( s->elements, 2 );
   dumpReferences( s->references, 2 );
 }

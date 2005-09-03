@@ -26,6 +26,8 @@
 #include <qstringlist.h>
 
 #include "qualifiedname.h"
+//Added by qt3to4:
+#include <Q3ValueList>
 #include "xsdtype.h"
 
 namespace Schema {
@@ -33,7 +35,7 @@ namespace Schema {
 class SimpleType : public XSDType
 {
   public:
-    typedef QValueList<SimpleType> List;
+    typedef Q3ValueList<SimpleType> List;
 
     enum FacetType
     {

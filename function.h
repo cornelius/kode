@@ -23,7 +23,7 @@
 
 #include "code.h"
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qstring.h>
 #include <qstringlist.h>
 #include <kdepimmacros.h>
@@ -33,7 +33,7 @@ namespace KODE {
 class KDE_EXPORT Function
 {
   public:
-    typedef QValueList<Function> List;
+    typedef Q3ValueList<Function> List;
 
     enum AccessSpecifier { Public = 1, Protected = 2, Private = 4, Signal = 8, Slot = 16 };
 

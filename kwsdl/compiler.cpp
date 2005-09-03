@@ -69,7 +69,7 @@ void Compiler::download()
   QString fileName;
   if ( provider.get( mWSDLUrl, fileName ) ) {
     QFile file( fileName );
-    if ( !file.open( IO_ReadOnly ) ) {
+    if ( !file.open( QIODevice::ReadOnly ) ) {
       qDebug( "Unable to download schema file %s", mWSDLUrl.latin1() );
       provider.cleanUp();
       return;

@@ -38,7 +38,7 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
 
   if ( name.isEmpty() ) {
     n = "mUndefined";
-  } else if ( name.length() >= 2  && name[ 0 ] == "m" &&
+  } else if ( name.length() >= 2  && name[ 0 ] == 'm' &&
               ( name[ 1 ].upper() == name[ 1 ] ) ) {
     n = name;
   } else {

@@ -88,7 +88,7 @@ void FileProvider::slotResult( KIO::Job *job )
   }
 
   QFile file( mFileName );
-  if ( !file.open( IO_WriteOnly ) ) {
+  if ( !file.open( QIODevice::WriteOnly ) ) {
     qDebug( "Unable to create temporary file" );
     return;
   }

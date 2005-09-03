@@ -24,20 +24,20 @@
 #ifndef DIRECTORYCATEGORYARRAY_H
 #define DIRECTORYCATEGORYARRAY_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class DirectoryCategory;
 
 class DirectoryCategoryArray
 {
   public:
-    void setItems( QPtrList<DirectoryCategory>* items );
-    QPtrList<DirectoryCategory>*items() const;
+    void setItems( Q3PtrList<DirectoryCategory>* items );
+    Q3PtrList<DirectoryCategory>*items() const;
     DirectoryCategoryArray();
     ~DirectoryCategoryArray();
   
   private:
-    QPtrList<DirectoryCategory>*mItems;
+    Q3PtrList<DirectoryCategory>*mItems;
 };
 
 #endif

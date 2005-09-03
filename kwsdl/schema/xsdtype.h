@@ -24,7 +24,7 @@
 #define SCHEMA_XSDTYPE_H
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qmap.h>
 
 #include "qualifiedname.h"
@@ -36,7 +36,7 @@ const QString SchemaUri = "http://www.w3.org/2001/XMLSchema";
 class XSDType
 {
   public:
-    typedef QValueList<const XSDType*> List;
+    typedef Q3ValueList<const XSDType*> List;
 
     enum
     {

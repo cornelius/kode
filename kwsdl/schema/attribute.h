@@ -24,15 +24,15 @@
 #define SCHEMA_ATTRIBUTE_H
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 namespace Schema {
 
 class Attribute
 {
   public:
-    typedef QValueList<Attribute> List;
-    typedef QValueList<Attribute*> PtrList;
+    typedef Q3ValueList<Attribute> List;
+    typedef Q3ValueList<Attribute*> PtrList;
 
     Attribute();
 

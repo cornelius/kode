@@ -1,7 +1,7 @@
 #include <kaboutdata.h>
 #include <kapplication.h>
 #include <kcmdlineargs.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 
 #include "googlesearch.hh"
 

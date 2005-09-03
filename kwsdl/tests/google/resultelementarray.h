@@ -24,20 +24,20 @@
 #ifndef RESULTELEMENTARRAY_H
 #define RESULTELEMENTARRAY_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class ResultElement;
 
 class ResultElementArray
 {
   public:
-    void setItems( QPtrList<ResultElement>* items );
-    QPtrList<ResultElement>*items() const;
+    void setItems( Q3PtrList<ResultElement>* items );
+    Q3PtrList<ResultElement>*items() const;
     ResultElementArray();
     ~ResultElementArray();
   
   private:
-    QPtrList<ResultElement>*mItems;
+    Q3PtrList<ResultElement>*mItems;
 };
 
 #endif

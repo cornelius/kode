@@ -25,15 +25,15 @@
 #include "resultelementarray.h"
 
 #include <serializer.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <resultelement.h>
 
-void ResultElementArray::setItems( QPtrList<ResultElement>* items )
+void ResultElementArray::setItems( Q3PtrList<ResultElement>* items )
 {
   mItems = items;
 }
 
-QPtrList<ResultElement>*ResultElementArray::items() const
+Q3PtrList<ResultElement>*ResultElementArray::items() const
 {
    return mItems;
 }

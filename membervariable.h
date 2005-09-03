@@ -23,7 +23,7 @@
 
 #include "variable.h"
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qstring.h>
 #include <kdepimmacros.h>
 
@@ -32,7 +32,7 @@ namespace KODE {
 class KDE_EXPORT MemberVariable : public Variable
 {
   public:
-    typedef QValueList<MemberVariable> List;
+    typedef Q3ValueList<MemberVariable> List;
 
     MemberVariable();
     MemberVariable( const QString &name, const QString &type,

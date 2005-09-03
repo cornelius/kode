@@ -24,11 +24,11 @@
 #ifndef SERIALIZER_H
 #define SERIALIZER_H
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qdom.h>
 #include <qdatetime.h>
 #include <qstring.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class ResultElementArray;
 class DirectoryCategoryArray;

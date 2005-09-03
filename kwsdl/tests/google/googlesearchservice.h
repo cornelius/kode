@@ -27,7 +27,7 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <transport.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <googlesearchresult.h>
 
 class GoogleSearchService : public QObject

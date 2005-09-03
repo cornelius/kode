@@ -27,7 +27,7 @@
 #include "automakefile.h"
 
 #include <kdepimmacros.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qstring.h>
 #include <qstringlist.h>
 

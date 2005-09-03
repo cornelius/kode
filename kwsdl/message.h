@@ -23,19 +23,21 @@
 #define KWSDL_MESSAGE_H
 
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 namespace KWSDL {
 
 class Message
 {
   public:
-    typedef QValueList<Message> List;
+    typedef Q3ValueList<Message> List;
 
     class Part
     {
       public:
         typedef QMap<QString, Part> Map;
-        typedef QValueList<Part> List;
+        typedef Q3ValueList<Part> List;
 
         Part();
         Part( const QString &name, const QString &type );

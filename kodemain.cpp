@@ -139,8 +139,8 @@ int addProperty( KCmdLineArgs *args )
   QString headerFileName = className.lower() + ".h";
   
   QFile headerFile( headerFileName );
-  if ( !headerFile.open( IO_ReadOnly ) ) {
-    std::cerr << "Unable to open file '" << headerFileName.utf8() << "'" <<
+  if ( !headerFile.open( QIODevice::ReadOnly ) ) {
+    std::cerr << "Unable to open file '" << headerFileName.data()/*.utf8()*/ << "'" <<
       std::endl;
     return 1;
   }
@@ -276,7 +276,7 @@ int addProperty( KCmdLineArgs *args )
       kdError() << "Copy failed" << endl;
     } else {
       kdDebug() << "Write to original file." << endl;
-      if ( !headerFile.open( IO_WriteOnly ) ) {
+      if ( !headerFile.open( QIODevice::WriteOnly ) ) {
         kdError() << "Unable to open file '" << headerFileName <<
           "' for writing." << endl;
         return 1;
@@ -285,7 +285,7 @@ int addProperty( KCmdLineArgs *args )
       o << out << endl;
     }
   } else {
-    std::cout << out.utf8() << std::endl;
+    std::cout << out.data()/*.utf8()*/ << std::endl;
   }
 
   return 0;
@@ -301,7 +301,7 @@ int codify( KCmdLineArgs *args )
   QString filename = args->arg( 0 );
 
   QFile f( filename );
-  if ( !f.open( IO_ReadOnly ) ) {
+  if ( !f.open( QIODevice::ReadOnly ) ) {
     kdError() << "Unable to open file '" << filename << "'." << endl;
     return 1;            
   } else {
@@ -313,7 +313,7 @@ int codify( KCmdLineArgs *args )
       line.replace( "\"", "\\\"" );
       line = "code += \"" + line;
       line.append( "\";" );
-      std::cout << line.local8Bit() << std::endl;
+      std::cout << line.data()/*.local8Bit()*/ << std::endl;
     }
   }
 

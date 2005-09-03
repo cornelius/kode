@@ -41,6 +41,8 @@
 #include <qdom.h>
 #include <qregexp.h>
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <iostream>
 
@@ -88,7 +90,7 @@ int main( int argc, char **argv )
 
 
   QFile dtdFile( dtdFilename );
-  if ( !dtdFile.open( IO_ReadOnly ) ) {
+  if ( !dtdFile.open( QIODevice::ReadOnly ) ) {
     kdError() << "Unable to open '" << dtdFilename << "'" << endl;
     return 1;
   }
@@ -135,7 +137,7 @@ int main( int argc, char **argv )
   Creator c( pt );
 
   kdDebug() << "Create classes" << endl;
-  QValueList<Element *>::ConstIterator it;
+  Q3ValueList<Element *>::ConstIterator it;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
     c.createClass( *it );
   }
@@ -149,7 +151,7 @@ int main( int argc, char **argv )
   c.createListTypedefs();
 
 #if 0
-  QValueList<Reference *>::ConstIterator it2;
+  Q3ValueList<Reference *>::ConstIterator it2;
   for( it2 = start->references.begin(); it2 != start->references.end();
        ++it2 ) {
     Element e;

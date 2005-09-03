@@ -116,7 +116,7 @@ void Code::addBlock( const Code &c )
 void Code::addWrappedText( const QString &txt )
 {
   int maxWidth = 80 - mIndent;
-  unsigned int pos = 0;
+  int pos = 0;
   while ( pos < txt.length() ) {
     QString line = txt.mid( pos, maxWidth );
     addLine( line );

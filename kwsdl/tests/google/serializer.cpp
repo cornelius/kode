@@ -24,12 +24,14 @@
 
 #include "serializer.h"
 
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <resultelementarray.h>
 #include <directorycategoryarray.h>
 #include <googlesearchresult.h>
 #include <directorycategory.h>
 #include <resultelement.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 QString Serializer::marshalValue( const QString* value )
 {
@@ -313,7 +315,7 @@ void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString 
   root.setAttribute( "xsi:type", "ns1:ResultElementArray" );
   parent.appendChild( root );
   if ( value->items() ) {
-    const QPtrList<ResultElement>* list = value->items();
+    const Q3PtrList<ResultElement>* list = value->items();
   
     QDomElement element = doc.createElement( name );
     element.setAttribute( "xmlns:ns1", "http://schemas.xmlsoap.org/soap/encoding/" );
@@ -321,7 +323,7 @@ void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString 
     element.setAttribute( "ns1:arrayType", "ns1:ResultElement[" + QString::number( list->count() ) + "]" );
     parent.appendChild( element );
   
-    QPtrListIterator<ResultElement> it( *list );
+    Q3PtrListIterator<ResultElement> it( *list );
     while ( it.current() != 0 ) {
       Serializer::marshal( doc, element, "item", it.current() );
       ++it;
@@ -331,7 +333,7 @@ void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString 
 
 void Serializer::demarshal( const QDomElement &parent, ResultElementArray* value )
 {
-  QPtrList<ResultElement>* itemsList = new QPtrList<ResultElement>();
+  Q3PtrList<ResultElement>* itemsList = new Q3PtrList<ResultElement>();
   itemsList->setAutoDelete( true );
   QDomNode node = parent.firstChild();
   while ( !node.isNull() ) {
@@ -355,7 +357,7 @@ void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString 
   root.setAttribute( "xsi:type", "ns1:DirectoryCategoryArray" );
   parent.appendChild( root );
   if ( value->items() ) {
-    const QPtrList<DirectoryCategory>* list = value->items();
+    const Q3PtrList<DirectoryCategory>* list = value->items();
   
     QDomElement element = doc.createElement( name );
     element.setAttribute( "xmlns:ns1", "http://schemas.xmlsoap.org/soap/encoding/" );
@@ -363,7 +365,7 @@ void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString 
     element.setAttribute( "ns1:arrayType", "ns1:DirectoryCategory[" + QString::number( list->count() ) + "]" );
     parent.appendChild( element );
   
-    QPtrListIterator<DirectoryCategory> it( *list );
+    Q3PtrListIterator<DirectoryCategory> it( *list );
     while ( it.current() != 0 ) {
       Serializer::marshal( doc, element, "item", it.current() );
       ++it;
@@ -373,7 +375,7 @@ void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString 
 
 void Serializer::demarshal( const QDomElement &parent, DirectoryCategoryArray* value )
 {
-  QPtrList<DirectoryCategory>* itemsList = new QPtrList<DirectoryCategory>();
+  Q3PtrList<DirectoryCategory>* itemsList = new Q3PtrList<DirectoryCategory>();
   itemsList->setAutoDelete( true );
   QDomNode node = parent.firstChild();
   while ( !node.isNull() ) {

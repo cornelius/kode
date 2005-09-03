@@ -24,14 +24,14 @@
 #define SCHEMA_QUALIFIEDNAME_H
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 namespace Schema {
 
 class QualifiedName
 {
   public:
-    typedef QValueList<QualifiedName> List;
+    typedef Q3ValueList<QualifiedName> List;
 
     QualifiedName();
     QualifiedName( const QString &name );

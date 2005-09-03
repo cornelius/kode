@@ -398,7 +398,7 @@ void Printer::printHeader( const File &f )
   KSaveFile::backupFile( filename, QString::null, ".backup" );
 
   QFile header( filename );
-  if ( !header.open( IO_WriteOnly ) ) {
+  if ( !header.open( QIODevice::WriteOnly ) ) {
     kdError() << "Can't open '" << filename << "' for writing." << endl;
     return;
   }
@@ -511,7 +511,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
   KSaveFile::backupFile( filename, QString::null, ".backup" );
 
   QFile implementation( filename );
-  if ( !implementation.open( IO_WriteOnly ) ) {
+  if ( !implementation.open( QIODevice::WriteOnly ) ) {
     kdError() << "Can't open '" << filename << "' for writing." << endl;
     return;
   }
@@ -532,7 +532,7 @@ void Printer::printAutoMakefile( const AutoMakefile &am )
   KSaveFile::backupFile( filename, QString::null, ".backup" );
 
   QFile file( filename );
-  if ( !file.open( IO_WriteOnly ) ) {
+  if ( !file.open( QIODevice::WriteOnly ) ) {
     kdError() << "Can't open '" << filename << "' for writing." << endl;
     return;
   }

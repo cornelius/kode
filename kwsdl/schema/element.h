@@ -24,7 +24,7 @@
 #define SCHEMA_ELEMENT_H
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 #define UNBOUNDED 1000
 
@@ -33,8 +33,8 @@ namespace Schema {
 class Element
 {
   public:
-    typedef QValueList<Element> List;
-    typedef QValueList<Element*> PtrList;
+    typedef Q3ValueList<Element> List;
+    typedef Q3ValueList<Element*> PtrList;
 
     Element();
 

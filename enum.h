@@ -22,6 +22,8 @@
 #define KODE_ENUM_H
 
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 #include <kdepimmacros.h>
 
 namespace KODE {
@@ -29,7 +31,7 @@ namespace KODE {
 class KDE_EXPORT Enum
 {
   public:
-    typedef QValueList<Enum> List;
+    typedef Q3ValueList<Enum> List;
   
     Enum();
     Enum( const QString &name, const QStringList &enums, bool combinable = false );

@@ -21,7 +21,7 @@
 
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <kmessagebox.h>
 #include <kmimemagic.h>
 #include <klocale.h>

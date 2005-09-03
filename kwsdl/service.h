@@ -24,6 +24,8 @@
 
 #include <qmap.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 namespace KWSDL {
 
@@ -33,7 +35,7 @@ class Service
     class Port
     {
       public:
-        typedef QValueList<Port> List;
+        typedef Q3ValueList<Port> List;
 
         QString mName;
         QString mBinding;

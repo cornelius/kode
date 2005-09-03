@@ -26,14 +26,14 @@
 
 #include <serializer.h>
 #include <directorycategory.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
-void DirectoryCategoryArray::setItems( QPtrList<DirectoryCategory>* items )
+void DirectoryCategoryArray::setItems( Q3PtrList<DirectoryCategory>* items )
 {
   mItems = items;
 }
 
-QPtrList<DirectoryCategory>*DirectoryCategoryArray::items() const
+Q3PtrList<DirectoryCategory>*DirectoryCategoryArray::items() const
 {
    return mItems;
 }

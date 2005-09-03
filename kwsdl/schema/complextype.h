@@ -24,6 +24,8 @@
 #define SCHEMA_COMPLEXTYPE_H
 
 #include <qstring.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include "attribute.h"
 #include "element.h"
@@ -35,7 +37,7 @@ namespace Schema {
 class ComplexType : public XSDType
 {
   public:
-    typedef QValueList<ComplexType> List;
+    typedef Q3ValueList<ComplexType> List;
 
     typedef enum { 
       SEQ = 0, 
@@ -167,7 +169,7 @@ class ComplexType : public XSDType
       int maxOccurs;
     };
 
-    QValueList<struct CompositorStruct> mGroups;
+    Q3ValueList<struct CompositorStruct> mGroups;
 
     Compositor mTopLevelGroup;
     int mCurrentGroup;

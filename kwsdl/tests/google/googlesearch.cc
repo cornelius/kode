@@ -25,6 +25,8 @@
 #include "googlesearch.hh"
 #include "resultelement.h"
 #include "resultelementarray.h"
+//Added by qt3to4:
+#include <Q3PtrList>
 
 GoogleSearch::GoogleSearch()
   : QObject( 0, "" )
@@ -80,8 +82,8 @@ void GoogleSearch::googleSearchResult( GoogleSearchResult *result )
 {
   qDebug( "--------------------- Search Results ---------------------" );
   ResultElementArray *array = result->resultElements();
-  QPtrList<ResultElement> *list = array->items();
-  QPtrListIterator<ResultElement> it( *list );
+  Q3PtrList<ResultElement> *list = array->items();
+  Q3PtrListIterator<ResultElement> it( *list );
   while ( it.current() != 0 ) {
     qDebug( "%s: %s", it.current()->summary()->latin1(), it.current()->uRL()->latin1() );
     ++it;

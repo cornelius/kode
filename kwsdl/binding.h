@@ -23,18 +23,20 @@
 #define KWSDL_BINDING_H
 
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 namespace KWSDL {
 
 class Binding
 {
   public:
-    typedef QValueList<Binding> List;
+    typedef Q3ValueList<Binding> List;
 
     class Operation
     {
       public:
-        typedef QValueList<Operation> List;
+        typedef Q3ValueList<Operation> List;
 
         class Item
         {

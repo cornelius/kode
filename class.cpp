@@ -54,7 +54,7 @@ Class &Class::operator=( const Class &c )
   mEnums = c.mEnums;
   mDocs = c.mDocs;
 
-  QPtrListIterator<Class> it( c.mBaseClasses );
+  Q3PtrListIterator<Class> it( c.mBaseClasses );
   while( it.current() ) {
     mBaseClasses.append( new Class( *( it.current() ) ) );
     ++it;
@@ -125,7 +125,7 @@ Class::List Class::baseClasses() const
 {
   Class::List b;
   
-  QPtrListIterator<Class> it( mBaseClasses );
+  Q3PtrListIterator<Class> it( mBaseClasses );
   while( it.current() ) {
     b.append( Class( *( it.current() ) ) );
     ++it;

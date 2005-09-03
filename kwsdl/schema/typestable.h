@@ -25,6 +25,8 @@
 
 #include <qmap.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include "complextype.h"
 #include "simpletype.h"
@@ -65,7 +67,7 @@ class TypesTable
     QString targetNamespace() const;
 
   private:
-    QValueList<XSDType*> mTypes;
+    Q3ValueList<XSDType*> mTypes;
 
     //maintains a map of all user defined type names and their ids
     QMap<QString, int> mUserTypes;
@@ -81,7 +83,7 @@ class TypesTable
       QualifiedName qname;
     };
 
-    QValueList<struct ExternRef> mExternRefs;
+    Q3ValueList<struct ExternRef> mExternRefs;
 };
 
 }

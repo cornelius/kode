@@ -22,7 +22,9 @@
 
 #include <qdir.h>
 #include <qfile.h>
-#include <qurl.h>
+#include <q3url.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include "fileprovider.h"
 #include "parser.h"
@@ -880,7 +882,7 @@ void Parser::resolveForwardDerivations()
   int id;
   ComplexType *type = 0;
 
-  QValueList<ForwardDerivation>::ConstIterator it;
+  Q3ValueList<ForwardDerivation>::ConstIterator it;
   for ( it = mForwardDerivations.begin(); it != mForwardDerivations.end(); ++it ) {
     if ( ( id = typeId( (*it).type, false ) ) == 0 )
       continue;
@@ -1058,7 +1060,7 @@ void Parser::importSchema( const QString &location )
   QString fileName;
   QString schemaLocation( location );
 
-  QUrl url( location );
+  Q3Url url( location );
   QDir dir( location );
 
   if ( (url.protocol().isEmpty() || url.protocol() == "file") && dir.isRelative() )
@@ -1066,7 +1068,7 @@ void Parser::importSchema( const QString &location )
 
   if ( provider.get( schemaLocation, fileName ) ) {
     QFile file( fileName );
-    if ( !file.open( IO_ReadOnly ) ) {
+    if ( !file.open( QIODevice::ReadOnly ) ) {
       qDebug( "Unable to open file %s", file.name().latin1() );
       return;
     }

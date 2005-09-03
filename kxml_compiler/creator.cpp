@@ -41,6 +41,8 @@
 #include <qdom.h>
 #include <qregexp.h>
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <iostream>
 
@@ -144,7 +146,7 @@ void Creator::createClass( Element *element )
 
   mProcessedClasses.append( className );
 
-  QValueList<Attribute *>::ConstIterator itA;
+  Q3ValueList<Attribute *>::ConstIterator itA;
   for( itA = element->attributes.begin();
        itA != element->attributes.end(); ++itA ) {
     Attribute *a = *itA;
@@ -152,13 +154,13 @@ void Creator::createClass( Element *element )
     createProperty( c, "QString", a->name );
   }
 
-  QValueList<Element *>::ConstIterator itE;
+  Q3ValueList<Element *>::ConstIterator itE;
   for( itE = element->elements.begin(); itE != element->elements.end();
        ++itE ) {
     createElementFunctions( c, *itE );
   }
 
-  QValueList<Reference *>::ConstIterator itR;
+  Q3ValueList<Reference *>::ConstIterator itR;
   for( itR = element->references.begin(); itR != element->references.end();
        ++itR ) {
     Element e;
@@ -183,7 +185,7 @@ void Creator::createElementWriter( KODE::Class &c, Element *element )
   
   QString tag = "<" + element->name;
 
-  QValueList<Attribute *>::ConstIterator it3;
+  Q3ValueList<Attribute *>::ConstIterator it3;
   for( it3 = element->attributes.begin(); it3 != element->attributes.end();
         ++it3 ) {
     tag += " " + (*it3)->name + "=\\\"\" + " + (*it3)->name + "() + \"\\\"";
@@ -200,7 +202,7 @@ void Creator::createElementWriter( KODE::Class &c, Element *element )
   if ( !element->isEmpty ) {
     code += "indent( 2 );";
 
-    QValueList<Element *>::ConstIterator it;
+    Q3ValueList<Element *>::ConstIterator it;
     for( it = element->elements.begin(); it != element->elements.end(); ++it ) {
       Element *e = *it;
       QString type = upperFirst( e->name );
@@ -222,7 +224,7 @@ void Creator::createElementWriter( KODE::Class &c, Element *element )
       }
     }
 
-    QValueList<Reference *>::ConstIterator it2;
+    Q3ValueList<Reference *>::ConstIterator it2;
     for( it2 = element->references.begin(); it2 != element->references.end();
          ++it2 ) {
       Reference *r = *it2;
@@ -538,7 +540,7 @@ void Creator::createElementParserDom( KODE::Class &c, Element *e )
   code.indent();
   code += "QDomElement e = n.toElement();";
 
-  QValueList<Element *>::ConstIterator it;
+  Q3ValueList<Element *>::ConstIterator it;
   for( it = e->elements.begin(); it != e->elements.end(); ++it ) {
     QString condition;
     if ( it != e->elements.begin() ) condition = "else ";
@@ -570,7 +572,7 @@ void Creator::createElementParserDom( KODE::Class &c, Element *e )
 
   code.newLine();
 
-  QValueList<Reference *>::ConstIterator it3;
+  Q3ValueList<Reference *>::ConstIterator it3;
   for( it3 = e->references.begin(); it3 != e->references.end(); ++it3 ) {
     QString condition;
     if ( it3 != e->references.begin() ) condition = "else ";
@@ -600,7 +602,7 @@ void Creator::createElementParserDom( KODE::Class &c, Element *e )
   code += "}";
   code.newLine();
 
-  QValueList<Attribute *>::ConstIterator it2;
+  Q3ValueList<Attribute *>::ConstIterator it2;
   for( it2 = e->attributes.begin(); it2 != e->attributes.end(); ++it2 ) {
     code += "result->set" + upperFirst( (*it2)->name ) +
             "( element.attribute( \"" + (*it2)->name + "\" ) );";
