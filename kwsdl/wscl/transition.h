@@ -23,14 +23,14 @@
 #define WSCL_TRANSITION_H
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 namespace WSCL {
 
 class Transition
 {
   public:
-    typedef QValueList<Transition> List;
+    typedef Q3ValueList<Transition> List;
 
     Transition();
     ~Transition();

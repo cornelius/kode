@@ -22,7 +22,7 @@
 #ifndef WSCL_INTERACTION_H
 #define WSCL_INTERACTION_H
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 #include "documents.h"
 
@@ -31,7 +31,7 @@ namespace WSCL {
 class Interaction
 {
   public:
-    typedef QValueList<Interaction> List;
+    typedef Q3ValueList<Interaction> List;
 
     enum Type
     {
