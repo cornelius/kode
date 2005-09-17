@@ -23,16 +23,16 @@
 #ifndef SCHEMA_ATTRIBUTE_H
 #define SCHEMA_ATTRIBUTE_H
 
-#include <qstring.h>
-#include <q3valuelist.h>
+#include <QString>
+#include <QList>
 
 namespace Schema {
 
 class Attribute
 {
   public:
-    typedef Q3ValueList<Attribute> List;
-    typedef Q3ValueList<Attribute*> PtrList;
+    typedef QList<Attribute> List;
+    typedef QList<Attribute*> PtrList;
 
     Attribute();
 

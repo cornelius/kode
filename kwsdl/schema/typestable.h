@@ -23,10 +23,9 @@
 #ifndef SCHEMA_TYPESTABLE_H
 #define SCHEMA_TYPESTABLE_H
 
-#include <qmap.h>
-#include <qstring.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QHash>
+#include <QString>
+#include <QList>
 
 #include "complextype.h"
 #include "simpletype.h"
@@ -67,11 +66,11 @@ class TypesTable
     QString targetNamespace() const;
 
   private:
-    Q3ValueList<XSDType*> mTypes;
+    QList<XSDType*> mTypes;
 
     //maintains a map of all user defined type names and their ids
-    QMap<QString, int> mUserTypes;
-    QMap<QString, int> mBasicTypes;
+    QHash<QString, int> mUserTypes;
+    QHash<QString, int> mBasicTypes;
 
     int mCurrentId;
 
@@ -83,7 +82,7 @@ class TypesTable
       QualifiedName qname;
     };
 
-    Q3ValueList<struct ExternRef> mExternRefs;
+    QList<struct ExternRef> mExternRefs;
 };
 
 }

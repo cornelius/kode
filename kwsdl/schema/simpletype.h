@@ -23,11 +23,10 @@
 #ifndef SCHEMA_SIMPLETYPE_H
 #define SCHEMA_SIMPLETYPE_H
 
-#include <qstringlist.h>
+#include <QList>
+#include <QStringList>
 
 #include "qualifiedname.h"
-//Added by qt3to4:
-#include <Q3ValueList>
 #include "xsdtype.h"
 
 namespace Schema {
@@ -35,7 +34,7 @@ namespace Schema {
 class SimpleType : public XSDType
 {
   public:
-    typedef Q3ValueList<SimpleType> List;
+    typedef QList<SimpleType> List;
 
     enum FacetType
     {

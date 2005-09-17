@@ -23,15 +23,15 @@
 #ifndef SCHEMA_QUALIFIEDNAME_H
 #define SCHEMA_QUALIFIEDNAME_H
 
-#include <qstring.h>
-#include <q3valuelist.h>
+#include <QString>
+#include <QList>
 
 namespace Schema {
 
 class QualifiedName
 {
   public:
-    typedef Q3ValueList<QualifiedName> List;
+    typedef QList<QualifiedName> List;
 
     QualifiedName();
     QualifiedName( const QString &name );

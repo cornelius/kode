@@ -68,9 +68,9 @@ TypesTable::~TypesTable()
 
 void TypesTable::clear()
 {
-  QMap<QString, int>::Iterator it;
+  QHash<QString, int>::Iterator it;
   for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
-    delete typePtr( it.data() );
+    delete typePtr( it.value() );
 
   mUserTypes.clear();
   mTypes.clear();
@@ -151,16 +151,16 @@ QString TypesTable::typeName( int id ) const
   if ( id < 0 )
     return QString();
 
-  QMap<QString, int>::ConstIterator it;
+  QHash<QString, int>::ConstIterator it;
 
   if ( id >= 0 && id <= XSDType::ANYURI ) {
     for ( it = mBasicTypes.begin(); it != mBasicTypes.end(); ++it )
-      if ( id == it.data() )
+      if ( id == it.value() )
         return it.key();
   }
 
   for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
-    if ( id == it.data() )
+    if ( id == it.value() )
       return it.key();
 
   return "<unknown type>";

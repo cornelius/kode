@@ -24,7 +24,8 @@
 #define SCHEMA_PARSER_H
 
 #include <qdom.h>
-#include <q3valuelist.h>
+#include <QHash>
+#include <QList>
 
 #include "types.h"
 #include "typestable.h"
@@ -110,7 +111,7 @@ class Parser
 
     bool mElementQualified;
     bool mAttributeQualified;
-    QMap<QString, QString> mNameSpaceMap;
+    QHash<QString, QString> mNameSpaceMap;
     QString mNameSpace;
     QString mPrefix;
   
@@ -127,7 +128,7 @@ class Parser
       ComplexType::Derivation derivation;
     } ForwardDerivation;
 
-    Q3ValueList<ForwardDerivation> mForwardDerivations;
+    QList<ForwardDerivation> mForwardDerivations;
     QStringList mImportedSchemas;
     QString mSchemaBaseUrl;
 };

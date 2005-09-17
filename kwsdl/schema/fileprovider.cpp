@@ -60,7 +60,7 @@ bool FileProvider::get( const QString &url, QString &target )
 
   mBlocked = true;
   while ( mBlocked ) {
-    qApp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+    QApplication::processEvents( QEventLoop::ExcludeUserInput );
     usleep( 500 );
   }
 
