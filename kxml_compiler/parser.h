@@ -40,8 +40,9 @@
 #include <qdom.h>
 #include <qregexp.h>
 #include <qmap.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
+#include <QStringList>
+#include <QString>
 
 #include <iostream>
 
@@ -65,7 +66,7 @@ class Pattern
 class Reference
 {
   public:
-    typedef Q3ValueList<Reference *> List;
+    typedef QList<Reference *> List;
   
     Reference() : substituted( false ) {}
   
@@ -78,10 +79,10 @@ class Reference
 class Attribute
 {
   public:
-    typedef Q3ValueList<Attribute *> List;
+    typedef QList<Attribute *> List;
   
     QString name;
-    Q3ValueList<QString> choices;
+    QStringList choices;
     QString defaultValue;
     Pattern pattern;
 };
@@ -89,7 +90,7 @@ class Attribute
 class Element
 {
   public:
-    typedef Q3ValueList<Element *> List;
+    typedef QList<Element *> List;
   
     Element();
   

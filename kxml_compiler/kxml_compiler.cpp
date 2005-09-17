@@ -41,8 +41,7 @@
 #include <qdom.h>
 #include <qregexp.h>
 #include <qmap.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 
 #include <iostream>
 
@@ -137,7 +136,7 @@ int main( int argc, char **argv )
   Creator c( pt );
 
   kdDebug() << "Create classes" << endl;
-  Q3ValueList<Element *>::ConstIterator it;
+  QList<Element *>::ConstIterator it;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
     c.createClass( *it );
   }
@@ -151,7 +150,7 @@ int main( int argc, char **argv )
   c.createListTypedefs();
 
 #if 0
-  Q3ValueList<Reference *>::ConstIterator it2;
+  QList<Reference *>::ConstIterator it2;
   for( it2 = start->references.begin(); it2 != start->references.end();
        ++it2 ) {
     Element e;
