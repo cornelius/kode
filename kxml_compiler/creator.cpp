@@ -114,7 +114,7 @@ void Creator::createElementFunctions( KODE::Class &c, Element *e )
   if ( e->pattern.oneOrMore || e->pattern.zeroOrMore ) {
     registerListTypedef( type );
 
-    c.addHeaderInclude( "qist.h" );
+    c.addHeaderInclude( "qlist.h" );
     type = type + "::List";
     QString className = upperFirst( name );
     name = name + "List";
