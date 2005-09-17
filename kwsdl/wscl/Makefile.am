@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libwscl.la
 
 libwscl_la_SOURCES = conversation.cpp documents.cpp interaction.cpp parser.cpp transition.cpp
 libwscl_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -no-undefined
-libwscl_la_LIBADD = -lqt-mt
+libwscl_la_LIBADD =  $(LIB_QTCORE) $(LIB_QTXML)
 
 #bin_PROGRAMS = wscltest
 #wscltest_LDFLAGS = $(all_libraries) $(KDE_RPATH)

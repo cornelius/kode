@@ -22,15 +22,15 @@
 #ifndef WSCL_DOCUMENTS_H
 #define WSCL_DOCUMENTS_H
 
-#include <qstring.h>
-#include <q3valuelist.h>
+#include <QString>
+#include <QList>
 
 namespace WSCL {
 
 class XMLDocument
 {
   public:
-    typedef Q3ValueList<XMLDocument> List;
+    typedef QList<XMLDocument> List;
 
     void setId( const QString &id );
     QString id() const;
