@@ -22,22 +22,22 @@
 #ifndef KWSDL_PORT_H
 #define KWSDL_PORT_H
 
-#include <qmap.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QHash>
+#include <QList>
+#include <QString>
 
 namespace KWSDL {
 
 class Port
 {
   public:
-    typedef Q3ValueList<Port> List;
+    typedef QList<Port> List;
 
     class Operation
     {
       public:
-        typedef Q3ValueList<Operation> List;
-        typedef QMap<QString, Operation> Map;
+        typedef QList<Operation> List;
+        typedef QHash<QString, Operation> Map;
 
         Operation();
         Operation( const QString &name, const QString &input, const QString &output );

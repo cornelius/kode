@@ -19,9 +19,10 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qapplication.h>
-#include <qtimer.h>
-#include <qwidget.h>
+#include <QApplication>
+#include <QTimer>
+#include <QWidget>
+#include <QtXml/QDomDocument>
 
 #include <kinputdialog.h>
 #include <klocale.h>

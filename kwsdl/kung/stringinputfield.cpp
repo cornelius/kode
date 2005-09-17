@@ -19,8 +19,9 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qlineedit.h>
-#include <qvalidator.h>
+#include <QLineEdit>
+#include <QValidator>
+#include <QtXml/QDomElement>
 
 #include <schema/simpletype.h>
 
@@ -79,7 +80,7 @@ QWidget *StringInputField::createWidget( QWidget *parent )
       mInputWidget->setMaxLength( mType->facetMaximumLength() );
 
     if ( mType->facetType() & Schema::SimpleType::PATTERN )
-      mInputWidget->setValidator( new QRegExpValidator( mType->facetPattern(), mInputWidget ) );
+      mInputWidget->setValidator( new QRegExpValidator( QRegExp( mType->facetPattern() ), mInputWidget ) );
   }
 
   mInputWidget->setText( mValue );

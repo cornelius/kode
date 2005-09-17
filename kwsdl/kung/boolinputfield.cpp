@@ -19,7 +19,10 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qcheckbox.h>
+#include <QCheckBox>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+
 
 #include "boolinputfield.h"
 

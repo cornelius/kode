@@ -71,9 +71,9 @@ QString TypeMapper::type( const Schema::Element *element ) const
 
   QString type;
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() )
-    type = it.data().type;
+    type = it.value().type;
 
   if ( type.isEmpty() ) {
     type = typeName;
@@ -89,9 +89,9 @@ QString TypeMapper::type( const Schema::Attribute *attribute ) const
 
   QString type;
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() )
-    type = it.data().type;
+    type = it.value().type;
 
   if ( type.isEmpty() ) {
     type = typeName;
@@ -104,9 +104,9 @@ QString TypeMapper::type( const Schema::Attribute *attribute ) const
 QString TypeMapper::type( const QString &typeName ) const
 {
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() )
-    return it.data().type;
+    return it.value().type;
 
   Schema::SimpleType::List simpleTypes = mTypes.simpleTypes();
   Schema::SimpleType::List::ConstIterator simpleIt;
@@ -137,7 +137,7 @@ QString TypeMapper::type( const QString &typeName ) const
 
 QStringList TypeMapper::header( const Schema::XSDType *type ) const
 {
-  return type->name().lower() + ".h";
+  return QStringList( type->name().lower() + ".h" );
 }
 
 QStringList TypeMapper::header( const Schema::Element *element ) const
@@ -147,10 +147,10 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
   QStringList headers;
 
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() ) {
-    if ( !it.data().header.isEmpty() )
-      headers.append( it.data().header );
+    if ( !it.value().header.isEmpty() )
+      headers.append( it.value().header );
   } else
     headers.append( typeName.lower() + ".h" );
   
@@ -160,20 +160,20 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
   return headers;
 }
 
-QMap<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) const
+QHash<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) const
 {
   QString typeName = element->typeName();
 
-  QMap<QString, QString> headers;
+  QHash<QString, QString> headers;
 
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() ) {
-    if ( !it.data().header.isEmpty() ) {
-      if ( it.data().type == "QByteArray" )
-        headers.insert( it.data().header, QString() );
+    if ( !it.value().header.isEmpty() ) {
+      if ( it.value().type == "QByteArray" )
+        headers.insert( it.value().header, QString() );
       else
-        headers.insert( it.data().header, it.data().type );
+        headers.insert( it.value().header, it.value().type );
     }
   } else {
     typeName[ 0 ] = typeName[ 0 ].upper();
@@ -193,30 +193,30 @@ QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
   QStringList headers;
 
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() ) {
-    if ( !it.data().header.isEmpty() )
-      headers.append( it.data().header );
+    if ( !it.value().header.isEmpty() )
+      headers.append( it.value().header );
   } else
     headers.append( typeName.lower() + ".h" );
   
   return headers;
 }
 
-QMap<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribute ) const
+QHash<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribute ) const
 {
   QString typeName = attribute->typeName();
 
-  QMap<QString, QString> headers;
+  QHash<QString, QString> headers;
 
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() ) {
-    if ( !it.data().header.isEmpty() ) {
-      if ( it.data().type == "QByteArray" )
-        headers.insert( it.data().header, QString() );
+    if ( !it.value().header.isEmpty() ) {
+      if ( it.value().type == "QByteArray" )
+        headers.insert( it.value().header, QString() );
       else
-        headers.insert( it.data().header, it.data().type );
+        headers.insert( it.value().header, it.value().type );
     }
   } else {
     typeName[ 0 ] = typeName[ 0 ].upper();
@@ -228,34 +228,34 @@ QMap<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribute
 
 QStringList TypeMapper::header( const QString &typeName ) const
 {
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() )
-    return it.data().header;
+    return QStringList( it.value().header );
 
   const QString convertedType = type( typeName );
   if ( isBaseType( convertedType ) ) {
     for ( it = mMap.begin(); it != mMap.end(); ++it )
-      if ( it.data().type == convertedType )
-        return it.data().header;
+      if ( it.value().type == convertedType )
+        return QStringList( it.value().header );
   } else
-    return typeName.lower() + ".h";
+    return QStringList( typeName.lower() + ".h" );
 
   return QStringList();
 }
 
-QMap<QString, QString> TypeMapper::headerDec( const QString &typeName ) const
+QHash<QString, QString> TypeMapper::headerDec( const QString &typeName ) const
 {
   QString type( typeName );
-  QMap<QString, QString> headers;
+  QHash<QString, QString> headers;
 
   // check basic types
-  QMap<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
+  QHash<QString, TypeInfo>::ConstIterator it = mMap.find( typeName );
   if ( it != mMap.end() ) {
-    if ( !it.data().header.isEmpty() ) {
-      if ( it.data().type == "QByteArray" )
-        headers.insert( it.data().header, QString() );
+    if ( !it.value().header.isEmpty() ) {
+      if ( it.value().type == "QByteArray" )
+        headers.insert( it.value().header, QString() );
       else
-        headers.insert( it.data().header, it.data().type );
+        headers.insert( it.value().header, it.value().type );
     }
   } else {
     type[ 0 ] = type[ 0 ].upper();
@@ -291,9 +291,9 @@ QString TypeMapper::argument( const QString &name, const QString &typeName, bool
 
 bool TypeMapper::isBaseType( const QString &type ) const
 {
-  QMap<QString, TypeInfo>::ConstIterator it;
+  QHash<QString, TypeInfo>::ConstIterator it;
   for ( it = mMap.begin(); it != mMap.end(); ++it )
-    if ( it.data().type == type )
+    if ( it.value().type == type )
       return true;
 
   return false;

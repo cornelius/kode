@@ -31,6 +31,7 @@ class WSCLConversationManager : public ConversationManager
   public:
     WSCLConversationManager();
     WSCLConversationManager( const WSCL::Conversation &conversation );
+    virtual ~WSCLConversationManager() {};
 
     void setConversation( const WSCL::Conversation &conversation );
 

@@ -42,7 +42,7 @@ QStringList WSCLConversationManager::nextActions( const QString &currentAction, 
   for ( it = transitions.begin(); it != transitions.end(); ++it ) {
     if ( (*it).sourceInteraction() == currentAction ) {
       if ( (*it).sourceInteractionCondition() == condition )
-        return (*it).destinationInteraction();
+        return QStringList( (*it).destinationInteraction() );
     }
   }
 

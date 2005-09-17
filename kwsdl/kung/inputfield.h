@@ -22,12 +22,13 @@
 #ifndef INPUTFIELD_H
 #define INPUTFIELD_H
 
-#include <qdom.h>
-#include <qobject.h>
-#include <qstring.h>
-#include <qvaluelist.h>
+#include <QObject>
+#include <QString>
+#include <QList>
 
 class QWidget;
+class QDomDocument;
+class QDomElement;
 
 namespace Schema {
 class SimpleType;
@@ -42,7 +43,7 @@ class InputField : public QObject
   Q_OBJECT
 
   public:
-    typedef QValueList<InputField*> List;
+    typedef QList<InputField*> List;
 
     /**
       Constructs a input field.

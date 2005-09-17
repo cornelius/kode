@@ -92,7 +92,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
      */
     if ( type->facetType() & Schema::SimpleType::ENUM ) {
       QStringList enums = type->facetEnums();
-      for ( uint i = 0; i < enums.count(); ++i )
+      for ( int i = 0; i < enums.count(); ++i )
         enums[ i ] = escapeEnum( enums[ i ] );
 
       newClass.addEnum( KODE::Enum( "Type", enums ) );
@@ -127,13 +127,13 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
       const QString typeName = mTypeMapper.type( baseName );
 
       // include header
-      QMap<QString, QString> headerDec = mTypeMapper.headerDec( baseName );
-      QMap<QString, QString>::ConstIterator it;
+      QHash<QString, QString> headerDec = mTypeMapper.headerDec( baseName );
+      QHash<QString, QString>::ConstIterator it;
       for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
         if ( !it.key().isEmpty() )
-          newClass.addInclude( it.key(), it.data() );
+          newClass.addInclude( it.key(), it.value() );
 
-        if ( it.data().isEmpty() )
+        if ( it.value().isEmpty() )
           newClass.addHeaderInclude( it.key() );
       }
 
@@ -164,13 +164,13 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     const QString typeName = mTypeMapper.type( baseName );
 
     // include header
-    QMap<QString, QString> headerDec = mTypeMapper.headerDec( baseName );
-    QMap<QString, QString>::ConstIterator it;
+    QHash<QString, QString> headerDec = mTypeMapper.headerDec( baseName );
+    QHash<QString, QString>::ConstIterator it;
     for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
       if ( !it.key().isEmpty() )
-        newClass.addInclude( it.key(), it.data() );
+        newClass.addInclude( it.key(), it.value() );
 
-      if ( it.data().isEmpty() )
+      if ( it.value().isEmpty() )
         newClass.addHeaderInclude( it.key() );
     }
 
@@ -230,13 +230,13 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
   KODE::Code marshalCode, demarshalCode, code;
 
   // include header
-  QMap<QString, QString> headerDec = mTypeMapper.headerDec( type->name() );
-  QMap<QString, QString>::ConstIterator it;
+  QHash<QString, QString> headerDec = mTypeMapper.headerDec( type->name() );
+  QHash<QString, QString>::ConstIterator it;
   for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
     if ( !it.key().isEmpty() )
-      mSerializer.addInclude( it.key(), it.data() );
+      mSerializer.addInclude( it.key(), it.value() );
 
-    if ( it.data().isEmpty() )
+    if ( it.value().isEmpty() )
       mSerializer.addHeaderInclude( it.key() );
   }
 
@@ -245,7 +245,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
     if ( type->facetType() & Schema::SimpleType::ENUM ) {
       QStringList enums = type->facetEnums();
       QStringList escapedEnums;
-      for ( uint i = 0; i < enums.count(); ++i )
+      for ( int i = 0; i < enums.count(); ++i )
         escapedEnums.append( escapeEnum( enums[ i ] ) );
 
       // marshal value
@@ -254,7 +254,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
       marshalValue.addArgument( "const " + typeName + "* value" );
       code += "switch ( value->type() ) {";
       code.indent();
-      for ( uint i = 0; i < enums.count(); ++i ) {
+      for ( int i = 0; i < enums.count(); ++i ) {
         code += "case " + typeName + "::" + escapedEnums[ i ] + ":";
         code.indent();
         code += "return \"" + enums[ i ] + "\";";
@@ -284,7 +284,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
       demarshalValue.addArgument( "const QString &str" );
       demarshalValue.addArgument( typeName + "* value" );
       code.clear();
-      for ( uint i = 0; i < enums.count(); ++i ) {
+      for ( int i = 0; i < enums.count(); ++i ) {
         code += "if ( str == \"" + enums[ i ] + "\" )";
         code.indent();
         code += "value->setType( " + typeName + "::" + escapedEnums[ i ] + " );";
@@ -435,13 +435,13 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     newClass.addFunction( getter );
 
     // include header
-    QMap<QString, QString> headerDec = mTypeMapper.headerDec( &*elemIt);
-    QMap<QString, QString>::ConstIterator it;
+    QHash<QString, QString> headerDec = mTypeMapper.headerDec( &*elemIt);
+    QHash<QString, QString>::ConstIterator it;
     for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
       if ( !it.key().isEmpty() )
-        newClass.addInclude( it.key(), it.data() );
+        newClass.addInclude( it.key(), it.value() );
 
-      if ( it.data().isEmpty() )
+      if ( it.value().isEmpty() )
         newClass.addHeaderInclude( it.key() );
     }
   }
@@ -479,13 +479,13 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     newClass.addFunction( getter );
 
     // include header
-    QMap<QString, QString> headerDec = mTypeMapper.headerDec( &*attrIt);
-    QMap<QString, QString>::ConstIterator it;
+    QHash<QString, QString> headerDec = mTypeMapper.headerDec( &*attrIt);
+    QHash<QString, QString>::ConstIterator it;
     for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
       if ( !it.key().isEmpty() )
-        newClass.addInclude( it.key(), it.data() );
+        newClass.addInclude( it.key(), it.value() );
 
-      if ( it.data().isEmpty() )
+      if ( it.value().isEmpty() )
         newClass.addHeaderInclude( it.key() );
     }
   }
@@ -523,13 +523,13 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
   KODE::Code marshalCode, demarshalCode, demarshalFinalCode;
 
   // include header
-  QMap<QString, QString> headerDec = mTypeMapper.headerDec( type->name() );
-  QMap<QString, QString>::ConstIterator it;
+  QHash<QString, QString> headerDec = mTypeMapper.headerDec( type->name() );
+  QHash<QString, QString>::ConstIterator it;
   for ( it = headerDec.begin(); it != headerDec.end(); ++it ) {
     if ( !it.key().isEmpty() )
-      mSerializer.addInclude( it.key(), it.data() );
+      mSerializer.addInclude( it.key(), it.value() );
 
-    if ( it.data().isEmpty() )
+    if ( it.value().isEmpty() )
       mSerializer.addHeaderInclude( it.key() );
   }
 
@@ -778,7 +778,7 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
   Message::Part::List::ConstIterator it;
   for ( it = parts.begin(); it != parts.end(); ++it ) {
     QStringList headers = mTypeMapper.header( (*it).type() );
-    for ( uint i = 0; i < headers.count(); ++i )
+    for ( int i = 0; i < headers.count(); ++i )
       if ( !headers[ i ].isEmpty() )
         newClass.addHeaderInclude( headers[ i ] );
 

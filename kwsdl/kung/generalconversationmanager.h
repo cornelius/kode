@@ -30,6 +30,7 @@ class GeneralConversationManager : public ConversationManager
 {
   public:
     GeneralConversationManager( const KWSDL::WSDL &wsdl );
+    virtual ~GeneralConversationManager() {};
 
     virtual QStringList nextActions( const QString &currentAction, const QString &condition = QString() );
 

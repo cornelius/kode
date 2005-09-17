@@ -22,7 +22,8 @@
 #ifndef KWSDL_TYPEMAPPER_H
 #define KWSDL_TYPEMAPPER_H
 
-#include <qstringlist.h>
+#include <QStringList>
+#include <QHash>
 
 #include <schema/types.h>
 
@@ -63,11 +64,11 @@ class TypeMapper
 
     QStringList header( const Schema::XSDType *type ) const;
     QStringList header( const Schema::Element *element ) const;
-    QMap<QString,QString> headerDec( const Schema::Element *element ) const;
+    QHash<QString,QString> headerDec( const Schema::Element *element ) const;
     QStringList header( const Schema::Attribute *attribute ) const;
-    QMap<QString,QString> headerDec( const Schema::Attribute *attribute ) const;
+    QHash<QString,QString> headerDec( const Schema::Attribute *attribute ) const;
     QStringList header( const QString &typeName ) const;
-    QMap<QString,QString> headerDec( const QString &typeName ) const;
+    QHash<QString,QString> headerDec( const QString &typeName ) const;
 
     QString argument( const QString &name, const Schema::Element *element ) const;
     QString argument( const QString &name, const Schema::Attribute *attribute ) const;
@@ -76,7 +77,7 @@ class TypeMapper
   private:
     bool isBaseType( const QString& ) const;
 
-    QMap<QString, TypeInfo> mMap;
+    QHash<QString, TypeInfo> mMap;
     Schema::Types mTypes;
 };
 

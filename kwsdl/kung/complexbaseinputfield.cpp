@@ -19,9 +19,10 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QGroupBox>
+#include <QLabel>
+#include <QLayout>
+#include <QtXml/QDomElement>
 
 #include <schema/complextype.h>
 
@@ -140,7 +141,8 @@ QString ComplexBaseInputField::data() const
 QWidget *ComplexBaseInputField::createWidget( QWidget *parent )
 {
   QGroupBox *inputWidget = new QGroupBox( mName, parent );
-  inputWidget->setColumnLayout( 0, Qt::Horizontal );
+#warning Is this needed?
+  //inputWidget->setColumnLayout( 0, Qt::Horizontal );
   QGridLayout *layout = new QGridLayout( inputWidget->layout(), 2, 2, 6 );
 
   InputField::List::Iterator it;

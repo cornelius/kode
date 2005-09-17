@@ -19,6 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <QtXml/QDomElement>
 #include <kcombobox.h>
 
 #include <schema/simpletype.h>

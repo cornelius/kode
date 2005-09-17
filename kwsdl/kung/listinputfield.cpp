@@ -19,8 +19,9 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qlayout.h>
-#include <qlistbox.h>
+#include <QLayout>
+#include <QtXml/QDomNode>
+#include <QListWidget>
 #include <qpushbutton.h>
 
 #include <klocale.h>
@@ -93,7 +94,7 @@ ListWidget::ListWidget( InputField *parentField, const QString &name, const QStr
 {
   QGridLayout *layout = new QGridLayout( this, 4, 2, 11, 6 );
 
-  mView = new QListBox( this );
+  mView = new QListWidget( this );
   layout->addMultiCellWidget( mView, 0, 3, 0, 0 );
 
   mAddButton = new QPushButton( i18n( "Add" ), this );
@@ -114,15 +115,15 @@ ListWidget::ListWidget( InputField *parentField, const QString &name, const QStr
 
 void ListWidget::update()
 {
-  int pos = mView->currentItem();
+  int pos = mView->currentRow();
   mView->clear();
 
   const InputField::List fields = mParentField->childFields();
   InputField::List::ConstIterator it;
   for ( it = fields.begin(); it != fields.end(); ++it )
-    mView->insertItem( (*it)->name() );
+    mView->addItem( (*it)->name() );
 
-  mView->setCurrentItem( pos );
+  mView->setCurrentRow( pos );
 
   updateButtons();
 }
@@ -146,7 +147,7 @@ void ListWidget::add()
 
 void ListWidget::edit()
 {
-  int pos = mView->currentItem();
+  int pos = mView->currentRow();
 
   if ( pos == -1 )
     return;
@@ -163,7 +164,7 @@ void ListWidget::edit()
 
 void ListWidget::remove()
 {
-  int pos = mView->currentItem();
+  int pos = mView->currentRow();
 
   if ( pos == -1 )
     return;

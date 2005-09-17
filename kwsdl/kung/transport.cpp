@@ -19,7 +19,6 @@
 */
 
 #include "transport.h"
-
 #include <kdebug.h>
 
 Transport::Transport( const QString &url )
@@ -33,7 +32,7 @@ void Transport::query( const QString &xml )
   mData.truncate( 0 );
   
   QByteArray postData;
-  QDataStream stream( postData, IO_WriteOnly );
+  QDataStream stream( &postData, IO_WriteOnly );
   stream.writeRawBytes( xml.utf8(), xml.utf8().length() );
   
   KIO::TransferJob* job = KIO::http_post( KURL( mUrl ), postData, false );

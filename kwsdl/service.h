@@ -22,10 +22,9 @@
 #ifndef KWSDL_SERVICE_H
 #define KWSDL_SERVICE_H
 
-#include <qmap.h>
-#include <qstringlist.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QHash>
+#include <QStringList>
+#include <QList>
 
 namespace KWSDL {
 
@@ -35,7 +34,7 @@ class Service
     class Port
     {
       public:
-        typedef Q3ValueList<Port> List;
+        typedef QList<Port> List;
 
         QString mName;
         QString mBinding;
@@ -54,7 +53,7 @@ class Service
 
   private:
     QString mName;
-    QMap<QString, Port> mPorts;
+    QHash<QString, Port> mPorts;
 };
 
 }
