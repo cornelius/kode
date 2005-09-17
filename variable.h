@@ -21,8 +21,8 @@
 #ifndef KODE_VARIABLE_H
 #define KODE_VARIABLE_H
 
-#include <q3valuelist.h>
-#include <qstring.h>
+#include <QList>
+#include <QString>
 
 #include <kdepimmacros.h>
 
@@ -31,7 +31,7 @@ namespace KODE {
 class KDE_EXPORT Variable
 {
   public:
-    typedef Q3ValueList<Variable> List;
+    typedef QList<Variable> List;
 
     Variable();
     Variable( const QString &name, const QString &type, bool isStatic = false );

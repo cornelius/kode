@@ -21,10 +21,10 @@
 #ifndef KODE_AUTOMAKEFILE_H
 #define KODE_AUTOMAKEFILE_H
 
-#include <q3valuelist.h>
-#include <qstring.h>
-#include <qmap.h>
-#include <qstringlist.h>
+#include <QList>
+#include <QList>
+#include <QMap>
+#include <QStringList>
 
 #include <kdepimmacros.h>
 
@@ -36,7 +36,7 @@ class KDE_EXPORT AutoMakefile
     class KDE_EXPORT Target
     {
       public:
-        typedef Q3ValueList<Target> List;
+        typedef QList<Target> List;
 
         Target() {}
         Target( const QString &type, const QString &name );

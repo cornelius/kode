@@ -21,7 +21,8 @@
 #ifndef KODE_TYPEDEF_H
 #define KODE_TYPEDEF_H
 
-#include <q3valuelist.h>
+#include <QList>
+#include <QString>
 #include <kdepimmacros.h>
 
 namespace KODE {
@@ -29,7 +30,7 @@ namespace KODE {
 class KDE_EXPORT Typedef
 {
   public:
-    typedef Q3ValueList<Typedef> List;
+    typedef QList<Typedef> List;
   
     Typedef();
     Typedef( const QString &type, const QString &alias );

@@ -27,17 +27,16 @@
 #include "typedef.h"
 
 #include <kdepimmacros.h>
-#include <q3valuelist.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <q3ptrlist.h>
+#include <QList>
+#include <QString>
+#include <QStringList>
 
 namespace KODE {
 
 class KDE_EXPORT Class
 {
   public:
-    typedef Q3ValueList<Class> List;
+    typedef QList<Class> List;
     
     Class();
     Class( const QString &name, const QString &nameSpace = QString::null );
@@ -87,7 +86,7 @@ class KDE_EXPORT Class
     QStringList mIncludes;
     QStringList mForwardDeclarations;
     QStringList mHeaderIncludes;
-    Q3PtrList<Class> mBaseClasses;
+    QList<Class> mBaseClasses;
     Typedef::List mTypedefs;
     Enum::List mEnums;
     QString mDocs;

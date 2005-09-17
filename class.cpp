@@ -27,7 +27,6 @@ using namespace KODE;
 
 Class::Class()
 {
-  mBaseClasses.setAutoDelete( true );
 }
 
 Class::Class( const QString &name, const QString &nameSpace )
@@ -53,13 +52,7 @@ Class &Class::operator=( const Class &c )
   mForwardDeclarations = c.mForwardDeclarations;
   mEnums = c.mEnums;
   mDocs = c.mDocs;
-
-  Q3PtrListIterator<Class> it( c.mBaseClasses );
-  while( it.current() ) {
-    mBaseClasses.append( new Class( *( it.current() ) ) );
-    ++it;
-  }
-
+  mBaseClasses = c.mBaseClasses;
   mTypedefs = c.mTypedefs;
   
   return *this;
@@ -108,7 +101,7 @@ void Class::addHeaderIncludes( const QStringList &includes )
 
 void Class::addBaseClass( const Class &c )
 {
-  mBaseClasses.append( new Class( c ) );
+  mBaseClasses.append( c );
 }
 
 void Class::addFunction( const Function &function )
@@ -123,15 +116,7 @@ void Class::addMemberVariable( const MemberVariable &v )
 
 Class::List Class::baseClasses() const
 {
-  Class::List b;
-  
-  Q3PtrListIterator<Class> it( mBaseClasses );
-  while( it.current() ) {
-    b.append( Class( *( it.current() ) ) );
-    ++it;
-  }
-
-  return b;
+  return mBaseClasses;
 }
 
 void Class::addTypedef( const Typedef &t )
