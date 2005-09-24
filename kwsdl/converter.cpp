@@ -84,7 +84,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
   KODE::Code ctorCode, dtorCode;
 
   if ( !type->documentation().isEmpty() )
-    newClass.setDocs( type->documentation().simplifyWhiteSpace() );
+    newClass.setDocs( type->documentation().simplified() );
 
   if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
     /**
@@ -397,7 +397,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
   }
 
   if ( !type->documentation().isEmpty() )
-    newClass.setDocs( type->documentation().simplifyWhiteSpace() );
+    newClass.setDocs( type->documentation().simplified() );
 
   // elements
   Schema::Element::List elements = type->elements();
@@ -848,7 +848,7 @@ void Converter::createUtilClasses()
     { "char", "xsd:byte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
     { "unsigned char", "xsd:unsignedByte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
     { "short", "xsd:short", "QString::number( *value )", "str.toShort()" },
-    { "QByteArray", "xsd:base64Binary", "QString::fromUtf8( KCodecs::base64Encode( *value ) )", "KCodecs::base64Decode( str.utf8() )" },
+    { "QByteArray", "xsd:base64Binary", "QString::fromUtf8( KCodecs::base64Encode( *value ) )", "KCodecs::base64Decode( str.toUtf8() )" },
     { "QDateTime", "xsd:dateTime", "value->toString( Qt::ISODate )", "QDateTime::fromString( str, Qt::ISODate )" },
     { "QDate", "xsd:date", "value->toString( Qt::ISODate )", "QDate::fromString( str, Qt::ISODate )" }
   };
@@ -933,7 +933,7 @@ void Converter::createTransportClass()
   queryCode.newLine();
   queryCode += "QByteArray postData;";
   queryCode += "QDataStream stream( postData, IO_WriteOnly );";
-  queryCode += "stream.writeRawBytes( xml.utf8(), xml.utf8().length() );";
+  queryCode += "stream.writeRawBytes( xml.toUtf8(), xml.utf8().length() );";
   queryCode.newLine();
   queryCode += "KIO::TransferJob* job = KIO::http_post( KURL( " + url.name() + " ), postData, false );";
   queryCode += "if ( !job ) {";

@@ -35,7 +35,7 @@ Loader::Loader()
 void Loader::setWSDLUrl( const QString &wsdlUrl )
 {
   mWSDLUrl = wsdlUrl;
-  mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.findRev( '/' ) );
+  mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.lastIndexOf( '/' ) );
 
   mParser.setSchemaBaseUrl( mWSDLBaseUrl );
 }

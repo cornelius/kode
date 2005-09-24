@@ -84,7 +84,7 @@ int main( int argc, char **argv )
   QString dtdFilename = args->url( 0 ).path();
 
   QString baseName = args->url( 0 ).fileName();
-  int pos = baseName.findRev( '.' );
+  int pos = baseName.lastIndexOf( '.' );
   if ( pos > 0 ) baseName = baseName.left( pos );
 
 

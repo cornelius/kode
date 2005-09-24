@@ -39,7 +39,7 @@ Compiler::Compiler()
 void Compiler::setWSDLUrl( const QString &wsdlUrl )
 {
   mWSDLUrl = wsdlUrl;
-  mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.findRev( '/' ) );
+  mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.lastIndexOf( '/' ) );
 
   mParser.setSchemaBaseUrl( mWSDLBaseUrl );
 }

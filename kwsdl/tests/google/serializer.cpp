@@ -247,7 +247,7 @@ QString Serializer::marshalValue( const QByteArray* value )
 
 void Serializer::demarshalValue( const QString &str, QByteArray *value )
 {
-  *value = KCodecs::base64Decode( str.utf8() );
+  *value = KCodecs::base64Decode( str.toUtf8() );
 }
 
 void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString &name, const QByteArray* value )

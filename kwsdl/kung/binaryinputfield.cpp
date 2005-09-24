@@ -67,7 +67,7 @@ void BinaryInputField::xmlData( QDomDocument &document, QDomElement &parent )
 
 void BinaryInputField::setData( const QString &data )
 {
-  KCodecs::base64Decode( data.utf8(), mValue );
+  KCodecs::base64Decode( data.toUtf8(), mValue );
 }
 
 QString BinaryInputField::data() const

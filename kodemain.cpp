@@ -140,7 +140,7 @@ int addProperty( KCmdLineArgs *args )
   
   QFile headerFile( headerFileName );
   if ( !headerFile.open( QIODevice::ReadOnly ) ) {
-    std::cerr << "Unable to open file '" << headerFileName.data()/*.utf8()*/ << "'" <<
+    std::cerr << "Unable to open file '" << headerFileName.data()/*.toUtf8()*/ << "'" <<
       std::endl;
     return 1;
   }
@@ -160,7 +160,7 @@ int addProperty( KCmdLineArgs *args )
   
   QString line;
   while ( !( line = in.readLine() ).isNull() ) {
-//    std::cout << line.utf8() << std::endl;
+//    std::cout << line.toUtf8() << std::endl;
     kdDebug() << state << " LINE: " << line << endl;
     QString readAheadPrevious = readAhead;
     readAhead += line + "\n";
@@ -285,7 +285,7 @@ int addProperty( KCmdLineArgs *args )
       o << out << endl;
     }
   } else {
-    std::cout << out.data()/*.utf8()*/ << std::endl;
+    std::cout << out.data()/*.toUtf8()*/ << std::endl;
   }
 
   return 0;
@@ -313,7 +313,7 @@ int codify( KCmdLineArgs *args )
       line.replace( "\"", "\\\"" );
       line = "code += \"" + line;
       line.append( "\";" );
-      std::cout << line.data()/*.local8Bit()*/ << std::endl;
+      std::cout << line.data()/*.toLocal8Bit()*/ << std::endl;
     }
   }
 

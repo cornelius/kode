@@ -222,7 +222,7 @@ void Parser::parseAnnotation( const QDomElement &element, QString &documentation
     if ( !childElement.isNull() ) {
       QualifiedName name = childElement.tagName();
       if ( name.localName() == "documentation" )
-        documentation = childElement.text().stripWhiteSpace();
+        documentation = childElement.text().trimmed();
     }
 
     node = node.nextSibling();
@@ -237,7 +237,7 @@ void Parser::parseAnnotation( const QDomElement &element, ComplexType *complexTy
     if ( !childElement.isNull() ) {
       QualifiedName name = childElement.tagName();
       if ( name.localName() == "documentation" )
-        complexType->setDocumentation( childElement.text().stripWhiteSpace() );
+        complexType->setDocumentation( childElement.text().trimmed() );
     }
 
     node = node.nextSibling();
@@ -252,7 +252,7 @@ void Parser::parseAnnotation( const QDomElement &element, SimpleType *simpleType
     if ( !childElement.isNull() ) {
       QualifiedName name = childElement.tagName();
       if ( name.localName() == "documentation" )
-        simpleType->setDocumentation( childElement.text().stripWhiteSpace() );
+        simpleType->setDocumentation( childElement.text().trimmed() );
     }
 
     node = node.nextSibling();
