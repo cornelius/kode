@@ -310,7 +310,7 @@ QString Printer::classImplementation( const Class &c )
 
   if ( c.isQObject() ) {
     code.newLine();
-    code += "#include \"" + c.name().lower() + ".moc\"";
+    code += "#include \"" + c.name().toLower() + ".moc\"";
   }
 
   return code.text();
@@ -329,8 +329,8 @@ void Printer::printHeader( const File &f )
   className.replace( "-", "_" );
 
   QString includeGuard;
-  if ( !f.nameSpace().isEmpty() ) includeGuard += f.nameSpace().upper() + "_";
-  includeGuard += className.upper() + "_H";
+  if ( !f.nameSpace().isEmpty() ) includeGuard += f.nameSpace().toUpper() + "_";
+  includeGuard += className.toUpper() + "_H";
 
   out += "#ifndef " + includeGuard;
   out += "#define " + includeGuard;

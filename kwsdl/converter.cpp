@@ -25,7 +25,7 @@ using namespace KWSDL;
 
 static QString capitalize( const QString &str )
 {
-  return str[ 0 ].upper() + str.mid( 1 );
+  return str[ 0 ].toUpper() + str.mid( 1 );
 }
 
 static QString escapeEnum( const QString &str )
@@ -418,8 +418,8 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
 
     QString upperName = (*elemIt).name();
     QString lowerName = (*elemIt).name();
-    upperName[ 0 ] = upperName[ 0 ].upper();
-    lowerName[ 0 ] = lowerName[ 0 ].lower();
+    upperName[ 0 ] = upperName[ 0 ].toUpper();
+    lowerName[ 0 ] = lowerName[ 0 ].toLower();
 
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
@@ -462,8 +462,8 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
 
     QString upperName = (*attrIt).name();
     QString lowerName = (*attrIt).name();
-    upperName[ 0 ] = upperName[ 0 ].upper();
-    lowerName[ 0 ] = lowerName[ 0 ].lower();
+    upperName[ 0 ] = upperName[ 0 ].toUpper();
+    lowerName[ 0 ] = lowerName[ 0 ].toLower();
 
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
@@ -552,8 +552,8 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
 
     QString upperName = (*elemIt).name();
     QString lowerName = (*elemIt).name();
-    upperName[ 0 ] = upperName[ 0 ].upper();
-    lowerName[ 0 ] = lowerName[ 0 ].lower();
+    upperName[ 0 ] = upperName[ 0 ].toUpper();
+    lowerName[ 0 ] = lowerName[ 0 ].toLower();
 
     KODE::Function setter( "set" + upperName, "void" );
     KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
@@ -621,8 +621,8 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
 
     QString upperName = (*attrIt).name();
     QString lowerName = (*attrIt).name();
-    upperName[ 0 ] = upperName[ 0 ].upper();
-    lowerName[ 0 ] = lowerName[ 0 ].lower();
+    upperName[ 0 ] = upperName[ 0 ].toUpper();
+    lowerName[ 0 ] = lowerName[ 0 ].toLower();
 
     KODE::Function setter( "set" + upperName, "void" );
     KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
@@ -715,7 +715,7 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
 
   // call
   QString messageName = message.name();
-  messageName[ 0 ] = messageName[ 0 ].lower();
+  messageName[ 0 ] = messageName[ 0 ].toLower();
   KODE::Function callFunc( mNameMapper.escape( messageName ), "void", KODE::Function::Public );
 
   const Message::Part::List parts = message.parts();
@@ -723,7 +723,7 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
   for ( it = parts.begin(); it != parts.end(); ++it ) {
     newClass.addHeaderIncludes( mTypeMapper.header( (*it).type() ) );
     QString lowerName = (*it).name();
-    lowerName[ 0 ] = lowerName[ 0 ].lower();
+    lowerName[ 0 ] = lowerName[ 0 ].toLower();
     callFunc.addArgument( mTypeMapper.argument( mNameMapper.escape( lowerName ), (*it).type() ) );
   }
 
@@ -746,7 +746,7 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
 
   for ( it = parts.begin(); it != parts.end(); ++it ) {
     QString lowerName = (*it).name();
-    lowerName[ 0 ] = lowerName[ 0 ].lower();
+    lowerName[ 0 ] = lowerName[ 0 ].toLower();
     code += "Serializer::marshal( doc, method, \"" + (*it).name() + "\", " + mNameMapper.escape( lowerName ) + " );";
     code += "delete " + mNameMapper.escape( lowerName ) + ";";
   }
@@ -764,7 +764,7 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
 
   // signal
   QString messageName = message.name();
-  messageName[ 0 ] = messageName[ 0 ].lower();
+  messageName[ 0 ] = messageName[ 0 ].toLower();
   KODE::Function respSignal( messageName, "void", KODE::Function::Signal );
 
   /**
@@ -840,7 +840,7 @@ void Converter::createUtilClasses()
    */
   TypeEntry types[] = {
     { "QString", "xsd:string", "*value", "str" },
-    { "bool", "xsd:boolean", "(*value ? \"true\" : \"false\")", "(str.lower() == \"true\" ? true : false)" },
+    { "bool", "xsd:boolean", "(*value ? \"true\" : \"false\")", "(str.toLower() == \"true\" ? true : false)" },
     { "float", "xsd:TODO", "QString::number( *value )", "str.toFloat()" },
     { "int", "xsd:int", "QString::number( *value )", "str.toInt()" },
     { "unsigned int", "xsd:unsignedByte", "QString::number( *value )", "str.toUInt()" },
@@ -933,7 +933,7 @@ void Converter::createTransportClass()
   queryCode.newLine();
   queryCode += "QByteArray postData;";
   queryCode += "QDataStream stream( postData, IO_WriteOnly );";
-  queryCode += "stream.writeRawBytes( xml.toUtf8(), xml.utf8().length() );";
+  queryCode += "stream.writeRawBytes( xml.toUtf8(), xml.toUtf8().length() );";
   queryCode.newLine();
   queryCode += "KIO::TransferJob* job = KIO::http_post( KURL( " + url.name() + " ), postData, false );";
   queryCode += "if ( !job ) {";

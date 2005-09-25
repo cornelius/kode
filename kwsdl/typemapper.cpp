@@ -60,7 +60,7 @@ void TypeMapper::setTypes( const Schema::Types &types )
 QString TypeMapper::type( const Schema::XSDType *type ) const
 {
   QString typeName = type->name();
-  typeName[ 0 ] = typeName[ 0 ].upper();
+  typeName[ 0 ] = typeName[ 0 ].toUpper();
 
   return typeName;
 }
@@ -77,7 +77,7 @@ QString TypeMapper::type( const Schema::Element *element ) const
 
   if ( type.isEmpty() ) {
     type = typeName;
-    type[ 0 ] = type[ 0 ].upper();
+    type[ 0 ] = type[ 0 ].toUpper();
   }
 
   return type;
@@ -95,7 +95,7 @@ QString TypeMapper::type( const Schema::Attribute *attribute ) const
 
   if ( type.isEmpty() ) {
     type = typeName;
-    type[ 0 ] = type[ 0 ].upper();
+    type[ 0 ] = type[ 0 ].toUpper();
   }
 
   return type;
@@ -137,7 +137,7 @@ QString TypeMapper::type( const QString &typeName ) const
 
 QStringList TypeMapper::header( const Schema::XSDType *type ) const
 {
-  return QStringList( type->name().lower() + ".h" );
+  return QStringList( type->name().toLower() + ".h" );
 }
 
 QStringList TypeMapper::header( const Schema::Element *element ) const
@@ -152,7 +152,7 @@ QStringList TypeMapper::header( const Schema::Element *element ) const
     if ( !it.value().header.isEmpty() )
       headers.append( it.value().header );
   } else
-    headers.append( typeName.lower() + ".h" );
+    headers.append( typeName.toLower() + ".h" );
   
   if ( element->maxOccurs() > 1 )
     headers.append( "qptrlist.h" );
@@ -176,8 +176,8 @@ QHash<QString, QString> TypeMapper::headerDec( const Schema::Element *element ) 
         headers.insert( it.value().header, it.value().type );
     }
   } else {
-    typeName[ 0 ] = typeName[ 0 ].upper();
-    headers.insert( typeName.lower() + ".h", typeName );
+    typeName[ 0 ] = typeName[ 0 ].toUpper();
+    headers.insert( typeName.toLower() + ".h", typeName );
   }
 
   if ( element->maxOccurs() > 1 )
@@ -198,7 +198,7 @@ QStringList TypeMapper::header( const Schema::Attribute *attribute ) const
     if ( !it.value().header.isEmpty() )
       headers.append( it.value().header );
   } else
-    headers.append( typeName.lower() + ".h" );
+    headers.append( typeName.toLower() + ".h" );
   
   return headers;
 }
@@ -219,8 +219,8 @@ QHash<QString, QString> TypeMapper::headerDec( const Schema::Attribute *attribut
         headers.insert( it.value().header, it.value().type );
     }
   } else {
-    typeName[ 0 ] = typeName[ 0 ].upper();
-    headers.insert( typeName.lower() + ".h", typeName );
+    typeName[ 0 ] = typeName[ 0 ].toUpper();
+    headers.insert( typeName.toLower() + ".h", typeName );
   }
 
   return headers;
@@ -238,7 +238,7 @@ QStringList TypeMapper::header( const QString &typeName ) const
       if ( it.value().type == convertedType )
         return QStringList( it.value().header );
   } else
-    return QStringList( typeName.lower() + ".h" );
+    return QStringList( typeName.toLower() + ".h" );
 
   return QStringList();
 }
@@ -258,8 +258,8 @@ QHash<QString, QString> TypeMapper::headerDec( const QString &typeName ) const
         headers.insert( it.value().header, it.value().type );
     }
   } else {
-    type[ 0 ] = type[ 0 ].upper();
-    headers.insert( typeName.lower() + ".h", type );
+    type[ 0 ] = type[ 0 ].toUpper();
+    headers.insert( typeName.toLower() + ".h", type );
   }
 
   return headers;

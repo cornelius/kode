@@ -44,11 +44,11 @@ QString Style::className( const QString &str )
 QString Style::upperFirst( const QString &str )
 {
   if ( str.isEmpty() ) return str;
-  return str[ 0 ].upper() + str.mid( 1 );
+  return str[ 0 ].toUpper() + str.mid( 1 );
 }
 
 QString Style::lowerFirst( const QString &str )
 {
   if ( str.isEmpty() ) return str;
-  return str[ 0 ].lower() + str.mid( 1 );
+  return str[ 0 ].toLower() + str.mid( 1 );
 }

@@ -45,7 +45,7 @@ void Creator::create( const KODE::Class::List &list )
     if ( !mNameSpace.isEmpty() )
       file.setNameSpace( mNameSpace );
 
-    file.setFilename( (*it).name().lower() );
+    file.setFilename( (*it).name().toLower() );
     file.addCopyright( 2005, "Tobias Koenig", "tokoe@kde.org" );
     file.setLicense( KODE::License( KODE::License::GPL ) );
 

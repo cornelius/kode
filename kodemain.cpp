@@ -136,7 +136,7 @@ int addProperty( KCmdLineArgs *args )
   kdDebug() << "Add property: class " << className << ": " << type << " " <<
     name << endl;
 
-  QString headerFileName = className.lower() + ".h";
+  QString headerFileName = className.toLower() + ".h";
   
   QFile headerFile( headerFileName );
   if ( !headerFile.open( QIODevice::ReadOnly ) ) {
@@ -185,7 +185,7 @@ int addProperty( KCmdLineArgs *args )
         {
           QRegExp re( "(\\w+)\\s*\\(" );
           if ( re.search( line ) >= 0 ) {
-            QString function = re.cap( 1 ).lower();
+            QString function = re.cap( 1 ).toLower();
             if ( !function.isEmpty() ) {
               kdDebug() << "Function: " << function << endl;
               if ( function == className || function == "~" + className ) {
@@ -248,7 +248,7 @@ int addProperty( KCmdLineArgs *args )
         break;
       case FindVariables:
         {
-          if ( line.find( "m" + accessor.lower(), 0, false ) >= 0 ) {
+          if ( line.find( "m" + accessor.toLower(), 0, false ) >= 0 ) {
             out += readAhead;
             readAhead = QString::null;
             addPropertyVariable( out, type, name );
@@ -352,7 +352,7 @@ int create( KCmdLineArgs *args )
 
   if ( createKioslave ) {
     if ( !args->isSet( "protocol" ) ) {
-      protocol = className.lower();
+      protocol = className.toLower();
       kdWarning() << "Warning: No protocol for kioslave given. Assuming '"
                   << protocol << "'" << endl;
     } else {
@@ -563,7 +563,7 @@ int create( KCmdLineArgs *args )
     
     am.addEntry( "INCLUDES", "$(all_includes)" );
     am.newLine();
-    am.addEntry( "noinst_HEADERS", className.lower() + ".h" );
+    am.addEntry( "noinst_HEADERS", className.toLower() + ".h" );
     am.newLine();
     am.addEntry( "METASOURCES", "AUTO" );
     am.newLine();
@@ -572,7 +572,7 @@ int create( KCmdLineArgs *args )
 
     KODE::AutoMakefile::Target t( "kde_module_LTLIBRARIES",
       "kio_" + protocol + ".la" );
-    t.setSources( className.lower() + ".cpp" );
+    t.setSources( className.toLower() + ".cpp" );
     t.setLibAdd( "$(LIB_KIO)" );
     t.setLdFlags( "$(all_libraries) -module $(KDE_PLUGIN)" );
   
@@ -585,7 +585,7 @@ int create( KCmdLineArgs *args )
     QString protocolFilename = protocol + ".protocol";
 
     QFileInfo fi( protocolFilename );
-    protocolFilename = fi.absFilePath();
+    protocolFilename = fi.absoluteFilePath();
 
     KSaveFile::backupFile( protocolFilename, QString::null, ".backup" );
     

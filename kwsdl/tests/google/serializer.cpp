@@ -63,7 +63,7 @@ QString Serializer::marshalValue( const bool* value )
 
 void Serializer::demarshalValue( const QString &str, bool *value )
 {
-  *value = (str.lower() == "true" ? true : false);
+  *value = (str.toLower() == "true" ? true : false);
 }
 
 void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString &name, const bool* value )

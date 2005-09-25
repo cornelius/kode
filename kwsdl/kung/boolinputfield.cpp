@@ -54,7 +54,7 @@ void BoolInputField::xmlData( QDomDocument &document, QDomElement &parent )
 
 void BoolInputField::setData( const QString &data )
 {
-  mValue = ( data.lower() == "true" );
+  mValue = ( data.toLower() == "true" );
 }
 
 QString BoolInputField::data() const

@@ -39,11 +39,11 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
   if ( name.isEmpty() ) {
     n = "mUndefined";
   } else if ( name.length() >= 2  && name[ 0 ] == 'm' &&
-              ( name[ 1 ].upper() == name[ 1 ] ) ) {
+              ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
     n = name;
   } else {
     n = "m";
-    n += name[ 0 ].upper();
+    n += name[ 0 ].toUpper();
     n += name.mid( 1 );
   }
 

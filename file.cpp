@@ -44,7 +44,7 @@ QString File::filename() const
 
   if ( !mClasses.isEmpty() ) {
     QString className = mClasses[ 0 ].name();
-    return className.lower();
+    return className.toLower();
   }
 
   return QString::null;
