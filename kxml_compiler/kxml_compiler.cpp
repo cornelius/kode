@@ -35,6 +35,7 @@
 #include <kconfig.h>
 #include <ksimpleconfig.h>
 #include <kstandarddirs.h>
+#include <kurl.h>
 
 #include <qfile.h>
 #include <qtextstream.h>
