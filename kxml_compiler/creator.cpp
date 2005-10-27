@@ -97,6 +97,7 @@ void Creator::createElementFunctions( KODE::Class &c, Element *e )
 {
   if ( e->hasText ) {
     createProperty( c, "QString", e->name );
+    c.addHeaderInclude( "qstring.h" );
     if ( mXmlParserType == XmlParserCustomExternal ) {
       createTextElementParserCustom( c, e );
     }
@@ -671,7 +672,8 @@ void Creator::createFileWriter( Element *element, const QString &dtd )
   writer.addArgument( "const QString &filename" );
 
   c.addInclude( "qfile.h" );
-
+  c.addInclude( "QTextStream" );
+ 
   KODE::Code code;
 
   code += "QFile file( filename );";
@@ -722,11 +724,12 @@ void Creator::createFileParserCustom( Element *element )
 
   mParserClass.addInclude( "qfile.h" );
   mParserClass.addInclude( "kdebug.h" );
-
+  mParserClass.addInclude( "QTextStream" );
+  
   mParserClass.addMemberVariable( KODE::MemberVariable( "mBuffer",
                                                         "QString" ) );
   mParserClass.addMemberVariable( KODE::MemberVariable( "mRunning",
-                                                        "unsigned int" ) );
+                                                        "int" ) );
 
   KODE::Code code;
 
