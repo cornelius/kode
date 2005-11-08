@@ -932,7 +932,7 @@ void Converter::createTransportClass()
   queryCode += slotDataVar.name() + ".truncate( 0 );";
   queryCode.newLine();
   queryCode += "QByteArray postData;";
-  queryCode += "QDataStream stream( postData, IO_WriteOnly );";
+  queryCode += "QDataStream stream( postData, QIODevice::WriteOnly );";
   queryCode += "stream.writeRawBytes( xml.toUtf8(), xml.toUtf8().length() );";
   queryCode.newLine();
   queryCode += "KIO::TransferJob* job = KIO::http_post( KURL( " + url.name() + " ), postData, false );";

@@ -153,7 +153,7 @@ void BinaryWidget::load()
   QString tempFile;
   if ( KIO::NetAccess::download( url, tempFile, this ) ) {
     QFile file( tempFile );
-    if ( !file.open( IO_ReadOnly ) ) {
+    if ( !file.open( QIODevice::ReadOnly ) ) {
       KMessageBox::error( this, i18n( "Unable to open file %1" ).arg( url.url() ) );
       return;
     }

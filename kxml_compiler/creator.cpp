@@ -677,7 +677,7 @@ void Creator::createFileWriter( Element *element, const QString &dtd )
   KODE::Code code;
 
   code += "QFile file( filename );";
-  code += "if ( !file.open( IO_WriteOnly ) ) {";
+  code += "if ( !file.open( QIODevice::WriteOnly ) ) {";
   code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return false;";
   code += "}";
@@ -734,7 +734,7 @@ void Creator::createFileParserCustom( Element *element )
   KODE::Code code;
 
   code += "QFile file( filename );";
-  code += "if ( !file.open( IO_ReadOnly ) ) {";
+  code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
   code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return 0;";
   code += "}";
@@ -835,7 +835,7 @@ void Creator::createFileParserDom( Element *element )
   KODE::Code code;
 
   code += "QFile file( filename );";
-  code += "if ( !file.open( IO_ReadOnly ) ) {";
+  code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
   code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return 0;";
   code += "}";
