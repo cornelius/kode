@@ -50,7 +50,7 @@ bool FileProvider::get( const QString &url, QString &target )
 
   mData.truncate( 0 );
 
-  qDebug( "Downloading external schema '%s'", url.latin1() );
+  qDebug( "Downloading external schema '%s'", url.toLatin1() );
 
   KIO::TransferJob* job = KIO::get( KURL( url ), false, false );
   connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -83,7 +83,7 @@ void FileProvider::slotData( KIO::Job*, const QByteArray &data )
 void FileProvider::slotResult( KIO::Job *job )
 {
   if ( job->error() ) {
-    qDebug( "%s", job->errorText().latin1() );
+    qDebug( "%s", job->errorText().toLatin1() );
     return;
   }
 
@@ -94,7 +94,7 @@ void FileProvider::slotResult( KIO::Job *job )
   }
 
   qDebug( "Download successful" );
-  file.writeBlock( mData );
+  file.write( mData );
   file.close();
 
   mData.truncate( 0 );

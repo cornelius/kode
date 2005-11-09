@@ -636,7 +636,7 @@ void Parser::parseRestriction( const QDomElement &element, SimpleType *st )
     if ( !childElement.isNull() ) {
 
       if ( !st->isValidFacet( childElement.tagName() ) ) {
-        qDebug( "<restriction>: %s is not a valid facet for the simple type", childElement.tagName().latin1() );
+        qDebug( "<restriction>: %s is not a valid facet for the simple type", childElement.tagName().toLatin1() );
         continue;
       }
 
@@ -853,7 +853,7 @@ void Parser::resolveForwardElementRefs()
     if ( e )
       mTypesTable.resolveForwardElementRefs( (*it).localName(), *e );
     else
-     qDebug( "Could not resolve element reference %s ", (*it).localName().latin1() );
+     qDebug( "Could not resolve element reference %s ", (*it).localName().toLatin1() );
   }
 }
 
@@ -869,7 +869,7 @@ void Parser::resolveForwardAttributeRefs()
     if ( a )
       mTypesTable.resolveForwardAttributeRefs( (*it).localName(), *a );
     else
-      qDebug( "Could not resolve attribute reference %s ", (*it).localName().latin1() );
+      qDebug( "Could not resolve attribute reference %s ", (*it).localName().toLatin1() );
   }
 }
 
@@ -1068,7 +1068,7 @@ void Parser::importSchema( const QString &location )
   if ( provider.get( schemaLocation, fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-      qDebug( "Unable to open file %s", file.name().latin1() );
+      qDebug( "Unable to open file %s", file.name().toLatin1() );
       return;
     }
 
@@ -1077,7 +1077,7 @@ void Parser::importSchema( const QString &location )
     int errorLine, errorColumn;
     bool ok = doc.setContent( &file, true, &errorMsg, &errorLine, &errorColumn );
     if ( !ok ) {
-      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, errorMsg.latin1() );
+      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, errorMsg.toLatin1() );
       return;
     }
 
