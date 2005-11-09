@@ -1,5 +1,5 @@
 INCLUDES = -I$(top_srcdir) -I.. -I$(top_srcdir)/libkdepim $(all_includes)
-
+KDE_CXXFLAGS = -UQT3_SUPPORT
 lib_LTLIBRARIES = libwscl.la
 
 libwscl_la_SOURCES = conversation.cpp documents.cpp interaction.cpp parser.cpp transition.cpp
