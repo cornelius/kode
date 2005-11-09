@@ -100,7 +100,7 @@ Element *Parser::parse( const QDomElement &docElement )
       it = mDefinitionMap.find( d->name );
       if ( it != mDefinitionMap.end() ) definitions = *it;
       definitions.append( d );
-      mDefinitionMap.replace( d->name, definitions );
+      mDefinitionMap.insert( d->name, definitions );
     } else if ( e1.tagName() == "start" ) {
       start = new Element;
       parseElement( e1, start, Pattern() );
