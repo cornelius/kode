@@ -89,7 +89,7 @@ Types Parser::types() const
 
   Element::List elements;
 
-  for ( uint i = 0; i < mElements.count(); ++i ) {
+  for ( int i = 0; i < mElements.count(); ++i ) {
     Element element = *mElements[ i ];
     element.setTypeName( mTypesTable.typeName( element.type() ) );
     elements.append( element );
@@ -107,10 +107,10 @@ void Parser::clear()
   mTypesTable.clear();
   mImportedSchemas.clear();
 
-  for ( uint i = 0; i < mElements.count(); ++i )
+  for ( int i = 0; i < mElements.count(); ++i )
     delete mElements[ i ];
 
-  for ( uint i = 0; i < mAttributes.count(); ++i )
+  for ( int i = 0; i < mAttributes.count(); ++i )
     delete mAttributes[ i ];
 }
 
