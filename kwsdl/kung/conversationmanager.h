@@ -27,6 +27,7 @@
 class ConversationManager
 {
   public:
+	virtual ~ConversationManager() {}
     /**
       Returns a list of all actions which can be called after the
       current action with a special condition.

@@ -26,7 +26,7 @@
 #include <klocale.h>
 
 #include <qtimer.h>
-
+#include <kurl.h>
 #include "loader.h"
 
 static const KCmdLineOptions options[] =

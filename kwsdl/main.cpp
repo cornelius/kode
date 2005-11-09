@@ -26,7 +26,7 @@
 #include <kcmdlineargs.h>
 #include <kdebug.h>
 #include <klocale.h>
-
+#include <kurl.h>
 #include <qdir.h>
 #include <qfile.h>
 #include <qtimer.h>
