@@ -138,7 +138,7 @@ void Creator::createClass( Element *element )
 {
   QString className = upperFirst( element->name );
 
-  if ( mProcessedClasses.indexOf( className ) != mProcessedClasses.end() ) {
+  if ( mProcessedClasses.find( className ) != mProcessedClasses.end() ) {
     return;
   }
 
