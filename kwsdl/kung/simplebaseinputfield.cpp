@@ -32,7 +32,7 @@ SimpleBaseInputField::SimpleBaseInputField( const QString &name, const Schema::S
   if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
     InputField *field = InputFieldFactory::self()->createBasicField( name, type->baseTypeName(), type );
     if ( !field ) {
-      qDebug( "SimpleBaseInputField: Unable to create field of type %s", type->baseTypeName().latin1() );
+      qDebug( "SimpleBaseInputField: Unable to create field of type %s", type->baseTypeName().toLatin1() );
     } else {
       appendChild( field );
     }
@@ -44,14 +44,14 @@ SimpleBaseInputField::SimpleBaseInputField( const QString &name, const Schema::S
 void SimpleBaseInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "SimpleBaseInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "SimpleBaseInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
     return;
   }
 
   if ( mType->subType() == Schema::SimpleType::TypeRestriction ) {
     InputField *field = childField( element.tagName() );
     if ( !field ) {
-      qDebug( "SimpleBaseInputField: Child field %s does not exists", element.tagName().latin1() );
+      qDebug( "SimpleBaseInputField: Child field %s does not exists", element.tagName().toLatin1() );
     } else {
       field->setXMLData( element );
     }

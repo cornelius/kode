@@ -109,7 +109,7 @@ InputField *InputFieldFactory::createBasicField( const QString &name, const QStr
   } else if ( typeName == "base64Binary" ) {
     return new BinaryInputField( name, typeName, type );
   } else {
-    qDebug( "InputFieldFactory: Unknown type %s", typeName.latin1() );
+    qDebug( "InputFieldFactory: Unknown type %s", typeName.toLatin1() );
     return 0;
   }
 }

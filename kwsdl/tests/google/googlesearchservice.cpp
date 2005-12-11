@@ -46,7 +46,7 @@ void GoogleSearchService::doGetCachedPage( QString* key, QString* url )
   delete key;
   Serializer::marshal( doc, method, "url", url );
   delete url;
-  qDebug( "%s", doc.toString().latin1() );
+  qDebug( "%s", doc.toString().toLatin1() );
   mDoGetCachedPageTransport->query( doc.toString() );
 }
 
@@ -56,10 +56,10 @@ void GoogleSearchService::doGetCachedPageResponseSlot( const QString &xml )
   QString errorMsg;
   int column, row;
   
-  qDebug( "%s", xml.latin1() );
+  qDebug( "%s", xml.toLatin1() );
   
   if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {
-    qDebug( "Unable to parse xml: %s (%d:%d)", errorMsg.latin1(), row, column );
+    qDebug( "Unable to parse xml: %s (%d:%d)", errorMsg.toLatin1(), row, column );
     return;
   }
   
@@ -92,7 +92,7 @@ void GoogleSearchService::doSpellingSuggestion( QString* key, QString* phrase )
   delete key;
   Serializer::marshal( doc, method, "phrase", phrase );
   delete phrase;
-  qDebug( "%s", doc.toString().latin1() );
+  qDebug( "%s", doc.toString().toLatin1() );
   mDoSpellingSuggestionTransport->query( doc.toString() );
 }
 
@@ -102,10 +102,10 @@ void GoogleSearchService::doSpellingSuggestionResponseSlot( const QString &xml )
   QString errorMsg;
   int column, row;
   
-  qDebug( "%s", xml.latin1() );
+  qDebug( "%s", xml.toLatin1() );
   
   if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {
-    qDebug( "Unable to parse xml: %s (%d:%d)", errorMsg.latin1(), row, column );
+    qDebug( "Unable to parse xml: %s (%d:%d)", errorMsg.toLatin1(), row, column );
     return;
   }
   
@@ -154,7 +154,7 @@ void GoogleSearchService::doGoogleSearch( QString* key, QString* q, int* start, 
   delete ie;
   Serializer::marshal( doc, method, "oe", oe );
   delete oe;
-  qDebug( "%s", doc.toString().latin1() );
+  qDebug( "%s", doc.toString().toLatin1() );
   mDoGoogleSearchTransport->query( doc.toString() );
 }
 
@@ -164,10 +164,10 @@ void GoogleSearchService::doGoogleSearchResponseSlot( const QString &xml )
   QString errorMsg;
   int column, row;
   
-  qDebug( "%s", xml.latin1() );
+  qDebug( "%s", xml.toLatin1() );
   
   if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {
-    qDebug( "Unable to parse xml: %s (%d:%d)", errorMsg.latin1(), row, column );
+    qDebug( "Unable to parse xml: %s (%d:%d)", errorMsg.toLatin1(), row, column );
     return;
   }
   

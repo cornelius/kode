@@ -751,7 +751,7 @@ void Converter::convertInputMessage( const Port &port, const Message &message, K
     code += "delete " + mNameMapper.escape( lowerName ) + ";";
   }
 
-  code += "qDebug( \"%s\", doc.toString().latin1() );";
+  code += "qDebug( \"%s\", doc.toString().toLatin1() );";
   code += transport.name() + "->query( doc.toString() );";
   callFunc.setBody( code );
 
@@ -796,11 +796,11 @@ void Converter::convertOutputMessage( const Port&, const Message &message, KODE:
   code += "QString errorMsg;";
   code += "int column, row;";
   code.newLine();
-  code += "qDebug( \"%s\", xml.latin1() );";
+  code += "qDebug( \"%s\", xml.toLatin1() );";
   code.newLine();
   code += "if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {";
   code.indent();
-  code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", errorMsg.latin1(), row, column );";
+  code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", errorMsg.toLatin1(), row, column );";
   code += "return;";
   code.unindent();
   code += "}";
@@ -845,8 +845,8 @@ void Converter::createUtilClasses()
     { "int", "xsd:int", "QString::number( *value )", "str.toInt()" },
     { "unsigned int", "xsd:unsignedByte", "QString::number( *value )", "str.toUInt()" },
     { "double", "xsd:double", "QString::number( *value )", "str.toDouble()" },
-    { "char", "xsd:byte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
-    { "unsigned char", "xsd:unsignedByte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
+    { "char", "xsd:byte", "QString( QChar( *value ) )", "str[ 0 ].toLatin1()" },
+    { "unsigned char", "xsd:unsignedByte", "QString( QChar( *value ) )", "str[ 0 ].toLatin1()" },
     { "short", "xsd:short", "QString::number( *value )", "str.toShort()" },
     { "QByteArray", "xsd:base64Binary", "QString::fromUtf8( KCodecs::base64Encode( *value ) )", "KCodecs::base64Decode( str.toUtf8() )" },
     { "QDateTime", "xsd:dateTime", "value->toString( Qt::ISODate )", "QDateTime::fromString( str, Qt::ISODate )" },

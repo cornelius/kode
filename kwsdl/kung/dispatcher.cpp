@@ -116,7 +116,7 @@ void Dispatcher::nextMessage()
     body.appendChild( method );
 
     if ( mTransport ) {
-      qDebug( "%s", doc.toString( 2 ).latin1() );
+      qDebug( "%s", doc.toString( 2 ).toLatin1() );
       mTransport->query( doc.toString( 2 ) );
     }
   } else
@@ -125,7 +125,7 @@ void Dispatcher::nextMessage()
 
 void Dispatcher::result( const QString &xml )
 {
-  qDebug( "Got data %s", xml.latin1() );
+  qDebug( "Got data %s", xml.toLatin1() );
 
   KWSDL::Message message = mWSDL.findOutputMessage( mCurrentMessage );
   InputField *field = new PageInputField( message.name(), message );

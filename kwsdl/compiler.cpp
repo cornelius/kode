@@ -70,7 +70,7 @@ void Compiler::download()
   if ( provider.get( mWSDLUrl, fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-      qDebug( "Unable to download schema file %s", mWSDLUrl.latin1() );
+      qDebug( "Unable to download schema file %s", mWSDLUrl.toLatin1() );
       provider.cleanUp();
       return;
     }
@@ -79,7 +79,7 @@ void Compiler::download()
     int errorLine, errorCol;
     QDomDocument doc;
     if ( !doc.setContent( &file, true, &errorMsg, &errorLine, &errorCol ) ) {
-      qDebug( "%s at (%d,%d)", errorMsg.latin1(), errorLine, errorCol );
+      qDebug( "%s at (%d,%d)", errorMsg.toLatin1(), errorLine, errorCol );
       return;
     }
 

@@ -37,7 +37,7 @@ IntegerInputField::IntegerInputField( const QString &name, const QString &typeNa
 void IntegerInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "IntegerInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "IntegerInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
     return;
   }
 

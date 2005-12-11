@@ -24,7 +24,7 @@
 Transport::Transport( const QString &url )
 {
   mUrl = url;
-  qDebug( "url=%s", url.latin1() );
+  qDebug( "url=%s", url.toLatin1() );
 }
 
 void Transport::query( const QString &xml )

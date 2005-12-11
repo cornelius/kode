@@ -56,7 +56,7 @@ void ListInputField::setXMLData( const QDomElement &element )
         field->setXMLData( child );
         appendChild( field );
       } else
-        qDebug( "ListInputField: Unable to create field of type %s", mTypeName.latin1() );
+        qDebug( "ListInputField: Unable to create field of type %s", mTypeName.toLatin1() );
     }
 
     node = node.nextSibling();
@@ -132,7 +132,7 @@ void ListWidget::add()
 {
   InputField *field = InputFieldFactory::self()->createField( mName, mType );
   if ( !field ) {
-    qDebug( "ListInputField: Unable to create field of type %s", mType.latin1() );
+    qDebug( "ListInputField: Unable to create field of type %s", mType.toLatin1() );
     return;
   }
 

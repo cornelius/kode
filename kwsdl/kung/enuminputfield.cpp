@@ -37,7 +37,7 @@ EnumInputField::EnumInputField( const QString &name, const Schema::SimpleType *t
 void EnumInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "EnumInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "EnumInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
     return;
   }
 

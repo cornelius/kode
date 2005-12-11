@@ -178,7 +178,7 @@ QString Serializer::marshalValue( const char* value )
 
 void Serializer::demarshalValue( const QString &str, char *value )
 {
-  *value = str[ 0 ].latin1();
+  *value = str[ 0 ].toLatin1();
 }
 
 void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString &name, const char* value )
@@ -201,7 +201,7 @@ QString Serializer::marshalValue( const unsigned char* value )
 
 void Serializer::demarshalValue( const QString &str, unsigned char *value )
 {
-  *value = str[ 0 ].latin1();
+  *value = str[ 0 ].toLatin1();
 }
 
 void Serializer::marshal( QDomDocument &doc, QDomElement &parent, const QString &name, const unsigned char* value )

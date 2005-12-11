@@ -39,7 +39,7 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema:
     bool isList = ((*elemIt).maxOccurs() == UNBOUNDED);
     InputField *field = InputFieldFactory::self()->createField( (*elemIt).name(), (*elemIt).typeName(), isList );
     if ( !field ) {
-      qDebug( "ComplexBaseInputField: Unable to create field of type %s", type->baseTypeName().latin1() );
+      qDebug( "ComplexBaseInputField: Unable to create field of type %s", type->baseTypeName().toLatin1() );
     } else {
       appendChild( field );
     }
@@ -50,7 +50,7 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema:
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     InputField *field = InputFieldFactory::self()->createField( (*attrIt).name(), (*attrIt).typeName() );
     if ( !field ) {
-      qDebug( "ComplexBaseInputField: Unable to create field of type %s", type->baseTypeName().latin1() );
+      qDebug( "ComplexBaseInputField: Unable to create field of type %s", type->baseTypeName().toLatin1() );
     } else {
       appendChild( field );
     }
@@ -60,7 +60,7 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema:
 void ComplexBaseInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "ComplexBaseInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "ComplexBaseInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
     return;
   }
 
@@ -75,7 +75,7 @@ void ComplexBaseInputField::setXMLData( const QDomElement &element )
       if ( !child.isNull() ) {
         InputField *field = childField( child.tagName() );
         if ( !field ) {
-          qDebug( "ComplexBaseInputField: Child field %s does not exists", child.tagName().latin1() );
+          qDebug( "ComplexBaseInputField: Child field %s does not exists", child.tagName().toLatin1() );
         } else {
           field->setXMLData( child );
         }
@@ -93,7 +93,7 @@ void ComplexBaseInputField::setXMLData( const QDomElement &element )
 
     InputField *field = childField( attr.name() );
     if ( !field ) {
-      qDebug( "ComplexBaseInputField: Child field %s does not exists", attr.name().latin1() );
+      qDebug( "ComplexBaseInputField: Child field %s does not exists", attr.name().toLatin1() );
     } else {
       field->setData( attr.value() );
     }

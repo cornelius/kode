@@ -48,7 +48,7 @@ BinaryInputField::BinaryInputField( const QString &name, const QString &typeName
 void BinaryInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "BinaryInputField: Wrong dom element passed: expected %s, got %s", mName.latin1(), element.tagName().latin1() );
+    qDebug( "BinaryInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
     return;
   }
 
@@ -126,7 +126,7 @@ void BinaryWidget::setData( const QByteArray &data )
     KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString::null, this, 0, this, 0 );
     if ( part ) {
       KTempFile file;
-      file.file()->writeBlock( data );
+      file.file()->write( data );
       file.close();
       part->openURL( KURL( file.name() ) );
       mMainWidget = part->widget();
@@ -176,7 +176,7 @@ void BinaryWidget::save()
     return;
 
   KTempFile tempFile;
-  tempFile.file()->writeBlock( mData );
+  tempFile.file()->write( mData );
   tempFile.close();
 
   if ( !KIO::NetAccess::upload( tempFile.name(), url, this ) )
