@@ -23,7 +23,7 @@
 #define KWSDL_PARSER_H
 
 #include <qdom.h>
-#include <q3valuelist.h>
+
 
 #include <schema/parser.h>
 
