@@ -40,7 +40,7 @@ void Parser::parse( const QString &xml )
   int errorLine, errorColumn;
   bool ok = doc.setContent( xml, true, &errorMsg, &errorLine, &errorColumn );
   if ( !ok ) {
-    qDebug( "Error parsing wscl (%d:%d) %s", errorLine, errorColumn, errorMsg.toLatin1() );
+    qDebug( "Error parsing wscl (%d:%d) %s", errorLine, errorColumn, qPrintable( errorMsg ) );
     return;
   }
 
@@ -72,7 +72,7 @@ void Parser::parse( const QString &xml )
           QDomElement interactionElement = interactionNode.toElement();
           if ( !interactionElement.isNull() ) {
             if ( interactionElement.tagName() != "Interaction" ) {
-              qDebug( "Expected tag name 'Interaction', got '%s'", interactionElement.tagName().toLatin1() );
+              qDebug( "Expected tag name 'Interaction', got '%s'", qPrintable( interactionElement.tagName() ) );
               continue;
             }
 
@@ -90,7 +90,7 @@ void Parser::parse( const QString &xml )
             else if ( type == "Empty" )
               interaction.setType( Interaction::Empty );
             else
-              qDebug( "Unknown interaction type '%s'", type.toLatin1() );
+              qDebug( "Unknown interaction type '%s'", qPrintable( type ) );
 
             XMLDocument::List inputDocuments;
             XMLDocument::List outputDocuments;
@@ -175,7 +175,7 @@ void Parser::parse( const QString &xml )
           QDomElement transitionElement = transitionNode.toElement();
           if ( !transitionElement.isNull() ) {
             if ( transitionElement.tagName() != "Transition" ) {
-              qDebug( "Expected tag name 'Transition', got '%s'", transitionElement.tagName().toLatin1() );
+              qDebug( "Expected tag name 'Transition', got '%s'", qPrintable( transitionElement.tagName() ) );
               continue;
             }
 
@@ -193,7 +193,7 @@ void Parser::parse( const QString &xml )
                 else if ( tagName == "SourceInteractionCondition" )
                   transition.setSourceInteractionCondition( contentElement.attribute( "href" ) );
                 else
-                  qDebug( "Unknown transition element %s", tagName.toLatin1() );
+                  qDebug( "Unknown transition element %s", qPrintable( tagName ) );
               }
 
               contentNode = contentNode.nextSibling();
