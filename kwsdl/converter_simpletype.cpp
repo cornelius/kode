@@ -170,7 +170,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
   } else if ( type->subType() == Schema::SimpleType::TypeList ) {
     classDocumentation = "This class encapsulates a list type.";
 
-    newClass.addHeaderInclude( "qvaluelist.h" );
+    newClass.addHeaderInclude( "QList" );
     const QName baseName = type->listTypeName();
     const QString typeName = mTypeMap.localType( baseName );
 
@@ -178,7 +178,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
 
     // member variables
-    KODE::MemberVariable variable( "entries", "QValueList<" + typeName + "*>*" );
+    KODE::MemberVariable variable( "entries", "QList<" + typeName + "*>*" );
     newClass.addMemberVariable( variable );
 
     ctorBody += variable.name() + " = 0;";
@@ -186,11 +186,11 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
 
     // setter method
     KODE::Function setter( "setEntries", "void" );
-    setter.addArgument( "QValueList<" + typeName + "*> *entries" );
+    setter.addArgument( "QList<" + typeName + "*> *entries" );
     setter.setBody( variable.name() + " = entries;" );
 
     // getter method
-    KODE::Function getter( "entries", "QValueList<" + typeName + "*>*" );
+    KODE::Function getter( "entries", "QList<" + typeName + "*>*" );
     getter.setBody( "return " + variable.name() + ";" );
     getter.setConst( true );
 
@@ -367,11 +367,11 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
   } else if ( type->subType() == Schema::SimpleType::TypeList ) {
     const QString listType = mTypeMap.localType( type->listTypeName() );
 
-    mSerializer.addInclude( "qstringlist.h" );
+    mSerializer.addInclude( "QStringList" );
 
     marshalCode += "QStringList list;";
-    marshalCode += "QValueList<" + listType + "*> *entries = value->entries();";
-    marshalCode += "QValueList<" + listType + "*>::ConstIterator it;";
+    marshalCode += "QList<" + listType + "*> *entries = value->entries();";
+    marshalCode += "QList<" + listType + "*>::ConstIterator it;";
     marshalCode += "for ( it = entries->begin(); it != entries->end(); ++it ) {";
     marshalCode.indent();
     marshalCode += "list.append( Serializer::marshalValue( *it ) );";
@@ -393,10 +393,10 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
     marshalCode += "}";
     marshalCode += "parentElement.appendChild( doc.createTextNode( list.join( \" \" ) ) );";
 
-    demarshalCode += "const QStringList list = QStringList::split( \" \", parent.text(), false );";
+    demarshalCode += "const QStringList list = parent.text().split( \" \", QString::SkipEmptyParts );";
     demarshalCode += "if ( !list.isEmpty() ) {";
     demarshalCode.indent();
-    demarshalCode += "QValueList<" + listType + "*> *entries = new QValueList<" + listType + "*>();";
+    demarshalCode += "QList<" + listType + "*> *entries = new QList<" + listType + "*>();";
     demarshalCode += "QStringList::ConstIterator it;";
     demarshalCode += "for ( it = list.begin(); it != list.end(); ++it ) {";
     demarshalCode.indent();
@@ -457,7 +457,7 @@ static KODE::Code createRangeCheckCode( const Schema::SimpleType *type, const QS
     code += "QRegExp exp( \"" + type->facetPattern() + "\" );";
     code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
 
-    parentClass.addInclude( "qregexp.h" );
+    parentClass.addInclude( "QRegExp" );
   }
 
   return code;

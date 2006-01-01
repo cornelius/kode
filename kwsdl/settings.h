@@ -22,8 +22,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <qmap.h>
-#include <qstring.h>
+#include <QMap>
+#include <QString>
 
 class Settings
 {

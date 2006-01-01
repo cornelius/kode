@@ -26,12 +26,9 @@ using namespace KWSDL;
 void Converter::createUtils()
 {
   mSerializer = KODE::Class( "Serializer" );
-  mSerializer.addHeaderInclude( "qcstring.h" );
-  mSerializer.addHeaderInclude( "qdom.h" );
-  mSerializer.addHeaderInclude( "qdatetime.h" );
-  mSerializer.addHeaderInclude( "qstring.h" );
-  mSerializer.addHeaderInclude( "qptrlist.h" );
-  mSerializer.addInclude( "kmdcodec.h" );
+  mSerializer.addHeaderInclude( "QDomDocument" );
+  mSerializer.addHeaderInclude( "QDateTime" );
+  mSerializer.addHeaderInclude( "QString" );
 
   typedef struct {
     QString type;
@@ -46,15 +43,15 @@ void Converter::createUtils()
    */
   TypeEntry types[] = {
     { "QString", "string", "*value", "str" },
-    { "bool", "boolean", "(*value ? \"true\" : \"false\")", "(str.lower() == \"true\" ? true : false)" },
+    { "bool", "boolean", "(*value ? \"true\" : \"false\")", "(str.toLower() == \"true\" ? true : false)" },
     { "float", "float", "QString::number( *value )", "str.toFloat()" },
     { "int", "int", "QString::number( *value )", "str.toInt()" },
     { "unsigned int", "unsignedByte", "QString::number( *value )", "str.toUInt()" },
     { "double", "double", "QString::number( *value )", "str.toDouble()" },
-    { "char", "byte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
-    { "unsigned char", "unsignedByte", "QString( QChar( *value ) )", "str[ 0 ].latin1()" },
+    { "char", "byte", "QString( QChar( *value ) )", "str[ 0 ].toLatin1()" },
+    { "unsigned char", "unsignedByte", "QString( QChar( *value ) )", "str[ 0 ].toLatin1()" },
     { "short", "short", "QString::number( *value )", "str.toShort()" },
-    { "QByteArray", "base64Binary", "QString::fromUtf8( KCodecs::base64Encode( *value ) )", "QByteArray( KCodecs::base64Decode( str.utf8() ) )" },
+    { "QByteArray", "base64Binary", "QString::fromUtf8( value->toBase64() )", "QByteArray::fromBase64( str.toUtf8() )" },
     { "QDateTime", "dateTime", "value->toString( Qt::ISODate )", "QDateTime::fromString( str, Qt::ISODate )" },
     { "QDate", "date", "value->toString( Qt::ISODate )", "QDate::fromString( str, Qt::ISODate )" },
     { "QTime", "time", "value->toString( Qt::ISODate )", "QTime::fromString( str, Qt::ISODate )" }

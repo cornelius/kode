@@ -46,7 +46,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "any";
     entry.localType = "QString";
-    entry.headers << "qstring.h";
+    entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
   }
@@ -57,7 +57,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "anyURI";
     entry.localType = "QString";
-    entry.headers << "qstring.h";
+    entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
   }
@@ -68,7 +68,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "base64Binary";
     entry.localType = "QByteArray";
-    entry.headers << "qcstring.h";
+    entry.headers << "QByteArray";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
   }
@@ -79,8 +79,8 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "binary";
     entry.localType = "QByteArray";
-    entry.headers << "qcstring.h";
-    entry.forwardDeclarations << "QString";
+    entry.headers << "QByteArray";
+    entry.forwardDeclarations << "QByteArray";
     mTypeMap.append( entry );
   }
   {
@@ -108,7 +108,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "date";
     entry.localType = "QDate";
-    entry.headers << "qdatetime.h";
+    entry.headers << "QDate";
     entry.forwardDeclarations << "QDate";
     mTypeMap.append( entry );
   }
@@ -119,7 +119,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "dateTime";
     entry.localType = "QDateTime";
-    entry.headers << "qdatetime.h";
+    entry.headers << "QDateTime";
     entry.forwardDeclarations << "QDateTime";
     mTypeMap.append( entry );
   }
@@ -148,7 +148,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "duration";
     entry.localType = "QString";
-    entry.headers << "qstring.h";
+    entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
   }
@@ -177,7 +177,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "language";
     entry.localType = "QString";
-    entry.headers << "qstring.h";
+    entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
   }
@@ -197,7 +197,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "string";
     entry.localType = "QString";
-    entry.headers << "qstring.h";
+    entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
   }
@@ -208,7 +208,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "time";
     entry.localType = "QTime";
-    entry.headers << "qdatetime.h";
+    entry.headers << "QTime";
     entry.forwardDeclarations << "QTime";
     mTypeMap.append( entry );
   }

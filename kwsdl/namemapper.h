@@ -22,7 +22,7 @@
 #ifndef KWSDL_NAMEMAPPER_H
 #define KWSDL_NAMEMAPPER_H
 
-#include <qstringlist.h>
+#include <QStringList>
 
 namespace KWSDL {
 

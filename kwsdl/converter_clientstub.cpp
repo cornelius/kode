@@ -29,8 +29,8 @@ void Converter::convertClientService()
 
   KODE::Class newClass( service.name() );
   newClass.addBaseClass( mQObject );
-  newClass.addHeaderInclude( "qobject.h" );
-  newClass.addHeaderInclude( "qstring.h" );
+  newClass.addHeaderInclude( "QObject" );
+  newClass.addHeaderInclude( "QString" );
 
   KODE::Function ctor( service.name() );
   KODE::Function dtor( "~" + service.name() );
@@ -220,7 +220,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
     header = "\"SOAPAction: \\\"" + op.action() + "\\\"\"";
   }
 
-  code += "qDebug( \"%s\", doc.toString().latin1() );";
+  code += "qDebug( \"%s\", qPrintable( doc.toString() ) );";
   KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
   code += transport.name() + "->query( doc.toString(), " + header + " );";
   callFunc.setBody( code );
@@ -285,11 +285,11 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   code += "QString errorMsg;";
   code += "int column, row;";
   code.newLine();
-  code += "qDebug( \"%s\", xml.latin1() );";
+  code += "qDebug( \"%s\", qPrintable( xml ) );";
   code.newLine();
   code += "if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {";
   code.indent();
-  code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", errorMsg.latin1(), row, column );";
+  code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", qPrintable( errorMsg ), row, column );";
   code += "return;";
   code.unindent();
   code += "}";

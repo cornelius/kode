@@ -22,8 +22,8 @@
 #ifndef KWSDL_COMPILER_H
 #define KWSDL_COMPILER_H
 
-#include <qdom.h>
-#include <qobject.h>
+#include <QDomElement>
+#include <QObject>
 
 #include <wsdl/wsdl.h>
 

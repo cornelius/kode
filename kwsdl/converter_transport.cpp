@@ -27,7 +27,7 @@ void Converter::createKDETransport()
 {
   KODE::Class transport( "Transport" );
   transport.addBaseClass( mQObject );
-  transport.addHeaderInclude( "qobject.h" );
+  transport.addHeaderInclude( "QObject" );
   transport.addHeaderInclude( "kio/job.h" );
 
   transport.addInclude( "kdebug.h" );
@@ -54,8 +54,8 @@ void Converter::createKDETransport()
   queryCode += slotDataVar.name() + ".truncate( 0 );";
   queryCode.newLine();
   queryCode += "QByteArray postData;";
-  queryCode += "QDataStream stream( postData, IO_WriteOnly );";
-  queryCode += "stream.writeRawBytes( xml.utf8(), xml.utf8().length() );";
+  queryCode += "QDataStream stream( &postData, QIODevice::WriteOnly );";
+  queryCode += "stream.writeRawData( xml.toUtf8(), xml.toUtf8().length() );";
   queryCode.newLine();
   queryCode += "KIO::TransferJob* job = KIO::http_post( KURL( " + url.name() + " ), postData, false );";
   queryCode += "if ( !job ) {";

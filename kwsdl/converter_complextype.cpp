@@ -105,7 +105,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     QString typeName = mTypeMap.localType( (*elemIt).type() );
 
     if ( (*elemIt).maxOccurs() > 1 )
-      typeName = "QValueList<" + typeName + "*>";
+      typeName = "QList<" + typeName + "*>";
 
     // member variables
     KODE::MemberVariable variable( (*elemIt).name(), typeName + "*" );
@@ -133,7 +133,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*elemIt).type() ) );
     if ( (*elemIt).maxOccurs() > 1 )
-      newClass.addHeaderIncludes( QStringList( "qvaluelist.h" ) );
+      newClass.addHeaderIncludes( QStringList( "QList" ) );
   }
 
   // attributes
@@ -144,7 +144,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
 
     bool isArray = !(*attrIt).arrayType().isEmpty();
     if ( isArray )
-      typeName = "QValueList<" + mTypeMap.localType( (*attrIt).arrayType() ) + "*>";
+      typeName = "QList<" + mTypeMap.localType( (*attrIt).arrayType() ) + "*>";
     else
       typeName = mTypeMap.localType( (*attrIt).type() );
 
@@ -174,7 +174,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*attrIt).type() ) );
     if ( isArray )
-      newClass.addHeaderIncludes( QStringList( "qvaluelist.h" ) );
+      newClass.addHeaderIncludes( QStringList( "QList" ) );
   }
 
   createComplexTypeSerializer( type );
@@ -280,9 +280,9 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
 
       marshalCode += "{";
       marshalCode.indent();
-      marshalCode += "const QValueList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
+      marshalCode += "const QList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
       marshalCode.newLine();
-      marshalCode += "QValueList<" + typeName + "*>::ConstIterator it;";
+      marshalCode += "QList<" + typeName + "*>::ConstIterator it;";
       marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
       marshalCode.indent();
       marshalCode += "Serializer::marshal( doc, parentElement, \"" + typePrefix + ":" + (*elemIt).name() + "\", *it, noNamespace );";
@@ -293,7 +293,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
 
       const QString listName = mNameMapper.escape( lowerName ) + "List";
 
-      demarshalStartCode += "QValueList<" + typeName + "*> *" + listName + " = new QValueList<" + typeName + "*>();";
+      demarshalStartCode += "QList<" + typeName + "*> *" + listName + " = new QList<" + typeName + "*>();";
 
       demarshalCode += "if ( element.tagName() == \"" + (*elemIt).name() + "\" ) {";
       demarshalCode.indent();
@@ -333,7 +333,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
 
       marshalCode += "{";
       marshalCode.indent();
-      marshalCode += "const QValueList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
+      marshalCode += "const QList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
       marshalCode.newLine();
 
       marshalCode += "QDomElement element = doc.createElement( noNamespace ? name : \"" + typePrefix + ":\" + name );";
@@ -343,7 +343,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
                      ":arrayType\", \"" + typePrefix + ":" + typeName + "[\" + QString::number( list->count() ) + \"]\" );";
       marshalCode += "parentElement.appendChild( element );";
       marshalCode.newLine();
-      marshalCode += "QValueList<" + typeName + "*>::ConstIterator it;";
+      marshalCode += "QList<" + typeName + "*>::ConstIterator it;";
       marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
       marshalCode.indent();
       marshalCode += "Serializer::marshal( doc, element, \"item\", *it, noNamespace );";
@@ -355,7 +355,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
       const QString listName = mNameMapper.escape( lowerName ) + "List";
       // TODO: prepend the code somehow
 
-      demarshalStartCode += "QValueList<" + typeName + "*> *" + listName + " = new QValueList<" + typeName + "*>();";
+      demarshalStartCode += "QList<" + typeName + "*> *" + listName + " = new QList<" + typeName + "*>();";
 
       demarshalCode.indent();
       demarshalCode += typeName + " *item = new " + typeName + "();";
