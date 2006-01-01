@@ -58,7 +58,7 @@ bool FileProvider::get( const QString &url, QString &target )
 
   mBlocked = true;
   while ( mBlocked ) {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInput );
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
     usleep( 500 );
   }
 
@@ -87,14 +87,14 @@ void FileProvider::slotResult( KIO::Job *job )
   }
 
   QFile file( mFileName );
-  if ( !file.open( IO_WriteOnly ) ) {
+  if ( !file.open( QIODevice::WriteOnly ) ) {
     qDebug( "Unable to create temporary file" );
     mBlocked = false;
     return;
   }
 
   qDebug( "Download successful" );
-  file.writeBlock( mData );
+  file.write( mData );
   file.close();
 
   mData.truncate( 0 );

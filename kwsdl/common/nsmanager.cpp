@@ -42,7 +42,7 @@ QString NSManager::uri( const QString &prefix ) const
 {
   QMap<QString, QString>::ConstIterator it;
   for ( it = mMap.begin(); it != mMap.end(); ++it ) {
-    if ( it.data() == prefix )
+    if ( it.value() == prefix )
       return it.key();
   }
 
@@ -51,7 +51,7 @@ QString NSManager::uri( const QString &prefix ) const
 
 void NSManager::splitName( const QString &qname, QString &prefix, QString &localname ) const
 {
-  int pos = qname.find( ':' );
+  int pos = qname.indexOf( ':' );
   if ( pos != -1 ) {
     prefix = qname.left( pos );
     localname = qname.mid( pos + 1 );
@@ -108,6 +108,6 @@ void NSManager::dump() const
 {
   QMap<QString, QString>::ConstIterator it;
   for ( it = mMap.begin(); it != mMap.end(); ++it ) {
-    qDebug( "%s\t%s", qPrintable( it.data() ), qPrintable( it.key() ) );
+    qDebug( "%s\t%s", qPrintable( it.value() ), qPrintable( it.key() ) );
   }
 }
