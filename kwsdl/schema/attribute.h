@@ -26,41 +26,53 @@
 #include <QString>
 #include <QList>
 
+#include "xmlelement.h"
+
 namespace Schema {
 
-class Attribute
+class Attribute : public XmlElement
 {
   public:
     typedef QList<Attribute> List;
-    typedef QList<Attribute*> PtrList;
 
     Attribute();
+    Attribute( const QString &nameSpace );
 
-    Attribute( const QString &name, int type, bool qualified = false,
-               const QString &defaultValue = QString(),
-               const QString &fixedValue = QString(),
-               bool use = true );
+    void setType( const QName &type );
+    QName type() const;
 
-    QString name() const;
-    int type() const;
+    void setDocumentation( const QString &documentation );
+    QString documentation() const;
 
-    void setTypeName( const QString &typeName );
-    QString typeName() const;
-
+    void setDefaultValue( const QString &defaultValue );
     QString defaultValue() const;
+
+    void setFixedValue( const QString &fixedValue );
     QString fixedValue() const;
 
+    void setIsQualified( bool isQualified );
     bool isQualified() const;
+
+    void setIsUsed( bool isUsed );
     bool isUsed() const;
 
+    void setReference( const QName &reference );
+    QName reference() const;
+
+    bool isResolved() const;
+
+    void setArrayType( const QName &arrayType );
+    QName arrayType() const;
+
   private:
-    QString mName;
-    int mType;
-    QString mTypeName;
-    bool mQualified;
+    QName mType;
+    QString mDocumentation;
     QString mDefaultValue;
     QString mFixedValue;
+    bool mQualified;
     bool mUse;
+    QName mReference;
+    QName mArrayType;
 };
 
 }

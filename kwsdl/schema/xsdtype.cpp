@@ -2,6 +2,7 @@
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+                       based on wsdlpull parser by Vivek Krishna
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -19,37 +20,29 @@
     Boston, MA 02110-1301, USA.
  */
 
-#ifndef SCHEMA_FILEPROVIDER_H
-#define SCHEMA_FILEPROVIDER_H
+#include "xsdtype.h"
 
-#include <qobject.h>
+using namespace Schema;
 
-namespace KIO {
-class Job;
-}
-
-namespace Schema {
-
-class FileProvider : QObject
+XSDType::XSDType()
 {
-  Q_OBJECT
-
-  public:
-    FileProvider();
-
-    bool get( const QString &url, QString &target );
-    void cleanUp();
-
-  private slots:
-    void slotData( KIO::Job*, const QByteArray& );
-    void slotResult( KIO::Job* );
-
-  private:
-    QString mFileName;
-    QByteArray mData;
-    bool mBlocked;
-};
-
 }
 
-#endif
+XSDType::XSDType( const QString &nameSpace )
+  : XmlElement( nameSpace )
+{
+}
+
+XSDType::~XSDType()
+{
+}
+
+void XSDType::setContentModel( ContentModel contentModel )
+{
+  mContentModel = contentModel;
+}
+
+XSDType::ContentModel XSDType::contentModel() const
+{
+  return mContentModel;
+}

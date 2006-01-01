@@ -23,10 +23,9 @@
 #ifndef SCHEMA_SIMPLETYPE_H
 #define SCHEMA_SIMPLETYPE_H
 
-#include <QList>
 #include <QStringList>
 
-#include "qualifiedname.h"
+#include <common/qname.h>
 #include "xsdtype.h"
 
 namespace Schema {
@@ -71,34 +70,17 @@ class SimpleType : public XSDType
     SimpleType( const QString &nameSpace );
     ~SimpleType();
 
-    void setName( const QString &name );
-    QString name() const;
-
-    QualifiedName qualifiedName() const;
-
     void setDocumentation( const QString &documentation );
     QString documentation() const;
 
-    void setType( int type );
-    int type() const;
-
-    void setBaseType( int baseType );
-    int baseType() const;
-
-    void setBaseTypeName( const QString &baseTypeName );
-    QString baseTypeName() const;
+    void setBaseTypeName( const QName &baseTypeName );
+    QName baseTypeName() const;
 
     void setSubType( SubType subType );
     SubType subType() const;
 
-    void setListType( int listType );
-    void setListTypeName( const QString &name );
-
-    int listType() const;
-    QString listTypeName() const;
-
-    void setContentModel( int contentModel );
-    int contentModel() const;
+    void setListTypeName( const QName &name );
+    QName listTypeName() const;
 
     void setAnonymous( bool anonymous );
     bool isAnonymous() const;
@@ -122,21 +104,15 @@ class SimpleType : public XSDType
     QString facetPattern() const;
 
   private:
-    QString mName;
-    QString mNameSpace;
     QString mDocumentation;
-    int mType;
-    int mBaseType;
-    QString mBaseTypeName;
-    int mContentModel;
+    QName mBaseTypeName;
     bool mRestriction;
     int mFacetId;
     bool mAnonymous;
     QStringList mEnums;
     SubType mSubType;
 
-    int mListType;
-    QString mListTypeName;
+    QName mListTypeName;
 
     typedef struct
     {

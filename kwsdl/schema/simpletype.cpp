@@ -25,38 +25,19 @@
 using namespace Schema;
 
 SimpleType::SimpleType()
-  : mBaseType( 0 ), mContentModel( SIMPLE ),
-    mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
-    mSubType( TypeRestriction ), mListType( INVALID )
+  : mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
+    mSubType( TypeRestriction )
 {
 }
 
 SimpleType::SimpleType( const QString &nameSpace )
-  : mNameSpace( nameSpace ), mBaseType( 0 ), mContentModel( SIMPLE ),
-    mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
-    mSubType( TypeRestriction ), mListType( INVALID )
+  : XSDType( nameSpace ), mRestriction( false ), mFacetId( NONE ),
+    mAnonymous( false ), mSubType( TypeRestriction )
 {
 }
 
 SimpleType::~SimpleType()
 {
-}
-
-void SimpleType::setName( const QString &name )
-{
-  mName = name;
-}
-
-QString SimpleType::name() const
-{
-  return mName;
-}
-
-QualifiedName SimpleType::qualifiedName() const
-{
-  QualifiedName qn( mName );
-  qn.setNameSpace( mNameSpace );
-  return qn;
 }
 
 void SimpleType::setDocumentation( const QString &documentation )
@@ -69,33 +50,13 @@ QString SimpleType::documentation() const
   return mDocumentation;
 }
 
-void SimpleType::setType( int type )
+void SimpleType::setBaseTypeName( const QName &baseTypeName )
 {
-  mType = type;
-}
-
-int SimpleType::type() const
-{
-  return mType;
-}
-
-void SimpleType::setBaseType( int baseType )
-{
-  mBaseType = baseType;
+  mBaseTypeName = baseTypeName;
   mRestriction = true;
 }
 
-int SimpleType::baseType() const 
-{
-  return mBaseType;
-}
-
-void SimpleType::setBaseTypeName( const QString &baseTypeName )
-{
-  mBaseTypeName = baseTypeName;
-}
-
-QString SimpleType::baseTypeName() const
+QName SimpleType::baseTypeName() const
 {
   return mBaseTypeName;
 }
@@ -110,34 +71,14 @@ SimpleType::SubType SimpleType::subType() const
   return mSubType;
 }
 
-void SimpleType::setListType( int listType )
-{
-  mListType = listType;
-}
-
-int SimpleType::listType() const
-{
-  return mListType;
-}
-
-void SimpleType::setListTypeName( const QString &name )
+void SimpleType::setListTypeName( const QName &name )
 {
   mListTypeName = name;
 }
 
-QString SimpleType::listTypeName() const
+QName SimpleType::listTypeName() const
 {
   return mListTypeName;
-}
-
-void SimpleType::setContentModel( int contentModel )
-{
-  mContentModel = contentModel;
-}
-
-int SimpleType::contentModel() const
-{
-  return mContentModel;
 }
 
 void SimpleType::setAnonymous( bool anonymous )
@@ -152,7 +93,7 @@ bool SimpleType::isAnonymous() const
 
 bool SimpleType::isValidFacet( const QString &facet )
 {
-  if ( mBaseType == 0 ) {
+  if ( mBaseTypeName.isEmpty() ) {
     qDebug( "isValidFacet:Unknown base type" );
     return false;
   }

@@ -20,25 +20,27 @@
     Boston, MA 02110-1301, USA.
  */
 
-#include <qdir.h>
-#include <qfile.h>
+#include <QDir>
+#include <QFile>
 #include <QUrl>
-#include <QList>
+#include <QXmlSimpleReader>
 
-#include "fileprovider.h"
+#include <common/fileprovider.h>
+#include <common/messagehandler.h>
+#include <common/nsmanager.h>
+#include <common/parsercontext.h>
 #include "parser.h"
 
-using namespace Schema;
+static const unsigned int UNBOUNDED( 100000 );
+static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
+static const QString WSDLSchemaURI( "http://schemas.xmlsoap.org/wsdl/" );
 
-const QString soapEncUri = "http://schemas.xmlsoap.org/soap/encoding/";
-const QString wsdlUri = "http://schemas.xmlsoap.org/wsdl/";
+using namespace Schema;
 
 
 Parser::Parser( const QString &nameSpace )
   : mNameSpace( nameSpace )
 {
-  mElementQualified = false;
-  mAttributeQualified = false;
 }
 
 Parser::~Parser()
@@ -46,159 +48,87 @@ Parser::~Parser()
   clear();
 }
 
-Types Parser::types() const
-{
-  Types types;
-
-  SimpleType::List simpleTypes;
-  ComplexType::List complexTypes;
-
-  for ( int i = 0; i < numTypes(); i++ ) {
-    const XSDType *pType = type( i + XSDType::ANYURI + 1 );
-    if ( pType != 0 ) {
-      if ( pType->isSimple() ) {
-        const SimpleType *simpleType = static_cast<const SimpleType*>( pType );
-
-        SimpleType type = *simpleType;
-        type.setBaseTypeName( mTypesTable.typeName( type.baseType() ) );
-        type.setListTypeName( mTypesTable.typeName( type.listType() ) );
-
-        simpleTypes.append( type );
-      } else {
-        const ComplexType *complexType = static_cast<const ComplexType*>( pType );
-
-        ComplexType type = *complexType;
-        type.setBaseTypeName( mTypesTable.typeName( type.baseType() ) );
-
-        Schema::Element::List elements = type.elements();
-        Schema::Element::List::Iterator elemIt;
-        for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt )
-          (*elemIt).setTypeName( mTypesTable.typeName( (*elemIt).type() ) );
-        type.setElements( elements );
-
-        Schema::Attribute::List attributes = type.attributes();
-        Schema::Attribute::List::Iterator attrIt;
-        for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt )
-          (*attrIt).setTypeName( mTypesTable.typeName( (*attrIt).type() ) );
-        type.setAttributes( attributes );
-
-        complexTypes.append( type );
-      }
-    }
-  }
-
-  Element::List elements;
-
-  for ( int i = 0; i < mElements.count(); ++i ) {
-    Element element = *mElements[ i ];
-    element.setTypeName( mTypesTable.typeName( element.type() ) );
-    elements.append( element );
-  }
-
-  types.setSimpleTypes( simpleTypes );
-  types.setComplexTypes( complexTypes );
-  types.setElements( elements );
-
-  return types;
-}
-
 void Parser::clear()
 {
-  mTypesTable.clear();
   mImportedSchemas.clear();
-
-  for ( int i = 0; i < mElements.count(); ++i )
-    delete mElements[ i ];
-
-  for ( int i = 0; i < mAttributes.count(); ++i )
-    delete mAttributes[ i ];
+  mNamespaces.clear();
+  mComplexTypes.clear();
+  mSimpleTypes.clear();
+  mElements.clear();
+  mAttributes.clear();
 }
 
-void Parser::setSchemaBaseUrl( const QString &url )
+bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 {
-  mSchemaBaseUrl = url;
-}
-
-void Parser::parseNameSpace( const QDomElement &element )
-{
-  QDomNamedNodeMap attributes = element.attributes();
-  for ( uint i = 0; i < attributes.count(); ++i ) {
-    QDomNode node = attributes.item( i );
-    QDomAttr attribute = node.toAttr();
-
-    if ( attribute.name().startsWith( "xmlns:" ) )
-      mNameSpaceMap.insert( attribute.value(), attribute.name().mid( 6 ) );
-  }
-}
-
-bool Parser::parseSchemaTag( const QDomElement &root )
-{
-  QualifiedName name = root.tagName();
+  QName name = root.tagName();
   if ( name.localName() != "schema" )
     return false;
+
+  NSManager *parentManager = context->namespaceManager();
+  NSManager namespaceManager;
+
+  // copy namespaces from wsdl
+  if ( parentManager )
+    namespaceManager = *parentManager;
+
+  context->setNamespaceManager( &namespaceManager );
+
+  QDomNamedNodeMap attributes = root.attributes();
+  for ( int i = 0; i < attributes.count(); ++i ) {
+    QDomAttr attribute = attributes.item( i ).toAttr();
+    if ( attribute.name().startsWith( "xmlns:" ) ) {
+      QString prefix = attribute.name().mid( 6 );
+      context->namespaceManager()->setPrefix( prefix, attribute.value() );
+    }
+  }
 
   if ( root.hasAttribute( "targetNamespace" ) )
     mNameSpace = root.attribute( "targetNamespace" );
 
-  if ( root.hasAttribute( "elementFormDefault" ) ) {
-    const QString value = root.attribute( "elementFormDefault" );
-    if ( value == "unqualified" )
-      mElementQualified = false;
-    else if ( value == "qualified" )
-      mElementQualified = true;
-  }
+ // mTypesTable.setTargetNamespace( mNameSpace );
 
-  mTypesTable.setTargetNamespace( mNameSpace );
-
-/*
-  for (i = xParser->getNamespaceCount(xParser->getDepth()) - 1;
-       i > xParser->getNamespaceCount(xParser->getDepth() - 1) - 1; i--)
-    if (xParser->getNamespaceUri(i) == mNameSpace)
-      m_tnsPrefix = xParser->getNamespacePrefix(i);
-*/
-
-  QDomNode node = root.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement element = node.toElement();
-    if ( !element.isNull() ) {
-
-      QualifiedName name = element.tagName();
-      if ( name.localName() == "import" ) {
-        parseImport( element );
-      } else if ( name.localName() == "element" ) {
-        parseElement( element );
-      } else if ( name.localName() == "complexType" ) {
-        XSDType *type = parseComplexType( element );
-        mTypesTable.addType( type );
-      } else if ( name.localName() == "simpleType" ) {
-        XSDType *type = parseSimpleType( element );
-        mTypesTable.addType( type );
-      } else if ( name.localName() == "attribute" ) {
-        parseAttribute( element );
-      } else if ( name.localName() == "annotation" ) {
-        parseAnnotation( element );
-      } else if ( name.localName() == "import" ) {
-        // TODO
-      } else if ( name.localName() == "include" ) {
-        // TODO
-      }
+  QDomElement element = root.firstChildElement();
+  while ( !element.isNull() ) {
+    QName name = element.tagName();
+    if ( name.localName() == "import" ) {
+      parseImport( context, element );
+    } else if ( name.localName() == "element" ) {
+      parseElement( context, element );
+    } else if ( name.localName() == "complexType" ) {
+      ComplexType ct = parseComplexType( context, element );
+      mComplexTypes.append( ct );
+    } else if ( name.localName() == "simpleType" ) {
+      SimpleType st = parseSimpleType( context, element );
+      mSimpleTypes.append( st );
+    } else if ( name.localName() == "attribute" ) {
+      parseAttribute( context, element );
+    } else if ( name.localName() == "annotation" ) {
+      parseAnnotation( context, element );
+    } else if ( name.localName() == "import" ) {
+      // TODO
+    } else if ( name.localName() == "include" ) {
+      // TODO
     }
 
-    node = node.nextSibling();
+    element = element.nextSiblingElement();
   }
 
-  if ( shouldResolve() ) {
-    resolveForwardElementRefs();
-    resolveForwardAttributeRefs();
-    resolveForwardDerivations();
-  }
+  context->setNamespaceManager( parentManager );
+  mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );
+  mNamespaces = joinNamespaces( mNamespaces, QStringList( mNameSpace ) );
+
+  resolveForwardDeclarations();
 
   return true;
 }
 
-void Parser::parseImport( const QDomElement &element )
+void Parser::parseImport( ParserContext *context, const QDomElement &element )
 {
   QString location = element.attribute( "schemaLocation" );
+
+  if ( location.isEmpty() )
+    location = element.attribute( "namespace" );
+
   if ( !location.isEmpty() ) {
     // don't import a schema twice
     if ( mImportedSchemas.contains( location ) )
@@ -206,811 +136,505 @@ void Parser::parseImport( const QDomElement &element )
     else
       mImportedSchemas.append( location );
 
-    importSchema( location );
+    importSchema( context, location );
   }
 }
 
-void Parser::parseAnnotation( const QDomElement& )
+void Parser::parseAnnotation( ParserContext*, const QDomElement& )
 {
 }
 
-void Parser::parseAnnotation( const QDomElement &element, QString &documentation )
+void Parser::parseAnnotation( ParserContext*, const QDomElement &element, QString &documentation )
 {
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
-      QualifiedName name = childElement.tagName();
-      if ( name.localName() == "documentation" )
-        documentation = childElement.text().trimmed();
-    }
+  QDomElement childElement = element.firstChildElement();
 
-    node = node.nextSibling();
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "documentation" )
+      documentation = childElement.text().trimmed();
+
+    childElement = childElement.nextSiblingElement();
   }
 }
 
-void Parser::parseAnnotation( const QDomElement &element, ComplexType *complexType )
+void Parser::parseAnnotation( ParserContext*, const QDomElement &element, ComplexType &complexType )
 {
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
-      QualifiedName name = childElement.tagName();
-      if ( name.localName() == "documentation" )
-        complexType->setDocumentation( childElement.text().trimmed() );
-    }
+  QDomElement childElement = element.firstChildElement();
 
-    node = node.nextSibling();
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "documentation" )
+      complexType.setDocumentation( childElement.text().trimmed() );
+
+    childElement = childElement.nextSiblingElement();
   }
 }
 
-void Parser::parseAnnotation( const QDomElement &element, SimpleType *simpleType )
+void Parser::parseAnnotation( ParserContext*, const QDomElement &element, SimpleType &simpleType )
 {
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
-      QualifiedName name = childElement.tagName();
-      if ( name.localName() == "documentation" )
-        simpleType->setDocumentation( childElement.text().trimmed() );
-    }
+  QDomElement childElement = element.firstChildElement();
 
-    node = node.nextSibling();
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "documentation" )
+      simpleType.setDocumentation( childElement.text().trimmed() );
+
+    childElement = childElement.nextSiblingElement();
   }
 }
 
-XSDType *Parser::parseComplexType( const QDomElement &element )
+ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement &element )
 {
-  ComplexType *newType = new ComplexType( mNameSpace );
+  ComplexType newType( mNameSpace );
 
-  newType->setName( element.attribute( "name" ) );
+  newType.setName( element.attribute( "name" ) );
+
   if ( element.hasAttribute( "mixed" ) )
-    newType->setContentModel( newType->MIXED );
+    newType.setContentModel( XSDType::MIXED );
 
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
+  QDomElement childElement = element.firstChildElement();
 
-      QualifiedName name = childElement.tagName();
-      if ( name.localName() == "all" ) {
-        all( childElement, newType );
-      } else if ( name.localName() == "sequence" ) {
-        cs( childElement, newType );
-      } else if ( name.localName() == "choice" ) {
-        cs( childElement, newType );
-      } else if ( name.localName() == "attribute" ) {
-        addAttribute( childElement, newType );
-      } else if ( name.localName() == "anyAttribute" ) {
-        addAnyAttribute( childElement, newType );
-      } else if ( name.localName() == "complexContent" ) {
-        parseComplexContent( childElement, newType );
-      } else if ( name.localName() == "simpleContent" ) {
-        parseSimpleContent( childElement, newType );
-      } else if ( name.localName() == "annotation" ) {
-        parseAnnotation( childElement, newType );
-      }
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "all" ) {
+      all( context, childElement, newType );
+    } else if ( name.localName() == "sequence" ) {
+      cs( context, childElement, newType );
+    } else if ( name.localName() == "choice" ) {
+      cs( context, childElement, newType );
+    } else if ( name.localName() == "attribute" ) {
+      addAttribute( context, childElement, newType );
+    } else if ( name.localName() == "anyAttribute" ) {
+      addAnyAttribute( context, childElement, newType );
+    } else if ( name.localName() == "complexContent" ) {
+      parseComplexContent( context, childElement, newType );
+    } else if ( name.localName() == "simpleContent" ) {
+      parseSimpleContent( context, childElement, newType );
+    } else if ( name.localName() == "annotation" ) {
+      parseAnnotation( context, childElement, newType );
     }
 
-    node = node.nextSibling();
+    childElement = childElement.nextSiblingElement();
   }
-  
+
   return newType;
 }
 
-void Parser::all( const QDomElement &element, ComplexType * ct )
+void Parser::all( ParserContext *context, const QDomElement &element, ComplexType &ct )
 {
-  int min, max;
-  QString tmp;
+  QDomElement childElement = element.firstChildElement();
 
-  min = element.attribute( "minOccurs", "1" ).toInt();
-  max = element.attribute( "maxOccurs", "1" ).toInt();
-  ct->setCompositor( ct->ALL, true, min, max );
-
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
-
-      QualifiedName name = childElement.tagName();
-      if ( name.localName() == "element" ) {
-        addElement( childElement, ct );
-      } else if ( name.localName() == "annotation" ) {
-        parseAnnotation( childElement, ct );
-      }
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "element" ) {
+      addElement( context, childElement, ct );
+    } else if ( name.localName() == "annotation" ) {
+      parseAnnotation( context, childElement, ct );
     }
 
-    node = node.nextSibling();
+    childElement = childElement.nextSiblingElement();
   }
-
-/*
-  if (xParser->getName() == "all"
-      && xParser->getEventType() == xParser->END_TAG)
-    ct->setCompositor(ct->ALL, false);
-*/
-
-  return;
 }
 
 
-void Parser::cs( const QDomElement &element, ComplexType *ct )
+void Parser::cs( ParserContext *context, const QDomElement &element, ComplexType &ct )
 {
-  int min = 1, max = 1;
-
-  QualifiedName name = element.tagName();
+  QName name = element.tagName();
   if ( name.localName() == "choice" || name.localName() == "sequence" ) {
-    min = element.attribute( "minOccurs", "1" ).toInt();
-    QString value = element.attribute( "maxOccurs", "1" );
-    if ( value == "unbounded" )
-      max = UNBOUNDED;
-    else
-      max = value.toInt();
+    QDomElement childElement = element.firstChildElement();
 
-    if ( name.localName() == "choice" )
-      ct->setCompositor( ct->CHOICE, true, min, max );
-    else        
-      ct->setCompositor( ct->SEQ, true, min, max );
+    while ( !childElement.isNull() ) {
+      QName csName = childElement.tagName();
+      if ( csName.localName() == "element" )
+        addElement( context, childElement, ct );
+      else if ( csName.localName() == "any" )
+        addAny( context, childElement, ct );
+      else if ( csName.localName() == "choice" )
+        cs( context, childElement, ct );
+      else if ( csName.localName() == "sequence" )
+        cs( context, childElement, ct );
 
-    QDomNode node = element.firstChild();
-    while ( !node.isNull() ) {
-      QDomElement childElement = node.toElement();
-      if ( !childElement.isNull() ) {
-        QualifiedName csName = childElement.tagName();
-        if ( csName.localName() == "element" )
-          addElement( childElement, ct );
-        else if ( csName.localName() == "any" )
-          addAny( childElement, ct );
-        else if ( csName.localName() == "choice" )
-          cs( childElement, ct );
-        else if ( csName.localName() == "sequence" )
-          cs( childElement, ct );
-      }          
-
-      node = node.nextSibling();
+      childElement = childElement.nextSiblingElement();
     }
-
-    if ( name.localName() == "choice")
-      ct->setCompositor( ct->CHOICE, false );
-    else
-      ct->setCompositor( ct->SEQ, false );
   }
-
-  return;
 }
 
-void Parser::addElement( const QDomElement &element, ComplexType *cType )
+void Parser::addElement( ParserContext *context, const QDomElement &element, ComplexType &complexType )
 {
-  QString name, fixedValue, defaultValue, documentation;
-  QualifiedName refName;
-  int type_id = 0, minOccurs = 1, maxOccurs = 1;
-  bool qualified = false, added = false, nill = false;
-  XSDType *elemType;
+  Element newElement( complexType.nameSpace() );
 
-  name = element.attribute( "name" );
-  QualifiedName typeName = element.attribute( "type" );
-//  typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
-  type_id = typeId( typeName, true );
+  newElement.setName( element.attribute( "name" ) );
 
   if ( element.hasAttribute( "form" ) ) {
     if ( element.attribute( "form" ) == "qualified" )
-      qualified = true;
+      newElement.setIsQualified( true );
     else if ( element.attribute( "form" ) == "unqualified" )
-      qualified = false;
+      newElement.setIsQualified( false );
+    else
+      newElement.setIsQualified( false );
   }
 
   if ( element.hasAttribute( "ref" ) ) {
-    refName = element.attribute( "ref" );
-//    refName.setNamespace(xParser->getNamespace(refName.getPrefix()));
+    QName reference = element.attribute( "ref" );
+    reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
 
-    Element *e = 0;
-    if ( refName.nameSpace() == mNameSpace )
-      e = this->element( elementId( refName ) );
-
-    if ( e == 0 ) {
-      added = true;
-      mForwardElementRef.append( refName );
-    } else {
-      name = e->name();
-      type_id = e->type();
-      qualified = e->isQualified();
-      defaultValue = e->defaultValue();
-      fixedValue = e->fixedValue();
-    }
+    newElement.setReference( reference );
   }
 
-  minOccurs = element.attribute( "minOccurs", "1" ).toInt();
+  newElement.setMinOccurs( element.attribute( "minOccurs", "1" ).toInt() );
   QString value = element.attribute( "maxOccurs", "1" );
   if ( value == "unbounded" )
-    maxOccurs = UNBOUNDED;
+    newElement.setMaxOccurs( UNBOUNDED );
   else
-    maxOccurs = value.toInt();
+    newElement.setMaxOccurs( value.toInt() );
 
-  defaultValue = element.attribute( "default" );
-  fixedValue = element.attribute( "fixed" );
+  newElement.setDefaultValue( element.attribute( "default" ) );
+  newElement.setFixedValue( element.attribute( "fixed" ) );
 
+  bool nill = false;
   if ( element.hasAttribute( "nillable" ) )
     nill = true;
 
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
+  QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
 
-      QualifiedName childName = childElement.tagName();
-      if ( childName.localName() == "complexType" ) {
-        elemType = parseComplexType( childElement );
-
-        // create an anonymous type
-        ComplexType *ct = (ComplexType *) elemType;
-        if ( ct->numElements() == 1
-             && ct->elementType( 0 ) == XSDType::ANY
-             && ct->elementName( 0 ) == "any" ) {
-
-          // if the complex type is <any> then we dont need a type for it.
-          // make the parent's type as XSDType::ANY
-          delete ct;
-          type_id = XSDType::ANY;
-        } else {
-          elemType->setName( name );
-          type_id = mTypesTable.addType( elemType );
-        }
-      } else if ( childName.localName() == "simpleType" ) {
-        elemType = parseSimpleType( childElement );
-
-        //create an anonymous type
-        type_id = mTypesTable.addType( elemType );
-      } else if ( childName.localName() == "annotation" ) {
-        parseAnnotation( childElement, documentation );
-      }
-    }
-
-    node = node.nextSibling();
-  }
-
-  if ( nill && type_id == 0 )
-    type_id = XSDType::ANYTYPE;
-
-  if ( !added ) {
-    cType->addElement( name, type_id, minOccurs, maxOccurs, qualified, defaultValue, fixedValue, documentation );
-  } else {
-    cType->addElementRef( refName, minOccurs, maxOccurs );
-  }
-}
-
-void Parser::addAny( const QDomElement &element, ComplexType *cType )
-{
-  QString ns, any( "any" );
-  int type_id = XSDType::ANY, min = 1, max = 1;
-
-  ns = element.attribute( "namespace" );
-  min = element.attribute( "minOccurs", "1" ).toInt();
-  QString value = element.attribute( "maxOccurs", "1" );
-  if ( value == "unbounded" )
-    max = UNBOUNDED;
-  else
-    max = value.toInt();
-
-  cType->addElement( any, type_id, min, max, false, ns );
-}
-
-void Parser::addAnyAttribute( const QDomElement &element, ComplexType *cType )
-{
-  QString ns, anyAttribute( "anyAttribute" );
-
-  ns = element.attribute( "namespace" );
-
-  cType->addAttribute( anyAttribute, XSDType::ANY, false, ns );
-}
-
-void Parser::addAttribute( const QDomElement &element, ComplexType *cType )
-{
-  QString name, fixedVal, defaultVal;
-  int type_id = 0;
-  bool qualified = false, use = false, added = false;
-  QualifiedName refAttribute;
-
-  name = element.attribute( "name" );
 
   if ( element.hasAttribute( "type" ) ) {
-    QualifiedName typeName = element.attribute( "type" );
-//    typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
-    type_id = typeId( typeName, true );
+    QName typeName = element.attribute( "type" );
+    typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+    newElement.setType( typeName );
+  } else {
+    QDomElement childElement = element.firstChildElement();
+
+    while ( !childElement.isNull() ) {
+      QName childName = childElement.tagName();
+      if ( childName.localName() == "complexType" ) {
+        ComplexType ct = parseComplexType( context, childElement );
+
+        ct.setName( newElement.name() + "Anonymous" );
+        mComplexTypes.append( ct );
+
+        newElement.setType( ct.qualifiedName() );
+      } else if ( childName.localName() == "simpleType" ) {
+        SimpleType st = parseSimpleType( context, childElement );
+
+        st.setName( newElement.name() + "Anonymous" );
+        mSimpleTypes.append( st );
+
+        newElement.setType( st.qualifiedName() );
+      } else if ( childName.localName() == "annotation" ) {
+        QString documentation;
+        parseAnnotation( context, childElement, documentation );
+        newElement.setDocumentation( documentation );
+      }
+
+      childElement = childElement.nextSiblingElement();
+    }
+  }
+
+  complexType.addElement( newElement );
+}
+
+void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &complexType )
+{
+  Element newElement( complexType.nameSpace() );
+  newElement.setName( "any" );
+  newElement.setMinOccurs( element.attribute( "minOccurs", "1" ).toInt() );
+
+  QString value = element.attribute( "maxOccurs", "1" );
+  if ( value == "unbounded" )
+    newElement.setMaxOccurs( UNBOUNDED );
+  else
+    newElement.setMaxOccurs( value.toInt() );
+
+  complexType.addElement( newElement );
+}
+
+void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, ComplexType &complexType )
+{
+  Attribute newAttribute;
+  newAttribute.setName( "anyAttribute" );
+
+  newAttribute.setNameSpace( element.attribute( "namespace" ) );
+
+  complexType.addAttribute( newAttribute );
+}
+
+void Parser::addAttribute( ParserContext *context, const QDomElement &element, ComplexType &complexType )
+{
+  Attribute newAttribute;
+
+  newAttribute.setName( element.attribute( "name" ) );
+
+  if ( element.hasAttribute( "type" ) ) {
+    QName typeName = element.attribute( "type" );
+    typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+    newAttribute.setType( typeName );
   }
 
   if ( element.hasAttribute( "form" ) ) {
     if ( element.attribute( "form" ) == "qualified" )
-      qualified = true;
+      newAttribute.setIsQualified( true );
     else if ( element.attribute( "form" ) == "unqualified" )
-      qualified = false;
+      newAttribute.setIsQualified( false );
+    else
+      newAttribute.setIsQualified( false );
   }
 
   if ( element.hasAttribute( "ref" ) ) {
-    refAttribute = element.attribute( "ref" );
-//    refAttribute.setNamespace(xParser->getNamespace(refAttribute.getPrefix()));
+    QName reference;
+    reference = element.attribute( "ref" );
+    reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
 
-    Attribute *attribute = 0;
-    if ( refAttribute.nameSpace() == mNameSpace )
-      attribute = this->attribute( attributeId( refAttribute ) );
-          
-    if ( attribute == 0 ) {
-      added = true;
-      mForwardAttributeRef.append( refAttribute );
-    } else {
-      name = attribute->name();
-      type_id = attribute->type();
-      qualified = attribute->isQualified();
-      defaultVal = attribute->defaultValue();
-      fixedVal = attribute->fixedValue();
-    }
+    newAttribute.setReference( reference );
   }
 
-  defaultVal = element.attribute( "default" );
-  fixedVal = element.attribute( "fixed" );
+  newAttribute.setDefaultValue( element.attribute( "default" ) );
+  newAttribute.setFixedValue( element.attribute( "fixed" ) );
 
   if ( element.hasAttribute( "use" ) ) {
     if ( element.attribute( "use" ) == "optional" )
-      use = false;
+      newAttribute.setIsUsed( false );
     else if ( element.attribute( "use" ) == "required" )
-      use = true;
+      newAttribute.setIsUsed( true );
+    else
+      newAttribute.setIsUsed( false );
   }
 
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
+  QDomElement childElement = element.firstChildElement();
 
-      QualifiedName childName = childElement.tagName();
-      if ( childName.localName() == "simpleType" ) {
-        XSDType *elemType = parseSimpleType( childElement );
+  while ( !childElement.isNull() ) {
+    QName childName = childElement.tagName();
+    if ( childName.localName() == "simpleType" ) {
+      SimpleType st = parseSimpleType( context, childElement );
+      st.setName( newAttribute.name() );
+      mSimpleTypes.append( st );
 
-        elemType->setName( name );
-        type_id = mTypesTable.addType( elemType );
-      } else if ( childName.localName() == "annotation" ) {
-        // TKO: we have to pass it to the element here...
-        parseAnnotation( childElement );
-      }
+      newAttribute.setType( st.qualifiedName() );
+    } else if ( childName.localName() == "annotation" ) {
+      QString documentation;
+      parseAnnotation( context, childElement, documentation );
+      newAttribute.setDocumentation( documentation );
     }
 
-    node = node.nextSibling();
+    childElement = childElement.nextSiblingElement();
   }
 
-  if ( !added )
-    cType->addAttribute( name, type_id, qualified, defaultVal, fixedVal, use );
-  else
-    cType->addAttributeRef( refAttribute, qualified, use );
+  complexType.addAttribute( newAttribute );
 }
 
-XSDType *Parser::parseSimpleType( const QDomElement &element )
+SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &element )
 {
-  SimpleType *st = new SimpleType( mNameSpace );
+  SimpleType st( mNameSpace );
 
-  int basetype_id = XSDType::INVALID;
+  st.setName( element.attribute( "name" ) );
 
-  st->setName( element.attribute( "name" ) );
+  QDomElement childElement = element.firstChildElement();
 
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "restriction" ) {
+      st.setSubType( SimpleType::TypeRestriction );
 
-      QualifiedName name = childElement.tagName();
-      if ( name.localName() == "restriction" ) {
-        st->setSubType( SimpleType::TypeRestriction );
+      QName typeName( childElement.attribute( "base" ) );
+      typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+      st.setBaseTypeName( typeName );
 
-        QualifiedName typeName( childElement.attribute( "base" ) );
-//        typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
-        st->setBaseType( basetype_id = typeId( typeName, true ) );
-
-        parseRestriction( childElement, st );
-      } else if ( name.localName() == "union" ) {
-        st->setSubType( SimpleType::TypeUnion );
-        qDebug( "simpletype::union not supported" );
-      } else if ( name.localName() == "list" ) {
-        st->setSubType( SimpleType::TypeList );
-        if ( childElement.hasAttribute( "itemType" ) ) {
-          QualifiedName typeName( childElement.attribute( "itemType" ) );
-          int type = typeId( typeName, true );
-          st->setListType( type );
-        } else {
-          // TODO: add support for anonymous types
-        }
-      } else if ( name.localName() == "annotation" ) {
-        parseAnnotation( childElement, st );
+      parseRestriction( context, childElement, st );
+    } else if ( name.localName() == "union" ) {
+      st.setSubType( SimpleType::TypeUnion );
+      qDebug( "simpletype::union not supported" );
+    } else if ( name.localName() == "list" ) {
+      st.setSubType( SimpleType::TypeList );
+      if ( childElement.hasAttribute( "itemType" ) ) {
+        QName typeName( childElement.attribute( "itemType" ) );
+        if ( !typeName.prefix().isEmpty() )
+          typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+        else
+          typeName.setNameSpace( st.nameSpace() );
+        st.setListTypeName( typeName );
+      } else {
+        // TODO: add support for anonymous types
       }
+    } else if ( name.localName() == "annotation" ) {
+      parseAnnotation( context, childElement, st );
     }
 
-    node = node.nextSibling();
+    childElement = childElement.nextSiblingElement();
   }
 
   return st;
 }
 
-void Parser::parseRestriction( const QDomElement &element, SimpleType *st )
+void Parser::parseRestriction( ParserContext*, const QDomElement &element, SimpleType &st )
 {
-  if ( st->baseType() == 0 )
+  if ( st.baseTypeName().isEmpty() )
     qDebug( "<restriction>:unkown BaseType" );
 
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
+  QDomElement childElement = element.firstChildElement();
 
-      if ( !st->isValidFacet( childElement.tagName() ) ) {
-        qDebug( "<restriction>: %s is not a valid facet for the simple type", childElement.tagName().toLatin1() );
-        continue;
-      }
-
-      st->setFacetValue( childElement.attribute( "value" ) );
+  while ( !childElement.isNull() ) {
+    QName tagName = childElement.tagName();
+    if ( !st.isValidFacet( tagName.localName() ) ) {
+      qDebug( "<restriction>: %s is not a valid facet for the simple type", qPrintable( childElement.tagName() ) );
+      childElement = childElement.nextSiblingElement();
+      continue;
     }
 
-    node = node.nextSibling();
+    st.setFacetValue( childElement.attribute( "value" ) );
+
+    childElement = childElement.nextSiblingElement();
   }
 }
 
-void Parser::parseComplexContent( const QDomElement &element, ComplexType *ct )
+void Parser::parseComplexContent( ParserContext *context, const QDomElement &element, ComplexType &complexType )
 {
-  QualifiedName typeName;
+  QName typeName;
 
   if ( element.attribute( "mixed" ) == "true" ) {
     qDebug( "<complexContent>: No support for mixed=true" );
     return;
   }
 
-  ct->setContentModel( ct->COMPLEX );
+  complexType.setContentModel( XSDType::COMPLEX );
 
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement childElement = node.toElement();
-    if ( !childElement.isNull() ) {
-      QualifiedName name = childElement.tagName();
+  QDomElement childElement = element.firstChildElement();
 
-      if ( name.localName() == "restriction" || name.localName() == "extension" ) {
-        typeName = childElement.attribute( "base" );
-//        typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
 
-        ComplexType::Derivation type = ( name.localName() == "restriction" ? ComplexType::Restriction : ComplexType::Extension );
-        if ( this->type( typeName ) != 0 ) { // type already known
-          ct->setBaseType( typeId( typeName, true ), type, this->type( typeName ) );
-        } else {
-          ForwardDerivation entry;
-          entry.type = ct->qualifiedName();
-          entry.baseType = typeName;
-          entry.derivation = type;
-          mForwardDerivations.append( entry );
+    if ( name.localName() == "restriction" || name.localName() == "extension" ) {
+      typeName = childElement.attribute( "base" );
+      typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+
+      complexType.setBaseTypeName( typeName );
+
+      // if the base soapenc:Array, then read only the arrayType attribute and nothing else
+      if ( typeName.localName() == "Array" ) {
+        complexType.setIsArray( true );
+
+        QDomElement arrayElement = childElement.firstChildElement();
+        if ( !arrayElement.isNull() ) {
+          QString prefix = context->namespaceManager()->prefix( WSDLSchemaURI );
+          QString attributeName = ( prefix.isEmpty() ? "arrayType" : prefix + ":arrayType" );
+
+          QString typeStr = arrayElement.attribute( attributeName );
+          if ( typeStr.endsWith( "[]" ) )
+            typeStr.truncate( typeStr.length() - 2 );
+
+          QName arrayType( typeStr );
+          arrayType.setNameSpace( context->namespaceManager()->uri( arrayType.prefix() ) );
+
+          Attribute attr( complexType.nameSpace() );
+          attr.setName( "items" );
+          attr.setType( QName( "arrayType" ) );
+          attr.setArrayType( arrayType );
+
+          complexType.addAttribute( attr );
         }
+      } else {
+        QDomElement ctElement = childElement.firstChildElement();
+        while ( !ctElement.isNull() ) {
+          QName name = ctElement.tagName();
 
-        // if the base soapenc:Array, then read only the arrayType attribute and nothing else
-        if ( typeName.localName() == "Array" ) {
-          QDomElement arrayElement = childElement.firstChild().toElement();
-          ct->setIsArray( true );
-
-          QualifiedName arrayType( arrayElement.attribute( "arrayType" ) );
-//          arrayType.setNamespace(xParser->getNamespace(arrayType.getPrefix()));
-          ct->addElement( "item", typeId( arrayType, true ), 0, UNBOUNDED );
-        } else {
-          QDomNode childNode = childElement.firstChild();
-          while ( !childNode.isNull() ) {
-            QDomElement ctElement = childNode.toElement();
-            if ( !ctElement.isNull() ) {
-              QualifiedName name = ctElement.tagName();
-
-              if ( name.localName() == "all" ) {
-                all( ctElement, ct );
-              } else if ( name.localName() == "sequence" ) {
-                cs( ctElement, ct );
-              } else if ( name.localName() == "choice" ) {
-                cs( ctElement, ct );
-              } else if ( name.localName() == "attribute" ) {
-                addAttribute( ctElement, ct );
-              } else if ( name.localName() == "anyAttribute" ) {
-                addAnyAttribute( ctElement, ct );
-              }
-            }
-
-            childNode = childNode.nextSibling();
+          if ( name.localName() == "all" ) {
+            all( context, ctElement, complexType );
+          } else if ( name.localName() == "sequence" ) {
+            cs( context, ctElement, complexType );
+          } else if ( name.localName() == "choice" ) {
+            cs( context, ctElement, complexType );
+          } else if ( name.localName() == "attribute" ) {
+            addAttribute( context, ctElement, complexType );
+          } else if ( name.localName() == "anyAttribute" ) {
+            addAnyAttribute( context, ctElement, complexType );
           }
+
+          ctElement = ctElement.nextSiblingElement();
         }
       }
     }
 
-    node = node.nextSibling();
+    childElement = childElement.nextSiblingElement();
   }
 }
 
-void Parser::parseSimpleContent( const QDomElement &element, ComplexType *ct )
+void Parser::parseSimpleContent( ParserContext *context, const QDomElement &element, ComplexType &complexType )
 {
-  ct->setContentModel( ct->SIMPLE );
+  complexType.setContentModel( XSDType::SIMPLE );
 
-  const QDomElement childElement = element.firstChild().toElement();
+  QDomElement childElement = element.firstChildElement();
 
-  QualifiedName name = childElement.tagName();
-  if ( name.localName() == "restriction" ) {
-    SimpleType *st = new SimpleType( mNameSpace );
+  while ( !childElement.isNull() ) {
+    QName name = childElement.tagName();
+    if ( name.localName() == "restriction" ) {
+      SimpleType st( mNameSpace );
 
-    if ( childElement.hasAttribute( "base" ) ) {
-      int basetype_id = 0;
+      if ( childElement.hasAttribute( "base" ) ) {
+        QName typeName( childElement.attribute( "base" ) );
+        typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+        st.setBaseTypeName( typeName );
+      }
 
-      QualifiedName typeName( childElement.attribute( "base" ) );
-//      typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
-      st->setBaseType( basetype_id = typeId( typeName, true ) );
-    }    
+      parseRestriction( context, childElement, st );
+    } else if ( name.localName() == "extension" ) {
+      // This extension does not use the full model that can come in ComplexContent.
+      // It uses the simple model. No particle allowed, only attributes
 
-    parseRestriction( childElement, st );
-    int typeId = mTypesTable.addType( st );
-    if ( typeId == 0 ) {
-      qDebug( "Could not add type in types table" );
-      return;
-    }
+      if ( childElement.hasAttribute( "base" ) ) {
+        QName typeName( childElement.attribute( "base" ) );
+        typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+        complexType.setBaseTypeName( typeName );
 
-    ct->setContentType( typeId );
-  } else if ( name.localName() == "extension" ) {
-    // This extension does not use the full model that can come in ComplexContent.
-    // It uses the simple model. No particle allowed, only attributes
-
-    if ( childElement.hasAttribute( "base" ) ) {
-      int basetype_id = 0;
-
-      QualifiedName typeName( childElement.attribute( "base" ) );
-//      typeName.setNamespace(xParser->getNamespace(typeName.getPrefix()));
-      ct->setContentType( basetype_id = typeId( typeName, true ) );
-
-      QDomNode childNode = childElement.firstChild();
-      while ( !childNode.isNull() ) {
-        QDomElement ctElement = childNode.toElement();
-        if ( !ctElement.isNull() ) {
-          QualifiedName name = ctElement.tagName();
+        QDomElement ctElement = childElement.firstChildElement();
+        while ( !ctElement.isNull() ) {
+          QName name = ctElement.tagName();
           if ( name.localName() == "attribute" )
-            addAttribute( ctElement, ct );
-        }
+            addAttribute( context, ctElement, complexType );
 
-        childNode = childNode.nextSibling();
+          ctElement = ctElement.nextSiblingElement();
+        }
       }
     }
+
+    childElement = childElement.nextSiblingElement();
   }
 }
 
-bool Parser::isBasicType( int type ) const
+void Parser::parseElement( ParserContext *context, const QDomElement &element )
 {
-  if ( type > XSDType::ANYURI )
-    return false;
-  else
-    return true;
-}
+  ComplexType complexType( mNameSpace );
+  addElement( context, element, complexType );
 
-void Parser::parseElement( const QDomElement &element )
-{
-  ComplexType *ct = new ComplexType( mNameSpace );
-  addElement( element, ct );
-
-  ComplexType *elementType = (ComplexType*)type( ct->element( 0 )->name() );
-  if ( elementType ) {
-    elementType->setDocumentation( ct->element( 0 )->documentation() );
+  // don't add elements twice
+  Element newElement = complexType.elements().first();
+  bool found = false;
+  for ( int i = 0; i < mElements.count(); ++i ) {
+    if ( mElements[ i ].qualifiedName() == newElement.qualifiedName() ) {
+      found = true;
+      break;
+    }
   }
 
-  Element *elementPtr = new Element();
-  *elementPtr = (*ct->element( 0 ));
-  delete ct;
-
-  mElements.append( elementPtr );
+  if ( !found )
+    mElements.append( newElement );
 }
 
-void Parser::parseAttribute( const QDomElement &element )
+void Parser::parseAttribute( ParserContext *context, const QDomElement &element )
 {
-  ComplexType *ct = new ComplexType( mNameSpace );
-  addAttribute( element, ct );
+  ComplexType complexType( mNameSpace );
+  addAttribute( context, element, complexType );
 
-  Attribute *attributePtr = new Attribute();
-  *attributePtr = (*ct->attribute( 0 ));
-  delete ct;
-
-  mAttributes.append( attributePtr );
-}
-
-int Parser::addExternalElement( const QString &name, int localTypeId )
-{
-  Element *element = new Element( name, localTypeId );
-  mElements.append( element );
-
-  return mElements.count() - 1;
-}
-
-int Parser::typeId( const QualifiedName &type, bool create )
-{
-  QualifiedName typeName( type );
-
-  QString typens = typeName.nameSpace();
-  if ( typens.isEmpty() )
-    typeName.setNameSpace( typens = mNameSpace );
-
-  if ( typens == mNameSpace || typens == SchemaUri ) {
-    return mTypesTable.typeId( typeName, create );
-  } else {
-    return mTypesTable.addExternalTypeId( typeName, 0 );
-  }
-}
-
-QString Parser::typeName( int id ) const
-{
-  return mTypesTable.typeName( id );
-}
-
-bool Parser::finalize()
-{
-  if ( mTypesTable.detectUndefinedTypes() )
-    return false;
-  else
-    return true;
-}
-
-void Parser::resolveForwardElementRefs()
-{
-  if ( mForwardElementRef.isEmpty() )
-    return;
-
-  QualifiedName::List::ConstIterator it;
-  for ( it = mForwardElementRef.begin(); it != mForwardElementRef.end(); ++it ) {
-    Element *e = element( elementId( *it ) );
-    if ( e )
-      mTypesTable.resolveForwardElementRefs( (*it).localName(), *e );
-    else
-     qDebug( "Could not resolve element reference %s ", (*it).localName().toLatin1() );
-  }
-}
-
-
-void Parser::resolveForwardAttributeRefs()
-{
-  if ( mForwardAttributeRef.isEmpty() )
-    return;
-
-  QualifiedName::List::ConstIterator it;
-  for ( it = mForwardAttributeRef.begin(); it != mForwardAttributeRef.end(); ++it ) {
-    Attribute *a = attribute( attributeId( *it ) );
-    if ( a )
-      mTypesTable.resolveForwardAttributeRefs( (*it).localName(), *a );
-    else
-      qDebug( "Could not resolve attribute reference %s ", (*it).localName().toLatin1() );
-  }
-}
-
-void Parser::resolveForwardDerivations()
-{
-  if ( mForwardDerivations.isEmpty() )
-    return;
-
-  int id;
-  ComplexType *type = 0;
-
-  QList<ForwardDerivation>::ConstIterator it;
-  for ( it = mForwardDerivations.begin(); it != mForwardDerivations.end(); ++it ) {
-    if ( ( id = typeId( (*it).type, false ) ) == 0 )
-      continue;
-    else
-      type = (ComplexType*)mTypesTable.typePtr( id );
-
-    if ( type )
-      type->setBaseType( typeId( (*it).baseType, true ), (*it).derivation, this->type( (*it).baseType ) );
+  // don't add attributes twice
+  Attribute newAttribute = complexType.attributes().first();
+  bool found = false;
+  for ( int i = 0; i < mAttributes.count(); ++i ) {
+    if ( mAttributes[ i ].qualifiedName() == newAttribute.qualifiedName() ) {
+      found = true;
+      break;
+    }
   }
 
-  mForwardDerivations.clear();
-}
-
-int Parser::elementId( const QualifiedName &type )
-{
-  QualifiedName typeName( type );
-
-  QString typens = typeName.nameSpace();
-  if ( typens.isEmpty() )
-    typeName.setNameSpace( typens = mNameSpace );
-
-  int i = 0;
-
-  // check if it is a global element
-  for ( i = 0; i < (int)mElements.count(); i++ )
-    if ( mElements[ i ]->name() == typeName.localName() )
-      return i;
-
-  return -1;
-}
-
-int Parser::elementType( const QualifiedName &type )
-{
-  int id = elementId( type );
-
-  if ( id == -1 )
-    return 0;
-
-  Element *e = element( id );
-  if ( e != 0 )
-    return e->type();
-  else
-    return 0;
-}
-
-Element *Parser::element( const QualifiedName &name ) const
-{
-  QualifiedName elementName( name );
-
-  QString typens = elementName.nameSpace();
-  if ( typens.isEmpty() )
-    elementName.setNameSpace( typens = mNameSpace );
-
-  if ( typens == mNameSpace || typens == SchemaUri ) {
-    int i = 0;
-
-    // check if it is a global element
-    for ( i = 0; i < (int)mElements.count(); i++ )
-      if ( mElements[ i ]->name() == elementName.localName() )
-        return mElements[ i ];
-
-    return 0;
-  }
-
-  return 0;
-}
-
-Element *Parser::element( int id ) const
-{
-  if ( id >= 0 && id < (int)mElements.count() )
-    return mElements[ id ];
-  else
-    return 0;
-}
-
-Element::PtrList Parser::elements() const
-{
-  return mElements;
-}
-
-int Parser::attributeId( const QualifiedName &type ) const
-{
-  QualifiedName typeName( type );
-
-  QString typens = typeName.nameSpace();
-  if ( typens.isEmpty() )
-    typeName.setNameSpace( typens = mNameSpace );
-
-  if ( typens != mNameSpace && typens != SchemaUri ) {
-    qDebug( "Namespace does not match" );
-    return -1;
-  }
-
-  // check if it is a global attribute
-  for ( int i = 0; i < (int)mAttributes.count(); i++ )
-    if ( mAttributes[ i ]->name() == typeName.localName() )
-      return i;
-
-  return -1;
-}
-
-int Parser::attributeType( const QualifiedName &type )
-{
-  int attId = attributeId( type );
-  if ( attId == -1 )
-    return 0;
-
-  Attribute *a = attribute( attId );
-  if ( a != 0 )
-    return a->type();
-  else
-    return 0;
-}
-
-Attribute *Parser::attribute( int id ) const
-{
-  if ( id >= 0 && id < (int)mAttributes.count() )
-    return mAttributes[ id ];
-  else
-    return 0;
-}
-
-Attribute *Parser::attribute( const QualifiedName &name ) const
-{
-  int id = attributeId( name );
-  if ( id != -1 )
-    return mAttributes[ id ];
-  else
-    return 0;
+  if ( !found )
+    mAttributes.append( newAttribute );
 }
 
 QString Parser::targetNamespace() const
@@ -1018,42 +642,7 @@ QString Parser::targetNamespace() const
   return mNameSpace;
 }
 
-const XSDType *Parser::type( int id ) const
-{
-  return (const XSDType *)mTypesTable.typePtr( id );
-}
-
-const XSDType *Parser::type( const QualifiedName &type ) 
-{
-  int id;
-  
-  if ( ( id = typeId( type, false ) ) == 0 )
-    return 0;
-  else
-    return (const XSDType *)mTypesTable.typePtr( id );
-}
-
-int Parser::numTypes() const
-{
-  return mTypesTable.numTypes();
-}
-
-int Parser::numElements() const
-{
-  return mElements.count();
-}
-
-int Parser::numAttributes() const
-{
-  return mAttributes.count();
-}
-
-bool Parser::shouldResolve()
-{
-  return true;
-}
-
-void Parser::importSchema( const QString &location )
+void Parser::importSchema( ParserContext *context, const QString &location )
 {
   FileProvider provider;
   QString fileName;
@@ -1062,35 +651,122 @@ void Parser::importSchema( const QString &location )
   QUrl url( location );
   QDir dir( location );
 
-  if ( (url.protocol().isEmpty() || url.protocol() == "file") && dir.isRelative() )
-    schemaLocation = mSchemaBaseUrl + "/" + location;
+  if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
+    schemaLocation = context->documentBaseUrl() + "/" + location;
+
+  qDebug( "loading schema at %s", qPrintable( schemaLocation ) );
 
   if ( provider.get( schemaLocation, fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-      qDebug( "Unable to open file %s", file.name().toLatin1() );
+      qDebug( "Unable to open file %s", qPrintable( file.fileName() ) );
       return;
     }
+
+    QXmlInputSource source( &file );
+    QXmlSimpleReader reader;
+    reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
 
     QDomDocument doc( "kwsdl" );
     QString errorMsg;
     int errorLine, errorColumn;
-    bool ok = doc.setContent( &file, true, &errorMsg, &errorLine, &errorColumn );
+    bool ok = doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorColumn );
     if ( !ok ) {
-      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, errorMsg.toLatin1() );
+      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, qPrintable( errorMsg ) );
       return;
     }
 
-    QDomNodeList nodes = doc.elementsByTagName( "schema" );
-    if ( nodes.count() > 0 ) {
-      QDomElement schemaElement = nodes.item( 0 ).toElement();
-      parseSchemaTag( schemaElement );
+    NSManager *parentManager = context->namespaceManager();
+    NSManager namespaceManager;
+    context->setNamespaceManager( &namespaceManager );
+
+    QDomElement node = doc.documentElement();
+    QName tagName = node.tagName();
+    if ( tagName.localName() == "schema" ) {
+      parseSchemaTag( context, node );
     } else {
       qDebug( "No schema tag found in schema file" );
     }
+
+    mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );
+    context->setNamespaceManager( parentManager );
 
     file.close();
 
     provider.cleanUp();
   }
 }
+
+QString Parser::schemaUri()
+{
+  return XMLSchemaURI;
+}
+
+QStringList Parser::joinNamespaces( const QStringList &list, const QStringList &namespaces )
+{
+  QStringList retval( list );
+
+  for ( int i = 0; i < namespaces.count(); ++i ) {
+    if ( !retval.contains( namespaces[ i ] ) )
+      retval.append( namespaces[ i ] );
+  }
+
+  return retval;
+}
+
+Element Parser::findElement( const QName &name )
+{
+  for ( int i = 0; i < mElements.count(); ++i ) {
+    if ( mElements[ i ].nameSpace() == name.nameSpace() && mElements[ i ].name() == name.localName() )
+      return mElements[ i ];
+  }
+
+  return Element();
+}
+
+Attribute Parser::findAttribute( const QName &name )
+{
+  for ( int i = 0; i < mAttributes.count(); ++i ) {
+    if ( mAttributes[ i ].nameSpace() == name.nameSpace() && mAttributes[ i ].name() == name.localName() )
+      return mAttributes[ i ];
+  }
+
+  return Attribute();
+}
+
+void Parser::resolveForwardDeclarations()
+{
+  for ( int i = 0; i < mComplexTypes.count(); ++i ) {
+    Element::List elements = mComplexTypes[ i ].elements();
+    for ( int j = 0; j < elements.count(); ++j ) {
+      if ( !elements[ j ].isResolved() ) {
+        Element refElement = findElement( elements[ j ].reference() );
+        elements[ j ] = refElement;
+      }
+    }
+    mComplexTypes[ i ].setElements( elements );
+
+    Attribute::List attributes = mComplexTypes[ i ].attributes();
+    for ( int j = 0; j < attributes.count(); ++j ) {
+      if ( !attributes[ j ].isResolved() ) {
+        Attribute refAttribute = findAttribute( attributes[ j ].reference() );
+        attributes[ j ] = refAttribute;
+      }
+    }
+    mComplexTypes[ i ].setAttributes( attributes );
+  }
+}
+
+Types Parser::types() const
+{
+  Types types;
+
+  types.setSimpleTypes( mSimpleTypes );
+  types.setComplexTypes( mComplexTypes );
+  types.setElements( mElements );
+  types.setAttributes( mAttributes );
+  types.setNamespaces( mNamespaces );
+
+  return types;
+}
+

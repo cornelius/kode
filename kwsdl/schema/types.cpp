@@ -52,3 +52,24 @@ Element::List Types::elements() const
 {
   return mElements;
 }
+
+void Types::setAttributes( const Attribute::List &attributes )
+{
+  mAttributes = attributes;
+}
+
+Attribute::List Types::attributes() const
+{
+  return mAttributes;
+}
+
+void Types::setNamespaces( const QStringList &namespaces )
+{
+  mNamespaces = namespaces;
+}
+
+QStringList Types::namespaces() const
+{
+  return mNamespaces;
+}
+

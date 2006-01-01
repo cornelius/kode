@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -23,12 +23,13 @@
 #ifndef SCHEMA_PARSER_H
 #define SCHEMA_PARSER_H
 
-#include <qdom.h>
-#include <QHash>
+#include <QDomElement>
 #include <QList>
 
 #include "types.h"
 #include "typestable.h"
+
+class ParserContext;
 
 namespace Schema {
 
@@ -36,101 +37,63 @@ class Parser
 {
   public:
     Parser( const QString &nameSpace = QString() );
-
     ~Parser();
 
     Types types() const;
 
     void clear();
-    void setSchemaBaseUrl( const QString& );
 
-    void parseNameSpace( const QDomElement &element );
-    bool parseSchemaTag( const QDomElement &element );
-
-    const XSDType *type( const QualifiedName &type );
-    const XSDType *type( int id ) const;
-    int numTypes() const;
-
-    QString typeName( int id ) const;
-
-    Element *element( const QualifiedName &element ) const;
-    Element *element( int id ) const;
-    Element::PtrList elements() const;
-    int numElements() const;
-
-    Attribute *attribute( const QualifiedName &attribute ) const;
-    Attribute *attribute( int id ) const;
-    int numAttributes() const;
+    bool parseSchemaTag( ParserContext *context, const QDomElement &element );
 
     QString targetNamespace() const;
 
-    int typeId( const QualifiedName &name, bool create = false );
-
-    bool isBasicType( int sType ) const;
-
-    bool finalize();
-
-    int elementId( const QualifiedName &type );
-    int elementType( const QualifiedName &type );
-    int attributeId( const QualifiedName &type ) const;
-    int attributeType( const QualifiedName &type );
+    /**
+      Returns the default schema URI.
+     */
+    static QString schemaUri();
 
   private:
-    void parseImport( const QDomElement& );
-    void parseElement( const QDomElement& );
-    void parseAttribute( const QDomElement& );
+    void parseImport( ParserContext *context, const QDomElement& );
+    void parseElement( ParserContext *context, const QDomElement& );
+    void parseAttribute( ParserContext *context, const QDomElement& );
 
-    void parseAnnotation( const QDomElement& );
-    void parseAnnotation( const QDomElement&, QString& );
-    void parseAnnotation( const QDomElement&, ComplexType* );
-    void parseAnnotation( const QDomElement&, SimpleType* );
-    XSDType *parseComplexType( const QDomElement& );
+    void parseAnnotation( ParserContext *context, const QDomElement& );
+    void parseAnnotation( ParserContext *context, const QDomElement&, QString& );
+    void parseAnnotation( ParserContext *context, const QDomElement&, ComplexType& );
+    void parseAnnotation( ParserContext *context, const QDomElement&, SimpleType& );
+    ComplexType parseComplexType( ParserContext *context, const QDomElement& );
 
-    void all( const QDomElement&, ComplexType* );
-    void cs( const QDomElement&, ComplexType* );
+    void all( ParserContext *context, const QDomElement&, ComplexType& );
+    void cs( ParserContext *context, const QDomElement&, ComplexType& );
 
-    void addElement( const QDomElement&, ComplexType* );
+    void addElement( ParserContext *context, const QDomElement&, ComplexType& );
 
-    void addAttribute( const QDomElement&, ComplexType* );
-    void addAny( const QDomElement&, ComplexType* );
-    void addAnyAttribute( const QDomElement&, ComplexType* );
-    int addExternalElement( const QString&, int );
+    void addAttribute( ParserContext *context, const QDomElement&, ComplexType& );
+    void addAny( ParserContext *context, const QDomElement&, ComplexType& );
+    void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
 
-    XSDType *parseSimpleType( const QDomElement& );
-    void parseRestriction( const QDomElement&, SimpleType* );
-    void parseComplexContent( const QDomElement&, ComplexType* );
-    void parseSimpleContent( const QDomElement&, ComplexType* );
+    SimpleType parseSimpleType( ParserContext *context, const QDomElement& );
+    void parseRestriction( ParserContext *context, const QDomElement&, SimpleType& );
+    void parseComplexContent( ParserContext *context, const QDomElement&, ComplexType& );
+    void parseSimpleContent( ParserContext *context, const QDomElement&, ComplexType& );
 
 
-    void resolveForwardElementRefs();
-    void resolveForwardAttributeRefs();
-    void resolveForwardDerivations();
-    bool shouldResolve();
+    void importSchema( ParserContext *context, const QString &location );
+    QStringList joinNamespaces( const QStringList&, const QStringList& );
 
-    void importSchema( const QString &location );
+    Element findElement( const QName &name );
+    Attribute findAttribute( const QName &name );
+    void resolveForwardDeclarations();
 
-    bool mElementQualified;
-    bool mAttributeQualified;
-    QHash<QString, QString> mNameSpaceMap;
     QString mNameSpace;
-    QString mPrefix;
-  
-    TypesTable mTypesTable;
-    Element::PtrList mElements;
-    Attribute::PtrList mAttributes;
 
-    QualifiedName::List mForwardElementRef;
-    QualifiedName::List mForwardAttributeRef;
+    SimpleType::List mSimpleTypes;
+    ComplexType::List mComplexTypes;
+    Element::List mElements;
+    Attribute::List mAttributes;
 
-    typedef struct {
-      QualifiedName type;
-      QualifiedName baseType;
-      ComplexType::Derivation derivation;
-    } ForwardDerivation;
-
-    QList<ForwardDerivation> mForwardDerivations;
     QStringList mImportedSchemas;
-    QString mSchemaBaseUrl;
+    QStringList mNamespaces;
 };
 
 }

@@ -1,8 +1,7 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
-                       based on wsdlpull parser by Vivek Krishna
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,40 +19,31 @@
     Boston, MA 02110-1301, USA.
  */
 
-#ifndef SCHEMA_QUALIFIEDNAME_H
-#define SCHEMA_QUALIFIEDNAME_H
+#ifndef XML_ELEMENT_H
+#define XML_ELEMENT_H
 
-#include <QString>
-#include <QList>
+#include <qstring.h>
 
-namespace Schema {
+#include <common/qname.h>
 
-class QualifiedName
+class XmlElement
 {
   public:
-    typedef QList<QualifiedName> List;
+    XmlElement();
+    XmlElement( const QString &nameSpace );
+    ~XmlElement();
 
-    QualifiedName();
-    QualifiedName( const QString &name );
-
-    void operator=( const QString &name );
-
-    QString localName() const;
-    QString prefix() const;
+    void setName( const QString &name );
+    QString name() const;
 
     void setNameSpace( const QString &nameSpace );
     QString nameSpace() const;
 
-    bool operator==( const QualifiedName& ) const;
+    QName qualifiedName() const;
 
   private:
-    void parse( const QString& );
-
+    QString mName;
     QString mNameSpace;
-    QString mLocalName;
-    QString mPrefix;
 };
-
-}
 
 #endif

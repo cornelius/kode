@@ -1,8 +1,7 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
-                       based on wsdlpull parser by Vivek Krishna
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,59 +19,42 @@
     Boston, MA 02110-1301, USA.
  */
 
-#include "qualifiedname.h"
+#include "xmlelement.h"
 
-using namespace Schema;
-
-QualifiedName::QualifiedName( const QString &name )
-{
-  parse( name );
-}
-
-QualifiedName::QualifiedName()
+XmlElement::XmlElement()
 {
 }
 
-void QualifiedName::operator=( const QString &name )
+XmlElement::XmlElement( const QString &nameSpace )
+  : mNameSpace( nameSpace )
 {
-  parse( name );
 }
 
-QString QualifiedName::localName() const
+XmlElement::~XmlElement()
 {
-  return mLocalName;
 }
 
-QString QualifiedName::prefix() const
+void XmlElement::setName( const QString &name )
 {
-  return mPrefix;
+  mName = name;
 }
 
-void QualifiedName::setNameSpace( const QString &nameSpace )
+QString XmlElement::name() const
+{
+  return mName;
+}
+
+void XmlElement::setNameSpace( const QString &nameSpace )
 {
   mNameSpace = nameSpace;
 }
 
-QString QualifiedName::nameSpace() const
+QString XmlElement::nameSpace() const
 {
   return mNameSpace;
 }
 
-bool QualifiedName::operator==( const QualifiedName &qn ) const
+QName XmlElement::qualifiedName() const
 {
-  return (qn.nameSpace() == mNameSpace && qn.localName() == mLocalName );
+  return QName( mNameSpace, mName );
 }
-
-void QualifiedName::parse( const QString &str )
-{
-  int pos = str.find( ':' );
-  if ( pos != -1 ) {
-    mPrefix = str.left( pos );
-    mLocalName = str.mid( pos + 1 );
-  } else
-    mLocalName = str;
-
-  if ( mLocalName.endsWith( "[]" ) )
-    mLocalName.truncate( mLocalName.length() - 2 );
-}
-

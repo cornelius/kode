@@ -26,42 +26,24 @@ using namespace Schema;
 
 
 Element::Element()
-  : mType( 0 ), mMinOccurs( 1 ), mMaxOccurs( 1 ), mQualified( false ),
+  : mMinOccurs( 1 ), mMaxOccurs( 1 ), mQualified( false ), mOccurrence( 0 )
+{
+}
+
+Element::Element( const QString &nameSpace )
+  : XmlElement( nameSpace ), mMinOccurs( 1 ), mMaxOccurs( 1 ), mQualified( false ),
     mOccurrence( 0 )
 {
 }
 
-Element::Element( const QString &name, int type, int minOccurs, int maxOccurs,
-                  bool qualified, const QString &defaultValue, const QString &fixedValue )
-  : mName( name ), mType( type ), mMinOccurs( minOccurs ), mMaxOccurs( maxOccurs ),
-    mQualified( qualified ), mDefaultValue( defaultValue ), mFixedValue( fixedValue ),
-    mOccurrence( 0 )
-{
-}
-
-QString Element::name() const
-{
-  return mName;
-}
-
-void Element::setType( int type )
+void Element::setType( const QName &type )
 {
   mType = type;
 }
 
-int Element::type() const
+QName Element::type() const
 {
   return mType;
-}
-
-void Element::setTypeName( const QString &typeName )
-{
-  mTypeName = typeName;
-}
-
-QString Element::typeName() const
-{
-  return mTypeName;
 }
 
 void Element::setDocumentation( const QString &documentation )
@@ -104,14 +86,29 @@ int Element::maxOccurs() const
   return mMaxOccurs;
 }
 
+void Element::setDefaultValue( const QString &defaultValue )
+{
+  mDefaultValue = defaultValue;
+}
+
 QString Element::defaultValue() const
 {
   return mDefaultValue;
 }
 
+void Element::setFixedValue( const QString &fixedValue )
+{
+  mFixedValue = fixedValue;
+}
+
 QString Element::fixedValue() const
 {
   return mFixedValue;
+}
+
+void Element::setIsQualified( bool isQualified )
+{
+  mQualified = isQualified;
 }
 
 bool Element::isQualified() const
@@ -127,4 +124,19 @@ void Element::setOccurrence( int occurrence )
 int Element::occurrence() const
 {
   return mOccurrence;
+}
+
+void Element::setReference( const QName &reference )
+{
+  mReference = reference;
+}
+
+QName Element::reference() const
+{
+  return mReference;
+}
+
+bool Element::isResolved() const
+{
+  return !mType.isEmpty();
 }

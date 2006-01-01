@@ -23,21 +23,22 @@
 #ifndef SCHEMA_XSDTYPE_H
 #define SCHEMA_XSDTYPE_H
 
-#include <QString>
 #include <QList>
+#include <QMap>
+#include <QString>
 
-#include "qualifiedname.h"
+#include <common/qname.h>
+
+#include "xmlelement.h"
 
 namespace Schema {
 
-const QString SchemaUri = "http://www.w3.org/2001/XMLSchema";
-
-class XSDType
+class XSDType : public XmlElement
 {
   public:
     typedef QList<const XSDType*> List;
 
-    enum
+    enum ContentModel
     {
       SIMPLE = 0,
       COMPLEX,
@@ -77,35 +78,20 @@ class XSDType
       ANYURI
     };
 
-    XSDType( const QString& )
-    {
-    };
+    XSDType();
+    XSDType( const QString& );
+    virtual ~XSDType();
 
-    XSDType()
-    {
-    };
-
-    virtual ~XSDType()
-    {
-    };
-
-    virtual QString name() const = 0;
-    virtual QualifiedName qualifiedName() const = 0;
-    virtual QString documentation() const = 0;
-    virtual int contentModel() const = 0;
-    virtual int type() const = 0;
-    virtual bool isAnonymous() const = 0;
+    void setContentModel( ContentModel );
+    ContentModel contentModel() const;
 
     virtual bool isSimple() const
     {
       return true;
     }
 
-    virtual void setName( const QString& ) = 0;
-    virtual void setDocumentation( const QString& ) = 0;
-    virtual void setContentModel( int ) = 0;
-    virtual void setType( int ) = 0;
-    virtual void setAnonymous( bool ) = 0;
+  private:
+    ContentModel mContentModel;
 };
 
 }

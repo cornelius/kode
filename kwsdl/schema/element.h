@@ -23,32 +23,23 @@
 #ifndef SCHEMA_ELEMENT_H
 #define SCHEMA_ELEMENT_H
 
-#include <QString>
 #include <QList>
+#include <QString>
 
-#define UNBOUNDED 1000
+#include "xmlelement.h"
 
 namespace Schema {
 
-class Element
+class Element : public XmlElement
 {
   public:
     typedef QList<Element> List;
-    typedef QList<Element*> PtrList;
 
     Element();
+    Element( const QString &nameSpace );
 
-    Element( const QString &name, int type, int minOccurs = 1, int maxOccurs = 1, 
-             bool qualified = false, const QString &defaultValue = QString(),
-             const QString &fixedValue = QString() );
-
-    QString name() const;
-
-    void setType( int id );
-    int type() const;
-
-    void setTypeName( const QString &typeName );
-    QString typeName() const;
+    void setType( const QName &type );
+    QName type() const;
 
     void setDocumentation( const QString &documentation );
     QString documentation() const;
@@ -62,26 +53,34 @@ class Element
     void setMaxOccurs( int maxOccurs );
     int maxOccurs() const;
 
+    void setDefaultValue( const QString &defaultValue );
     QString defaultValue() const;
+
+    void setFixedValue( const QString &fixedValue );
     QString fixedValue() const;
 
+    void setIsQualified( bool isQualified );
     bool isQualified() const;
 
     void setOccurrence( int occurrence );
     int occurrence() const;
 
+    void setReference( const QName &reference );
+    QName reference() const;
+
+    bool isResolved() const;
+
   private:
-    QString mName;
-    int mType;
-    QString mTypeName;
+    QName mType;
     QString mDocumentation;
+    int mGroupId;
     int mMinOccurs;
     int mMaxOccurs;
     bool mQualified;
     QString mDefaultValue;
     QString mFixedValue;
-    int mGroupId;
     int mOccurrence;
+    QName mReference;
 };
 
 }

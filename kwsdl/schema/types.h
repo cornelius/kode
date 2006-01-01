@@ -40,10 +40,18 @@ class Types
     void setElements( const Element::List &elements );
     Element::List elements() const;
 
+    void setAttributes( const Attribute::List &attributes );
+    Attribute::List attributes() const;
+
+    void setNamespaces( const QStringList &namespaces );
+    QStringList namespaces() const;
+
   private:
     SimpleType::List mSimpleTypes;
     ComplexType::List mComplexTypes;
     Element::List mElements;
+    Attribute::List mAttributes;
+    QStringList mNamespaces;
 };
 
 }

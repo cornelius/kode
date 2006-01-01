@@ -24,6 +24,8 @@
 
 #include <kdebug.h>
 
+const QString SchemaUri = "http://www.w3.org/2001/XMLSchema";
+
 using namespace Schema;
 
 TypesTable::TypesTable()
@@ -68,9 +70,9 @@ TypesTable::~TypesTable()
 
 void TypesTable::clear()
 {
-  QHash<QString, int>::Iterator it;
+  QMap<QString, int>::Iterator it;
   for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
-    delete typePtr( it.value() );
+    delete typePtr( it.data() );
 
   mUserTypes.clear();
   mTypes.clear();
@@ -81,7 +83,7 @@ int TypesTable::numExtRefs() const
   return mExternRefs.count();
 }
 
-QualifiedName TypesTable::extRefName( int index ) const
+QName TypesTable::extRefName( int index ) const
 {
   return mExternRefs[ index ].qname;
 }
@@ -93,7 +95,7 @@ int TypesTable::extRefType( int index ) const
 
 int TypesTable::addType( XSDType *type )
 {
-  QualifiedName qn = type->qualifiedName();
+  QName qn = type->qualifiedName();
   QString type_name( qn.localName() );
 
   int i = 0;
@@ -120,7 +122,7 @@ int TypesTable::addType( XSDType *type )
   }
 }
 
-int TypesTable::typeId( const QualifiedName &name, bool create )
+int TypesTable::typeId( const QName &name, bool create )
 {
   int typeId;
 
@@ -151,22 +153,22 @@ QString TypesTable::typeName( int id ) const
   if ( id < 0 )
     return QString();
 
-  QHash<QString, int>::ConstIterator it;
+  QMap<QString, int>::ConstIterator it;
 
   if ( id >= 0 && id <= XSDType::ANYURI ) {
     for ( it = mBasicTypes.begin(); it != mBasicTypes.end(); ++it )
-      if ( id == it.value() )
+      if ( id == it.data() )
         return it.key();
   }
 
   for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
-    if ( id == it.value() )
+    if ( id == it.data() )
       return it.key();
 
   return "<unknown type>";
 }
 
-int TypesTable::addExternalTypeId( const QualifiedName &type, XSDType *pType )
+int TypesTable::addExternalTypeId( const QName &type, XSDType *pType )
 {
   for ( int i = 0; i < (int)mExternRefs.count(); i++ )
     if ( mExternRefs[i].qname == type )

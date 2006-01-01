@@ -23,9 +23,8 @@
 #ifndef SCHEMA_TYPESTABLE_H
 #define SCHEMA_TYPESTABLE_H
 
-#include <QHash>
+#include <QMap>
 #include <QString>
-#include <QList>
 
 #include "complextype.h"
 #include "simpletype.h"
@@ -43,14 +42,14 @@ class TypesTable
     int addType( XSDType *type );
     int addExtType( XSDType *type, int id );
 
-    int typeId( const QualifiedName &name, bool create = false );
+    int typeId( const QName &name, bool create = false );
 
     QString typeName( int id ) const;
 
-    int addExternalTypeId( const QualifiedName &type, XSDType *type );
+    int addExternalTypeId( const QName &type, XSDType *type );
 
     int numExtRefs() const;
-    QualifiedName extRefName( int index ) const;
+    QName extRefName( int index ) const;
     int extRefType( int index ) const;
 
     void resolveForwardElementRefs( const QString &name, Element &element );
@@ -66,11 +65,11 @@ class TypesTable
     QString targetNamespace() const;
 
   private:
-    QList<XSDType*> mTypes;
+    XSDType::List mTypes;
 
     //maintains a map of all user defined type names and their ids
-    QHash<QString, int> mUserTypes;
-    QHash<QString, int> mBasicTypes;
+    QMap<QString, int> mUserTypes;
+    QMap<QString, int> mBasicTypes;
 
     int mCurrentId;
 
@@ -79,7 +78,7 @@ class TypesTable
     struct ExternRef
     {
       int localTypeId;
-      QualifiedName qname;
+      QName qname;
     };
 
     QList<struct ExternRef> mExternRefs;

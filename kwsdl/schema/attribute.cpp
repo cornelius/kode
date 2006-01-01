@@ -24,39 +24,39 @@
 
 using namespace Schema;
 
-
-Attribute::Attribute( const QString &name, int type, bool qualified,
-                      const QString &defaultValue, const QString &fixedValue,
-                      bool use )
-  : mName( name ), mType( type ), mQualified( qualified ),
-    mDefaultValue( defaultValue ), mFixedValue( fixedValue ),
-    mUse( use )
-{
-}
-
 Attribute::Attribute()
-  : mType( 0 ), mQualified( false ), mUse( false )
+  : mQualified( false ), mUse( false )
 {
 }
 
-QString Attribute::name() const
+Attribute::Attribute( const QString &nameSpace )
+  : XmlElement( nameSpace ), mQualified( false ), mUse( false )
 {
-  return mName;
 }
 
-int Attribute::type() const
+void Attribute::setType( const QName &type )
+{
+  mType = type;
+}
+
+QName Attribute::type() const
 {
   return mType;
 }
 
-void Attribute::setTypeName( const QString &typeName )
+void Attribute::setDocumentation( const QString &documentation )
 {
-  mTypeName = typeName;
+  mDocumentation = documentation;
 }
 
-QString Attribute::typeName() const
+QString Attribute::documentation() const
 {
-  return mTypeName;
+  return mDocumentation;
+}
+
+void Attribute::setDefaultValue( const QString &defaultValue )
+{
+  mDefaultValue = defaultValue;
 }
 
 QString Attribute::defaultValue() const
@@ -64,9 +64,19 @@ QString Attribute::defaultValue() const
   return mDefaultValue;
 }
 
+void Attribute::setFixedValue( const QString &fixedValue )
+{
+  mFixedValue = fixedValue;
+}
+
 QString Attribute::fixedValue() const
 {
   return mFixedValue;
+}
+
+void Attribute::setIsQualified( bool isQualified )
+{
+  mQualified = isQualified;
 }
 
 bool Attribute::isQualified() const
@@ -74,7 +84,37 @@ bool Attribute::isQualified() const
   return mQualified;
 }
 
+void Attribute::setIsUsed( bool isUsed )
+{
+  mUse = isUsed;
+}
+
 bool Attribute::isUsed() const
 {
   return mUse;
+}
+
+void Attribute::setReference( const QName &reference )
+{
+  mReference = reference;
+}
+
+QName Attribute::reference() const
+{
+  return mReference;
+}
+
+bool Attribute::isResolved() const
+{
+  return !mType.isEmpty();
+}
+
+void Attribute::setArrayType( const QName &arrayType )
+{
+  mArrayType = arrayType;
+}
+
+QName Attribute::arrayType() const
+{
+  return mArrayType;
 }
