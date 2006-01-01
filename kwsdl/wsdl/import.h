@@ -19,55 +19,43 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KWSDL_MESSAGE_H
-#define KWSDL_MESSAGE_H
+#ifndef KWSDL_IMPORT_H
+#define KWSDL_IMPORT_H
 
-#include <QHash>
-#include <QString>
+#include <QDomElement>
 #include <QList>
+#include <QUrl>
+
+#include <wsdl/element.h>
+
+class ParserContext;
 
 namespace KWSDL {
 
-class Message
+class Import : public Element
 {
   public:
-    typedef QList<Message> List;
+    typedef QList<Import> List;
 
-    class Part
-    {
-      public:
-        typedef QHash<QString, Part> Map;
-        typedef QList<Part> List;
+    Import();
+    Import( const QString &nameSpace );
+    ~Import();
 
-        Part();
-        Part( const QString &name, const QString &type );
+    void loadXML( ParserContext *context, const QDomElement &element );
+    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
 
-        void setName( const QString &name ) { mName = name; }
-        QString name() const { return mName; }
+    void setImportNamespace( const QString &nameSpace );
+    QString importNamespace() const;
 
-        void setType( const QString &type ) { mType = type; }
-        QString type() const { return mType; }
-
-      private:
-        QString mName;
-        QString mType;
-    };
-
-    Message();
-    Message( const QString &name );
-
-    void setName( const QString &name );
-    QString name() const;
-
-    void addPart( const Part &part );
-    Part part( const QString &name ) const;
-    Part::List parts() const;
+    void setLocation( const QUrl &location );
+    QUrl location() const;
 
   private:
-    QString mName;
-    Part::List mParts;
+    QString mImportNamespace;
+    QUrl mLocation;
 };
 
 }
 
-#endif
+#endif // KWSDL_IMPORT_H
+

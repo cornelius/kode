@@ -1,19 +1,18 @@
-SUBDIRS = common schema . wscl tests kung
+SUBDIRS = common schema wsdl . wscl tests #kung
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 
-lib_LTLIBRARIES = libwsdl.la
-
-libwsdl_la_SOURCES = binding.cpp message.cpp parser.cpp port.cpp service.cpp \
-                     typemapper.cpp wsdl.cpp
-libwsdl_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -no-undefined
-libwsdl_la_LIBADD =  -lkdecore schema/libschema.la
-
 bin_PROGRAMS = kwsdl_compiler
 
-kwsdl_compiler_LDFLAGS = $(all_libraries) $(KDE_RPATH)
-kwsdl_compiler_LDADD   = ../libkode.la libwsdl.la
-kwsdl_compiler_SOURCES =  compiler.cpp converter.cpp creator.cpp main.cpp  \
-                          namemapper.cpp 
+kwsdl_compiler_LDFLAGS = $(all_libraries) $(KDE_RPATH) -no-undefined
+kwsdl_compiler_LDADD   = ../libkode.la wsdl/libwsdl.la
+kwsdl_compiler_SOURCES =  compiler.cpp converter.cpp converter_attribute.cpp \
+                          converter_clientstub.cpp converter_complextype.cpp \
+                          converter_element.cpp converter_serverstub.cpp \
+                          converter_simpletype.cpp converter_transport.cpp \
+                          converter_utils.cpp creator.cpp main.cpp  \
+                          namemapper.cpp settings.cpp typemap.cpp
+
+xdg_apps_DATA = kwsdl_compiler.desktop
 
 METASOURCES = AUTO

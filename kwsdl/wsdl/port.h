@@ -22,56 +22,41 @@
 #ifndef KWSDL_PORT_H
 #define KWSDL_PORT_H
 
-#include <QHash>
+#include <QDomElement>
 #include <QList>
-#include <QString>
+
+#include <common/qname.h>
+#include <wsdl/binding.h>
+#include <wsdl/element.h>
+
+class ParserContext;
 
 namespace KWSDL {
 
-class Port
+class Port : public Element
 {
   public:
     typedef QList<Port> List;
 
-    class Operation
-    {
-      public:
-        typedef QList<Operation> List;
-        typedef QHash<QString, Operation> Map;
-
-        Operation();
-        Operation( const QString &name, const QString &input, const QString &output );
-
-        void setName( const QString &name ) { mName = name; }
-        QString name() const { return mName; }
-
-        void setInput( const QString &input ) { mInput = input; }
-        QString input() const { return mInput; }
-
-        void setOutput( const QString &output ) { mOutput = output; }
-        QString output() const { return mOutput; }
-
-      private:
-        QString mName;
-        QString mInput;
-        QString mOutput;
-    };
-
     Port();
-    Port( const QString &name );
+    Port( const QString &nameSpace );
+    ~Port();
 
-    void setName( const QString &name ) { mName = name; }
-    QString name() const { return mName; }
+    void setName( const QString &name );
+    QString name() const;
 
-    void addOperation( const Operation &operation );
-    Operation operation( const QString &name ) const;
-    Operation::List operations() const;
+    void setBindingName( const QName &bindingName );
+    QName bindingName() const;
+
+    void loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element );
+    void saveXML( ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent ) const;
 
   private:
     QString mName;
-    Operation::List mOperations;
+    QName mBindingName;
 };
 
 }
 
-#endif
+#endif // KWSDL_PORT_H
+

@@ -19,43 +19,28 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KWSDL_SERVICE_H
-#define KWSDL_SERVICE_H
+#ifndef KWSDL_ELEMENT_H
+#define KWSDL_ELEMENT_H
 
-#include <QHash>
-#include <QStringList>
-#include <QList>
+#include <QString>
 
 namespace KWSDL {
 
-class Service
+class Element
 {
   public:
-    class Port
-    {
-      public:
-        typedef QList<Port> List;
+    Element();
+    Element( const QString &nameSpace );
+    ~Element();
 
-        QString mName;
-        QString mBinding;
-        QString mLocation;
-    };
-
-    Service();
-    Service( const QString &name );
-
-    void setName( const QString &name ) { mName = name; }
-    QString name() const { return mName; }
-
-    void addPort( const Port &port );
-    Port port( const QString &name ) const;
-    Port::List ports() const;
+    void setNameSpace( const QString &nameSpace );
+    QString nameSpace() const;
 
   private:
-    QString mName;
-    QHash<QString, Port> mPorts;
+    QString mNameSpace;
 };
 
 }
 
-#endif
+#endif // KWSDL_ELEMENT_H
+

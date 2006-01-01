@@ -19,44 +19,36 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "port.h"
+#ifndef KWSDL_TYPE_H
+#define KWSDL_TYPE_H
 
-using namespace KWSDL;
+#include <qdom.h>
 
-Port::Operation::Operation()
+#include <schema/types.h>
+#include <wsdl/element.h>
+
+class ParserContext;
+
+namespace KWSDL {
+
+class Type : public Element
 {
+  public:
+    Type();
+    Type( const QString &nameSpace );
+    ~Type();
+
+    void setType( const Schema::Types &types );
+    Schema::Types types() const;
+
+    void loadXML( ParserContext *context, const QDomElement &element );
+    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+
+  private:
+    Schema::Types mTypes;
+};
+
 }
 
-Port::Operation::Operation( const QString &name, const QString &input, const QString &output )
-  : mName( name ), mInput( input ), mOutput( output )
-{
-}
+#endif // KWSDL_TYPE_H
 
-Port::Port()
-{
-}
-
-Port::Port( const QString &name )
-  : mName( name )
-{
-}
-
-void Port::addOperation( const Operation &operation )
-{
-  mOperations.append( operation );
-}
-
-Port::Operation Port::operation( const QString &name ) const
-{
-  Operation::List::ConstIterator it;
-  for ( it = mOperations.begin(); it != mOperations.end(); ++it )
-    if ( (*it).name() == name )
-      return *it;
-
-  return Operation();
-}
-
-Port::Operation::List Port::operations() const
-{
-  return mOperations;
-}

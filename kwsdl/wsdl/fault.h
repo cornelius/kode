@@ -19,54 +19,43 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "message.h"
+#ifndef KWSDL_FAULT_H
+#define KWSDL_FAULT_H
 
-using namespace KWSDL;
+#include <QDomElement>
+#include <QList>
 
-Message::Part::Part()
+#include <common/qname.h>
+#include <wsdl/element.h>
+
+class ParserContext;
+
+namespace KWSDL {
+
+class Fault : public Element
 {
+  public:
+    typedef QList<Fault> List;
+
+    Fault();
+    Fault( const QString &nameSpace );
+    ~Fault();
+
+    void setName( const QString &name );
+    QString name() const;
+
+    void setMessage( const QName &message );
+    QName message() const;
+
+    void loadXML( ParserContext *context, const QDomElement &element );
+    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+
+  private:
+    QString mName;
+    QName mMessage;
+};
+
 }
 
-Message::Part::Part( const QString &name, const QString &type )
- : mName( name ), mType( type )
-{
-}
+#endif // KWSDL_FAULT_H
 
-Message::Message()
-{
-}
-
-Message::Message( const QString &name )
-  : mName( name )
-{
-}
-
-void Message::setName( const QString &name )
-{
-  mName = name;
-}
-
-QString Message::name() const
-{
-  return mName;
-}
-
-void Message::addPart( const Part &part )
-{
-  mParts.append( part );
-}
-
-Message::Part Message::part( const QString &name ) const
-{
-  Part::List::ConstIterator it;
-  for ( it = mParts.begin(); it != mParts.end(); ++it )
-    if ( (*it).name() == name )
-      return *it;
-
-  return Part();
-}
-
-Message::Part::List Message::parts() const
-{
-  return mParts;
-}

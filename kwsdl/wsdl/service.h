@@ -19,46 +19,44 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KWSDL_PARSER_H
-#define KWSDL_PARSER_H
+#ifndef KWSDL_SERVICE_H
+#define KWSDL_SERVICE_H
 
-#include <qdom.h>
+#include <QDomElement>
+#include <QList>
 
+#include <wsdl/binding.h>
+#include <wsdl/element.h>
+#include <wsdl/port.h>
 
-#include <schema/parser.h>
-
-#include "wsdl.h"
+class ParserContext;
 
 namespace KWSDL {
 
-class Parser
+class Service : public Element
 {
   public:
-    Parser();
+    typedef QList<Service> List;
 
-    void parse( const QDomElement &element );
-    void reset();
+    Service();
+    Service( const QString &nameSpace );
+    ~Service();
 
-    void setSchemaBaseUrl( const QString& );
+    void setName( const QString &name );
+    QString name() const;
 
-    WSDL wsdl() const;
+    void setPorts( const Port::List &ports );
+    Port::List ports() const;
+
+    void loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element );
+    void saveXML( ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent ) const;
 
   private:
-    void parseTypes( const QDomElement& );
-    void parseMessage( const QDomElement&, Message& );
-    void parsePortType( const QDomElement&, Port& );
-    void parseBinding( const QDomElement& );
-    void parseService( const QDomElement& );
-
-    void parseSchema( const QDomElement& );
-
-    Binding::List mBindings;
-    Message::List mMessages;
+    QString mName;
     Port::List mPorts;
-    Service mService;
-    Schema::Parser mParser;
 };
 
 }
 
-#endif
+#endif // KWSDL_SERVICE_H
+

@@ -19,50 +19,70 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KWSDL_WSDL_H
-#define KWSDL_WSDL_H
+#ifndef KWSDL_DEFINITIONS_H
+#define KWSDL_DEFINITIONS_H
 
-#include <schema/types.h>
+#include <qdom.h>
+#include <qurl.h>
+#include <qxml.h>
 
-#include "binding.h"
-#include "message.h"
-#include "port.h"
-#include "service.h"
+#include <wsdl/binding.h>
+#include <wsdl/import.h>
+#include <wsdl/message.h>
+#include <wsdl/porttype.h>
+#include <wsdl/service.h>
+#include <wsdl/type.h>
+
+class ParserContext;
 
 namespace KWSDL {
 
-class WSDL
+class Definitions
 {
   public:
+    Definitions();
+    ~Definitions();
+
+    void setName( const QString &name );
+    QString name() const;
+
+    void setTargetNamespace( const QString &targetNamespace );
+    QString targetNamespace() const;
+
     void setBindings( const Binding::List &bindings );
     Binding::List bindings() const;
+
+    void setImports( const Import::List &imports );
+    Import::List imports() const;
 
     void setMessages( const Message::List &messages );
     Message::List messages() const;
 
-    void setPorts( const Port::List &ports );
-    Port::List ports() const;
+    void setPortTypes( const PortType::List &portTypes );
+    PortType::List portTypes() const;
 
     void setService( const Service &service );
     Service service() const;
 
-    void setTypes( const Schema::Types &types );
-    Schema::Types types() const;
+    void setType( const Type &type );
+    Type type() const;
 
-    Message findMessage( const QString& ) const;
-    Message findOutputMessage( const QString& ) const;
-    Port findPort( const QString& ) const;
-    Binding findBinding( const QString& ) const;
-    Binding::Operation findBindingOperation( const QString&, const QString& ) const;
+    void loadXML( ParserContext *context, const QDomElement &element );
+    void saveXML( ParserContext *context, QDomDocument &document ) const;
 
   private:
     Binding::List mBindings;
+    Import::List mImports;
     Message::List mMessages;
-    Port::List mPorts;
+    PortType::List mPortTypes;
     Service mService;
-    Schema::Types mTypes;
+    Type mType;
+
+    QString mTargetNamespace;
+    QString mName;
 };
 
 }
 
-#endif
+#endif // KWSDL_DEFINITIONS_H
+

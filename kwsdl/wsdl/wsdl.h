@@ -19,30 +19,38 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "service.h"
+#ifndef KWSDL_WSDL_H
+#define KWSDL_WSDL_H
 
-using namespace KWSDL;
+#include <common/nsmanager.h>
+#include <wsdl/definitions.h>
+#include <kdepimmacros.h>
 
-Service::Service()
+namespace KWSDL {
+
+class KDE_EXPORT WSDL
 {
+  public:
+    WSDL();
+    ~WSDL();
+
+    void setDefinitions( const Definitions &definitions );
+    Definitions definitions() const;
+
+    void setNamespaceManager( const NSManager &namespaceManager );
+    NSManager namespaceManager() const;
+
+    Binding findBinding( const QName &bindingName ) const;
+    BindingOperation findBindingOperation( const Binding &binding, const QString &operationName );
+    PortType findPortType( const QName &portTypeName ) const;
+    Message findMessage( const QName &messageName ) const;
+    Schema::Element findElement( const QName &elementName ) const;
+
+  private:
+    Definitions mDefinitions;
+    NSManager mNamespaceManager;
+};
+
 }
 
-Service::Service( const QString &name )
-  : mName( name )
-{
-}
-
-void Service::addPort( const Port &port )
-{
-  mPorts.insert( port.mName, port );
-}
-
-Service::Port Service::port( const QString &name ) const
-{
-  return mPorts[ name ];
-}
-
-Service::Port::List Service::ports() const
-{
-  return mPorts.values();
-}
+#endif
