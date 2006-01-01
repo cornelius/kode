@@ -57,29 +57,25 @@ bool Class::useDPointer() const
 void Class::addInclude( const QString &include,
   const QString &forwardDeclaration )
 {
-  if ( mIncludes.find( include ) == mIncludes.end() ) {
-    if ( !include.isEmpty() )
+  if ( !include.isEmpty() && !mIncludes.contains( include ) )
       mIncludes.append( include );
-  }
 
-  if( !forwardDeclaration.isEmpty() &&
-      mForwardDeclarations.find( forwardDeclaration ) ==
-      mForwardDeclarations.end() ) {
+  if ( !forwardDeclaration.isEmpty() &&
+       !mForwardDeclarations.contains( forwardDeclaration ) )
     mForwardDeclarations.append( forwardDeclaration );
-  }
 }
 
 void Class::addIncludes( const QStringList &files,
                          const QStringList &forwardDeclarations )
 {
   for ( int i = 0; i < files.count(); ++i ) {
-    if ( mIncludes.find( files[ i ] ) == mIncludes.end() )
+    if ( !mIncludes.contains( files[ i ] ) )
       if ( !files[ i ].isEmpty() )
         mIncludes.append( files[ i ] );
   }
 
   for ( int i = 0; i < forwardDeclarations.count(); ++i ) {
-    if ( mForwardDeclarations.find( forwardDeclarations[ i ] ) == mForwardDeclarations.end() )
+    if ( !mForwardDeclarations.contains( forwardDeclarations[ i ] ) )
       mForwardDeclarations.append( forwardDeclarations[ i ] );
   }
 }
@@ -89,9 +85,8 @@ void Class::addHeaderInclude( const QString &include )
   if ( include.isEmpty() )
     return;
 
-  if ( mHeaderIncludes.find( include ) == mHeaderIncludes.end() ) {
+  if ( !mHeaderIncludes.contains( include ) )
     mHeaderIncludes.append( include );
-  }
 }
 
 void Class::addHeaderIncludes( const QStringList &includes )

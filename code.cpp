@@ -88,7 +88,7 @@ QString Code::spaces( int count )
 
 void Code::addBlock( const QString &block )
 {
-  QStringList lines = QStringList::split( "\n", block, true );
+  QStringList lines = block.split( "\n" );
   if ( !lines.isEmpty() && lines.last().isEmpty() ) {
     lines.pop_back();
   }
@@ -130,7 +130,7 @@ void Code::addFormattedText( const QString &text )
   int lineLength = 0;
 
   QString line;
-  const QStringList words = QStringList::split( ' ', text, false );
+  const QStringList words = text.split( ' ', QString::SkipEmptyParts );
 
   QStringList::ConstIterator it;
   for ( it = words.begin(); it != words.end(); ++it ) {
@@ -141,7 +141,7 @@ void Code::addFormattedText( const QString &text )
       lineLength = 0;
     }
 
-    int pos = (*it).find( "\n" );
+    int pos = (*it).indexOf( "\n" );
     if ( pos != -1 ) {
       line += (*it).left( pos );
       line = line.trimmed();

@@ -36,17 +36,17 @@ Function::Function( const QString &name, const QString &returnType,
      mReturnType( returnType ), mName( name )
 {
 }
- 
+
 void Function::setConst( bool isConst )
 {
   mIsConst = isConst;
-} 
-   
+}
+
 void Function::setStatic( bool isStatic )
 {
   mIsStatic = isStatic;
 }
-   
+
 void Function::addArgument( const QString &argument )
 {
   mArguments.append( argument );
@@ -60,11 +60,11 @@ void Function::addInitializer( const QString &initializer )
 void Function::setArgumentString( const QString &argumentString )
 {
   mArguments.clear();
-  QStringList arguments = QStringList::split( ",", argumentString );
+
+  QStringList arguments = argumentString.split( "," );
   QStringList::ConstIterator it;
-  for( it = arguments.begin(); it != arguments.end(); ++it ) {
+  for ( it = arguments.begin(); it != arguments.end(); ++it )
     addArgument( *it );
-  }
 }
 
 void Function::setBody( const QString &body )

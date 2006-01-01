@@ -95,7 +95,7 @@ void addPropertyFunctions( QString &out, const QString &type,
   code += "{";
   code += "  m" + upper + " = v;";
   code += "}";
-  
+
   code += "/**";
   code += "  Get " + name + ". See set" + upper + "().";
   code += "*/";
@@ -115,7 +115,7 @@ void addPropertyVariable( QString &out, const QString &type,
 
   KODE::Code code;
   code.setIndent( 4 );
-  code += type + ( isReference ? "" : " " ) + "m" + upper + ";"; 
+  code += type + ( isReference ? "" : " " ) + "m" + upper + ";";
 
   out += code.text();
 }
@@ -128,7 +128,7 @@ int addProperty( KCmdLineArgs *args )
       << "<property-name>" << std::endl;
     return 1;
   }
-  
+
   QString className = args->arg( 0 );
   QString type = args->arg( 1 );
   QString name = args->arg( 2 );
@@ -137,14 +137,14 @@ int addProperty( KCmdLineArgs *args )
     name << endl;
 
   QString headerFileName = className.toLower() + ".h";
-  
+
   QFile headerFile( headerFileName );
   if ( !headerFile.open( QIODevice::ReadOnly ) ) {
     std::cerr << "Unable to open file '" << headerFileName.data()/*.toUtf8()*/ << "'" <<
       std::endl;
     return 1;
   }
-  
+
   QTextStream in( &headerFile );
 
   enum State { FindClass, FindConstructor, FindProperties, FindPrivate,
@@ -153,28 +153,25 @@ int addProperty( KCmdLineArgs *args )
 
   QString accessor;
   QString mutator;
-  
+
   QString out;
-  
+
   QString readAhead;
-  
+
   QString line;
   while ( !( line = in.readLine() ).isNull() ) {
-//    std::cout << line.toUtf8() << std::endl;
     kdDebug() << state << " LINE: " << line << endl;
     QString readAheadPrevious = readAhead;
     readAhead += line + "\n";
-//    out += line + "\n";
     switch( state ) {
       case FindClass:
-//        if ( line.find( QRegExp( className ) ) >= 0 ) {
-        if ( line.find( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
+        if ( line.indexOf( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
           kdDebug() << "  FOUND CLASS" << endl;
           state = FindConstructor;
         }
         break;
       case FindConstructor:
-        if ( line.find( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
+        if ( line.indexOf( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
           kdDebug() << "  FOUND CONSTRUCTOR" << endl;
           out += readAhead;
           readAhead = QString::null;
@@ -212,9 +209,9 @@ int addProperty( KCmdLineArgs *args )
                 }
               }
             }
-          } else if ( line.find( QRegExp( "\\s*protected" ) ) >= 0 ) {
+          } else if ( line.indexOf( QRegExp( "\\s*protected" ) ) >= 0 ) {
             state = FindPrivate;
-          } else if ( line.find( QRegExp( "\\s*private" ) ) >= 0 ) {
+          } else if ( line.indexOf( QRegExp( "\\s*private" ) ) >= 0 ) {
             if ( accessor.isEmpty() ) {
               addPropertyFunctions( out, type, name );
               out += readAhead;
@@ -235,7 +232,7 @@ int addProperty( KCmdLineArgs *args )
         }
         break;
       case FindPrivate:
-        if ( line.find( QRegExp( "\\s*private" ) ) >= 0 ) {
+        if ( line.indexOf( QRegExp( "\\s*private" ) ) >= 0 ) {
           if ( accessor.isEmpty() ) {
             out += readAhead;
             readAhead = QString::null;
@@ -248,7 +245,7 @@ int addProperty( KCmdLineArgs *args )
         break;
       case FindVariables:
         {
-          if ( line.find( "m" + accessor.toLower(), 0, false ) >= 0 ) {
+          if ( line.indexOf( "m" + accessor.toLower(), 0, false ) >= 0 ) {
             out += readAhead;
             readAhead = QString::null;
             addPropertyVariable( out, type, name );
@@ -271,7 +268,7 @@ int addProperty( KCmdLineArgs *args )
     KProcess proc;
     proc << "cp" << QFile::encodeName( headerFileName ) <<
       QFile::encodeName( headerFileNameOut );
-    
+
     if ( !proc.start( KProcess::Block ) ) {
       kdError() << "Copy failed" << endl;
     } else {
@@ -303,13 +300,13 @@ int codify( KCmdLineArgs *args )
   QFile f( filename );
   if ( !f.open( QIODevice::ReadOnly ) ) {
     kdError() << "Unable to open file '" << filename << "'." << endl;
-    return 1;            
+    return 1;
   } else {
     std::cout << "KODE::Code code;" << std::endl;
     QTextStream ts( &f );
     QString line;
     while( !( line = ts.readLine() ).isNull() ) {
-      line.replace( "\\", "\\\\" ); 
+      line.replace( "\\", "\\\\" );
       line.replace( "\"", "\\\"" );
       line = "code += \"" + line;
       line.append( "\";" );
@@ -425,13 +422,13 @@ int create( KCmdLineArgs *args )
     code += "";
     code += "Q_UNUSED( args );";
     main.setBody( code );
-    
+
     file.addFileFunction( main );
-    
+
     file.setFilename( filename );
-    
+
     p.printImplementation( file, false );
-    
+
     return 0;
   }
 
@@ -442,15 +439,15 @@ int create( KCmdLineArgs *args )
     c.addInclude( "kdialogbase.h" );
   } else if ( createKioslave ) {
     c.setDocs( "This class implements a kioslave for ..." );
-  
+
     c.addBaseClass( KODE::Class( "SlaveBase", "KIO" ) );
     c.addHeaderInclude( "kio/slavebase.h" );
-    
+
     KODE::Function get( "get", "void" );
     get.addArgument( "const KURL &url" );
 
     KODE::Code code;
-    
+
     code += "kdDebug(7000) << \"" + className + "::get()\" << endl;";
     code += "kdDebug(7000) << \" URL: \" << url.url() << endl;";
     code += "#if 1";
@@ -463,18 +460,18 @@ int create( KCmdLineArgs *args )
 
     code += "mimeType( \"text/plain\" );";
     code.newLine();
-    
+
     code += "QCString str( \"Hello!\" );";
     code += "data( str );";
     code.newLine();
-    
+
     code += "finished();";
     code.newLine();
-    
+
     code += "kdDebug(7000) << \"" + className + "CgiProtocol::get() done\" << endl;";
 
     get.setBody( code );
-  
+
     c.addFunction( get );
 
 
@@ -487,7 +484,7 @@ int create( KCmdLineArgs *args )
     KODE::Function main( "kdemain", "int" );
     main.addArgument( "int argc" );
     main.addArgument( "char **argv" );
-    
+
     code.clear();
 
     code += "KInstance instance( \"kio_" + protocol + "\" );";
@@ -512,12 +509,12 @@ int create( KCmdLineArgs *args )
 
     file.addExternCDeclaration( p.functionSignature( main ) );
   }
-  
+
   KODE::Function constructor( className );
 
   if ( args->isSet( "singleton" ) ) {
     constructor.setAccess( KODE::Function::Private );
-    
+
     KODE::Function self( "self", className + " *" );
     self.setStatic( true );
 
@@ -533,7 +530,7 @@ int create( KCmdLineArgs *args )
 
     KODE::MemberVariable selfVar( "mSelf", className + " *", true );
     selfVar.setInitializer( "0" );
-  
+
     c.addMemberVariable( selfVar );
 
     KODE::Variable staticDeleter( "selfDeleter",
@@ -560,7 +557,7 @@ int create( KCmdLineArgs *args )
   if ( createKioslave ) {
     // Write automake Makefile
     KODE::AutoMakefile am;
-    
+
     am.addEntry( "INCLUDES", "$(all_includes)" );
     am.newLine();
     am.addEntry( "noinst_HEADERS", className.toLower() + ".h" );
@@ -575,12 +572,12 @@ int create( KCmdLineArgs *args )
     t.setSources( className.toLower() + ".cpp" );
     t.setLibAdd( "$(LIB_KIO)" );
     t.setLdFlags( "$(all_libraries) -module $(KDE_PLUGIN)" );
-  
+
     am.addTarget( t );
 
     p.printAutoMakefile( am );
-  
-    
+
+
     // Write protocol file
     QString protocolFilename = protocol + ".protocol";
 
@@ -588,9 +585,9 @@ int create( KCmdLineArgs *args )
     protocolFilename = fi.absoluteFilePath();
 
     KSaveFile::backupFile( protocolFilename, QString::null, ".backup" );
-    
+
     QFile::remove( protocolFilename );
-    
+
     KSimpleConfig protocolFile( protocolFilename );
 
     protocolFile.setGroup( "Protocol" );

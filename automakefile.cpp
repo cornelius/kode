@@ -35,9 +35,8 @@ AutoMakefile::AutoMakefile()
 void AutoMakefile::addTarget( const Target &t )
 {
   mTargets.append( t );
-  if ( mTargetTypes.find( t.type() ) == mTargetTypes.end() ) {
+  if ( !mTargetTypes.contains( t.type() ) )
     mTargetTypes.append( t.type() );
-  }
 }
 
 void AutoMakefile::addEntry( const QString &variable, const QString &value )
@@ -47,8 +46,7 @@ void AutoMakefile::addEntry( const QString &variable, const QString &value )
     return;
   }
 
-  QStringList::ConstIterator it = mEntries.find( variable );
-  if ( it == mEntries.end() ) {
+  if ( mEntries.contains( variable ) ) {
     mEntries.append( variable );
     QMap<QString,QString>::Iterator it = mValues.find( variable );
     if ( it == mValues.end() ) {

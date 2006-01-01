@@ -64,7 +64,7 @@ QString Printer::functionSignature( const Function &f,
                                     bool includeClassQualifier )
 {
   QString s;
-  
+
   if ( f.isStatic() && !includeClassQualifier ) {
     s += "static ";
   }
@@ -103,7 +103,7 @@ QString Printer::creationWarning()
     str += " from " + mSourceFile;
   }
   str += ".\n";
-  
+
   str += "// All changes you do to this file will be lost.";
 
   return str;
@@ -117,18 +117,18 @@ QString Printer::licenseHeader( const File &file )
 
   code += "This file is part of " + file.project() + ".";
   code.newLine();
-  
+
   QStringList copyrights = file.copyrightStrings();
   if ( !copyrights.isEmpty() ) {
     code.addBlock( copyrights.join( "\n" ) );
     code.newLine();
   }
-  
+
   code.addBlock( file.license().text() );
 
   code.setIndent( 0 );
   code += " */";
-  
+
   return code.text();
 }
 
@@ -187,7 +187,7 @@ QString Printer::classHeader( const Class &c, bool publicMembers )
     Class::List::ConstIterator it;
     for( it = baseClasses.begin(); it != baseClasses.end(); ++it ) {
       Class bc = *it;
-      
+
       if ( it != baseClasses.begin() ) txt +=", ";
       txt += "public ";
       if ( !bc.nameSpace().isEmpty() ) txt += bc.nameSpace() + "::";
@@ -427,7 +427,7 @@ void Printer::printHeader( const File &f )
 
   out += "#ifndef " + includeGuard;
   out += "#define " + includeGuard;
-  
+
   out.newLine();
 
 
@@ -439,7 +439,7 @@ void Printer::printHeader( const File &f )
     QStringList includes = (*it).headerIncludes();
     QStringList::ConstIterator it2;
     for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
-      if ( processed.find( *it2 ) == processed.end() ) {
+      if ( !processed.contains( *it2 ) ) {
         out += "#include <" + *it2 + ">";
         processed.append( *it2 );
       }
@@ -461,7 +461,7 @@ void Printer::printHeader( const File &f )
     QStringList decls = (*it).forwardDeclarations();
     QStringList::ConstIterator it2;
     for( it2 = decls.begin(); it2 != decls.end(); ++it2 ) {
-      if ( processed.find( *it2 ) == processed.end() ) {
+      if ( !processed.contains( *it2 ) ) {
         out += "class " + *it2 + ";";
         processed.append( *it2 );
       }
@@ -541,7 +541,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
     QStringList includes = (*it).includes();
     QStringList::ConstIterator it2;
     for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
-      if ( processed.find( *it2 ) == processed.end() ) {
+      if ( !processed.contains( *it2 ) ) {
         out += "#include <" + *it2 + ">";
         processed.append( *it2 );
       }

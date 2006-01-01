@@ -1,6 +1,7 @@
 SUBDIRS = . kxml_compiler
 
 INCLUDES = -I$(top_srcdir) $(all_includes)
+KDE_CXXFLAGS = -UQT3_SUPPORT
 
 lib_LTLIBRARIES = libkode.la
 

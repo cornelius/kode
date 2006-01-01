@@ -78,7 +78,7 @@ void File::addInclude( const QString &i )
   QString include = i;
   if( !include.endsWith( ".h" ) ) include.append( ".h" );
 
-  if ( mIncludes.find( include ) == mIncludes.end() ) {
+  if ( !mIncludes.contains( include ) ) {
     mIncludes.append( include );
   }
 }
@@ -88,12 +88,12 @@ void File::insertClass( const Class &c )
   Class::List::Iterator it;
   for( it = mClasses.begin(); it != mClasses.end(); ++it ) {
     if ( (*it).name() == c.name() ) {
-      it = mClasses.remove( it );
+      it = mClasses.erase( it );
       mClasses.insert( it, c );
       return;
     }
   }
-  
+
   mClasses.append( c );
 }
 

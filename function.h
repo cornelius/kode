@@ -43,16 +43,16 @@ class KDE_EXPORT Function
 
     void setConst( bool isConst );
     bool isConst() const { return mIsConst; }
-    
+
     void setStatic( bool isStatic );
     bool isStatic() const { return mIsStatic; }
-    
+
     void addArgument( const QString &argument );
     void setArgumentString( const QString &argumentString );
-    
+
     void addInitializer( const QString & );
     QStringList initializers() const { return mInitializers; }
-    
+
     void setBody( const QString &body );
     void setBody( const Code &code );
     void addBodyLine( const QString &bodyLine );
