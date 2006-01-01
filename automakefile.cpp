@@ -7,12 +7,12 @@
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
     version 2 of the License, or (at your option) any later version.
-    
+
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
     Library General Public License for more details.
-    
+
     You should have received a copy of the GNU Library General Public License
     along with this library; see the file COPYING.LIB.  If not, write to
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -46,7 +46,7 @@ void AutoMakefile::addEntry( const QString &variable, const QString &value )
     mEntries.append( variable );
     return;
   }
-  
+
   QStringList::ConstIterator it = mEntries.find( variable );
   if ( it == mEntries.end() ) {
     mEntries.append( variable );
@@ -78,28 +78,28 @@ QString AutoMakefile::text() const
     }
   }
   out += '\n';
-  
+
   for( it = mTargetTypes.begin(); it != mTargetTypes.end(); ++it ) {
     QString targetType = *it;
-    
+
     out += targetType + " = ";
 
     Target::List::ConstIterator it2;
     for( it2 = mTargets.begin(); it2 != mTargets.end(); ++it2 ) {
       Target t = *it2;
       if ( t.type() != targetType ) continue;
-      
+
       out += " " + t.name();
     }
     out += "\n\n";
-  
+
     for( it2 = mTargets.begin(); it2 != mTargets.end(); ++it2 ) {
       Target t = *it2;
       if ( t.type() != targetType ) continue;
 
       QString name = t.name();
       name.replace( '.', '_' );
-      
+
       out += name + "_SOURCES = " + t.sources() + '\n';
       if ( !t.libAdd().isEmpty() )
         out += name + "_LIBADD = " + t.libAdd() + '\n';
@@ -108,7 +108,7 @@ QString AutoMakefile::text() const
       out += name + "_LDFLAGS = " + t.ldFlags() + '\n';
     }
     out += '\n';
-  
+
   }
 
   return out;

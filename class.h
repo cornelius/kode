@@ -37,7 +37,7 @@ class KDE_EXPORT Class
 {
   public:
     typedef QList<Class> List;
-    
+
     Class();
     Class( const QString &name, const QString &nameSpace = QString::null );
 
@@ -73,9 +73,9 @@ class KDE_EXPORT Class
     QString docs() const { return mDocs; }
 
     bool hasFunction( const QString &name ) const;
-    
+
     bool isQObject() const;
-    
+
   private:
     // WARNING: If you add member variables, you have to adjust the copy
     //          constructor.
