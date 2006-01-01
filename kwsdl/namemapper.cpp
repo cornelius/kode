@@ -25,7 +25,7 @@ using namespace KWSDL;
 
 NameMapper::NameMapper()
 {
-  mKeyWords << "delete" << "class" << "default" << "new" << "not";
+  mKeyWords << "delete" << "class" << "default" << "new" << "not" << "return";
 }
 
 QString NameMapper::escape( const QString &name ) const

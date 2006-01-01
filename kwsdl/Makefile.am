@@ -1,6 +1,7 @@
-SUBDIRS = common schema wsdl . wscl tests #kung
+SUBDIRS = common schema wsdl . wscl #kung
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
+KDE_CXXFLAGS = -UQT3_SUPPORT
 
 bin_PROGRAMS = kwsdl_compiler
 

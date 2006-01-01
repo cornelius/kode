@@ -19,45 +19,45 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "binding.h"
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
-using namespace KWSDL;
+#include <qmap.h>
+#include <qstring.h>
 
-Binding::Operation::Operation()
+class Settings
 {
-}
+  public:
+    typedef QMap<QString, QString> NSMapping;
 
-Binding::Operation::Operation( const QString &name, const QString &action )
-  : mName( name ), mAction( action )
-{
-}
+    ~Settings();
 
-Binding::Binding()
-{
-}
+    static Settings* self();
 
-Binding::Binding( const QString &name, const QString &type )
-  : mName( name ), mType( type )
-{
-}
+    bool load( const QString &fileName );
 
+    void setWsdlUrl( const QString &wsdlUrl );
+    QString wsdlUrl() const;
+    QString wsdlBaseUrl() const;
 
-void Binding::addOperation( const Operation &operation )
-{
-  mOperations.append( operation );
-}
+    void setOutputFileName( const QString &outputFileName );
+    QString outputFileName() const;
 
-Binding::Operation Binding::operation( const QString &name ) const
-{
-  Operation::List::ConstIterator it;
-  for ( it = mOperations.begin(); it != mOperations.end(); ++it )
-    if ( (*it).name() == name )
-      return *it;
+    void setOutputDirectory( const QString &outputDirectory );
+    QString outputDirectory() const;
 
-  return Operation();
-}
+    void setNamespaceMapping( const NSMapping &namespaceMapping );
+    NSMapping namespaceMapping() const;
 
-Binding::Operation::List Binding::operations() const
-{
-  return mOperations;
-}
+  private:
+    Settings();
+
+    static Settings *mSelf;
+
+    QString mWsdlUrl;
+    QString mOutputFileName;
+    QString mOutputDirectory;
+    NSMapping mNamespaceMapping;
+};
+
+#endif

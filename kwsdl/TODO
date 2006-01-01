@@ -1,6 +1,7 @@
-- support marshal/demarshal of attributes in complex types
-
 - correct namespace handling
+- SOAPFault/Error Handling
+
+Port to Qt4
+- Qt-Only support
+- ServerStub support
 - implement 'list' and 'union' properties of SimpleType
-- fix the type vs. element issue (introduce anonymous types again)
-- code refactoring

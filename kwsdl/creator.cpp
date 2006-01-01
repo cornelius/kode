@@ -22,50 +22,76 @@
 #include <kode/file.h>
 #include <kode/printer.h>
 
+#include "settings.h"
+
 #include "creator.h"
 
 using namespace KWSDL;
 
+/**
+ * This method sorts a list of classes in a way that the base class
+ * of a class always appears before the class itself.
+ */
+static KODE::Class::List sortByBaseClass( const KODE::Class::List &classes )
+{
+  KODE::Class::List allClasses( classes );
+  KODE::Class::List retval;
+
+  QStringList classNames;
+
+  // copy all classes without a base class
+  KODE::Class::List::Iterator it;
+  for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+    if ( (*it).baseClasses().isEmpty() || (*it).baseClasses().first().name().startsWith( "Q" ) ) {
+      retval.append( *it );
+      classNames.append( (*it).name() );
+
+      it = allClasses.erase( it );
+      it--;
+    }
+  }
+
+  while ( allClasses.count() > 0 ) {
+    // copy all classes which have a class from retval
+    // as base class
+    for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+      const QString baseClassName = (*it).baseClasses().first().name();
+
+      if ( classNames.contains( baseClassName ) ) {
+        retval.append( *it );
+        classNames.append( (*it).name() );
+
+        it = allClasses.erase( it );
+        it--;
+      }
+    }
+  }
+
+  return retval;
+}
+
 Creator::Creator()
-  : mOutputDirectory( "output/" )
 {
 }
 
 void Creator::create( const KODE::Class::List &list )
 {
   KODE::Printer printer;
-  printer.setOutputDirectory( mOutputDirectory );
+  printer.setOutputDirectory( Settings::self()->outputDirectory() );
 
-  QStringList cppFiles;
+  KODE::Class::List classes = sortByBaseClass( list );
+
+  KODE::File file;
+
+  file.setFilename( Settings::self()->outputFileName() );
+  file.addCopyright( 2005, "Tobias Koenig", "tokoe@kde.org" );
+  file.setLicense( KODE::License( KODE::License::GPL ) );
 
   KODE::Class::List::ConstIterator it;
-  for ( it = list.begin(); it != list.end(); ++it ) {
-    KODE::File file;
-
-    if ( !mNameSpace.isEmpty() )
-      file.setNameSpace( mNameSpace );
-
-    file.setFilename( (*it).name().toLower() );
-    file.addCopyright( 2005, "Tobias Koenig", "tokoe@kde.org" );
-    file.setLicense( KODE::License( KODE::License::GPL ) );
-
+  for ( it = classes.begin(); it != classes.end(); ++it ) {
     file.insertClass( *it );
-
-    printer.printHeader( file );
-    printer.printImplementation( file );
-
-    cppFiles.append( file.filename() + ".cpp" );
   }
 
-  KODE::AutoMakefile::Target libTarget( "bin_PROGRAMS", "kwsdl" );
-  libTarget.setSources( "main.cc " + cppFiles.join( " " ) );
-  libTarget.setLdFlags( "$(all_libraries) $(KDE_RPATH)" );
-  libTarget.setLdAdd( "-lkdecore -lkio" );
-
-  KODE::AutoMakefile makefile;
-  makefile.addTarget( libTarget );
-  makefile.addEntry( "INCLUDES", "-I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)" );
-  makefile.addEntry( "METASOURCES", "AUTO" );
-
-  printer.printAutoMakefile( makefile );
+  printer.printHeader( file );
+  printer.printImplementation( file );
 }

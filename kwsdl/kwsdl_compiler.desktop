@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=KWSDL Compiler
+Exec=kdialog --sorry "kwsdl_compiler is a command-line only program.  Please read the handbook at help:/kwsdl_compiler for more info."
+Icon=gear
+Type=Application
+DocPath=kwsdl_compiler/index.html
+Terminal=false
+NoDisplay=true
+Categories=Qt;KDE;Development

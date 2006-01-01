@@ -20,6 +20,7 @@
 */
 
 #include "compiler.h"
+#include "settings.h"
 
 #include <kaboutdata.h>
 #include <kapplication.h>
@@ -27,16 +28,17 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kurl.h>
-#include <qdir.h>
-#include <qfile.h>
-#include <qtimer.h>
+
+#include <QDir>
+#include <QFile>
+#include <QTimer>
 
 static const KCmdLineOptions options[] =
 {
+  { "c", 0, 0 },
+  { "configfile <file>", I18N_NOOP( "Configuration file" ), "kwsdl.cfg" },
   { "d", 0, 0 },
-  { "directory <dir>", I18N_NOOP( "Directory to generate files in" ), "." },
-  { "n", 0, 0 },
-  { "namespace <namespace>", I18N_NOOP( "Namespace of the created classes" ), "." },
+  { "outputDirectory <dir>", I18N_NOOP( "Directory to generate files in" ), "." },
   { "+wsdl", I18N_NOOP( "WSDL file" ), 0 },
   KCmdLineLastOption
 };
@@ -54,22 +56,24 @@ int main( int argc, char **argv )
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  if ( args->count() < 1 || args->count() > 1 ) {
-    qDebug( "Invalid arguments, try --help." );
-    return 1;
+  if ( args->isSet( "configfile" ) ) {
+    if ( !Settings::self()->load( args->getOption( "configfile" ) ) )
+      return 1;
+  } else {
+    if ( args->count() != 1 ) {
+      KCmdLineArgs::usage( i18n("Neither a config file nor a WSDL url is given.") );
+    }
   }
 
-  KApplication app( false, false );
+  if ( args->isSet( "outputDirectory" ) )
+    Settings::self()->setOutputDirectory( args->getOption( "outputDirectory" ) );
 
-  QString outputDirectory = QFile::decodeName( args->getOption( "directory" ) );
-  if ( outputDirectory.isEmpty() )
-    outputDirectory = QDir::current().path();
+  if ( args->count() == 1 )
+    Settings::self()->setWsdlUrl( args->url( 0 ).path() );
+
+  KApplication app( false );
 
   KWSDL::Compiler compiler;
-  compiler.setWSDLUrl( args->url( 0 ).path() );
-  compiler.setOutputDirectory( outputDirectory );
-  if ( args->isSet( "namespace" ) )
-    compiler.setNameSpace( args->getOption( "namespace" ) );
 
   QTimer::singleShot( 0, &compiler, SLOT( run() ) );
 

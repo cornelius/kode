@@ -22,19 +22,13 @@
 #ifndef KWSDL_CONVERTER_H
 #define KWSDL_CONVERTER_H
 
+#include <common/nsmanager.h>
 #include <kode/class.h>
 #include <schema/parser.h>
-
-/*
-#include "binding.h"
-#include "message.h"
-#include "port.h"
-#include "service.h"
-*/
+#include <wsdl/wsdl.h>
 
 #include "namemapper.h"
-#include "typemapper.h"
-#include "wsdl.h"
+#include "typemap.h"
 
 namespace KWSDL {
 
@@ -50,18 +44,35 @@ class Converter
     KODE::Class::List classes() const;
 
   private:
-    void convertTypes( const Schema::Types& );
-    void convertSimpleType( const Schema::SimpleType* );
-    void convertComplexType( const Schema::ComplexType* );
+    void convertTypes();
 
-    void createSimpleTypeSerializer( const Schema::SimpleType* );
+    void convertComplexType( const Schema::ComplexType* );
     void createComplexTypeSerializer( const Schema::ComplexType* );
 
-    void convertService( const Service& );
-    void convertInputMessage( const Port&, const Message&, KODE::Class& );
-    void convertOutputMessage( const Port&, const Message&, KODE::Class& );
-    void createUtilClasses();
-    void createTransportClass();
+    void convertSimpleType( const Schema::SimpleType* );
+    void createSimpleTypeSerializer( const Schema::SimpleType* );
+
+    void convertAttribute( const Schema::Attribute* );
+    void createAttributeSerializer( const Schema::Attribute* );
+
+    void convertElement( const Schema::Element* );
+    void createElementSerializer( const Schema::Element* );
+
+    // Client Stub
+    void convertClientService();
+    void convertClientInputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
+    void convertClientOutputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
+
+    // Server Stub
+    void convertServerService();
+
+    // Transport
+    void createKDETransport();
+    void createQtTransport();
+
+    // Utils
+    void createUtils();
+    void createSoapUtils();
 
     WSDL mWSDL;
 
@@ -70,9 +81,15 @@ class Converter
     KODE::Class mQObject;
 
     NameMapper mNameMapper;
-    TypeMapper mTypeMapper;
+    TypeMap mTypeMap;
+    NSManager mNSManager;
 };
 
 }
+
+QString upperlize( const QString& );
+QString lowerlize( const QString& );
+
+static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
 
 #endif

@@ -19,21 +19,11 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KWSDL_CREATOR_H
-#define KWSDL_CREATOR_H
+#include "converter.h"
 
-#include <kode/class.h>
+using namespace KWSDL;
 
-namespace KWSDL {
-
-class Creator
+void Converter::convertServerService()
 {
-  public:
-    Creator();
-
-    void create( const KODE::Class::List &list );
-};
-
 }
 
-#endif

@@ -25,7 +25,7 @@
 #include <qdom.h>
 #include <qobject.h>
 
-#include "parser.h"
+#include <wsdl/wsdl.h>
 
 namespace KWSDL {
 
@@ -36,10 +36,6 @@ class Compiler : public QObject
   public:
     Compiler();
 
-    void setWSDLUrl( const QString &wsdlUrl );
-    void setOutputDirectory( const QString &outputDirectory );
-    void setNameSpace( const QString &nameSpace );
-
   public slots:
     void run();
 
@@ -49,12 +45,7 @@ class Compiler : public QObject
     void create();
 
   private:
-    QString mWSDLUrl;
-    QString mOutputDirectory;
-    QString mNameSpace;    
-
-    Parser mParser;
-    QString mWSDLBaseUrl;
+    WSDL mWSDL;
 };
 
 }

@@ -19,42 +19,24 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qapplication.h>
-#include <qfile.h>
+#include <QCoreApplication>
+#include <QFile>
 
-#include <schema/fileprovider.h>
+#include <common/fileprovider.h>
+#include <common/messagehandler.h>
+#include <common/parsercontext.h>
 
 #include "converter.h"
 #include "creator.h"
+#include "settings.h"
 
 #include "compiler.h"
 
 using namespace KWSDL;
 
 Compiler::Compiler()
-  : QObject( 0, "KWSDL::Compiler" )
+  : QObject( 0 )
 {
-}
-
-void Compiler::setWSDLUrl( const QString &wsdlUrl )
-{
-  mWSDLUrl = wsdlUrl;
-  mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.lastIndexOf( '/' ) );
-
-  mParser.setSchemaBaseUrl( mWSDLBaseUrl );
-}
-
-void Compiler::setOutputDirectory( const QString &outputDirectory )
-{
-  mOutputDirectory = outputDirectory;
-
-  if ( !mOutputDirectory.endsWith( "/" ) )
-    mOutputDirectory.append( "/" );
-}
-
-void Compiler::setNameSpace( const QString &nameSpace )
-{
-  mNameSpace = nameSpace;
 }
 
 void Compiler::run()
@@ -64,22 +46,28 @@ void Compiler::run()
 
 void Compiler::download()
 {
-  Schema::FileProvider provider;
+  FileProvider provider;
 
   QString fileName;
-  if ( provider.get( mWSDLUrl, fileName ) ) {
+  if ( provider.get( Settings::self()->wsdlUrl(), fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-      qDebug( "Unable to download schema file %s", mWSDLUrl.toLatin1() );
+      qDebug( "Unable to download schema file %s", qPrintable( Settings::self()->wsdlUrl() ) );
       provider.cleanUp();
       return;
     }
 
+    QXmlInputSource source( &file );
+    QXmlSimpleReader reader;
+    reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
+
+    QDomDocument document( "KWSDL" );
+
     QString errorMsg;
     int errorLine, errorCol;
     QDomDocument doc;
-    if ( !doc.setContent( &file, true, &errorMsg, &errorLine, &errorCol ) ) {
-      qDebug( "%s at (%d,%d)", errorMsg.toLatin1(), errorLine, errorCol );
+    if ( !doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
+      qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
       return;
     }
 
@@ -91,23 +79,33 @@ void Compiler::download()
 
 void Compiler::parse( const QDomElement &element )
 {
-  mParser.parse( element );
+  NSManager namespaceManager;
+  MessageHandler messageHandler;
+  ParserContext context;
+  context.setNamespaceManager( &namespaceManager );
+  context.setMessageHandler( &messageHandler );
+  context.setDocumentBaseUrl( Settings::self()->wsdlBaseUrl() );
+
+  Definitions definitions;
+  definitions.loadXML( &context, element );
+
+  mWSDL.setDefinitions( definitions );
+  mWSDL.setNamespaceManager( namespaceManager );
+
   create();
 }
 
 void Compiler::create()
 {
   KWSDL::Converter converter;
-  converter.setWSDL( mParser.wsdl() );
+  converter.setWSDL( mWSDL );
 
   converter.convert();
 
   KWSDL::Creator creator;
-  creator.setOutputDirectory( mOutputDirectory );
-  creator.setNameSpace( mNameSpace );
   creator.create( converter.classes() );
 
-  qApp->quit();
+  QCoreApplication::exit( 0 );
 }
 
 #include "compiler.moc"
