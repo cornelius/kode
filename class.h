@@ -41,13 +41,12 @@ class KDE_EXPORT Class
     Class();
     Class( const QString &name, const QString &nameSpace = QString::null );
 
-    Class( const Class & );
-    Class &operator=( const Class &c );
-
     bool isValid() const;
 
     void addInclude( const QString &file,
       const QString &forwardDeclaration = QString::null );
+    void addIncludes( const QStringList &files,
+      const QStringList &forwardDeclarations = QStringList() );
     void addHeaderInclude( const QString &file );
     void addHeaderIncludes( const QStringList &files );
     void addBaseClass( const Class & );
@@ -60,6 +59,8 @@ class KDE_EXPORT Class
     QString name() const { return mName; }
     void setNameSpace( const QString &nameSpace );
     QString nameSpace() const { return mNameSpace; }
+    void setUseDPointer( bool useDPointer );
+    bool useDPointer() const;
     QStringList includes() const { return mIncludes; }
     QStringList headerIncludes() const { return mHeaderIncludes; }
     QStringList forwardDeclarations() const { return mForwardDeclarations; }
@@ -77,8 +78,6 @@ class KDE_EXPORT Class
     bool isQObject() const;
 
   private:
-    // WARNING: If you add member variables, you have to adjust the copy
-    //          constructor.
     QString mName;
     QString mNameSpace;
     Function::List mFunctions;
@@ -90,6 +89,7 @@ class KDE_EXPORT Class
     Typedef::List mTypedefs;
     Enum::List mEnums;
     QString mDocs;
+    bool mUseDPointer;
 };
 
 }

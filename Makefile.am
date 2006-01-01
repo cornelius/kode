@@ -1,4 +1,4 @@
-SUBDIRS = . kxml_compiler #kwsdl
+SUBDIRS = . kxml_compiler
 
 INCLUDES = -I$(top_srcdir) $(all_includes)
 

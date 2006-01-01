@@ -135,15 +135,27 @@ void Code::addFormattedText( const QString &text )
   QStringList::ConstIterator it;
   for ( it = words.begin(); it != words.end(); ++it ) {
     if ( (int)(*it).length() + lineLength >= maxWidth ) {
+      line = line.trimmed();
       addLine( line );
       line.truncate( 0 );
       lineLength = 0;
     }
 
-    line += *it + " ";
-    lineLength += (*it).length() + 1;
+    int pos = (*it).find( "\n" );
+    if ( pos != -1 ) {
+      line += (*it).left( pos );
+      line = line.trimmed();
+      addLine( line );
+
+      line = (*it).mid( pos + 1 ) + " ";
+      lineLength = (*it).length() - pos;
+    } else {
+      line += *it + " ";
+      lineLength += (*it).length() + 1;
+    }
   }
 
+  line = line.trimmed();
   addLine( line );
 }
 

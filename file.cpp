@@ -125,6 +125,11 @@ void File::addFileFunction( const Function &f )
   mFileFunctions.append( f );
 }
 
+void File::addFileEnum( const Enum &e )
+{
+  mFileEnums.append( e );
+}
+
 void File::addExternCDeclaration( const QString &s )
 {
   mExternCDeclarations.append( s );

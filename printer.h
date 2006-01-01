@@ -55,7 +55,7 @@ class KDE_EXPORT Printer
   protected:
     QString creationWarning();
     QString licenseHeader( const File & );
-    QString classHeader( const Class & );
+    QString classHeader( const Class &, bool );
     QString classImplementation( const Class & );
     Code functionHeaders( const Function::List &functions,
                           const QString &className,

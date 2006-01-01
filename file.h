@@ -74,6 +74,9 @@ class KDE_EXPORT File
     void addFileFunction( const Function & );
     Function::List fileFunctions() const { return mFileFunctions; }
 
+    void addFileEnum( const Enum & );
+    Enum::List fileEnums() const { return mFileEnums; }
+
     void addExternCDeclaration( const QString & );
     QStringList externCDeclarations() const { return mExternCDeclarations; }
 
@@ -90,6 +93,7 @@ class KDE_EXPORT File
     Class::List mClasses;
     Variable::List mFileVariables;
     Function::List mFileFunctions;
+    Enum::List mFileEnums;
     QStringList mExternCDeclarations;
     Code mFileCode;
 };

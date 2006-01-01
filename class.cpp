@@ -30,32 +30,8 @@ Class::Class()
 }
 
 Class::Class( const QString &name, const QString &nameSpace )
-  : mName( name ), mNameSpace( nameSpace )
+  : mName( name ), mNameSpace( nameSpace ), mUseDPointer( false )
 {
-}
-
-Class::Class( const Class &c )
-{
-  *this = c;
-}
-
-Class &Class::operator=( const Class &c )
-{
-  if ( this == &c ) return *this;
-
-  mName = c.mName;
-  mNameSpace = c.mNameSpace;
-  mFunctions = c.mFunctions;
-  mMemberVariables = c.mMemberVariables;
-  mIncludes = c.mIncludes;
-  mHeaderIncludes = c.mHeaderIncludes;
-  mForwardDeclarations = c.mForwardDeclarations;
-  mEnums = c.mEnums;
-  mDocs = c.mDocs;
-  mBaseClasses = c.mBaseClasses;
-  mTypedefs = c.mTypedefs;
-  
-  return *this;
 }
 
 void Class::setName( const QString &name )
@@ -68,17 +44,43 @@ void Class::setNameSpace( const QString &nameSpace )
   mNameSpace = nameSpace;
 }
 
+void Class::setUseDPointer( bool useDPointer )
+{
+  mUseDPointer = useDPointer;
+}
+
+bool Class::useDPointer() const
+{
+  return mUseDPointer;
+}
+
 void Class::addInclude( const QString &include,
   const QString &forwardDeclaration )
 {
   if ( mIncludes.find( include ) == mIncludes.end() ) {
-    mIncludes.append( include );
+    if ( !include.isEmpty() )
+      mIncludes.append( include );
   }
 
   if( !forwardDeclaration.isEmpty() &&
       mForwardDeclarations.find( forwardDeclaration ) ==
       mForwardDeclarations.end() ) {
     mForwardDeclarations.append( forwardDeclaration );
+  }
+}
+
+void Class::addIncludes( const QStringList &files,
+                         const QStringList &forwardDeclarations )
+{
+  for ( int i = 0; i < files.count(); ++i ) {
+    if ( mIncludes.find( files[ i ] ) == mIncludes.end() )
+      if ( !files[ i ].isEmpty() )
+        mIncludes.append( files[ i ] );
+  }
+
+  for ( int i = 0; i < forwardDeclarations.count(); ++i ) {
+    if ( mForwardDeclarations.find( forwardDeclarations[ i ] ) == mForwardDeclarations.end() )
+      mForwardDeclarations.append( forwardDeclarations[ i ] );
   }
 }
 
