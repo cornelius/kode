@@ -181,7 +181,7 @@ int addProperty( KCmdLineArgs *args )
       case FindProperties:
         {
           QRegExp re( "(\\w+)\\s*\\(" );
-          if ( re.search( line ) >= 0 ) {
+          if ( re.indexIn( line ) >= 0 ) {
             QString function = re.cap( 1 ).toLower();
             if ( !function.isEmpty() ) {
               kdDebug() << "Function: " << function << endl;
@@ -245,7 +245,7 @@ int addProperty( KCmdLineArgs *args )
         break;
       case FindVariables:
         {
-          if ( line.indexOf( "m" + accessor.toLower(), 0, false ) >= 0 ) {
+          if ( line.indexOf( "m" + accessor.toLower(), 0, Qt::CaseInsensitive ) >= 0 ) {
             out += readAhead;
             readAhead = QString::null;
             addPropertyVariable( out, type, name );
