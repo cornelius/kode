@@ -217,7 +217,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
     const SoapBinding soapBinding( binding.soapBinding() );
     const SoapBinding::Operation::Map map = soapBinding.operations();
     const SoapBinding::Operation op = map[ operation.name() ];
-    header = "\"SOAPAction: \\\"" + op.action() + "\\\"\"";
+    header = "\"\\\"" + op.action() + "\\\"\"";
   }
 
   code += "qDebug( \"%s\", qPrintable( doc.toString() ) );";

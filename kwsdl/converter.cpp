@@ -90,8 +90,12 @@ void Converter::convert()
   createUtils();
   createSoapUtils();
 
-  // TODO: allow Qt Transport
-  createKDETransport();
+  if ( Settings::self()->transport() == Settings::KDETransport )
+    createKDETransport();
+  else if ( Settings::self()->transport() == Settings::QtTransport )
+    createQtTransport();
+  else if ( Settings::self()->transport() == Settings::CustomTransport )
+    createCustomTransport();
 
   convertTypes();
 

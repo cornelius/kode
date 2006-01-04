@@ -32,6 +32,7 @@ Settings *Settings::mSelf = 0;
 static KStaticDeleter<Settings> settingsDeleter;
 
 Settings::Settings()
+  : mTransport( KDETransport )
 {
   mOutputDirectory = QDir::current().path();
   mOutputFileName = "kwsdl_generated";
@@ -86,6 +87,14 @@ bool Settings::load( const QString &fileName )
 
       if ( !prefix.isEmpty() && !uri.isEmpty() )
         mNamespaceMapping.insert( uri, prefix );
+    } else if ( element.tagName() == "transport" ) {
+      const QString data = element.text();
+      if ( data == "KDE" )
+        setTransport( KDETransport );
+      else if ( data == "Qt" )
+        setTransport( QtTransport );
+      else if ( data == "Custom" )
+        setTransport( CustomTransport );
     } else {
       qDebug( "Settings::load: Unknown xml element %s.", qPrintable( element.tagName() ) );
       return false;
@@ -146,4 +155,14 @@ void Settings::setNamespaceMapping( const NSMapping &namespaceMapping )
 Settings::NSMapping Settings::namespaceMapping() const
 {
   return mNamespaceMapping;
+}
+
+void Settings::setTransport( Transport transport )
+{
+  mTransport = transport;
+}
+
+Settings::Transport Settings::transport() const
+{
+  return mTransport;
 }

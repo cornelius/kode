@@ -19,6 +19,14 @@
     </xsd:documentation>
   </xsd:annotation>
 
+	<xsd:simpleType name="Transport">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Qt" />
+			<xsd:enumeration value="KDE" />
+			<xsd:enumeration value="Custom" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
   <xsd:complexType name="NamespaceMapping">
     <xsd:sequence/>
     <xsd:attribute name="prefix" type="xsd:string" />
@@ -32,6 +40,7 @@
         <xsd:element name="outputFileName" type="xsd:string" minOccurs="0" />
         <xsd:element name="outputDirectory" type="xsd:string" minOccurs="0" />
         <xsd:element name="namespaceMapping" type="tns:NamespaceMapping" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="transport" type="tns:Transport" minOccurs="0" default="KDE">
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>

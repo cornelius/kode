@@ -69,7 +69,7 @@ void Converter::createKDETransport()
   queryCode += "job->addMetaData( \"content-type\", \"Content-Type: text/xml; charset=utf-8\" );";
   queryCode += "if ( !header.isEmpty() ) {";
   queryCode.indent();
-  queryCode += "job->addMetaData( \"customHTTPHeader\", header );";
+  queryCode += "job->addMetaData( \"customHTTPHeader\", \"SOAPAction:\" + header );";
   queryCode.unindent();
   queryCode += "}";
   queryCode.newLine();
@@ -129,4 +129,115 @@ void Converter::createKDETransport()
 
 void Converter::createQtTransport()
 {
+  KODE::Class transport( "Transport" );
+  transport.addBaseClass( mQObject );
+  transport.addHeaderInclude( "QBuffer" );
+  transport.addHeaderInclude( "QByteArray" );
+  transport.addHeaderInclude( "QObject" );
+  transport.addHeaderInclude( "QHttp" );
+  transport.addHeaderInclude( "QUrl" );
+
+  // member variables
+  KODE::MemberVariable bufferVar( "buffer", "QBuffer" );
+  transport.addMemberVariable( bufferVar );
+
+  KODE::MemberVariable dataVar( "data", "QByteArray" );
+  transport.addMemberVariable( dataVar );
+
+  KODE::MemberVariable httpVar( "http", "QHttp*" );
+  transport.addMemberVariable( httpVar );
+
+  KODE::MemberVariable urlVar( "url", "QUrl" );
+  transport.addMemberVariable( urlVar );
+
+  KODE::MemberVariable idVar( "id", "int" );
+  transport.addMemberVariable( idVar );
+
+  // functions
+  KODE::Function ctor( "Transport" );
+  ctor.addArgument( "const QString &url" );
+  ctor.addInitializer( "QObject( 0 )" );
+  ctor.addInitializer( urlVar.name() + "( url )" );
+
+  KODE::Function query( "query", "void" );
+  query.addArgument( "const QString &message" );
+  query.addArgument( "const QString &headerStr" );
+
+  KODE::Function resultSignal( "result", "void", KODE::Function::Signal );
+  resultSignal.addArgument( "const QString &result" );
+
+  KODE::Function errorSignal( "error", "void", KODE::Function::Signal );
+  errorSignal.addArgument( "const QString &msg" );
+
+  KODE::Function finishedSlot( "finished", "void", KODE::Function::Slot | KODE::Function::Private );
+  finishedSlot.addArgument( "int id" );
+  finishedSlot.addArgument( "bool errorOccurred" );
+
+  // codes
+  KODE::Code code;
+
+  code += "QUrl server( url );";
+  code.newLine();
+  code += httpVar.name() + " = new QHttp( this );";
+  code += httpVar.name() + "->setHost( server.host(), server.port( 80 ) );";
+  code.newLine();
+  code += "connect( " + httpVar.name() + ", SIGNAL( requestFinished( int, bool ) ), this, SLOT( " + finishedSlot.name() + "( int, bool ) ) );";
+  ctor.setBody( code );
+
+  code.clear();
+  code += dataVar.name() + ".clear();";
+  code += bufferVar.name() + ".setBuffer( &" + dataVar.name() + " );";
+  code.newLine();
+  code += "QHttpRequestHeader header;";
+  code += "header.setRequest( \"POST\", " + urlVar.name() + ".path() );";
+  code += "header.addValue( \"Connection\", \"Keep-Alive\" );";
+  code += "header.addValue( \"Content-Type\", \"text/xml; charset=utf-8\" );";
+  code += "header.addValue( \"Host\", QUrl( " + urlVar.name() + " ).host() );";
+  code.newLine();
+  code += "if ( !headerStr.isEmpty() )";
+  code.indent();
+  code += "header.addValue( \"SOAPAction\", headerStr );";
+  code.unindent();
+  code.newLine();
+  code += "QUrl server( " + urlVar.name() + " );";
+  code += "if ( server.port( 80 ) != 80 )";
+  code.indent();
+  code += "header.setValue( \"Host\", server.host() + \":\" + QString::number( server.port() ) );";
+  code.unindent();
+  code += "else";
+  code.indent();
+  code += "header.setValue( \"Host\", server.host() );";
+  code.unindent();
+  code.newLine();
+  code += idVar.name() + " = " + httpVar.name() + "->request( header, message.toUtf8(), &" + bufferVar.name() + " );";
+  query.setBody( code );
+
+  code.clear();
+  code += "if ( id != " + idVar.name() + " )";
+  code.indent();
+  code += "return;";
+  code.unindent();
+  code.newLine();
+  code += "if ( errorOccurred )";
+  code.indent();
+  code += "emit " + errorSignal.name() + "( " + httpVar.name() + "->errorString() );";
+  code.unindent();
+  code += "else";
+  code.indent();
+  code += "emit " + resultSignal.name() + "( QString::fromUtf8( " + dataVar.name() + " ) );";
+  code.unindent();
+  finishedSlot.setBody( code );
+
+  transport.addFunction( ctor );
+  transport.addFunction( query );
+  transport.addFunction( resultSignal );
+  transport.addFunction( errorSignal );
+  transport.addFunction( finishedSlot );
+
+  mClasses.append( transport );
+}
+
+void Converter::createCustomTransport()
+{
+  mSerializer.addHeaderInclude( "transport.h" );
 }

@@ -30,6 +30,13 @@ class Settings
   public:
     typedef QMap<QString, QString> NSMapping;
 
+    enum Transport
+    {
+      QtTransport,
+      KDETransport,
+      CustomTransport
+    };
+
     ~Settings();
 
     static Settings* self();
@@ -49,6 +56,9 @@ class Settings
     void setNamespaceMapping( const NSMapping &namespaceMapping );
     NSMapping namespaceMapping() const;
 
+    void setTransport( Transport transport );
+    Transport transport() const;
+
   private:
     Settings();
 
@@ -58,6 +68,7 @@ class Settings
     QString mOutputFileName;
     QString mOutputDirectory;
     NSMapping mNamespaceMapping;
+    Transport mTransport;
 };
 
 #endif

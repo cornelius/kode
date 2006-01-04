@@ -69,6 +69,7 @@ class Converter
     // Transport
     void createKDETransport();
     void createQtTransport();
+    void createCustomTransport();
 
     // Utils
     void createUtils();

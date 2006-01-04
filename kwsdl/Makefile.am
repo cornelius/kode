@@ -1,4 +1,4 @@
-SUBDIRS = common schema wsdl . wscl #kung
+SUBDIRS = doc common schema wsdl . wscl #kung
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
 KDE_CXXFLAGS = -UQT3_SUPPORT
