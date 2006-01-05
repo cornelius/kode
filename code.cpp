@@ -41,7 +41,7 @@ Code::Code( int indent )
 void Code::clear()
 {
   mIndent = 0;
-  mText = QString::null;
+  mText.clear();
 }
 
 bool Code::isEmpty() const

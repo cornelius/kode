@@ -174,7 +174,7 @@ int addProperty( KCmdLineArgs *args )
         if ( line.indexOf( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
           kdDebug() << "  FOUND CONSTRUCTOR" << endl;
           out += readAhead;
-          readAhead = QString::null;
+          readAhead.clear();
           state = FindProperties;
         }
         break;
@@ -187,7 +187,7 @@ int addProperty( KCmdLineArgs *args )
               kdDebug() << "Function: " << function << endl;
               if ( function == className || function == "~" + className ) {
                 out += readAhead;
-                readAhead = QString::null;
+                readAhead.clear();
               } else {
                 if ( function.startsWith( "set" ) ) {
                   mutator = function.mid( 3 );
@@ -197,7 +197,7 @@ int addProperty( KCmdLineArgs *args )
                     accessor = function;
                     kdDebug() << "ACCESSOR: " << accessor << endl;
                     out += readAhead;
-                    readAhead = QString::null;
+                    readAhead.clear();
                   } else {
                     kdDebug() << "CREATE PROPERTY" << endl;
                     out += readAheadPrevious;
@@ -215,7 +215,7 @@ int addProperty( KCmdLineArgs *args )
             if ( accessor.isEmpty() ) {
               addPropertyFunctions( out, type, name );
               out += readAhead;
-              readAhead = QString::null;
+              readAhead.clear();
               addPropertyVariable( out, type, name );
               state = Finish;
             } else {
@@ -224,7 +224,7 @@ int addProperty( KCmdLineArgs *args )
                 addPropertyFunctions( out, type, name );
                 out += "\n";
                 out += line + "\n";
-                readAhead = QString::null;
+                readAhead.clear();
               }
               state = FindVariables;
             }
@@ -235,7 +235,7 @@ int addProperty( KCmdLineArgs *args )
         if ( line.indexOf( QRegExp( "\\s*private" ) ) >= 0 ) {
           if ( accessor.isEmpty() ) {
             out += readAhead;
-            readAhead = QString::null;
+            readAhead.clear();
             addPropertyVariable( out, type, name );
             state = Finish;
           } else {
@@ -247,7 +247,7 @@ int addProperty( KCmdLineArgs *args )
         {
           if ( line.indexOf( "m" + accessor.toLower(), 0, Qt::CaseInsensitive ) >= 0 ) {
             out += readAhead;
-            readAhead = QString::null;
+            readAhead.clear();
             addPropertyVariable( out, type, name );
             state = Finish;
           }
