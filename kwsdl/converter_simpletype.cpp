@@ -44,13 +44,16 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
       Use setter and getter method for enums as well.
      */
     if ( type->facetType() & Schema::SimpleType::ENUM ) {
-      classDocumentation = "This class is a wrapper for an enumeration.";
+      classDocumentation = "This class is a wrapper for an enumeration.\n";
 
       QStringList enums = type->facetEnums();
       for ( int i = 0; i < enums.count(); ++i )
         enums[ i ] = escapeEnum( enums[ i ] );
 
       newClass.addEnum( KODE::Enum( "Type", enums ) );
+
+      classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
+                            " you can also pass the enum directly (e.g. someMethod( " + newClass.name() + "::" + enums.first() + "  )).";
 
       // member variables
       KODE::MemberVariable variable( "type", "Type" );
@@ -91,11 +94,13 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     if ( type->baseTypeName() != XmlAnyType
         && !type->baseTypeName().isEmpty()
         && !(type->facetType() & Schema::SimpleType::ENUM) ) {
-      classDocumentation = "This class encapsulates an basic type.";
+      classDocumentation = "This class encapsulates an basic type.\n";
 
       const QName baseName = type->baseTypeName();
       const QString typeName = mTypeMap.localType( baseName );
 
+      classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
+                            " you can also pass the value directly (e.g. someMethod( (" + typeName + "*)value  )).";
       // include header
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
 
@@ -182,6 +187,8 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
     newClass.addMemberVariable( variable );
 
     ctorBody += variable.name() + " = 0;";
+    dtorBody += "qDeleteAll( *" + variable.name() + " );";
+    dtorBody += variable.name() + "->clear();";
     dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
     // setter method
@@ -333,7 +340,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
       mSerializer.addFunction( marshalValue );
       mSerializer.addFunction( demarshalValue );
     } else if ( !type->baseTypeName().isEmpty() ) {
-      marshalCode += "Serializer::marshal( doc, parent, name, value->value(), noNamespace );";
+      marshalCode += "Serializer::marshal( doc, parent, name, value->value(), true );";
 
       demarshalCode += "const QString text = parent.text();";
       demarshalCode.newLine();

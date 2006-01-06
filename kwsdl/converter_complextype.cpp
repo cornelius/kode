@@ -112,6 +112,10 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     newClass.addMemberVariable( variable );
 
     ctorBody += variable.name() + " = 0;";
+    if ( (*elemIt).maxOccurs() > 1 ) {
+      dtorBody += "qDeleteAll( *" + variable.name() + " );";
+      dtorBody += variable.name() + "->clear();";
+    }
     dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
     QString upperName = upperlize( (*elemIt).name() );
@@ -153,6 +157,10 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     newClass.addMemberVariable( variable );
 
     ctorBody += variable.name() + " = 0;";
+    if ( isArray ) {
+      dtorBody += "qDeleteAll( *" + variable.name() + " );";
+      dtorBody += variable.name() + "->clear();";
+    }
     dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
     QString upperName = upperlize( (*attrIt).name() );
@@ -285,7 +293,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
       marshalCode += "QList<" + typeName + "*>::ConstIterator it;";
       marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
       marshalCode.indent();
-      marshalCode += "Serializer::marshal( doc, parentElement, \"" + typePrefix + ":" + (*elemIt).name() + "\", *it, noNamespace );";
+      marshalCode += "Serializer::marshal( doc, parentElement, \"" + typePrefix + ":" + (*elemIt).name() + "\", *it, false );";
       marshalCode.unindent();
       marshalCode += "}";
       marshalCode.unindent();
@@ -305,7 +313,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
 
       demarshalFinalCode += "value->" + setter.name() + "( " + listName + " );";
     } else {
-      marshalCode += "Serializer::marshal( doc, parentElement, \"" + (*elemIt).name() + "\", value->" + getter.name() + "(), noNamespace );";
+      marshalCode += "Serializer::marshal( doc, parentElement, \"" + (*elemIt).name() + "\", value->" + getter.name() + "(), false );";
 
       demarshalCode += "if ( element.tagName() == \"" + (*elemIt).name() + "\" ) {";
       demarshalCode.indent();
@@ -346,7 +354,7 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
       marshalCode += "QList<" + typeName + "*>::ConstIterator it;";
       marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
       marshalCode.indent();
-      marshalCode += "Serializer::marshal( doc, element, \"item\", *it, noNamespace );";
+      marshalCode += "Serializer::marshal( doc, element, \"item\", *it, false );";
       marshalCode.unindent();
       marshalCode += "}";
       marshalCode.unindent();

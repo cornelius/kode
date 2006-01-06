@@ -241,6 +241,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   QString operationName = lowerlize( operation.name() );
   KODE::Function respSignal( operationName + "Response", "void", KODE::Function::Signal );
 
+  respSignal.setDocs( "This signal is emitted whenever the call to " + operationName+ "() succeeded." );
 
   // If one output message is used by two input messages, don't define
   // it twice.
@@ -274,6 +275,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   // error signal
   KODE::Function errorSignal( operationName + "Error", "void", KODE::Function::Signal );
   errorSignal.addArgument( "SoapFault *error" );
+  errorSignal.setDocs( "This signal is emitted whenever the call to " + operationName+ "() failed." );
 
   newClass.addFunction( errorSignal );
 
