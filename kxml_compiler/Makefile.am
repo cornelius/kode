@@ -1,4 +1,5 @@
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libkdepim $(all_includes)
+KDE_CXXFLAGS = -UQT3_SUPPORT
 
 bin_PROGRAMS = kxml_compiler
 

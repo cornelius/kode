@@ -138,9 +138,8 @@ void Creator::createClass( Element *element )
 {
   QString className = upperFirst( element->name );
 
-  if ( mProcessedClasses.find( className ) != mProcessedClasses.end() ) {
+  if ( mProcessedClasses.contains( className ) )
     return;
-  }
 
   KODE::Class c( className );
 
