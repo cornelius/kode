@@ -146,7 +146,7 @@ void BinaryWidget::setData( const QByteArray &data )
 
 void BinaryWidget::load()
 {
-  KURL url = KFileDialog::getOpenURL( QString(), QString(), this );
+  KUrl url = KFileDialog::getOpenURL( QString(), QString(), this );
   if ( url.isEmpty() )
     return;
 
@@ -171,7 +171,7 @@ void BinaryWidget::load()
 
 void BinaryWidget::save()
 {
-  KURL url = KFileDialog::getSaveURL( QString(), QString(), this );
+  KUrl url = KFileDialog::getSaveURL( QString(), QString(), this );
   if ( url.isEmpty() )
     return;
 

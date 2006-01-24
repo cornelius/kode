@@ -444,7 +444,7 @@ int create( KCmdLineArgs *args )
     c.addHeaderInclude( "kio/slavebase.h" );
 
     KODE::Function get( "get", "void" );
-    get.addArgument( "const KURL &url" );
+    get.addArgument( "const KUrl &url" );
 
     KODE::Code code;
 
