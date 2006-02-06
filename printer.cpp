@@ -495,7 +495,7 @@ void Printer::printHeader( const File &f )
 
   if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
 
-  KSaveFile::backupFile( filename, QString::null, ".backup" );
+  KSaveFile::simpleBackupFile( filename, QString::null, ".backup" );
 
   QFile header( filename );
   if ( !header.open( QIODevice::WriteOnly ) ) {
@@ -617,7 +617,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
 
   if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
 
-  KSaveFile::backupFile( filename, QString::null, ".backup" );
+  KSaveFile::simpleBackupFile( filename, QString::null, ".backup" );
 
   QFile implementation( filename );
   if ( !implementation.open( QIODevice::WriteOnly ) ) {
@@ -638,7 +638,7 @@ void Printer::printAutoMakefile( const AutoMakefile &am )
 
   if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
 
-  KSaveFile::backupFile( filename, QString::null, ".backup" );
+  KSaveFile::simpleBackupFile( filename, QString::null, ".backup" );
 
   QFile file( filename );
   if ( !file.open( QIODevice::WriteOnly ) ) {

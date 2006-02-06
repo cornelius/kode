@@ -584,7 +584,7 @@ int create( KCmdLineArgs *args )
     QFileInfo fi( protocolFilename );
     protocolFilename = fi.absoluteFilePath();
 
-    KSaveFile::backupFile( protocolFilename, QString::null, ".backup" );
+    KSaveFile::simpleBackupFile( protocolFilename, QString::null, ".backup" );
 
     QFile::remove( protocolFilename );
 
