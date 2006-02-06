@@ -133,7 +133,7 @@ int addProperty( KCmdLineArgs *args )
   QString type = args->arg( 1 );
   QString name = args->arg( 2 );
 
-  kdDebug() << "Add property: class " << className << ": " << type << " " <<
+  kDebug() << "Add property: class " << className << ": " << type << " " <<
     name << endl;
 
   QString headerFileName = className.toLower() + ".h";
@@ -160,19 +160,19 @@ int addProperty( KCmdLineArgs *args )
 
   QString line;
   while ( !( line = in.readLine() ).isNull() ) {
-    kdDebug() << state << " LINE: " << line << endl;
+    kDebug() << state << " LINE: " << line << endl;
     QString readAheadPrevious = readAhead;
     readAhead += line + "\n";
     switch( state ) {
       case FindClass:
         if ( line.indexOf( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
-          kdDebug() << "  FOUND CLASS" << endl;
+          kDebug() << "  FOUND CLASS" << endl;
           state = FindConstructor;
         }
         break;
       case FindConstructor:
         if ( line.indexOf( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
-          kdDebug() << "  FOUND CONSTRUCTOR" << endl;
+          kDebug() << "  FOUND CONSTRUCTOR" << endl;
           out += readAhead;
           readAhead.clear();
           state = FindProperties;
@@ -184,22 +184,22 @@ int addProperty( KCmdLineArgs *args )
           if ( re.indexIn( line ) >= 0 ) {
             QString function = re.cap( 1 ).toLower();
             if ( !function.isEmpty() ) {
-              kdDebug() << "Function: " << function << endl;
+              kDebug() << "Function: " << function << endl;
               if ( function == className || function == "~" + className ) {
                 out += readAhead;
                 readAhead.clear();
               } else {
                 if ( function.startsWith( "set" ) ) {
                   mutator = function.mid( 3 );
-                  kdDebug() << "MUTATOR: " << mutator << endl;
+                  kDebug() << "MUTATOR: " << mutator << endl;
                 } else {
                   if ( function == mutator ) {
                     accessor = function;
-                    kdDebug() << "ACCESSOR: " << accessor << endl;
+                    kDebug() << "ACCESSOR: " << accessor << endl;
                     out += readAhead;
                     readAhead.clear();
                   } else {
-                    kdDebug() << "CREATE PROPERTY" << endl;
+                    kDebug() << "CREATE PROPERTY" << endl;
                     out += readAheadPrevious;
                     addPropertyFunctions( out, type, name );
                     out += "\n";
@@ -270,11 +270,11 @@ int addProperty( KCmdLineArgs *args )
       QFile::encodeName( headerFileNameOut );
 
     if ( !proc.start( KProcess::Block ) ) {
-      kdError() << "Copy failed" << endl;
+      kError() << "Copy failed" << endl;
     } else {
-      kdDebug() << "Write to original file." << endl;
+      kDebug() << "Write to original file." << endl;
       if ( !headerFile.open( QIODevice::WriteOnly ) ) {
-        kdError() << "Unable to open file '" << headerFileName <<
+        kError() << "Unable to open file '" << headerFileName <<
           "' for writing." << endl;
         return 1;
       }
@@ -299,7 +299,7 @@ int codify( KCmdLineArgs *args )
 
   QFile f( filename );
   if ( !f.open( QIODevice::ReadOnly ) ) {
-    kdError() << "Unable to open file '" << filename << "'." << endl;
+    kError() << "Unable to open file '" << filename << "'." << endl;
     return 1;
   } else {
     std::cout << "KODE::Code code;" << std::endl;
@@ -329,7 +329,7 @@ int create( KCmdLineArgs *args )
 
   if ( createMain ) {
     if ( filename.isEmpty() ) {
-      kdError() << "Error: No file name given." << endl;
+      kError() << "Error: No file name given." << endl;
       return 1;
     }
 
@@ -338,7 +338,7 @@ int create( KCmdLineArgs *args )
     }
   } else {
     if ( !args->isSet( "classname" ) ) {
-      kdError() << "Error: No class name given." << endl;
+      kError() << "Error: No class name given." << endl;
       return 1;
     }
   }
@@ -350,7 +350,7 @@ int create( KCmdLineArgs *args )
   if ( createKioslave ) {
     if ( !args->isSet( "protocol" ) ) {
       protocol = className.toLower();
-      kdWarning() << "Warning: No protocol for kioslave given. Assuming '"
+      kWarning() << "Warning: No protocol for kioslave given. Assuming '"
                   << protocol << "'" << endl;
     } else {
       protocol = args->getOption( "protocol" );
@@ -371,7 +371,7 @@ int create( KCmdLineArgs *args )
     KABC::Addressee::List as =
         KABC::StdAddressBook::self()->findByEmail( authorEmail );
     if ( as.isEmpty() ) {
-      kdDebug() << "Unable to find '" << authorEmail << "' in address book."
+      kDebug() << "Unable to find '" << authorEmail << "' in address book."
                 << endl;
     } else {
       a = as.first();
@@ -448,13 +448,13 @@ int create( KCmdLineArgs *args )
 
     KODE::Code code;
 
-    code += "kdDebug(7000) << \"" + className + "::get()\" << endl;";
-    code += "kdDebug(7000) << \" URL: \" << url.url() << endl;";
+    code += "kDebug(7000) << \"" + className + "::get()\" << endl;";
+    code += "kDebug(7000) << \" URL: \" << url.url() << endl;";
     code += "#if 1";
-    code += "kdDebug(7000) << \" Path: \" << url.path() << endl;";
-    code += "kdDebug(7000) << \" Query: \" << url.query() << endl;";
-    code += "kdDebug(7000) << \" Protocol: \" << url.protocol() << endl;";
-    code += "kdDebug(7000) << \" Filename: \" << url.filename() << endl;";
+    code += "kDebug(7000) << \" Path: \" << url.path() << endl;";
+    code += "kDebug(7000) << \" Query: \" << url.query() << endl;";
+    code += "kDebug(7000) << \" Protocol: \" << url.protocol() << endl;";
+    code += "kDebug(7000) << \" Filename: \" << url.filename() << endl;";
     code += "#endif";
     code.newLine();
 
@@ -468,7 +468,7 @@ int create( KCmdLineArgs *args )
     code += "finished();";
     code.newLine();
 
-    code += "kdDebug(7000) << \"" + className + "CgiProtocol::get() done\" << endl;";
+    code += "kDebug(7000) << \"" + className + "CgiProtocol::get() done\" << endl;";
 
     get.setBody( code );
 
@@ -489,7 +489,7 @@ int create( KCmdLineArgs *args )
 
     code += "KInstance instance( \"kio_" + protocol + "\" );";
     code += "";
-    code += "kdDebug(7000) << \"Starting kio_" + protocol + "(pid:  \" << getpid() << \")\" << endl;";
+    code += "kDebug(7000) << \"Starting kio_" + protocol + "(pid:  \" << getpid() << \")\" << endl;";
     code += "";
     code += "if (argc != 4) {";
     code.indent();

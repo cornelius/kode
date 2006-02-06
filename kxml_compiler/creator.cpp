@@ -523,7 +523,7 @@ void Creator::createElementParserDom( KODE::Class &c, Element *e )
 
   code += "if ( element.tagName() != \"" + e->name + "\" ) {";
   code.indent();
-  code += "kdError() << \"Expected '" + e->name + "', got '\" << " +
+  code += "kError() << \"Expected '" + e->name + "', got '\" << " +
           "element.tagName() << \"'.\" << endl;";
   code += "return 0;";
   code.unindent();
@@ -677,7 +677,7 @@ void Creator::createFileWriter( Element *element, const QString &dtd )
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::WriteOnly ) ) {";
-  code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return false;";
   code += "}";
   code += "";
@@ -713,7 +713,7 @@ void Creator::createFileParser( Element *element )
 
 void Creator::createFileParserCustom( Element *element )
 {
-  kdDebug() << "Creator::createFileParserCustom()" << endl;
+  kDebug() << "Creator::createFileParserCustom()" << endl;
 
   QString className = upperFirst( element->name );
 
@@ -734,7 +734,7 @@ void Creator::createFileParserCustom( Element *element )
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return 0;";
   code += "}";
   code += "";
@@ -810,7 +810,7 @@ void Creator::createFoundTextFunction( const QString &text )
 
 void Creator::createFileParserDom( Element *element )
 {
-  kdDebug() << "Creator::createFileParserDom()" << endl;
+  kDebug() << "Creator::createFileParserDom()" << endl;
 
   QString className = upperFirst( element->name );
 
@@ -835,7 +835,7 @@ void Creator::createFileParserDom( Element *element )
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  kdError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return 0;";
   code += "}";
   code += "";
@@ -843,11 +843,11 @@ void Creator::createFileParserDom( Element *element )
   code += "int errorLine, errorCol;";
   code += "QDomDocument doc;";
   code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
-  code += "  kdError() << errorMsg << \" at \" << errorLine << \",\" << errorCol << endl;";
+  code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol << endl;";
   code += "  return 0;";
   code += "}";
   code += "";
-  code += "kdDebug() << \"CONTENT:\" << doc.toString() << endl;";
+  code += "kDebug() << \"CONTENT:\" << doc.toString() << endl;";
 
   code += "";
   
@@ -880,15 +880,15 @@ void Creator::printFiles( KODE::Printer &printer )
     mParserClass.addHeaderInclude( file().filename() + ".h" );
     parserFile.insertClass( mParserClass );
     
-    kdDebug() << "Print external parser." << endl;
+    kDebug() << "Print external parser." << endl;
     printer.printHeader( parserFile );
     printer.printImplementation( parserFile );
   }
 
-  kdDebug() << "Print header" << endl;
+  kDebug() << "Print header" << endl;
   printer.printHeader( file() );
 
-  kdDebug() << "Print implementation" << endl;
+  kDebug() << "Print implementation" << endl;
   printer.printImplementation( file() );
 
 }

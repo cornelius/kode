@@ -499,7 +499,7 @@ void Printer::printHeader( const File &f )
 
   QFile header( filename );
   if ( !header.open( QIODevice::WriteOnly ) ) {
-    kdError() << "Can't open '" << filename << "' for writing." << endl;
+    kError() << "Can't open '" << filename << "' for writing." << endl;
     return;
   }
 
@@ -621,7 +621,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
 
   QFile implementation( filename );
   if ( !implementation.open( QIODevice::WriteOnly ) ) {
-    kdError() << "Can't open '" << filename << "' for writing." << endl;
+    kError() << "Can't open '" << filename << "' for writing." << endl;
     return;
   }
 
@@ -642,7 +642,7 @@ void Printer::printAutoMakefile( const AutoMakefile &am )
 
   QFile file( filename );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-    kdError() << "Can't open '" << filename << "' for writing." << endl;
+    kError() << "Can't open '" << filename << "' for writing." << endl;
     return;
   }
 

@@ -90,7 +90,7 @@ Element *Parser::parse( const QDomElement &docElement )
   QDomNode n1;
   for( n1 = docElement.firstChild(); !n1.isNull(); n1 = n1.nextSibling() ) {
     QDomElement e1 = n1.toElement();
-    kdDebug() << "TOP LEVEL element " << e1.tagName() << endl;
+    kDebug() << "TOP LEVEL element " << e1.tagName() << endl;
     if ( e1.tagName() == "define" ) {
       Element *d = new Element;
       d->name = e1.attribute( "name" );
@@ -105,7 +105,7 @@ Element *Parser::parse( const QDomElement &docElement )
       start = new Element;
       parseElement( e1, start, Pattern() );
     } else {
-      kdDebug() << "parseGrammar: Unrecognized tag: " << e1.tagName() << endl;
+      kDebug() << "parseGrammar: Unrecognized tag: " << e1.tagName() << endl;
     }
   }
 
@@ -130,7 +130,7 @@ bool Parser::parseAttribute( const QDomElement &attributeElement,
 bool Parser::parseElement( const QDomElement &elementElement, Element *e,
                    Pattern pattern )
 {
-  kdDebug() << "parseElement " << e->name << endl;
+  kDebug() << "parseElement " << e->name << endl;
 
   QDomNode n1;
   for( n1 = elementElement.firstChild(); !n1.isNull(); n1 = n1.nextSibling() ) {
@@ -145,7 +145,7 @@ bool Parser::parseElement( const QDomElement &elementElement, Element *e,
       Attribute *a = new Attribute;
       a->name = e1.attribute( "name" );
       a->pattern = pattern;
-      kdDebug() << "ATTRIBUTE: " << a->name << " " << a->pattern.asString()
+      kDebug() << "ATTRIBUTE: " << a->name << " " << a->pattern.asString()
                 << endl;
       parseAttribute( e1, a );
       e->attributes.append( a );
@@ -164,7 +164,7 @@ bool Parser::parseElement( const QDomElement &elementElement, Element *e,
       else if ( e1.tagName() == "oneOrMore" ) p.oneOrMore = true;
       else if ( e1.tagName() == "choice" ) p.choice = true;
       else {
-        kdDebug() << "Unsupported pattern '" << e1.tagName() << "'" << endl;
+        kDebug() << "Unsupported pattern '" << e1.tagName() << "'" << endl;
       }
       parseElement( e1, e, p );
     }
@@ -175,17 +175,17 @@ bool Parser::parseElement( const QDomElement &elementElement, Element *e,
 
 void Parser::substituteReferences( Element *s )
 {
-  kdDebug() << "substituteReferences for '" << s->name << "'" << endl;
+  kDebug() << "substituteReferences for '" << s->name << "'" << endl;
   Reference::List::Iterator it = s->references.begin();
   while( it != s->references.end() ) {
     Reference *r = *it;
-    kdDebug() << "REF " << r->name << endl;
+    kDebug() << "REF " << r->name << endl;
     if ( r->name == s->name ) {
-      kdDebug() << "Don't resolve self reference" << endl;
+      kDebug() << "Don't resolve self reference" << endl;
       return;
     }
     if ( r->substituted ) {
-      kdDebug() << "Already substituted." << endl;
+      kDebug() << "Already substituted." << endl;
       ++it;
       continue;
     } else {
@@ -216,7 +216,7 @@ void Parser::substituteReferences( Element *s )
       }
       it = s->references.erase( it );
     } else {
-      kdDebug() << "Reference not found" << endl;
+      kDebug() << "Reference not found" << endl;
       ++it;
     }
   }

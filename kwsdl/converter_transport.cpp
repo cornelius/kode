@@ -60,7 +60,7 @@ void Converter::createKDETransport()
   queryCode += "KIO::TransferJob* job = KIO::http_post( KURL( " + url.name() + " ), postData, false );";
   queryCode += "if ( !job ) {";
   queryCode.indent();
-  queryCode += "kdWarning() << \"Unable to create KIO job for \" << " + url.name() + " << endl;";
+  queryCode += "kWarning() << \"Unable to create KIO job for \" << " + url.name() + " << endl;";
   queryCode += "return;";
   queryCode.unindent();
   queryCode += "}";

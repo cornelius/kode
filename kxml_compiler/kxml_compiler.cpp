@@ -71,11 +71,11 @@ int main( int argc, char **argv )
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   if ( args->count() < 1 ) {
-    kdError() << "Too few arguments." << endl;
+    kError() << "Too few arguments." << endl;
     return 1;
   }
   if ( args->count() > 1 ) {
-    kdError() << "Too many arguments." << endl;
+    kError() << "Too many arguments." << endl;
     return 1;
   }
 
@@ -91,7 +91,7 @@ int main( int argc, char **argv )
 
   QFile dtdFile( dtdFilename );
   if ( !dtdFile.open( QIODevice::ReadOnly ) ) {
-    kdError() << "Unable to open '" << dtdFilename << "'" << endl;
+    kError() << "Unable to open '" << dtdFilename << "'" << endl;
     return 1;
   }
 
@@ -99,16 +99,16 @@ int main( int argc, char **argv )
   int errorLine, errorCol;
   QDomDocument doc;
   if ( !doc.setContent( &dtdFile, false, &errorMsg, &errorLine, &errorCol ) ) {
-    kdError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
+    kError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
     return 1;
   }
 
-  kdDebug() << "Begin parsing" << endl;
+  kDebug() << "Begin parsing" << endl;
 
   Parser p;
   Element *start = p.parse( doc.documentElement() );
   if ( !start ) {
-    kdError() << "Could not find start element" << endl;
+    kError() << "Could not find start element" << endl;
     return 1;
   }
 
@@ -123,7 +123,7 @@ int main( int argc, char **argv )
   p.dumpTree( start );
 #endif
 
-  kdDebug() << "Begin creating code" << endl;
+  kDebug() << "Begin creating code" << endl;
 
   Creator::XmlParserType pt;
   if ( args->isSet( "custom-parser" ) ) {
@@ -136,12 +136,12 @@ int main( int argc, char **argv )
 
   Creator c( pt );
 
-  kdDebug() << "Create classes" << endl;
+  kDebug() << "Create classes" << endl;
   QList<Element *>::ConstIterator it;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
     c.createClass( *it );
   }
-  kdDebug() << "Create parser" << endl;
+  kDebug() << "Create parser" << endl;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
     c.setExternalClassPrefix( c.upperFirst( (*it)->name ) );
     c.createFileParser( *it );
@@ -161,7 +161,7 @@ int main( int argc, char **argv )
   }
 #endif
 
-  kdDebug() << "Begin printing code" << endl;
+  kDebug() << "Begin printing code" << endl;
 
   KODE::File &f = c.file();
   
@@ -175,5 +175,5 @@ int main( int argc, char **argv )
 
   c.printFiles( printer );
 
-  kdDebug() << "Finished." << endl;
+  kDebug() << "Finished." << endl;
 }

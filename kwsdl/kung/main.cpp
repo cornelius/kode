@@ -49,7 +49,7 @@ int main( int argc, char **argv )
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   if ( args->count() == 0 ) {
-    kdError() << "No WSDL file given." << endl;
+    kError() << "No WSDL file given." << endl;
     return 1;
   }
 
