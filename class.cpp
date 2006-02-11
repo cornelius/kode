@@ -26,6 +26,7 @@
 using namespace KODE;
 
 Class::Class()
+  : mUseDPointer( false )
 {
 }
 
@@ -44,14 +45,9 @@ void Class::setNameSpace( const QString &nameSpace )
   mNameSpace = nameSpace;
 }
 
-void Class::setUseDPointer( bool useDPointer )
+void Class::setUseDPointer( const bool &useDPointer )
 {
   mUseDPointer = useDPointer;
-}
-
-bool Class::useDPointer() const
-{
-  return mUseDPointer;
 }
 
 void Class::addInclude( const QString &include,

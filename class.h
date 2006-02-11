@@ -59,8 +59,8 @@ class KDE_EXPORT Class
     QString name() const { return mName; }
     void setNameSpace( const QString &nameSpace );
     QString nameSpace() const { return mNameSpace; }
-    void setUseDPointer( bool useDPointer );
-    bool useDPointer() const;
+    void setUseDPointer( const bool &useDPointer );
+    bool useDPointer() const { return mUseDPointer; }
     QStringList includes() const { return mIncludes; }
     QStringList headerIncludes() const { return mHeaderIncludes; }
     QStringList forwardDeclarations() const { return mForwardDeclarations; }
@@ -80,6 +80,7 @@ class KDE_EXPORT Class
   private:
     QString mName;
     QString mNameSpace;
+    bool mUseDPointer;
     Function::List mFunctions;
     MemberVariable::List mMemberVariables;
     QStringList mIncludes;
@@ -89,7 +90,6 @@ class KDE_EXPORT Class
     Typedef::List mTypedefs;
     Enum::List mEnums;
     QString mDocs;
-    bool mUseDPointer;
 };
 
 }

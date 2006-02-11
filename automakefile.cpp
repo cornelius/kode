@@ -46,7 +46,7 @@ void AutoMakefile::addEntry( const QString &variable, const QString &value )
     return;
   }
 
-  if ( mEntries.contains( variable ) ) {
+  if ( !mEntries.contains( variable ) ) {
     mEntries.append( variable );
     QMap<QString,QString>::Iterator it = mValues.find( variable );
     if ( it == mValues.end() ) {

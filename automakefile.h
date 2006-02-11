@@ -22,7 +22,6 @@
 #define KODE_AUTOMAKEFILE_H
 
 #include <QList>
-#include <QList>
 #include <QMap>
 #include <QStringList>
 
