@@ -26,6 +26,7 @@
 #include <QString>
 
 #include "attribute.h"
+#include "attributegroup.h"
 #include "element.h"
 #include <common/qname.h>
 #include "xsdtype.h"
@@ -66,6 +67,9 @@ class ComplexType : public XSDType
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;
 
+    void setAttributeGroups( const AttributeGroup::List &attributeGroups );
+    AttributeGroup::List attributeGroups() const;
+
     void setIsArray( bool isArray );
     bool isArray() const;
 
@@ -77,6 +81,7 @@ class ComplexType : public XSDType
 
     Element::List mElements;
     Attribute::List mAttributes;
+    AttributeGroup::List mAttributeGroups;
 
     bool mAnonymous;
     bool mIsArray;

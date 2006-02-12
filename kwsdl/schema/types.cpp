@@ -63,6 +63,16 @@ Attribute::List Types::attributes() const
   return mAttributes;
 }
 
+void Types::setAttributeGroups( const AttributeGroup::List &attributeGroups )
+{
+  mAttributeGroups = attributeGroups;
+}
+
+AttributeGroup::List Types::attributeGroups() const
+{
+  return mAttributeGroups;
+}
+
 void Types::setNamespaces( const QStringList &namespaces )
 {
   mNamespaces = namespaces;

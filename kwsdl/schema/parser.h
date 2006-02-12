@@ -55,7 +55,8 @@ class Parser
   private:
     void parseImport( ParserContext *context, const QDomElement& );
     void parseElement( ParserContext *context, const QDomElement& );
-    void parseAttribute( ParserContext *context, const QDomElement& );
+    Attribute parseAttribute( ParserContext *context, const QDomElement& );
+    AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
 
     void parseAnnotation( ParserContext *context, const QDomElement& );
     void parseAnnotation( ParserContext *context, const QDomElement&, QString& );
@@ -83,6 +84,7 @@ class Parser
 
     Element findElement( const QName &name );
     Attribute findAttribute( const QName &name );
+    AttributeGroup findAttributeGroup( const QName &name );
     void resolveForwardDeclarations();
 
     QString mNameSpace;
@@ -91,6 +93,7 @@ class Parser
     ComplexType::List mComplexTypes;
     Element::List mElements;
     Attribute::List mAttributes;
+    AttributeGroup::List mAttributeGroups;
 
     QStringList mImportedSchemas;
     QStringList mNamespaces;

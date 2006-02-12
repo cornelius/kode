@@ -43,6 +43,9 @@ class Types
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;
 
+    void setAttributeGroups( const AttributeGroup::List &attributeGroups );
+    AttributeGroup::List attributeGroups() const;
+
     void setNamespaces( const QStringList &namespaces );
     QStringList namespaces() const;
 
@@ -51,6 +54,7 @@ class Types
     ComplexType::List mComplexTypes;
     Element::List mElements;
     Attribute::List mAttributes;
+    AttributeGroup::List mAttributeGroups;
     QStringList mNamespaces;
 };
 

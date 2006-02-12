@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QUrl>
 #include <QXmlSimpleReader>
+#include <QDebug>
 
 #include <common/fileprovider.h>
 #include <common/messagehandler.h>
@@ -56,6 +57,7 @@ void Parser::clear()
   mSimpleTypes.clear();
   mElements.clear();
   mAttributes.clear();
+  mAttributeGroups.clear();
 }
 
 bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
@@ -102,6 +104,8 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
       mSimpleTypes.append( st );
     } else if ( name.localName() == "attribute" ) {
       parseAttribute( context, element );
+    } else if ( name.localName() == "attributeGroup" ) {
+      mAttributeGroups.append( parseAttributeGroup( context, element ) );
     } else if ( name.localName() == "annotation" ) {
       parseAnnotation( context, element );
     } else if ( name.localName() == "import" ) {
@@ -194,6 +198,8 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
 
   QDomElement childElement = element.firstChildElement();
 
+  AttributeGroup::List attributeGroups;
+
   while ( !childElement.isNull() ) {
     QName name = childElement.tagName();
     if ( name.localName() == "all" ) {
@@ -204,6 +210,9 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
       cs( context, childElement, newType );
     } else if ( name.localName() == "attribute" ) {
       addAttribute( context, childElement, newType );
+    } else if ( name.localName() == "attributeGroup" ) {
+      AttributeGroup g = parseAttributeGroup( context, childElement );
+      attributeGroups.append( g );
     } else if ( name.localName() == "anyAttribute" ) {
       addAnyAttribute( context, childElement, newType );
     } else if ( name.localName() == "complexContent" ) {
@@ -216,6 +225,8 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
 
     childElement = childElement.nextSiblingElement();
   }
+
+  newType.setAttributeGroups( attributeGroups );
 
   return newType;
 }
@@ -618,7 +629,8 @@ void Parser::parseElement( ParserContext *context, const QDomElement &element )
     mElements.append( newElement );
 }
 
-void Parser::parseAttribute( ParserContext *context, const QDomElement &element )
+Attribute Parser::parseAttribute( ParserContext *context,
+  const QDomElement &element )
 {
   ComplexType complexType( mNameSpace );
   addAttribute( context, element, complexType );
@@ -633,8 +645,43 @@ void Parser::parseAttribute( ParserContext *context, const QDomElement &element 
     }
   }
 
-  if ( !found )
+  if ( !found ) {
     mAttributes.append( newAttribute );
+  }
+
+  return newAttribute;
+}
+
+AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
+  const QDomElement &element )
+{
+  Attribute::List attributes;
+
+  AttributeGroup group;
+
+  if ( element.hasAttribute( "ref" ) ) {
+    QName reference;
+    reference = element.attribute( "ref" );
+    reference.setNameSpace(
+      context->namespaceManager()->uri( reference.prefix() ) );
+    group.setReference( reference );
+
+    return group;
+  }
+
+  QDomNode n;
+  for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    QDomElement e = n.toElement();
+    QName childName = QName( e.tagName() );
+    if ( childName.localName() == "attribute" ) {
+      attributes.append( parseAttribute( context, e ) );
+    }
+  }
+
+  group.setName( element.attribute( "name" ) );
+  group.setAttributes( attributes );
+  
+  return group;
 }
 
 QString Parser::targetNamespace() const
@@ -734,9 +781,21 @@ Attribute Parser::findAttribute( const QName &name )
   return Attribute();
 }
 
+AttributeGroup Parser::findAttributeGroup( const QName &name )
+{
+  foreach ( AttributeGroup g, mAttributeGroups ) {
+    if ( g.nameSpace() == name.nameSpace() && g.name() == name.localName() ) {
+      return g;
+    }
+  }
+
+  return AttributeGroup();
+}
+
 void Parser::resolveForwardDeclarations()
 {
   for ( int i = 0; i < mComplexTypes.count(); ++i ) {
+
     Element::List elements = mComplexTypes[ i ].elements();
     for ( int j = 0; j < elements.count(); ++j ) {
       if ( !elements[ j ].isResolved() ) {
@@ -753,6 +812,20 @@ void Parser::resolveForwardDeclarations()
         attributes[ j ] = refAttribute;
       }
     }
+    
+    AttributeGroup::List attributeGroups =
+      mComplexTypes[ i ].attributeGroups();
+    foreach( AttributeGroup group, attributeGroups ) {
+      if ( !group.isResolved() ) {
+        AttributeGroup refAttributeGroup =
+          findAttributeGroup( group.reference() );
+        Attribute::List groupAttributes = refAttributeGroup.attributes();
+        foreach ( Attribute ga, groupAttributes ) {
+          attributes.append( ga );
+        }
+      }
+    }
+
     mComplexTypes[ i ].setAttributes( attributes );
   }
 }
@@ -765,6 +838,7 @@ Types Parser::types() const
   types.setComplexTypes( mComplexTypes );
   types.setElements( mElements );
   types.setAttributes( mAttributes );
+  types.setAttributeGroups( mAttributeGroups );
   types.setNamespaces( mNamespaces );
 
   return types;

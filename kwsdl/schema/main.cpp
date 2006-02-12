@@ -81,6 +81,11 @@ int main( int argc, char **argv )
   for ( int i = 0; i < attributes.count(); ++i ) {
     qDebug( "Attribute: %s %s", qPrintable( attributes[ i ].name() ), qPrintable( attributes[ i ].type().qname() ) );
   }
+  
+  const Schema::AttributeGroup::List attributeGroups = types.attributeGroups();
+  for ( int i = 0; i < attributeGroups.count(); ++i ) {
+    qDebug( "AttributeGroup: %s", qPrintable( attributeGroups[ i ].name() ) );
+  }
 
   return 0;
 }
