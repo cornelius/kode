@@ -128,7 +128,7 @@ void BinaryWidget::setData( const QByteArray &data )
       KTempFile file;
       file.file()->write( data );
       file.close();
-      part->openURL( KURL( file.name() ) );
+      part->openURL( KUrl( file.name() ) );
       mMainWidget = part->widget();
     } else {
       mMainWidget = new QLabel( i18n( "No part found for visualization of mimetype %1" ).arg( mimetype ), this );

@@ -57,7 +57,7 @@ void Converter::createKDETransport()
   queryCode += "QDataStream stream( &postData, QIODevice::WriteOnly );";
   queryCode += "stream.writeRawData( xml.toUtf8(), xml.toUtf8().length() );";
   queryCode.newLine();
-  queryCode += "KIO::TransferJob* job = KIO::http_post( KURL( " + url.name() + " ), postData, false );";
+  queryCode += "KIO::TransferJob* job = KIO::http_post( KUrl( " + url.name() + " ), postData, false );";
   queryCode += "if ( !job ) {";
   queryCode.indent();
   queryCode += "kWarning() << \"Unable to create KIO job for \" << " + url.name() + " << endl;";
