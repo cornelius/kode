@@ -50,7 +50,7 @@ static const KCmdLineOptions options[] =
 {
   { "d", 0, 0 },
   { "directory <dir>", I18N_NOOP("Directory to generate files in"), "." },
-  { "+dtd", I18N_NOOP("DTD of XML file"), 0 },
+  { "+relaxng", I18N_NOOP("RelaxNG schema of XML file"), 0 },
   { "external-parser", I18N_NOOP("Generate parser in separate source file"),
     0 },
   { "custom-parser", I18N_NOOP("Generate parser customized for schema"), 0 },
