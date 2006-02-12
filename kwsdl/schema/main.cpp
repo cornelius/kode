@@ -7,9 +7,16 @@
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
 
-int main()
+int main( int argc, char **argv )
 {
-  QFile file( "test.wsdl" );
+  if ( argc != 2 ) {
+    qDebug( "Missing argument: filename of schema" );
+    return 1;
+  }
+
+  QString filename = argv[ 1 ];
+
+  QFile file( filename );
 
   if ( !file.open( QIODevice::ReadOnly ) ) {
     qDebug( "Can't open file %s", qPrintable( file.fileName() ) );
