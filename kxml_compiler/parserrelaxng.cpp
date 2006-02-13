@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "parser.h"
+#include "parserrelaxng.h"
 
 #include <kode/code.h>
 #include <kode/printer.h>
@@ -79,11 +79,11 @@ Element::Element()
 {
 }
 
-Parser::Parser()
+ParserRelaxng::ParserRelaxng()
 {
 }
 
-Element *Parser::parse( const QDomElement &docElement )
+Element *ParserRelaxng::parse( const QDomElement &docElement )
 {
   Element *start = 0;
 
@@ -112,14 +112,14 @@ Element *Parser::parse( const QDomElement &docElement )
   return start;
 }
 
-Reference *Parser::parseReference( const QDomElement &referenceElement )
+Reference *ParserRelaxng::parseReference( const QDomElement &referenceElement )
 {
   Reference *r = new Reference;
   r->name = referenceElement.attribute( "name" );
   return r;
 }
 
-bool Parser::parseAttribute( const QDomElement &attributeElement,
+bool ParserRelaxng::parseAttribute( const QDomElement &attributeElement,
                            Attribute *a )
 {
   a->name = attributeElement.attribute( "name" );
@@ -127,7 +127,7 @@ bool Parser::parseAttribute( const QDomElement &attributeElement,
   return true;
 }
 
-bool Parser::parseElement( const QDomElement &elementElement, Element *e,
+bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
                    Pattern pattern )
 {
   kDebug() << "parseElement " << e->name << endl;
@@ -173,7 +173,7 @@ bool Parser::parseElement( const QDomElement &elementElement, Element *e,
   return true;
 }
 
-void Parser::substituteReferences( Element *s )
+void ParserRelaxng::substituteReferences( Element *s )
 {
   kDebug() << "substituteReferences for '" << s->name << "'" << endl;
   Reference::List::Iterator it = s->references.begin();
@@ -222,17 +222,17 @@ void Parser::substituteReferences( Element *s )
   }
 }
 
-void Parser::doIndent( int cols )
+void ParserRelaxng::doIndent( int cols )
 {
   for( int i = 0; i < cols; ++i ) std::cout << " ";
 }
 
-void Parser::dumpPattern( Pattern pattern )
+void ParserRelaxng::dumpPattern( Pattern pattern )
 {
   std::cout << pattern.asString().data();
 }
 
-void Parser::dumpReferences( const Reference::List &references, int indent )
+void ParserRelaxng::dumpReferences( const Reference::List &references, int indent )
 {
   Reference::List::ConstIterator it;
   for( it = references.begin(); it != references.end(); ++it ) {
@@ -244,7 +244,7 @@ void Parser::dumpReferences( const Reference::List &references, int indent )
   }
 }
 
-void Parser::dumpAttributes( const Attribute::List &attributes, int indent )
+void ParserRelaxng::dumpAttributes( const Attribute::List &attributes, int indent )
 {
   Attribute::List::ConstIterator it;
   for( it = attributes.begin(); it != attributes.end(); ++it ) {
@@ -256,7 +256,7 @@ void Parser::dumpAttributes( const Attribute::List &attributes, int indent )
   }
 }
 
-void Parser::dumpElements( const Element::List &elements, int indent )
+void ParserRelaxng::dumpElements( const Element::List &elements, int indent )
 {
   Element::List::ConstIterator it;
   for( it = elements.begin(); it != elements.end(); ++it ) {
@@ -265,7 +265,7 @@ void Parser::dumpElements( const Element::List &elements, int indent )
   }
 }
 
-void Parser::dumpElement( Element *e, int indent )
+void ParserRelaxng::dumpElement( Element *e, int indent )
 {
   doIndent( indent );
   std::cout << "ELEMENT " << e->name.data();
@@ -282,14 +282,14 @@ void Parser::dumpElement( Element *e, int indent )
   dumpReferences( e->references, indent + 2 );
 }
 
-void Parser::dumpTree( Element *s )
+void ParserRelaxng::dumpTree( Element *s )
 {
   std::cout << "START " << s->name.data() << std::endl;
   dumpElements( s->elements, 2 );
   dumpReferences( s->references, 2 );
 }
 
-void Parser::dumpDefinitionMap()
+void ParserRelaxng::dumpDefinitionMap()
 {
   std::cout << "DEFINITION MAP" << std::endl;
   QMap<QString,Element::List >::ConstIterator it;

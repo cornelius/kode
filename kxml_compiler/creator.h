@@ -21,7 +21,7 @@
 #ifndef CREATOR_H
 #define CREATOR_H
 
-#include "parser.h"
+#include "parserrelaxng.h"
 
 #include <kode/code.h>
 #include <kode/printer.h>

@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "parser.h"
+#include "parserrelaxng.h"
 #include "creator.h"
 
 #include <kode/code.h>
@@ -105,7 +105,7 @@ int main( int argc, char **argv )
 
   kDebug() << "Begin parsing" << endl;
 
-  Parser p;
+  ParserRelaxng p;
   Element *start = p.parse( doc.documentElement() );
   if ( !start ) {
     kError() << "Could not find start element" << endl;

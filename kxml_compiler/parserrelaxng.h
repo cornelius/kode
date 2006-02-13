@@ -18,8 +18,8 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef PARSERRELAXNG_H
+#define PARSERRELAXNG_H
 
 #include <kode/code.h>
 #include <kode/printer.h>
@@ -103,10 +103,10 @@ class Element
     bool isEmpty;
 };
 
-class Parser
+class ParserRelaxng
 {
   public:
-    Parser();
+    ParserRelaxng();
 
     Element *parse( const QDomElement &docElement );
 
