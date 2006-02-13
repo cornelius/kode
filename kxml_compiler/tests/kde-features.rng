@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
+  <define name="features">
+    <element name="features">
+      <ref name="attlist.features"/>
+      <oneOrMore>
+        <ref name="category"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="attlist.features" combine="interleave">
+    <empty/>
+  </define>
+  <define name="category">
+    <element name="category">
+      <ref name="attlist.category"/>
+      <zeroOrMore>
+        <choice>
+          <ref name="feature"/>
+          <ref name="category"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.category" combine="interleave">
+    <attribute name="name"/>
+  </define>
+  <define name="feature">
+    <element name="feature">
+      <ref name="attlist.feature"/>
+      <optional>
+        <ref name="summary"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="responsible"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.feature" combine="interleave">
+    <optional>
+      <attribute name="status" a:defaultValue="todo">
+        <choice>
+          <value>inprogress</value>
+          <value>todo</value>
+          <value>done</value>
+        </choice>
+      </attribute>
+    </optional>
+    <attribute name="target"/>
+  </define>
+  <define name="responsible">
+    <element name="responsible">
+      <ref name="attlist.responsible"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.responsible" combine="interleave">
+    <optional>
+      <attribute name="name"/>
+    </optional>
+    <optional>
+      <attribute name="email"/>
+    </optional>
+  </define>
+  <define name="summary">
+    <element name="summary">
+      <ref name="attlist.summary"/>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="i"/>
+          <ref name="a"/>
+          <ref name="b"/>
+          <ref name="em"/>
+          <ref name="strong"/>
+          <ref name="br"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.summary" combine="interleave">
+    <empty/>
+  </define>
+  <define name="i">
+    <element name="i">
+      <ref name="attlist.i"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.i" combine="interleave">
+    <empty/>
+  </define>
+  <define name="b">
+    <element name="b">
+      <ref name="attlist.b"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.b" combine="interleave">
+    <empty/>
+  </define>
+  <define name="em">
+    <element name="em">
+      <ref name="attlist.em"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.em" combine="interleave">
+    <empty/>
+  </define>
+  <define name="strong">
+    <element name="strong">
+      <ref name="attlist.strong"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.strong" combine="interleave">
+    <empty/>
+  </define>
+  <define name="br">
+    <element name="br">
+      <ref name="attlist.br"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.br" combine="interleave">
+    <empty/>
+  </define>
+  <define name="a">
+    <element name="a">
+      <ref name="attlist.a"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.a" combine="interleave">
+    <optional>
+      <attribute name="href"/>
+    </optional>
+  </define>
+  <define name="attlist.a" combine="interleave">
+    <optional>
+      <attribute name="title"/>
+    </optional>
+  </define>
+  <start>
+    <choice>
+      <ref name="features"/>
+    </choice>
+  </start>
+</grammar>
