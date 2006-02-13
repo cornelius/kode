@@ -614,6 +614,7 @@ void Creator::createElementParserDom( KODE::Class &c, Element *e )
 
   if ( externalParser() ) {
     mParserClass.addFunction( parser );
+    mParserClass.addHeaderInclude( "qdom.h" );
   } else {
     c.addFunction( parser );
   }
