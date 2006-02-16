@@ -25,11 +25,12 @@
 
 #include <QString>
 
-#include "attribute.h"
-#include "attributegroup.h"
-#include "element.h"
+#include <schema/attribute.h>
+#include <schema/attributegroup.h>
+#include <schema/element.h>
+#include <schema/xsdtype.h>
+
 #include <common/qname.h>
-#include "xsdtype.h"
 
 namespace Schema {
 
