@@ -21,9 +21,9 @@
 #ifndef PARSERRELAXNG_H
 #define PARSERRELAXNG_H
 
-#include <lib/code.h>
-#include <lib/printer.h>
-#include <lib/typedef.h>
+#include <libkode/code.h>
+#include <libkode/printer.h>
+#include <libkode/typedef.h>
 
 #include <kaboutdata.h>
 #include <kapplication.h>

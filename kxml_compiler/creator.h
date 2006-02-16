@@ -23,10 +23,10 @@
 
 #include "parserrelaxng.h"
 
-#include <lib/code.h>
-#include <lib/printer.h>
-#include <lib/typedef.h>
-#include <lib/file.h>
+#include <libkode/code.h>
+#include <libkode/printer.h>
+#include <libkode/typedef.h>
+#include <libkode/file.h>
 
 #include <kaboutdata.h>
 #include <kapplication.h>

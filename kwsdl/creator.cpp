@@ -19,8 +19,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <lib/file.h>
-#include <lib/printer.h>
+#include <libkode/file.h>
+#include <libkode/printer.h>
 
 #include "settings.h"
 

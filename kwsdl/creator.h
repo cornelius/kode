@@ -22,7 +22,7 @@
 #ifndef KWSDL_CREATOR_H
 #define KWSDL_CREATOR_H
 
-#include <lib/class.h>
+#include <libkode/class.h>
 
 namespace KWSDL {
 
