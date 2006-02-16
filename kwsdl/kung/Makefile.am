@@ -7,6 +7,6 @@ kung_SOURCES = binaryinputfield.cpp boolinputfield.cpp complexbaseinputfield.cpp
                inputdialog.cpp inputfield.cpp inputfieldfactory.cpp \
                integerinputfield.cpp listinputfield.cpp loader.cpp main.cpp outputdialog.cpp pageinputfield.cpp simplebaseinputfield.cpp \
                stringinputfield.cpp timeinputfield.cpp transport.cpp wsclconversationmanager.cpp
-kung_LDADD = ../schema/libschema.la ../wscl/libwscl.la ../libwsdl.la -lkparts
+kung_LDADD = ../schema/libschema.la ../wscl/libwscl.la ../wsdl/libwsdl.la -lkparts
 
 METASOURCES = AUTO
