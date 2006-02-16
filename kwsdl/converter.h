@@ -23,7 +23,7 @@
 #define KWSDL_CONVERTER_H
 
 #include <common/nsmanager.h>
-#include <kode/class.h>
+#include <lib/class.h>
 #include <schema/parser.h>
 #include <wsdl/wsdl.h>
 
