@@ -1,6 +1,6 @@
-SUBDIRS = lib . kxml_compiler
+SUBDIRS = lib common schema kxml_compiler .
 
-INCLUDES = -I$(top_srcdir) $(all_includes)
+INCLUDES = -I$(top_srcdir) -I$(srcdir)/lib $(all_includes)
 KDE_CXXFLAGS = -UQT3_SUPPORT
 
 bin_PROGRAMS = kode

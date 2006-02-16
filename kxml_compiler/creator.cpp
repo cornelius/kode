@@ -21,10 +21,10 @@
 
 #include "creator.h"
 
-#include <kode/code.h>
-#include <kode/printer.h>
-#include <kode/typedef.h>
-#include <kode/statemachine.h>
+#include <lib/code.h>
+#include <lib/printer.h>
+#include <lib/typedef.h>
+#include <lib/statemachine.h>
 
 #include <kaboutdata.h>
 #include <kapplication.h>

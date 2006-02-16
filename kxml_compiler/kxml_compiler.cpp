@@ -22,9 +22,9 @@
 #include "parserrelaxng.h"
 #include "creator.h"
 
-#include <kode/code.h>
-#include <kode/printer.h>
-#include <kode/typedef.h>
+#include <lib/code.h>
+#include <lib/printer.h>
+#include <lib/typedef.h>
 
 #include <kaboutdata.h>
 #include <kapplication.h>

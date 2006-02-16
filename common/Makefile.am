@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/kode/kwsdl -I.. -I$(top_srcdir)/libkdepim $(all_includes)
+INCLUDES = -I$(top_srcdir)/kode $(all_includes)
 
 lib_LTLIBRARIES = libkxmlcommon.la
 KDE_CXXFLAGS = -UQT3_SUPPORT
