@@ -229,7 +229,7 @@ void ParserRelaxng::doIndent( int cols )
 
 void ParserRelaxng::dumpPattern( Pattern pattern )
 {
-  std::cout << pattern.asString().data();
+  std::cout << pattern.asString().toLocal8Bit().data();
 }
 
 void ParserRelaxng::dumpReferences( const Reference::List &references, int indent )
@@ -238,7 +238,7 @@ void ParserRelaxng::dumpReferences( const Reference::List &references, int inden
   for( it = references.begin(); it != references.end(); ++it ) {
     Reference *r = *it;
     doIndent( indent );
-    std::cout << "REFERENCE " << r->name.data();
+    std::cout << "REFERENCE " << r->name.toLocal8Bit().data();
     dumpPattern( r->pattern );
     std::cout << std::endl;
   }
@@ -250,7 +250,7 @@ void ParserRelaxng::dumpAttributes( const Attribute::List &attributes, int inden
   for( it = attributes.begin(); it != attributes.end(); ++it ) {
     Attribute *a = *it;
     doIndent( indent );
-    std::cout << "ATTRIBUTE " << a->name.data();
+    std::cout << "ATTRIBUTE " << a->name.toLocal8Bit().data();
     dumpPattern( a->pattern );
     std::cout << std::endl;
   }
@@ -268,7 +268,7 @@ void ParserRelaxng::dumpElements( const Element::List &elements, int indent )
 void ParserRelaxng::dumpElement( Element *e, int indent )
 {
   doIndent( indent );
-  std::cout << "ELEMENT " << e->name.data();
+  std::cout << "ELEMENT " << e->name.toLocal8Bit().data();
   dumpPattern( e->pattern );
   std::cout << std::endl;
 
@@ -284,7 +284,7 @@ void ParserRelaxng::dumpElement( Element *e, int indent )
 
 void ParserRelaxng::dumpTree( Element *s )
 {
-  std::cout << "START " << s->name.data() << std::endl;
+  std::cout << "START " << s->name.toLocal8Bit().data() << std::endl;
   dumpElements( s->elements, 2 );
   dumpReferences( s->references, 2 );
 }

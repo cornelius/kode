@@ -1,3 +1,5 @@
+SUBDIRS = tests
+
 INCLUDES = -I$(top_srcdir)/kode $(all_includes)
 KDE_CXXFLAGS = -UQT3_SUPPORT
 
