@@ -24,7 +24,7 @@
 #include <schema/attribute.h>
 #include <common/qname.h>
 
-namespace Schema {
+namespace XSD {
 
 class AttributeGroup : public XmlElement
 {

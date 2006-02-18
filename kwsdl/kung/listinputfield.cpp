@@ -34,7 +34,7 @@
 
 #include "listinputfield.h"
 
-ListInputField::ListInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+ListInputField::ListInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
   : SimpleInputField( name, type ), mTypeName( typeName )
 {
 }

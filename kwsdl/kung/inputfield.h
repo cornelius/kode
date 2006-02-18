@@ -30,7 +30,7 @@ class QWidget;
 class QDomDocument;
 class QDomElement;
 
-namespace Schema {
+namespace XSD {
 class SimpleType;
 class ComplexType;
 }
@@ -124,11 +124,11 @@ class InputField : public QObject
 class SimpleInputField : public InputField
 {
   public:
-    SimpleInputField( const QString &name, const Schema::SimpleType *type );
+    SimpleInputField( const QString &name, const XSD::SimpleType *type );
     ~SimpleInputField();
 
   protected:
-    Schema::SimpleType *mType;
+    XSD::SimpleType *mType;
 };
 
 /**
@@ -137,11 +137,11 @@ class SimpleInputField : public InputField
 class ComplexInputField : public InputField
 {
   public:
-    ComplexInputField( const QString &name, const Schema::ComplexType *type );
+    ComplexInputField( const QString &name, const XSD::ComplexType *type );
     ~ComplexInputField();
 
   protected:
-    Schema::ComplexType *mType;
+    XSD::ComplexType *mType;
 };
 
 #endif

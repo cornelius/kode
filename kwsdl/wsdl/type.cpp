@@ -42,12 +42,12 @@ Type::~Type()
 {
 }
 
-void Type::setType( const Schema::Types &types )
+void Type::setType( const XSD::Types &types )
 {
   mTypes = types;
 }
 
-Schema::Types Type::types() const
+XSD::Types Type::types() const
 {
   return mTypes;
 }
@@ -56,9 +56,9 @@ void Type::loadXML( ParserContext *context, const QDomElement &element )
 {
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
-    QString tagName = context->namespaceManager()->fullName( Schema::Parser::schemaUri(), "schema" );
+    QString tagName = context->namespaceManager()->fullName( XSD::Parser::schemaUri(), "schema" );
     if ( child.tagName() == tagName ) {
-      Schema::Parser parser( nameSpace() );
+      XSD::Parser parser( nameSpace() );
       parser.parseSchemaTag( context, child );
 
       mTypes = parser.types();

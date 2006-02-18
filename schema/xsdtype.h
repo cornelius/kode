@@ -31,7 +31,7 @@
 
 #include "xmlelement.h"
 
-namespace Schema {
+namespace XSD {
 
 class XSDType : public XmlElement
 {

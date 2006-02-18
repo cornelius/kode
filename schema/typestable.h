@@ -29,7 +29,7 @@
 #include "complextype.h"
 #include "simpletype.h"
 
-namespace Schema {
+namespace XSD {
 
 class TypesTable
 {

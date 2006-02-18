@@ -46,17 +46,17 @@ class Converter
   private:
     void convertTypes();
 
-    void convertComplexType( const Schema::ComplexType* );
-    void createComplexTypeSerializer( const Schema::ComplexType* );
+    void convertComplexType( const XSD::ComplexType* );
+    void createComplexTypeSerializer( const XSD::ComplexType* );
 
-    void convertSimpleType( const Schema::SimpleType* );
-    void createSimpleTypeSerializer( const Schema::SimpleType* );
+    void convertSimpleType( const XSD::SimpleType* );
+    void createSimpleTypeSerializer( const XSD::SimpleType* );
 
-    void convertAttribute( const Schema::Attribute* );
-    void createAttributeSerializer( const Schema::Attribute* );
+    void convertAttribute( const XSD::Attribute* );
+    void createAttributeSerializer( const XSD::Attribute* );
 
-    void convertElement( const Schema::Element* );
-    void createElementSerializer( const Schema::Element* );
+    void convertElement( const XSD::Element* );
+    void createElementSerializer( const XSD::Element* );
 
     // Client Stub
     void convertClientService();

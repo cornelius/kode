@@ -27,7 +27,7 @@
 
 #include "stringinputfield.h"
 
-StringInputField::StringInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+StringInputField::StringInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
   : SimpleInputField( name, type ),
     mTypeName( typeName )
 {
@@ -68,18 +68,18 @@ QWidget *StringInputField::createWidget( QWidget *parent )
   mInputWidget = new QLineEdit( parent );
 
   if ( mType ) {
-    if ( mType->facetType() & Schema::SimpleType::LENGTH ) // TODO: using QValidator here?
+    if ( mType->facetType() & XSD::SimpleType::LENGTH ) // TODO: using QValidator here?
       mInputWidget->setMaxLength( mType->facetLength() );
 
-    if ( mType->facetType() & Schema::SimpleType::MINLEN ) {
+    if ( mType->facetType() & XSD::SimpleType::MINLEN ) {
       // TODO: using QValidator here?
       // mInputWidget->setMaxLength( type->facetMinimumLength() );
     }
 
-    if ( mType->facetType() & Schema::SimpleType::MAXLEN )
+    if ( mType->facetType() & XSD::SimpleType::MAXLEN )
       mInputWidget->setMaxLength( mType->facetMaximumLength() );
 
-    if ( mType->facetType() & Schema::SimpleType::PATTERN )
+    if ( mType->facetType() & XSD::SimpleType::PATTERN )
       mInputWidget->setValidator( new QRegExpValidator( QRegExp( mType->facetPattern() ), mInputWidget ) );
   }
 

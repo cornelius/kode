@@ -23,7 +23,7 @@
 
 using namespace KWSDL;
 
-void Converter::convertElement( const Schema::Element *element )
+void Converter::convertElement( const XSD::Element *element )
 {
   const QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
   KODE::Class newClass( className );
@@ -103,7 +103,7 @@ void Converter::convertElement( const Schema::Element *element )
   createElementSerializer( element );
 }
 
-void Converter::createElementSerializer( const Schema::Element *element )
+void Converter::createElementSerializer( const XSD::Element *element )
 {
   QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
 

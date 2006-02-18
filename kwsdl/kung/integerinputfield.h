@@ -33,7 +33,7 @@ class IntegerInputField : public SimpleInputField
   Q_OBJECT
 
   public:
-    IntegerInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type );
+    IntegerInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );

@@ -69,11 +69,11 @@ InputField::List InputField::childFields() const
   return mFields;
 }
 
-SimpleInputField::SimpleInputField( const QString &name, const Schema::SimpleType *type )
+SimpleInputField::SimpleInputField( const QString &name, const XSD::SimpleType *type )
   : InputField( name ), mType( 0 )
 {
   if ( type ) {
-    mType = new Schema::SimpleType();
+    mType = new XSD::SimpleType();
     *mType = *type;
   }
 }
@@ -84,11 +84,11 @@ SimpleInputField::~SimpleInputField()
   mType = 0;
 }
 
-ComplexInputField::ComplexInputField( const QString &name, const Schema::ComplexType *type )
+ComplexInputField::ComplexInputField( const QString &name, const XSD::ComplexType *type )
   : InputField( name ), mType( 0 )
 {
   if ( type ) {
-    mType = new Schema::ComplexType();
+    mType = new XSD::ComplexType();
     *mType = *type;
   }
 }

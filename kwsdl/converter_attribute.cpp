@@ -23,10 +23,10 @@
 
 using namespace KWSDL;
 
-void Converter::convertAttribute( const Schema::Attribute *attribute )
+void Converter::convertAttribute( const XSD::Attribute *attribute )
 {
 }
 
-void Converter::createAttributeSerializer( const Schema::Attribute *attribute )
+void Converter::createAttributeSerializer( const XSD::Attribute *attribute )
 {
 }

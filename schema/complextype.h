@@ -32,7 +32,7 @@
 
 #include <common/qname.h>
 
-namespace Schema {
+namespace XSD {
 
 class ComplexType : public XSDType
 {

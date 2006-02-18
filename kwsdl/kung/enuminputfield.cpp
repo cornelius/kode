@@ -26,7 +26,7 @@
 
 #include "enuminputfield.h"
 
-EnumInputField::EnumInputField( const QString &name, const Schema::SimpleType *type )
+EnumInputField::EnumInputField( const QString &name, const XSD::SimpleType *type )
   : SimpleInputField( name, type )
 {
   mEnums = type->facetEnums();

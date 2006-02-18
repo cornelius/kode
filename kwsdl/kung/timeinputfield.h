@@ -34,7 +34,7 @@ class TimeInputField : public SimpleInputField
   Q_OBJECT
 
   public:
-    TimeInputField( const QString &name, const Schema::SimpleType *type );
+    TimeInputField( const QString &name, const XSD::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );

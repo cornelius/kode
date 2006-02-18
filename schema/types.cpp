@@ -21,7 +21,7 @@
 
 #include "types.h"
 
-using namespace Schema;
+using namespace XSD;
 
 void Types::setSimpleTypes( const SimpleType::List &simpleTypes )
 {

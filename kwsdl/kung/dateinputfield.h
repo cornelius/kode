@@ -34,7 +34,7 @@ class DateInputField : public SimpleInputField
   Q_OBJECT
 
   public:
-    DateInputField( const QString &name, const Schema::SimpleType *type );
+    DateInputField( const QString &name, const XSD::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );

@@ -26,7 +26,7 @@
 
 const QString SchemaUri = "http://www.w3.org/2001/XMLSchema";
 
-using namespace Schema;
+using namespace XSD;
 
 TypesTable::TypesTable()
 {

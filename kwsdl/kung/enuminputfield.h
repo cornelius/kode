@@ -33,7 +33,7 @@ class EnumInputField : public SimpleInputField
   Q_OBJECT
 
   public:
-    EnumInputField( const QString &name, const Schema::SimpleType *type );
+    EnumInputField( const QString &name, const XSD::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );

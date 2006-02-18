@@ -107,21 +107,21 @@ void Converter::convert()
 
 void Converter::convertTypes()
 {
-  const Schema::Types types = mWSDL.definitions().type().types();
+  const XSD::Types types = mWSDL.definitions().type().types();
 
-  Schema::ComplexType::List complexTypes = types.complexTypes();
+  XSD::ComplexType::List complexTypes = types.complexTypes();
   for ( int i = 0; i < complexTypes.count(); ++i )
     convertComplexType( &(complexTypes[ i ]) );
 
-  Schema::SimpleType::List simpleTypes = types.simpleTypes();
+  XSD::SimpleType::List simpleTypes = types.simpleTypes();
   for ( int i = 0; i < simpleTypes.count(); ++i )
     convertSimpleType( &(simpleTypes[ i ]) );
 
-  Schema::Attribute::List attributes = types.attributes();
+  XSD::Attribute::List attributes = types.attributes();
   for ( int i = 0; i < attributes.count(); ++i )
     convertAttribute( &(attributes[ i ]) );
 
-  Schema::Element::List elements = types.elements();
+  XSD::Element::List elements = types.elements();
   for ( int i = 0; i < elements.count(); ++i )
     convertElement( &(elements[ i ]) );
 }

@@ -26,10 +26,10 @@
 
 #include "simplebaseinputfield.h"
 
-SimpleBaseInputField::SimpleBaseInputField( const QString &name, const Schema::SimpleType *type )
+SimpleBaseInputField::SimpleBaseInputField( const QString &name, const XSD::SimpleType *type )
   : SimpleInputField( name, type )
 {
-  if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = InputFieldFactory::self()->createBasicField( name, type->baseTypeName(), type );
     if ( !field ) {
       qDebug( "SimpleBaseInputField: Unable to create field of type %s", type->baseTypeName().toLatin1() );
@@ -48,7 +48,7 @@ void SimpleBaseInputField::setXMLData( const QDomElement &element )
     return;
   }
 
-  if ( mType->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( mType->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = childField( element.tagName() );
     if ( !field ) {
       qDebug( "SimpleBaseInputField: Child field %s does not exists", element.tagName().toLatin1() );
@@ -62,7 +62,7 @@ void SimpleBaseInputField::setXMLData( const QDomElement &element )
 
 void SimpleBaseInputField::xmlData( QDomDocument &document, QDomElement &parent )
 {
-  if ( mType->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( mType->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = mFields.first();
     if ( !field ) {
       qDebug( "SimpleBaseInputField: No child found" );
@@ -76,7 +76,7 @@ void SimpleBaseInputField::xmlData( QDomDocument &document, QDomElement &parent 
 
 void SimpleBaseInputField::setData( const QString &data )
 {
-  if ( mType->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( mType->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = mFields.first();
     if ( !field ) {
       qDebug( "SimpleBaseInputField: No child found" );
@@ -90,7 +90,7 @@ void SimpleBaseInputField::setData( const QString &data )
 
 QString SimpleBaseInputField::data() const
 {
-  if ( mType->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( mType->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = mFields.first();
     if ( !field ) {
       qDebug( "SimpleBaseInputField: No child found" );
@@ -106,7 +106,7 @@ QString SimpleBaseInputField::data() const
 
 QWidget *SimpleBaseInputField::createWidget( QWidget *parent )
 {
-  if ( mType->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( mType->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = mFields.first();
     if ( !field ) {
       qDebug( "SimpleBaseInputField: No child found" );

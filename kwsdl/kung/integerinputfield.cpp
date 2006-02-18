@@ -28,7 +28,7 @@
 
 #include "integerinputfield.h"
 
-IntegerInputField::IntegerInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+IntegerInputField::IntegerInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
   : SimpleInputField( name, type ),
     mValue( 0 ), mTypeName( typeName )
 {
@@ -105,13 +105,13 @@ QWidget *IntegerInputField::createWidget( QWidget *parent )
   }
 
   if ( mType ) {
-    if ( mType->facetType() & Schema::SimpleType::MININC )
+    if ( mType->facetType() & XSD::SimpleType::MININC )
       mInputWidget->setMinValue( mType->facetMinimumInclusive() );
-    if ( mType->facetType() & Schema::SimpleType::MINEX )
+    if ( mType->facetType() & XSD::SimpleType::MINEX )
       mInputWidget->setMinValue( mType->facetMinimumExclusive() + 1 );
-    if ( mType->facetType() & Schema::SimpleType::MAXINC )
+    if ( mType->facetType() & XSD::SimpleType::MAXINC )
       mInputWidget->setMaxValue( mType->facetMaximumInclusive() );
-    if ( mType->facetType() & Schema::SimpleType::MAXEX )
+    if ( mType->facetType() & XSD::SimpleType::MAXEX )
       mInputWidget->setMaxValue( mType->facetMaximumExclusive() - 1 );
   }
 

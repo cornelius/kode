@@ -22,7 +22,7 @@
 
 #include "xsdtype.h"
 
-using namespace Schema;
+using namespace XSD;
 
 XSDType::XSDType()
 {

@@ -24,7 +24,7 @@
 
 #include "dateinputfield.h"
 
-DateInputField::DateInputField( const QString &name, const Schema::SimpleType *type )
+DateInputField::DateInputField( const QString &name, const XSD::SimpleType *type )
   : SimpleInputField( name, type ),
     mValue( QDate::currentDate() )
 {

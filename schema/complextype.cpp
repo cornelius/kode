@@ -22,7 +22,7 @@
 
 #include "complextype.h"
 
-using namespace Schema;
+using namespace XSD;
 
 ComplexType::ComplexType( const QString &nameSpace )
   : XSDType( nameSpace ), mAnonymous( false ), mIsArray( false )

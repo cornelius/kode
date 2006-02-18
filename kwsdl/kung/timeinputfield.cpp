@@ -24,7 +24,7 @@
 
 #include "timeinputfield.h"
 
-TimeInputField::TimeInputField( const QString &name, const Schema::SimpleType *type )
+TimeInputField::TimeInputField( const QString &name, const XSD::SimpleType *type )
   : SimpleInputField( name, type ),
     mValue( QTime::currentTime() )
 {

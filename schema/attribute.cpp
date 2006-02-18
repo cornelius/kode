@@ -22,7 +22,7 @@
 
 #include "attribute.h"
 
-using namespace Schema;
+using namespace XSD;
 
 Attribute::Attribute()
   : mQualified( false ), mUse( false )

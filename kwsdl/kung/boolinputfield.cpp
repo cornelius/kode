@@ -26,7 +26,7 @@
 
 #include "boolinputfield.h"
 
-BoolInputField::BoolInputField( const QString &name, const Schema::SimpleType *type )
+BoolInputField::BoolInputField( const QString &name, const XSD::SimpleType *type )
   : SimpleInputField( name, type ),
     mValue( false )
 {

@@ -36,7 +36,7 @@ static const unsigned int UNBOUNDED( 100000 );
 static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
 static const QString WSDLSchemaURI( "http://schemas.xmlsoap.org/wsdl/" );
 
-using namespace Schema;
+using namespace XSD;
 
 
 Parser::Parser( const QString &nameSpace )

@@ -38,14 +38,14 @@ class Type : public Element
     Type( const QString &nameSpace );
     ~Type();
 
-    void setType( const Schema::Types &types );
-    Schema::Types types() const;
+    void setType( const XSD::Types &types );
+    XSD::Types types() const;
 
     void loadXML( ParserContext *context, const QDomElement &element );
     void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
 
   private:
-    Schema::Types mTypes;
+    XSD::Types mTypes;
 };
 
 }

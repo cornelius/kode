@@ -22,7 +22,7 @@
 
 #include "element.h"
 
-using namespace Schema;
+using namespace XSD;
 
 
 Element::Element()

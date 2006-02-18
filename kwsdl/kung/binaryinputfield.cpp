@@ -39,7 +39,7 @@
 
 #include "binaryinputfield.h"
 
-BinaryInputField::BinaryInputField( const QString &name, const QString &typeName, const Schema::SimpleType *type )
+BinaryInputField::BinaryInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
   : SimpleInputField( name, type ),
     mValue( 0 ), mTypeName( typeName )
 {

@@ -27,7 +27,7 @@
 class SimpleBaseInputField : public SimpleInputField
 {
   public:
-    SimpleBaseInputField( const QString &name, const Schema::SimpleType *type );
+    SimpleBaseInputField( const QString &name, const XSD::SimpleType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );

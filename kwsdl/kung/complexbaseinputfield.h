@@ -27,7 +27,7 @@
 class ComplexBaseInputField : public ComplexInputField
 {
   public:
-    ComplexBaseInputField( const QString &name, const Schema::ComplexType *type );
+    ComplexBaseInputField( const QString &name, const XSD::ComplexType *type );
 
     virtual void setXMLData( const QDomElement &element );
     virtual void xmlData( QDomDocument &document, QDomElement &parent );

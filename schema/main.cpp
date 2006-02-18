@@ -49,40 +49,40 @@ int main( int argc, char **argv )
     return 3;
   }
 
-  Schema::Parser parser;
+  XSD::Parser parser;
   parser.parseSchemaTag( &context, element );
 
-  Schema::Types types = parser.types();
+  XSD::Types types = parser.types();
 
-  const Schema::SimpleType::List simpleTypes = types.simpleTypes();
+  const XSD::SimpleType::List simpleTypes = types.simpleTypes();
   for ( int i = 0; i < simpleTypes.count(); ++i ) {
     qDebug( "SimpleType: %s %s", qPrintable( simpleTypes[ i ].name() ), qPrintable( simpleTypes[ i ].baseTypeName().qname() ) );
   }
 
-  const Schema::ComplexType::List complexTypes = types.complexTypes();
+  const XSD::ComplexType::List complexTypes = types.complexTypes();
   for ( int i = 0; i < complexTypes.count(); ++i ) {
     qDebug( "ComplexType: %s %s", qPrintable( complexTypes[ i ].name() ), qPrintable( complexTypes[ i ].baseTypeName().qname() ) );
-    const Schema::Element::List elements = complexTypes[ i ].elements();
+    const XSD::Element::List elements = complexTypes[ i ].elements();
     for ( int j = 0; j < elements.count(); ++j ) {
       qDebug( "\tElement: %s %s", qPrintable( elements[ j ].name() ), qPrintable( elements[ j ].type().qname() ) );
     }
-    const Schema::Attribute::List attributes = complexTypes[ i ].attributes();
+    const XSD::Attribute::List attributes = complexTypes[ i ].attributes();
     for ( int j = 0; j < attributes.count(); ++j ) {
       qDebug( "\tAttribute: %s %s", qPrintable( attributes[ j ].name() ), qPrintable( attributes[ j ].type().qname() ) );
     }
   }
 
-  const Schema::Element::List elements = types.elements();
+  const XSD::Element::List elements = types.elements();
   for ( int i = 0; i < elements.count(); ++i ) {
     qDebug( "Element: %s %s", qPrintable( elements[ i ].name() ), qPrintable( elements[ i ].type().qname() ) );
   }
 
-  const Schema::Attribute::List attributes = types.attributes();
+  const XSD::Attribute::List attributes = types.attributes();
   for ( int i = 0; i < attributes.count(); ++i ) {
     qDebug( "Attribute: %s %s", qPrintable( attributes[ i ].name() ), qPrintable( attributes[ i ].type().qname() ) );
   }
   
-  const Schema::AttributeGroup::List attributeGroups = types.attributeGroups();
+  const XSD::AttributeGroup::List attributeGroups = types.attributeGroups();
   for ( int i = 0; i < attributeGroups.count(); ++i ) {
     qDebug( "AttributeGroup: %s", qPrintable( attributeGroups[ i ].name() ) );
   }

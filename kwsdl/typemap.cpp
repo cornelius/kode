@@ -363,12 +363,12 @@ QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName )
   return QStringList();
 }
 
-void TypeMap::addSchemaTypes( const Schema::Types &types )
+void TypeMap::addSchemaTypes( const XSD::Types &types )
 {
   Q_ASSERT( mNSManager );
 
-  Schema::SimpleType::List simpleTypes = types.simpleTypes();
-  Schema::SimpleType::List::ConstIterator simpleIt;
+  XSD::SimpleType::List simpleTypes = types.simpleTypes();
+  XSD::SimpleType::List::ConstIterator simpleIt;
   for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt ) {
     Entry entry;
     entry.basicType = false;
@@ -382,8 +382,8 @@ void TypeMap::addSchemaTypes( const Schema::Types &types )
     mTypeMap.append( entry );
   }
 
-  Schema::ComplexType::List complexTypes = types.complexTypes();
-  Schema::ComplexType::List::ConstIterator complexIt;
+  XSD::ComplexType::List complexTypes = types.complexTypes();
+  XSD::ComplexType::List::ConstIterator complexIt;
   for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
     Entry entry;
     entry.basicType = false;
@@ -397,8 +397,8 @@ void TypeMap::addSchemaTypes( const Schema::Types &types )
     mTypeMap.append( entry );
   }
 
-  Schema::Attribute::List attributes = types.attributes();
-  Schema::Attribute::List::ConstIterator attrIt;
+  XSD::Attribute::List attributes = types.attributes();
+  XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     Entry entry;
     entry.basicType = false;
@@ -412,8 +412,8 @@ void TypeMap::addSchemaTypes( const Schema::Types &types )
     mAttributeMap.append( entry );
   }
 
-  Schema::Element::List elements = types.elements();
-  Schema::Element::List::ConstIterator elemIt;
+  XSD::Element::List elements = types.elements();
+  XSD::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     Entry entry;
     entry.basicType = false;

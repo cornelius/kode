@@ -28,7 +28,7 @@
 #include <common/qname.h>
 #include "xsdtype.h"
 
-namespace Schema {
+namespace XSD {
 
 class SimpleType : public XSDType
 {

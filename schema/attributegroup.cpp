@@ -20,7 +20,7 @@
 
 #include "attributegroup.h"
 
-using namespace Schema;
+using namespace XSD;
 
 AttributeGroup::AttributeGroup()
 {

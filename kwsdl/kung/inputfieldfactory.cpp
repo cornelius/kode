@@ -48,15 +48,15 @@ InputFieldFactory::~InputFieldFactory()
 {
 }
 
-void InputFieldFactory::setTypes( const Schema::Types &types )
+void InputFieldFactory::setTypes( const XSD::Types &types )
 {
   mTypes = types;
 }
 
 InputField *InputFieldFactory::createField( const QString &name, const QString &typeName, bool isList )
 {
-  Schema::SimpleType::List simpleTypes = mTypes.simpleTypes();
-  Schema::SimpleType::List::ConstIterator simpleIt;
+  XSD::SimpleType::List simpleTypes = mTypes.simpleTypes();
+  XSD::SimpleType::List::ConstIterator simpleIt;
   for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt ) {
     if ( (*simpleIt).name() == typeName ) {
       if ( isList )
@@ -66,8 +66,8 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
     }
   }
 
-  Schema::ComplexType::List complexTypes = mTypes.complexTypes();
-  Schema::ComplexType::List::ConstIterator complexIt;
+  XSD::ComplexType::List complexTypes = mTypes.complexTypes();
+  XSD::ComplexType::List::ConstIterator complexIt;
   for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
     if ( (*complexIt).name() == typeName ) {
       if ( isList )
@@ -81,13 +81,13 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
 }
 
 InputField *InputFieldFactory::createBasicField( const QString &name, const QString &typeName,
-                                                 const Schema::SimpleType *type, bool isList )
+                                                 const XSD::SimpleType *type, bool isList )
 {
   if ( isList )
     return new ListInputField( name, typeName, 0 );
 
   if ( typeName == "string" || typeName == "language" ) {
-    if ( type && type->facetType() & Schema::SimpleType::ENUM )
+    if ( type && type->facetType() & XSD::SimpleType::ENUM )
       return new EnumInputField( name, type );
     else
       return new StringInputField( name, typeName, type );

@@ -23,7 +23,7 @@
 
 using namespace KWSDL;
 
-void Converter::convertComplexType( const Schema::ComplexType *type )
+void Converter::convertComplexType( const XSD::ComplexType *type )
 {
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
@@ -99,8 +99,8 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
     newClass.setDocs( type->documentation().simplified() );
 
   // elements
-  Schema::Element::List elements = type->elements();
-  Schema::Element::List::ConstIterator elemIt;
+  XSD::Element::List elements = type->elements();
+  XSD::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     QString typeName = mTypeMap.localType( (*elemIt).type() );
 
@@ -141,8 +141,8 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
   }
 
   // attributes
-  Schema::Attribute::List attributes = type->attributes();
-  Schema::Attribute::List::ConstIterator attrIt;
+  XSD::Attribute::List attributes = type->attributes();
+  XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     QString typeName;
 
@@ -198,7 +198,7 @@ void Converter::convertComplexType( const Schema::ComplexType *type )
   mClasses.append( newClass );
 }
 
-void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
+void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
 {
   const QString typeName = mTypeMap.localType( type->qualifiedName() );
   const QString baseType = mTypeMap.localType( type->baseTypeName() );
@@ -272,8 +272,8 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
   demarshalCode.indent();
 
   // elements
-  Schema::Element::List elements = type->elements();
-  Schema::Element::List::ConstIterator elemIt;
+  XSD::Element::List elements = type->elements();
+  XSD::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     const QString typeName = mTypeMap.localType( (*elemIt).type() );
 
@@ -326,8 +326,8 @@ void Converter::createComplexTypeSerializer( const Schema::ComplexType *type )
   }
 
   // attributes
-  Schema::Attribute::List attributes = type->attributes();
-  Schema::Attribute::List::ConstIterator attrIt;
+  XSD::Attribute::List attributes = type->attributes();
+  XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     QString upperName = upperlize( (*attrIt).name() );
     QString lowerName = lowerlize( (*attrIt).name() );

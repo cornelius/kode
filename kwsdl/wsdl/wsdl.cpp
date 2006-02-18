@@ -106,15 +106,15 @@ Message WSDL::findMessage( const QName &messageName ) const
   return Message();
 }
 
-Schema::Element WSDL::findElement( const QName &elementName ) const
+XSD::Element WSDL::findElement( const QName &elementName ) const
 {
-  const Schema::Types types = mDefinitions.type().types();
-  const Schema::Element::List elements = types.elements();
+  const XSD::Types types = mDefinitions.type().types();
+  const XSD::Element::List elements = types.elements();
   for ( int i = 0; i < elements.count(); ++i ) {
     if ( elements[ i ].nameSpace() == elementName.nameSpace() && elements[ i ].name() == elementName.localName() )
       return elements[ i ];
   }
 
-  return Schema::Element();
+  return XSD::Element();
 }
 

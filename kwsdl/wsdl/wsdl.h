@@ -44,7 +44,7 @@ class KDE_EXPORT WSDL
     BindingOperation findBindingOperation( const Binding &binding, const QString &operationName );
     PortType findPortType( const QName &portTypeName ) const;
     Message findMessage( const QName &messageName ) const;
-    Schema::Element findElement( const QName &elementName ) const;
+    XSD::Element findElement( const QName &elementName ) const;
 
   private:
     Definitions mDefinitions;

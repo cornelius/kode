@@ -31,7 +31,7 @@
 
 class ParserContext;
 
-namespace Schema {
+namespace XSD {
 
 class Parser
 {

@@ -22,7 +22,7 @@
 
 #include "simpletype.h"
 
-using namespace Schema;
+using namespace XSD;
 
 SimpleType::SimpleType()
   : mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),

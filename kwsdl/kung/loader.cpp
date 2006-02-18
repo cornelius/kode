@@ -47,7 +47,7 @@ void Loader::run()
 
 void Loader::download()
 {
-  Schema::FileProvider provider;
+  XSD::FileProvider provider;
 
   QString fileName;
   if ( provider.get( mWSDLUrl, fileName ) ) {

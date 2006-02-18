@@ -26,7 +26,7 @@
 #include "element.h"
 #include "simpletype.h"
 
-namespace Schema {
+namespace XSD {
 
 class Types
 {

@@ -28,7 +28,7 @@
 
 #include "xmlelement.h"
 
-namespace Schema {
+namespace XSD {
 
 class Element : public XmlElement
 {

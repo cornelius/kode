@@ -24,10 +24,10 @@
 using namespace KWSDL;
 
 static QString escapeEnum( const QString& );
-static KODE::Code createRangeCheckCode( const Schema::SimpleType*, const QString&, KODE::Class& );
+static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, KODE::Class& );
 
 
-void Converter::convertSimpleType( const Schema::SimpleType *type )
+void Converter::convertSimpleType( const XSD::SimpleType *type )
 {
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
@@ -39,11 +39,11 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
 
   QString classDocumentation;
 
-  if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
     /**
       Use setter and getter method for enums as well.
      */
-    if ( type->facetType() & Schema::SimpleType::ENUM ) {
+    if ( type->facetType() & XSD::SimpleType::ENUM ) {
       classDocumentation = "This class is a wrapper for an enumeration.\n";
 
       QStringList enums = type->facetEnums();
@@ -93,7 +93,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
      */
     if ( type->baseTypeName() != XmlAnyType
         && !type->baseTypeName().isEmpty()
-        && !(type->facetType() & Schema::SimpleType::ENUM) ) {
+        && !(type->facetType() & XSD::SimpleType::ENUM) ) {
       classDocumentation = "This class encapsulates an basic type.\n";
 
       const QName baseName = type->baseTypeName();
@@ -172,7 +172,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
       newClass.addFunction( setter );
       newClass.addFunction( getter );
     }
-  } else if ( type->subType() == Schema::SimpleType::TypeList ) {
+  } else if ( type->subType() == XSD::SimpleType::TypeList ) {
     classDocumentation = "This class encapsulates a list type.";
 
     newClass.addHeaderInclude( "QList" );
@@ -223,7 +223,7 @@ void Converter::convertSimpleType( const Schema::SimpleType *type )
   mClasses.append( newClass );
 }
 
-void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
+void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
 {
   const QString typeName = mTypeMap.localType( type->qualifiedName() );
   const QString baseType = mTypeMap.localType( type->baseTypeName() );
@@ -258,9 +258,9 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
   // include header
   mSerializer.addIncludes( QStringList(), mTypeMap.forwardDeclarations( type->qualifiedName() ) );
 
-  if ( type->subType() == Schema::SimpleType::TypeRestriction ) {
+  if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
     // is an enumeration
-    if ( type->facetType() & Schema::SimpleType::ENUM ) {
+    if ( type->facetType() & XSD::SimpleType::ENUM ) {
       QStringList enums = type->facetEnums();
       QStringList escapedEnums;
       for ( int i = 0; i < enums.count(); ++i )
@@ -371,7 +371,7 @@ void Converter::createSimpleTypeSerializer( const Schema::SimpleType *type )
 
       mSerializer.addFunction( demarshalValue );
     }
-  } else if ( type->subType() == Schema::SimpleType::TypeList ) {
+  } else if ( type->subType() == XSD::SimpleType::TypeList ) {
     const QString listType = mTypeMap.localType( type->listTypeName() );
 
     mSerializer.addInclude( "QStringList" );
@@ -432,7 +432,7 @@ static QString escapeEnum( const QString &str )
   return enumStr.replace( "-", "_" );
 }
 
-static KODE::Code createRangeCheckCode( const Schema::SimpleType *type, const QString &variableName, KODE::Class &parentClass )
+static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QString &variableName, KODE::Class &parentClass )
 {
   KODE::Code code;
   code += "bool rangeOk = true;";
@@ -445,22 +445,22 @@ static KODE::Code createRangeCheckCode( const Schema::SimpleType *type, const QS
     int facetFractionDigits() const;
   */
 
-  if ( type->facetType() & Schema::SimpleType::MININC )
+  if ( type->facetType() & XSD::SimpleType::MININC )
     code += "rangeOk = rangeOk && (" + variableName + " >= " + QString::number( type->facetMinimumInclusive() ) + ");";
-  if ( type->facetType() & Schema::SimpleType::MINEX )
+  if ( type->facetType() & XSD::SimpleType::MINEX )
     code += "rangeOk = rangeOk && (" + variableName + " > " + QString::number( type->facetMinimumExclusive() ) + ");";
-  if ( type->facetType() & Schema::SimpleType::MAXINC )
+  if ( type->facetType() & XSD::SimpleType::MAXINC )
     code += "rangeOk = rangeOk && (" + variableName + " <= " + QString::number( type->facetMaximumInclusive() ) + ");";
-  if ( type->facetType() & Schema::SimpleType::MINEX )
+  if ( type->facetType() & XSD::SimpleType::MINEX )
     code += "rangeOk = rangeOk && (" + variableName + " < " + QString::number( type->facetMaximumExclusive() ) + ");";
 
-  if ( type->facetType() & Schema::SimpleType::LENGTH )
+  if ( type->facetType() & XSD::SimpleType::LENGTH )
     code += "rangeOk = rangeOk && (" + variableName + ".length() == " + QString::number( type->facetLength() ) + ");";
-  if ( type->facetType() & Schema::SimpleType::MINLEN )
+  if ( type->facetType() & XSD::SimpleType::MINLEN )
     code += "rangeOk = rangeOk && (" + variableName + ".length() >= " + QString::number( type->facetMinimumLength() ) + ");";
-  if ( type->facetType() & Schema::SimpleType::MAXLEN )
+  if ( type->facetType() & XSD::SimpleType::MAXLEN )
     code += "rangeOk = rangeOk && (" + variableName + ".length() <= " + QString::number( type->facetMaximumLength() ) + ");";
-  if ( type->facetType() & Schema::SimpleType::PATTERN ) {
+  if ( type->facetType() & XSD::SimpleType::PATTERN ) {
     code += "QRegExp exp( \"" + type->facetPattern() + "\" );";
     code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
 

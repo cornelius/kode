@@ -30,11 +30,11 @@
 
 #include "complexbaseinputfield.h"
 
-ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema::ComplexType *type )
+ComplexBaseInputField::ComplexBaseInputField( const QString &name, const XSD::ComplexType *type )
   : ComplexInputField( name, type )
 {
-  Schema::Element::List elements = type->elements();
-  Schema::Element::List::ConstIterator elemIt;
+  XSD::Element::List elements = type->elements();
+  XSD::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     bool isList = ((*elemIt).maxOccurs() == UNBOUNDED);
     InputField *field = InputFieldFactory::self()->createField( (*elemIt).name(), (*elemIt).typeName(), isList );
@@ -45,8 +45,8 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const Schema:
     }
   }
 
-  Schema::Attribute::List attributes = type->attributes();
-  Schema::Attribute::List::ConstIterator attrIt;
+  XSD::Attribute::List attributes = type->attributes();
+  XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     InputField *field = InputFieldFactory::self()->createField( (*attrIt).name(), (*attrIt).typeName() );
     if ( !field ) {
@@ -104,8 +104,8 @@ void ComplexBaseInputField::xmlData( QDomDocument &document, QDomElement &parent
 {
   QDomElement element = document.createElement( mName );
 
-  Schema::Element::List elements = mType->elements();
-  Schema::Element::List::ConstIterator elemIt;
+  XSD::Element::List elements = mType->elements();
+  XSD::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
     InputField *field = childField( (*elemIt).name() );
     if ( !field ) {
@@ -115,8 +115,8 @@ void ComplexBaseInputField::xmlData( QDomDocument &document, QDomElement &parent
     }
   }
 
-  Schema::Attribute::List attributes = mType->attributes();
-  Schema::Attribute::List::ConstIterator attrIt;
+  XSD::Attribute::List attributes = mType->attributes();
+  XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
     InputField *field = childField( (*attrIt).name() );
     if ( !field ) {
