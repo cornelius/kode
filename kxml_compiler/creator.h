@@ -68,35 +68,35 @@ class Creator
     
     void createProperty( KODE::Class &c, const QString &type,
                          const QString &name );
-    void createElementFunctions( KODE::Class &c, Element *e );
-    void createClass( Element *element );
+    void createElementFunctions( KODE::Class &c, RNG::Element *e );
+    void createClass( RNG::Element *element );
 
     void registerListTypedef( const QString &type );
 
     void createListTypedefs();
 
-    void createFileParser( Element *element );
+    void createFileParser( RNG::Element *element );
 
-    void createFileWriter( Element *element, const QString &dtd );
+    void createFileWriter( RNG::Element *element, const QString &dtd );
 
     void printFiles( KODE::Printer & );
 
   protected:
     void setExternalClassNames();
 
-    void createFileParserDom( Element *element );
-    void createFileParserCustom( Element *element );
+    void createFileParserDom( RNG::Element *element );
+    void createFileParserCustom( RNG::Element *element );
 
-    void createElementParser( KODE::Class &c, Element *e );
+    void createElementParser( KODE::Class &c, RNG::Element *e );
 
-    void createElementParserDom( KODE::Class &c, Element *e );
+    void createElementParserDom( KODE::Class &c, RNG::Element *e );
 
-    void createElementParserCustom( KODE::Class &c, Element *e );
-    void createTextElementParserCustom( KODE::Class &c, Element *e );
-    KODE::Code createAttributeScanner( Attribute *a, bool firstAttribute );
+    void createElementParserCustom( KODE::Class &c, RNG::Element *e );
+    void createTextElementParserCustom( KODE::Class &c, RNG::Element *e );
+    KODE::Code createAttributeScanner( RNG::Attribute *a, bool firstAttribute );
     void createFoundTextFunction( const QString &text );
 
-    void createElementWriter( KODE::Class &c, Element *e );
+    void createElementWriter( KODE::Class &c, RNG::Element *e );
 
     void createIndenter( KODE::File & );
 

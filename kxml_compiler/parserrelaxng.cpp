@@ -43,6 +43,8 @@
 
 #include <iostream>
 
+using namespace RNG;
+
 Pattern::Pattern()
   : optional( false ), zeroOrMore( false ), oneOrMore( false ),
     choice( false )

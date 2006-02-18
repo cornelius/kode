@@ -105,8 +105,8 @@ int main( int argc, char **argv )
 
   kDebug() << "Begin parsing" << endl;
 
-  ParserRelaxng p;
-  Element *start = p.parse( doc.documentElement() );
+  RNG::ParserRelaxng p;
+  RNG::Element *start = p.parse( doc.documentElement() );
   if ( !start ) {
     kError() << "Could not find start element" << endl;
     return 1;
@@ -118,7 +118,7 @@ int main( int argc, char **argv )
 
   p.substituteReferences( start );
 
-#if 0  
+#if 1
   std::cout << "--- TREE:" << std::endl;
   p.dumpTree( start );
 #endif
@@ -137,7 +137,7 @@ int main( int argc, char **argv )
   Creator c( pt );
 
   kDebug() << "Create classes" << endl;
-  QList<Element *>::ConstIterator it;
+  QList<RNG::Element *>::ConstIterator it;
   for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
     c.createClass( *it );
   }
@@ -151,7 +151,7 @@ int main( int argc, char **argv )
   c.createListTypedefs();
 
 #if 0
-  QList<Reference *>::ConstIterator it2;
+  QList<RNG::Reference *>::ConstIterator it2;
   for( it2 = start->references.begin(); it2 != start->references.end();
        ++it2 ) {
     Element e;

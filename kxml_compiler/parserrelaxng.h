@@ -46,6 +46,8 @@
 
 #include <iostream>
 
+namespace RNG {
+
 class Pattern
 {
   public:
@@ -133,5 +135,7 @@ class ParserRelaxng
   private:
     QMap<QString,Element::List> mDefinitionMap;
 };
+
+}
 
 #endif
