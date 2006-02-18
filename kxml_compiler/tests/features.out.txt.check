@@ -1,0 +1,676 @@
+CATEGORY: KDE PIM (Personal Information Management)
+CATEGORY: Kontact
+FEATURE: Merged configuration view.
+  RESPONSIBLE: Matthias Kretz (Kretz@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Add alternative tab-based viewmode.
+  RESPONSIBLE: Daniel Molkentin (molkentin@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Fix sidebar to use other icon sizes
+  RESPONSIBLE: Daniel Molkentin (molkentin@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Various usability fixes (with the OpenUsability team)
+  RESPONSIBLE: Daniel Molkentin (molkentin@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: SnapIn/SnapOut actions for changing between an app running
+        stand-alone or embedded in Kontact at run-time.
+  RESPONSIBLE:  ()
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Make Kontact (KOrganizer/KMail) work with Exchange 2000.
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  RESPONSIBLE: Daniel Molkentin (molkentin@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Add support for OpenXchange
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: KOrganizer Journal Plugin.
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Special Dates Summary Plugin.
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Offline mode for calendar and addressbook resources
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  RESPONSIBLE: Will Stephenson ()
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Add GUI option for selecting the module on start (75949)
+  RESPONSIBLE: Daniel Molkentin (molkentin@kde.org)
+  TARGET: 3.4
+  STATUS: done
+CATEGORY: KMail
+FEATURE: Client side IMAP filtering.
+  RESPONSIBLE: Till Adam (adam@kde.org)
+  RESPONSIBLE: Don Sanders (sanders@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Namespace support for IMAP kioslave
+  RESPONSIBLE: Carsten Burghardt (burghardt@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Namespace support for IMAP
+  RESPONSIBLE: Carsten Burghardt (burghardt@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Using komposer
+  RESPONSIBLE: Zack Rusin (rusin@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: X-Face support
+  RESPONSIBLE: Jakob Schröter (js@camaya.net)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Get rid of mimelib (a.k.a. KMime).
+  RESPONSIBLE: Marc Mutz (mutz@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Redesign filters to use Sieve internally. Allow editing of
+          Sieve scripts on IMAP servers to get rid of the bug reports a
+          la "KMail doesn't support IMAP folders for
+          filtering"
+  RESPONSIBLE: Marc Mutz (mutz@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Make the visible headers configurable, allow for "show all
+        and hide specified headers" as well as "show specified headers
+        ". Already available as a patch.
+        
+  RESPONSIBLE: Klas Kalass (klas@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Rewrite the composer window to drop KEdit and support richtext engines.
+          (old ktexteditor patch available here). See also the new code in libkdepim/komposer
+  RESPONSIBLE: Zack Rusin (zack@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Improved configuration of header and attachment views
+  RESPONSIBLE: Aaron J. Seigo (aseigo@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Type-specific configuration dialogs for folders
+  RESPONSIBLE: Aaron J. Seigo (aseigo@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Asynchronization of crypto operations.
+  RESPONSIBLE: Ingo Kloecker (kloecker@kde.org)
+  RESPONSIBLE: Marc Mutz (marc@klaralvdalens-datakonsult.se)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Asynchronization of expensive filter actions.
+  RESPONSIBLE: Till Adam (till@adam-lilienthal.de)
+  RESPONSIBLE: Don Sanders (sanders@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Imap folders as targets for filter move actions.
+  RESPONSIBLE: Till Adam (till@adam-lilienthal.de)
+  RESPONSIBLE: Don Sanders (sanders@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Quick insertion of common phrases.
+  RESPONSIBLE: Don Sanders (sanders@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Make use of KWallet.
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Improved recipients display and selection in KMail composer
+        
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Ability to compress attachments after attaching them in the composer
+        
+  RESPONSIBLE: Albert Cervera Areny (albertca@hotpop.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Store mail in $KDEHOME/apps/kmail/mail instead of ~/Mail
+  RESPONSIBLE: Ingo Klöcker (kloecker@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Hide dead.letter
+  RESPONSIBLE: Ingo Klöcker (kloecker@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Configurable font for unread/new/important messages
+  RESPONSIBLE: Ingo Klöcker (kloecker@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Smileys
+  RESPONSIBLE: Ingo Klöcker (kloecker@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Automatically add replied-to addresses to address book
+  RESPONSIBLE: Ingo Klöcker (kloecker@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Backup mail folders
+  RESPONSIBLE: Giovanni Venturi (gventuri73@tiscali.it)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Improve POP filters and add option to filter by start of message body (patch on kde-look)
+  RESPONSIBLE: Ingo Klöcker (kloecker@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: KMailCVT: import to subfolders in KMail.
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: KMailCVT: new importfilter to import kmail maildir.
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: KMailCVT: new importfilter to import from Sylpheed (Claws).
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: KMailCVT: new importfilter to import from The Bat!.
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: KMailCVT: new importfilter to import from MS Outlook.
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: KMailCVT: add possibility to merge kmaildir import with existing local mailfolder.
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: KMailCVT: update importfilter (Outlook Express, Pegasus Mail, Thunderbird, Evolution) for recreating folder structure.
+  RESPONSIBLE: Danny Kukawka (danny.kukawka@web.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: KMailCVT: add Lotus Notes structured text import filter.
+  RESPONSIBLE: Robert Rockers (kconfigure@rockerssoft.com)
+  TARGET: 3.5
+  STATUS: done
+CATEGORY: KOrganizer
+FEATURE: Moving / detaching recurring events in the agenda view
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: tighter integration with KNotes - ability to pin a note to a contact
+  RESPONSIBLE: Mark Westcott (mark at houseoffish org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Plugin system for printing, more printing styles.
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Integrate plugin configuration into main configuration dialog.
+        
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Dissociate (single or all future) events from a recurring event.
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Lunar Phases.
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Resource colors (different color indicator for events from different calendars)
+  RESPONSIBLE: Mario Teijeiro Otero (emeteo@escomposlinux.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Blogging resource for libkcal (journals as blogs on a server)
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Full support for Exchange servers (events, todos, and journals)
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Support for Novell Groupwise servers
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Support for OpenGroupware.org servers
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  RESPONSIBLE: Till Adam (adam@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Preview pane in KOrganizer
+  RESPONSIBLE: Mario Teijeiro Otero (emeteo@escomposlinux.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: What's next view for any date range
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Ability to record completed todos in journals
+  RESPONSIBLE: Bram Schoenmakers (bramschoenmakers@kde.nl)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Using libkholidays to reflect true workdays/non-workdays in the calendar
+  RESPONSIBLE: Martin Koller (m.koller@surfeu.at)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Attendees for journals
+  RESPONSIBLE: Will Stephenson (wstephenson@suse.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: TV Anytime resource (shows TV and Radio schedules in the calendar, e.g. BBC's radio program)
+  RESPONSIBLE: Will Stephenson (wstephenson@suse.de)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Quick search bar in the to-do view
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Hierarchical categories
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Improved Drag and drop support, links between various Kontact items
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Multiple reminders per event, relative to start or end, repeating alarms
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: done
+CATEGORY: Merge of KO/Pi code
+FEATURE: DateNavigator
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Printing: layout bug-fixing and more.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Printing of what's next view.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Printing of selected incidences.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Show extended info, which is shown as What's This info in KO/Pi
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Highlight days in the date navigator depending on the view.
+          For example when the JournalView is active highlight days with journal
+          entries.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Button to go to week by selecting the week number.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Merge KO/Pi What's Next view as additional view separate from the existing WHat's Next view.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Templates for journals.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Day headers labels in agenda view. Show also "tomorrow", "today", "yesterday" when enough space. Labels are clickable to go to single day or month and back.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Prettification of time label bar
+  RESPONSIBLE: Daniel Molkentin (molkentin@kde.org)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Replace month view by KO/Pi month view.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Search dialog.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Show category colors in category selection dialog.
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Put recurrence info text in the incidence viewer.
+  TARGET: 3.5
+  STATUS: todo
+CATEGORY: KPilot
+FEATURE: Port to pilot-link 0.12
+  RESPONSIBLE: Adriaan de Groot (groot@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Extend addressbook support with OS5 fields
+  RESPONSIBLE: Adriaan de Groot (groot@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Extend datebook support with OS5 fields
+  RESPONSIBLE: Adriaan de Groot (groot@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Syncing with Evolution (via the resources)
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Address import/export via CSV
+  RESPONSIBLE:  ()
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Memo import/export all/some with format (.txt, .xml) support
+  RESPONSIBLE:  ()
+  TARGET: 3.4
+  STATUS: done
+FEATURE: JPilot proxy conduit (wraps JPilot plugins for use with KPilot).
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: General, easy-to-use framework for 3rd party conduits.
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Good documentation on how to write a KPilot conduit, for 3rd party
+        developers.
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: New internal viewer/editor for calendar.
+  RESPONSIBLE: Reinhold Kainhofer (reinhold@kainhofer.com)
+  TARGET: 3.5
+  STATUS: todo
+CATEGORY: KAlarm
+FEATURE: Allow the user to specify the late-cancellation period for an alarm
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add option to automatically close window after late-cancellation period
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add facility to enable and disable individual alarms
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add simple repetition facility, including repetition within a recurrence
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add option to pick a KMail identity to use as sender of email alarms
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add option to copy emails sent via sendmail, to KMail sent-mail folder
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Make time edit controls use 12-hour clock when that is the user's default
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Show main alarm times in alarm list, not reminder times
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: New revised DCOP request interface (old interface still kept for compatibility)
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Use KMix whenever possible to set hardware sound volume
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Provide option to run command alarms in a terminal window
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Allow a script to be edited to execute for command alarms
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add Undo/Redo facility for alarm edit/creation/deletion/reactivation
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add text search facility
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add 'New alarm from template' menu option and toolbar button
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add fade option for playing sound files
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Email drag-and-drop from KMail now presets alarm edit dialog with full From/To/Cc/Subject headers and body text
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add option for email text alarms to locate the email in KMail
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add option to log command alarm output to a file
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add Edit button to alarm message window to allow the alarm to be edited
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Add option to show alarms in KOrganizer's active calendar
+  RESPONSIBLE: David Jarvie (software@astrojar.org.uk)
+  TARGET: 3.5
+  STATUS: done
+CATEGORY: KArm
+FEATURE: Allow user to annotate time entry with comment.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Add estimated hours field for tasks.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Edit timecard history.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Advanced locking--react after other app changes ics.
+  RESPONSIBLE: Thorsten Staerk (dev@staerk.de)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Import of Planner tasks.
+  RESPONSIBLE: Thorsten Staerk (dev@staerk.de)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Import of TaskJuggler taks.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Update timecard report.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Enable CVS export to be saved to kurls.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Enable remote resources for timecard storage.
+  RESPONSIBLE: Mark Bucciarelli (mark@hubcapconsulting.com)
+  TARGET: 3.4
+  STATUS: done
+CATEGORY: KNotes
+FEATURE: Make all shortcuts configurable
+  RESPONSIBLE: Michael Brade (brade@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Support for read-only notes
+  RESPONSIBLE: Michael Brade (brade@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Implement searching notes
+  RESPONSIBLE: Michael Brade (brade@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add Alarms for the notes
+  RESPONSIBLE: Michael Brade (brade@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+CATEGORY: KitchenSync
+FEATURE: Syncing with Qtopia/OPIE
+  RESPONSIBLE: Holger Freyther (freyther@kde.org)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Move syncing funtionality of Kandy to KitchenSync
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+CATEGORY: KNode
+FEATURE: Better attachment handling
+  RESPONSIBLE: Roberto Selbach Teixeira (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: Using Komposer
+  RESPONSIBLE: Roberto Selbach Teixeira (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: Share more code with KMail.
+  RESPONSIBLE: Roberto Teixeira (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: Use new subscription dialog from libkdenetwork.
+  RESPONSIBLE: Roberto Teixeira (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: Rewrite the filter system.
+  RESPONSIBLE: Roberto Teixeira (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: Implement S/NEWS support
+  RESPONSIBLE: Roberto Teixeira (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: inprogress
+FEATURE: Add support for PGP/MIME
+  RESPONSIBLE: Roberto Teixeira  (roberto@kde.org)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: SMTP authentication
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: SMTP encryption (SSL/TLS)
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Asynchronous wallet support
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: KHTML-based, KMail-like article viewer
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Emoticon support
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: X-Face support
+  RESPONSIBLE: Jakob Schröter (js@camaya.net)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Macros for custom headers
+  RESPONSIBLE: Jakob Schröter (js@camaya.net)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Per account and per group expiration settings
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: On-demand wallet loading
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Support the 'LIST OVERVIEW.FMT' NNTP command (allows scoring on headers optionally provided by the server)
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: KMail look&feel for group and header view
+  RESPONSIBLE: Volker Krause (volker.krause@rwth-aachen.de)
+  TARGET: 3.4
+  STATUS: done
+CATEGORY: KAddressBook
+FEATURE: Input mask for phone numbers
+  RESPONSIBLE: Tobias Koenig (tokoe@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Creation of 'Contact' menu with the ability to create new contacts from the
+        same company, create a todo or event with the selected contact as an
+        attendee, and a 'Write a letter' entry to launch KWord with the contacts
+        details.
+  RESPONSIBLE: Mark Westcott (mark at houseoffish org)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Show entries sorted by categories.
+  RESPONSIBLE:  ()
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Retrieve pictures from RSS feeds.
+  RESPONSIBLE: Cornelius Schumacher (schumacher@kde.org)
+  TARGET: 3.4
+  STATUS: done
+CATEGORY: KonsoleKalendar
+FEATURE: Support remote calendars
+  RESPONSIBLE: Tuukka Pasanen (illuusio@mailcity.com)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Support calendar locking
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+CATEGORY: libkcal
+FEATURE: Move to new libical version.
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.5
+  STATUS: done
+FEATURE: Functions to sort incidences (events/to-dos/journals) by a variety of criteria and in ascending or descending order.
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.4
+  STATUS: done
+CATEGORY: libkholidays
+FEATURE: New library for handling political, cultural, and religious holidays.
+  RESPONSIBLE: Allen Winter (winter@kde.org)
+  TARGET: 3.5
+  STATUS: todo
+CATEGORY: Akregator
+FEATURE: Move into kdepim to be part of KDE 3.4.
+  RESPONSIBLE: George Staikos (staikos@kde.org)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Make HTTP caching optional
+  RESPONSIBLE: Sashmit Bhaduri (sashmit@gmail.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Add appearance/font settings
+  RESPONSIBLE: Sashmit Bhaduri (sashmit@gmail.com)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Support for tags and filters (possibly combined with RSS categories)
+  RESPONSIBLE: Frank Osterfeld (frank.osterfeld@kdemail.net)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Semi-automatic article classification (for tagging)
+  RESPONSIBLE: Frank Osterfeld (frank.osterfeld@kdemail.net)
+  TARGET: 3.5
+  STATUS: todo
+FEATURE: Add basic support for enclosures (podcasts)
+  RESPONSIBLE: Frank Osterfeld (frank.osterfeld@kdemail.net)
+  TARGET: 3.5
+  STATUS: inprogress
+FEATURE: Add kontact summary widget.
+  RESPONSIBLE: Frank Osterfeld (frank.osterfeld@kdemail.net)
+  TARGET: 4.0
+  STATUS: todo
+FEATURE: Use KNotify for notification.
+  RESPONSIBLE: Frank Osterfeld (frank.osterfeld@kdemail.net)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Use KDEPIM's progressbar.
+  RESPONSIBLE: Teemu Rytilahti (tpr@d5k.net)
+  TARGET: 3.4
+  STATUS: done
+FEATURE: Display Akregator settings in Kontact's settings dialog
+  RESPONSIBLE: Teemu Rytilahti (teemu.rytilahti@kdemail.net)
+  TARGET: 4.0
+  STATUS: inprogress
