@@ -218,7 +218,7 @@ void Creator::createElementWriter( KODE::Class &c, RNG::Element *element )
           code += "xml += indent() + \"<" + e->name + ">\" + " + e->name + "() + \"</" +
                   e->name + ">\\n\";";
         } else {
-          code += "xml += " + type + "()->writeElement();";
+          code += "xml += " + type + "().writeElement();";
         }
       }
     }
@@ -237,7 +237,7 @@ void Creator::createElementWriter( KODE::Class &c, RNG::Element *element )
         code.unindent();
         code += "}";
       } else {
-        code += "xml += " + type + "()->writeElement()";
+        code += "xml += " + type + "().writeElement()";
       }
     }
 
