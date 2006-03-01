@@ -298,12 +298,10 @@ QString Printer::classImplementation( const Class &c )
 
   if ( c.useDPointer() && !c.memberVariables().isEmpty() ) {
     Class privateClass( c.name() + "::PrivateDPtr" );
-
     MemberVariable::List vars = c.memberVariables();
     MemberVariable::List::ConstIterator it;
     for ( it = vars.begin(); it != vars.end(); ++it )
       privateClass.addMemberVariable( *it );
-
     code += classHeader( privateClass, true );
   }
 

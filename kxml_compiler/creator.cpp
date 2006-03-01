@@ -112,7 +112,8 @@ void Creator::createElementFunctions( KODE::Class &c, RNG::Element *e )
 
   QString name = lowerFirst( e->name );
 
-  if ( e->pattern.oneOrMore || e->pattern.zeroOrMore ) {
+  if ( e->pattern.oneOrMore || e->pattern.zeroOrMore ||
+       e->pattern.choice || e->pattern.optional ) {
     registerListTypedef( type );
 
     c.addHeaderInclude( "qlist.h" );
@@ -758,7 +759,7 @@ void Creator::createFileParserCustom( RNG::Element *element )
   stateCode += "if ( c == '>' ) {";
   stateCode += "  state = WHITESPACE;";
   stateCode += "} else if ( foundText" + className + "() ) {";
-  stateCode += "  features = parseElement" + className + "();";
+  stateCode += "  " + element->name + " = parseElement" + className + "();";
   stateCode += "  state = WHITESPACE;";
   stateCode += "}";
 

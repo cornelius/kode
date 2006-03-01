@@ -60,7 +60,7 @@ QString Pattern::asString()
 {
   if ( isEmpty() ) return "";
   QString str = "( ";
-  if ( optional ) str += "optional ";      
+  if ( optional ) str += "optional ";
   if ( zeroOrMore ) str += "zeroOrMore ";
   if ( oneOrMore ) str += "oneOrMore ";
   if ( choice ) str += "choice ";
@@ -98,7 +98,7 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
       d->name = e1.attribute( "name" );
       parseElement( e1, d, Pattern() );
       Element::List definitions;
-      QMap<QString,Element::List >::ConstIterator it; 
+      QMap<QString,Element::List >::ConstIterator it;
       it = mDefinitionMap.find( d->name );
       if ( it != mDefinitionMap.end() ) definitions = *it;
       definitions.append( d );
