@@ -63,10 +63,10 @@ int main( int argc, char **argv )
   	I18N_NOOP("KDE XML Compiler") , KAboutData::License_LGPL );
   aboutData.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
+  KCmdLineArgs::init( argc, argv, &aboutData, KCmdLineArgs::CmdLineArgNone );
   KCmdLineArgs::addCmdLineOptions( options );
 
-  KInstance app( &aboutData );
+  KApplication app( false );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
@@ -113,7 +113,7 @@ int main( int argc, char **argv )
   }
 
   p.dumpDefinitionMap();
-  
+
 //  return 0;
 
   p.substituteReferences( start );
@@ -164,7 +164,7 @@ int main( int argc, char **argv )
   kDebug() << "Begin printing code" << endl;
 
   KODE::File &f = c.file();
-  
+
   f.setFilename( baseName );
 
   KODE::Printer printer;
