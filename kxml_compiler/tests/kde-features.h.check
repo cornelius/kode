@@ -31,7 +31,7 @@
 class Responsible
 {
   public:
-    typedef QList<Responsible *> List;
+    typedef QList<Responsible> List;
 
   public:
     void setName( const QString &v );
@@ -48,7 +48,7 @@ class Responsible
 class Feature
 {
   public:
-    typedef QList<Feature *> List;
+    typedef QList<Feature> List;
 
   public:
     void setStatus( const QString &v );
@@ -57,7 +57,7 @@ class Feature
     QString target() const;
     void setSummary( const QString &v );
     QString summary() const;
-    void addResponsible( Responsible *v );
+    void addResponsible( const Responsible &v );
     void setResponsibleList( const Responsible::List &v );
     Responsible::List responsibleList() const;
     QString writeElement();
@@ -72,15 +72,15 @@ class Feature
 class Category
 {
   public:
-    typedef QList<Category *> List;
+    typedef QList<Category> List;
 
   public:
     void setName( const QString &v );
     QString name() const;
-    void addFeature( Feature *v );
+    void addFeature( const Feature &v );
     void setFeatureList( const Feature::List &v );
     Feature::List featureList() const;
-    void addCategory( Category *v );
+    void addCategory( const Category &v );
     void setCategoryList( const Category::List &v );
     Category::List categoryList() const;
     QString writeElement();
@@ -94,7 +94,7 @@ class Category
 class Features
 {
   public:
-    void addCategory( Category *v );
+    void addCategory( const Category &v );
     void setCategoryList( const Category::List &v );
     Category::List categoryList() const;
     QString writeElement();

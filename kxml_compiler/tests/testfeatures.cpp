@@ -39,32 +39,28 @@ static const KCmdLineOptions options[] =
   KCmdLineLastOption
 };
 
-void displayFeature( Feature *f )
+void displayFeature( const Feature &f )
 {
-  std::cout << "FEATURE: " << f->summary().local8Bit().data() << std::endl;
-  Responsible::List r = f->responsibleList();
-  Responsible::List::ConstIterator it;
-  for( it = r.begin(); it != r.end(); ++it ) {
-    std::cout << "  RESPONSIBLE: " << (*it)->name().local8Bit().data() << " ("
-              << (*it)->email().local8Bit().data() << ")" << std::endl;
+  std::cout << "FEATURE: " << f.summary().local8Bit().data() << std::endl;
+  foreach( Responsible r, f.responsibleList() ) {
+    std::cout << "  RESPONSIBLE: " << r.name().local8Bit().data() << " ("
+              << r.email().local8Bit().data() << ")" << std::endl;
   }
-  std::cout << "  TARGET: " << f->target().local8Bit().data() << std::endl;
-  std::cout << "  STATUS: " << f->status().local8Bit().data() << std::endl;
+  std::cout << "  TARGET: " << f.target().local8Bit().data() << std::endl;
+  std::cout << "  STATUS: " << f.status().local8Bit().data() << std::endl;
 }
 
-void displayCategory( const QList<Category *> categories )
+void displayCategory( Category::List categories )
 {
-  Category::List::ConstIterator it;
-  for( it = categories.begin(); it != categories.end(); ++it ) {
-    std::cout << "CATEGORY: " << (*it)->name().local8Bit().data() << std::endl;
+  foreach( Category c, categories ) {
+    std::cout << "CATEGORY: " << c.name().local8Bit().data() << std::endl;
     
-    Feature::List features = (*it)->featureList();
-    Feature::List::ConstIterator it2;
-    for( it2 = features.begin(); it2 != features.end(); ++it2 ) {
-      displayFeature( *it2 );
+    Feature::List features = c.featureList();
+    foreach( Feature f, features ) {
+      displayFeature( f );
     }
   
-    displayCategory( (*it)->categoryList() );
+    displayCategory( c.categoryList() );
   }
 }
 
@@ -87,18 +83,19 @@ int main( int argc, char **argv )
 
   FeaturesParser parser;
 
-  Features *features = parser.parseFile( filename );
+  bool ok;
+  Features features = parser.parseFile( filename, &ok );
 
-  if ( !features ) {
+  if ( !ok ) {
     kError() << "Parse error" << endl;
   } else {
-    QList<Category *> categories = features->categoryList();
+    Category::List categories = features.categoryList();
     displayCategory( categories );
   }
 
   if ( args->isSet( "output" ) ) {
     QString out = args->getOption( "output" );
-    if ( !features->writeFile( out ) ) {
+    if ( !features.writeFile( out ) ) {
       kError() << "Write error" << endl;
     }
   }

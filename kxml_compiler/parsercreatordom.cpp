@@ -57,11 +57,12 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   if ( creator()->externalParser() ) functionName = "parseElement" + c.name();
   else functionName = "parseElement";
 
-  KODE::Function parser( functionName, c.name() + " *" );
+  KODE::Function parser( functionName, c.name() );
   parser.setStatic( true );
   parser.setDocs( "Parse XML object from DOM element." );
 
   parser.addArgument( "const QDomElement &element" );
+  parser.addArgument( "bool *ok" );
 
   KODE::Code code;
 
@@ -69,12 +70,13 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   code.indent();
   code += "kError() << \"Expected '" + e.name() + "', got '\" << " +
           "element.tagName() << \"'.\" << endl;";
-  code += "return 0;";
+  code += "if ( ok ) *ok = false;";
+  code += "return " + c.name() + "();";
   code.unindent();
   code += "}";
   code.newLine();
 
-  code += c.name() + " *result = new " + c.name() + "();";
+  code += c.name() + " result = " + c.name() + "();";
   code.newLine();
 
   code += "QDomNode n;";
@@ -99,18 +101,19 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
       creator()->document().element( (*it).target() );
 
     if ( targetElement.text() ) {
-      code += "result->set" + className + "( e.text() );";
+      code += "result.set" + className + "( e.text() );";
     } else {
-      QString line = className + " *o = ";
+      code += "bool ok;";
+      QString line = className + " o = ";
       if ( creator()->externalParser() ) {
         line += "parseElement" + className;
       } else {
         line += className + "::parseElement";
       }
-      line += "( e );";
+      line += "( e, &ok );";
       code += line;
 
-      code += "if ( o ) result->add" + className + "( o );";
+      code += "if ( ok ) result.add" + className + "( o );";
     }
 
     code.unindent();
@@ -123,11 +126,12 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
-    code += "result->set" + creator()->upperFirst( a.name() ) +
+    code += "result.set" + creator()->upperFirst( a.name() ) +
             "( element.attribute( \"" + a.name() + "\" ) );";
   }
   code.newLine();
 
+  code += "if ( ok ) *ok = true;";
   code += "return result;";
 
   parser.setBody( code );
@@ -154,10 +158,11 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
     c = creator()->file().findClass( className );
   }
 
-  KODE::Function parser( "parseFile", className + " *" );
+  KODE::Function parser( "parseFile", className );
   parser.setStatic( true );
 
   parser.addArgument( "const QString &filename" );
+  parser.addArgument( "bool *ok" );
 
   c.addInclude( "qfile.h" );
   c.addInclude( "qdom.h" );
@@ -168,7 +173,8 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
   code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
-  code += "  return 0;";
+  code += "  if ( ok ) *ok = false;";
+  code += "  return " + className + "();";
   code += "}";
   code += "";
   code += "QString errorMsg;";
@@ -176,18 +182,23 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "QDomDocument doc;";
   code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
   code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol << endl;";
-  code += "  return 0;";
+  code += "  if ( ok ) *ok = false;";
+  code += "  return " + className + "();";
   code += "}";
   code += "";
   code += "kDebug() << \"CONTENT:\" << doc.toString() << endl;";
 
-  code += "";
+  code.newLine();
 
-  QString line = className + " *c = parseElement";
+  code += "bool documentOk;";
+  QString line = className + " c = parseElement";
   if ( creator()->externalParser() ) line += className;
-  line += "( doc.documentElement() );";
+  line += "( doc.documentElement(), &documentOk );";
   code += line;
 
+  code += "if ( ok ) {";
+  code += "  *ok = documentOk;";
+  code += "}";
   code += "return c;";
 
   parser.setBody( code );

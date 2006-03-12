@@ -138,7 +138,7 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     name = name + "List";
 
     KODE::Function adder( "add" + className, "void" );
-    adder.addArgument( className + " *v" );
+    adder.addArgument( "const " + className + " &v" );
 
     KODE::Code code;
     code += "m" + upperFirst( name ) + ".append( v );";
@@ -210,9 +210,9 @@ void Creator::createElementWriter( KODE::Class &c,
     foreach( Schema::Relation r, element.elementRelations() ) {
       QString type = upperFirst( r.target() );
       if ( r.isList() ) {
-        code += "foreach( " + type + " *e, " + r.target() + "List() ) {";
+        code += "foreach( " + type + " e, " + r.target() + "List() ) {";
         code.indent();
-        code += "xml += e->writeElement();";
+        code += "xml += e.writeElement();";
         code.unindent();
         code += "}";
       } else {
@@ -268,7 +268,7 @@ void Creator::createListTypedefs()
   for( it = mListTypedefs.begin(); it != mListTypedefs.end(); ++it ) {
     KODE::Class c = mFile.findClass( *it );
     if ( !c.isValid() ) continue;
-    c.addTypedef( KODE::Typedef( "QList<" + *it + " *>", "List" ) );
+    c.addTypedef( KODE::Typedef( "QList<" + *it + ">", "List" ) );
     mFile.insertClass( c );
   }
 }

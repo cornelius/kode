@@ -96,7 +96,7 @@ QString Feature::summary() const
   return mSummary;
 }
 
-void Feature::addResponsible( Responsible *v )
+void Feature::addResponsible( const Responsible &v )
 {
   mResponsibleList.append( v );
 }
@@ -117,8 +117,8 @@ QString Feature::writeElement()
   xml += indent() + "<feature status=\"" + status() + "\" target=\"" + target() + "\">\n";
   indent( 2 );
   xml += indent() + "<summary>" + summary() + "</summary>\n";
-  foreach( Responsible *e, responsibleList() ) {
-    xml += e->writeElement();
+  foreach( Responsible e, responsibleList() ) {
+    xml += e.writeElement();
   }
   indent( -2 );
   xml += indent() + "</feature>\n";
@@ -136,7 +136,7 @@ QString Category::name() const
   return mName;
 }
 
-void Category::addFeature( Feature *v )
+void Category::addFeature( const Feature &v )
 {
   mFeatureList.append( v );
 }
@@ -151,7 +151,7 @@ Feature::List Category::featureList() const
   return mFeatureList;
 }
 
-void Category::addCategory( Category *v )
+void Category::addCategory( const Category &v )
 {
   mCategoryList.append( v );
 }
@@ -171,11 +171,11 @@ QString Category::writeElement()
   QString xml;
   xml += indent() + "<category name=\"" + name() + "\">\n";
   indent( 2 );
-  foreach( Feature *e, featureList() ) {
-    xml += e->writeElement();
+  foreach( Feature e, featureList() ) {
+    xml += e.writeElement();
   }
-  foreach( Category *e, categoryList() ) {
-    xml += e->writeElement();
+  foreach( Category e, categoryList() ) {
+    xml += e.writeElement();
   }
   indent( -2 );
   xml += indent() + "</category>\n";
@@ -183,7 +183,7 @@ QString Category::writeElement()
 }
 
 
-void Features::addCategory( Category *v )
+void Features::addCategory( const Category &v )
 {
   mCategoryList.append( v );
 }
@@ -203,8 +203,8 @@ QString Features::writeElement()
   QString xml;
   xml += indent() + "<features>\n";
   indent( 2 );
-  foreach( Category *e, categoryList() ) {
-    xml += e->writeElement();
+  foreach( Category e, categoryList() ) {
+    xml += e.writeElement();
   }
   indent( -2 );
   xml += indent() + "</features>\n";
