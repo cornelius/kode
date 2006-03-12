@@ -169,7 +169,7 @@ int main( int argc, char **argv )
 
   KODE::Printer printer;
   printer.setCreationWarning( true );
-  printer.setGenerator( KCmdLineArgs::appName() );
+  printer.setGenerator( aboutData.appName() );
   printer.setOutputDirectory( baseDir );
   printer.setSourceFile( args->url( 0 ).fileName() );
 
