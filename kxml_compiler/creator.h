@@ -1,7 +1,7 @@
 /*
     This file is part of KDE.
 
-    Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2004-2006 Cornelius Schumacher <schumacher@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -63,6 +63,11 @@ class Creator
 
     KODE::File &file();
 
+    void setParserClass( const KODE::Class & );
+    KODE::Class &parserClass();
+
+    const Schema::Document &document() const;
+
     QString upperFirst( const QString &str );
     QString lowerFirst( const QString &str );
     
@@ -85,12 +90,9 @@ class Creator
   protected:
     void setExternalClassNames();
 
-    void createFileParserDom( const Schema::Element &element );
     void createFileParserCustom( const Schema::Element &element );
 
     void createElementParser( KODE::Class &c, const Schema::Element &e );
-
-    void createElementParserDom( KODE::Class &c, const Schema::Element &e );
 
     void createElementParserCustom( KODE::Class &c, const Schema::Element &e );
     void createTextElementParserCustom( KODE::Class &c,
@@ -115,6 +117,22 @@ class Creator
     KODE::Class mWriterClass;
     QStringList mProcessedClasses;
     QStringList mListTypedefs;
+};
+
+class ParserCreator
+{
+  public:
+    ParserCreator( Creator * );
+    virtual ~ParserCreator();
+  
+    Creator *creator() const;
+
+    virtual void createFileParser( const Schema::Element &element ) = 0;
+    virtual void createElementParser( KODE::Class &c,
+      const Schema::Element &e ) = 0;
+  
+  private:
+    Creator *mCreator;
 };
 
 #endif

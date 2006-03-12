@@ -21,6 +21,8 @@
 
 #include "creator.h"
 
+#include "parsercreatordom.h"
+
 #include <libkode/code.h>
 #include <libkode/printer.h>
 #include <libkode/typedef.h>
@@ -239,8 +241,11 @@ void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
   switch ( mXmlParserType ) {
     case XmlParserDom:
     case XmlParserDomExternal:
-      createElementParserDom( c, e );
+      {
+      ParserCreatorDom parserCreator( this );
+      parserCreator.createElementParser( c, e );
       break;
+      }
     case XmlParserCustomExternal:
       createElementParserCustom( c, e );
       break;
@@ -489,94 +494,6 @@ KODE::Code Creator::createAttributeScanner( const Schema::Attribute &a,
   return code;
 }
 
-void Creator::createElementParserDom( KODE::Class &c, const Schema::Element &e )
-{
-  QString functionName;
-  if ( externalParser() ) functionName = "parseElement" + c.name();
-  else functionName = "parseElement";
-
-  KODE::Function parser( functionName, c.name() + " *" );
-  parser.setStatic( true );
-  parser.setDocs( "Parse XML object from DOM element." );
-
-  parser.addArgument( "const QDomElement &element" );
-
-  KODE::Code code;
-
-  code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
-  code.indent();
-  code += "kError() << \"Expected '" + e.name() + "', got '\" << " +
-          "element.tagName() << \"'.\" << endl;";
-  code += "return 0;";
-  code.unindent();
-  code += "}";
-  code.newLine();
-
-  code += c.name() + " *result = new " + c.name() + "();";
-  code.newLine();
-
-  code += "QDomNode n;";
-  code += "for( n = element.firstChild(); !n.isNull();"
-              " n = n.nextSibling() ) {";
-  code.indent();
-  code += "QDomElement e = n.toElement();";
-
-  Schema::Relation::List elementRelations = e.elementRelations();
-  Schema::Relation::List::ConstIterator it;
-  for( it = elementRelations.begin(); it != elementRelations.end(); ++it ) {
-    QString condition;
-    if ( it != elementRelations.begin() ) condition = "else ";
-    condition += "if";
-
-    code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
-    code.indent();
-
-    QString className = upperFirst( (*it).target() );
-
-    Schema::Element targetElement = mDocument.element( (*it).target() );
-
-    if ( targetElement.text() ) {
-      code += "result->set" + className + "( e.text() );";
-    } else {
-      QString line = className + " *o = ";
-      if ( externalParser() ) {
-        line += "parseElement" + className;
-      } else {
-        line += className + "::parseElement";
-      }
-      line += "( e );";
-      code += line;
-
-      code += "if ( o ) result->add" + className + "( o );";
-    }
-
-    code.unindent();
-    code += "}";
-  }
-
-  code.unindent();
-  code += "}";
-  code.newLine();
-
-  foreach( Schema::Relation r, e.attributeRelations() ) {
-    Schema::Attribute a = mDocument.attribute( r );
-    code += "result->set" + upperFirst( a.name() ) +
-            "( element.attribute( \"" + a.name() + "\" ) );";
-  }
-  code.newLine();
-
-  code += "return result;";
-
-  parser.setBody( code );
-
-  if ( externalParser() ) {
-    mParserClass.addFunction( parser );
-    mParserClass.addHeaderInclude( "qdom.h" );
-  } else {
-    c.addFunction( parser );
-  }
-}
-
 void Creator::registerListTypedef( const QString &type )
 {
   if ( !mListTypedefs.contains( type ) ) mListTypedefs.append( type );
@@ -662,8 +579,11 @@ void Creator::createFileParser( const Schema::Element &element )
   switch ( mXmlParserType ) {
     case XmlParserDom:
     case XmlParserDomExternal:
-      createFileParserDom( element );
+      {
+      ParserCreatorDom parserCreator( this );
+      parserCreator.createFileParser( element );
       break;
+      }
     case XmlParserCustomExternal:
       createFileParserCustom( element );
       break;
@@ -767,67 +687,6 @@ void Creator::createFoundTextFunction( const QString &text )
   mParserClass.addFunction( f );
 }
 
-void Creator::createFileParserDom( const Schema::Element &element )
-{
-  kDebug() << "Creator::createFileParserDom()" << endl;
-
-  QString className = upperFirst( element.name() );
-
-  KODE::Class c;
-
-  if ( externalParser() ) {
-    c = mParserClass;
-  } else {
-    c = mFile.findClass( className );
-  }
-
-  KODE::Function parser( "parseFile", className + " *" );
-  parser.setStatic( true );
-
-  parser.addArgument( "const QString &filename" );
-
-  c.addInclude( "qfile.h" );
-  c.addInclude( "qdom.h" );
-  c.addInclude( "kdebug.h" );
-
-  KODE::Code code;
-
-  code += "QFile file( filename );";
-  code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
-  code += "  return 0;";
-  code += "}";
-  code += "";
-  code += "QString errorMsg;";
-  code += "int errorLine, errorCol;";
-  code += "QDomDocument doc;";
-  code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
-  code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol << endl;";
-  code += "  return 0;";
-  code += "}";
-  code += "";
-  code += "kDebug() << \"CONTENT:\" << doc.toString() << endl;";
-
-  code += "";
-
-  QString line = className + " *c = parseElement";
-  if ( externalParser() ) line += className;
-  line += "( doc.documentElement() );";
-  code += line;
-
-  code += "return c;";
-
-  parser.setBody( code );
-
-  c.addFunction( parser );
-
-  if ( externalParser() ) {
-    mParserClass = c;
-  } else {
-    mFile.insertClass( c );
-  }
-}
-
 void Creator::printFiles( KODE::Printer &printer )
 {
   if ( externalParser() ) {
@@ -861,4 +720,34 @@ bool Creator::externalParser() const
 bool Creator::externalWriter() const
 {
   return mXmlWriterType == XmlWriterCustomExternal;
+}
+
+const Schema::Document &Creator::document() const
+{
+  return mDocument;
+}
+
+void Creator::setParserClass( const KODE::Class &c )
+{
+  mParserClass = c;
+}
+
+KODE::Class &Creator::parserClass()
+{
+  return mParserClass;
+}
+
+
+ParserCreator::ParserCreator( Creator *c )
+  : mCreator( c )
+{
+}
+
+ParserCreator::~ParserCreator()
+{
+}
+
+Creator *ParserCreator::creator() const
+{
+  return mCreator;
 }

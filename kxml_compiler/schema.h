@@ -120,13 +120,13 @@ class Document
 
     void addElement( const Element & );
     Element::List elements() const;
-    Element element( const QString &identifier );
-    Element element( const Relation & );
+    Element element( const QString &identifier ) const;
+    Element element( const Relation & ) const;
 
     void addAttribute( const Attribute & );
     Attribute::List attributes() const;
-    Attribute attribute( const QString &identifier );
-    Attribute attribute( const Relation & );
+    Attribute attribute( const QString &identifier ) const;
+    Attribute attribute( const Relation & ) const;
 
     Element::List usedElements();
 

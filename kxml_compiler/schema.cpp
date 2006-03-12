@@ -51,7 +51,7 @@ Element::List Document::elements() const
   return mElements;
 }
 
-Element Document::element( const QString &identifier )
+Element Document::element( const QString &identifier ) const
 {
   foreach( Element e, mElements ) {
     if ( e.identifier() == identifier ) return e;
@@ -59,7 +59,7 @@ Element Document::element( const QString &identifier )
   return Element();
 }
 
-Element Document::element( const Relation &relation )
+Element Document::element( const Relation &relation ) const
 {
   return element( relation.target() );
 }
@@ -110,7 +110,7 @@ Attribute::List Document::attributes() const
   return mAttributes;
 }
 
-Attribute Document::attribute( const QString &identifier )
+Attribute Document::attribute( const QString &identifier ) const
 {
   foreach( Attribute a, mAttributes ) {
     if ( a.identifier() == identifier ) return a;
@@ -118,7 +118,7 @@ Attribute Document::attribute( const QString &identifier )
   return Attribute();
 }
 
-Attribute Document::attribute( const Relation &relation )
+Attribute Document::attribute( const Relation &relation ) const
 {
   return attribute( relation.target() );
 }
