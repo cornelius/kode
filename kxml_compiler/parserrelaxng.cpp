@@ -317,7 +317,7 @@ Schema::Element ParserRelaxng::convertToSchemaElement( Element *e )
   schemaElement.setName( e->name );
   schemaElement.setIdentifier( e->name );
 
-  if ( e->hasText ) schemaElement.setMixed( true );
+  if ( e->hasText ) schemaElement.setText( true );
 
   foreach( Element *element, e->elements ) {
     QString id = element->name;

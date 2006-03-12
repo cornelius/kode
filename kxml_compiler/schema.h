@@ -80,8 +80,10 @@ class Element : public Node
   
     Element();
 
-    void setMixed( bool );
     bool mixed() const;
+
+    void setText( bool );
+    bool text() const;
 
     void addElementRelation( const Relation & );
     Relation::List elementRelations() const;
@@ -90,7 +92,7 @@ class Element : public Node
     Relation::List attributeRelations() const;
 
   private:
-    bool mMixed;
+    bool mText;
 
     Relation::List mElementRelations;
     Relation::List mAttributeRelations;

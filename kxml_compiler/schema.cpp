@@ -82,6 +82,7 @@ void Document::dump() const
 {
   foreach( Element e, mElements ) {
     qDebug() << "ELEMENT " << e.identifier() << ": " << e.name();
+    if ( e.text() ) qDebug() << "  TEXT";
     if ( e.mixed() ) qDebug() << "  MIXED";
     foreach( Relation r, e.elementRelations() ) {
       dumpRelation( r, "ELEMENT" );
@@ -188,7 +189,7 @@ bool Node::isValid() const
 
 
 Element::Element()
-  : mMixed( false )
+  : mText( false )
 {
 }
 
@@ -212,14 +213,19 @@ Relation::List Element::attributeRelations() const
   return mAttributeRelations;
 }
 
-void Element::setMixed( bool mixed )
-{
-  mMixed = mixed;
-}
-
 bool Element::mixed() const
 {
-  return mMixed;
+  return mText && !mElementRelations.isEmpty();
+}
+
+void Element::setText( bool text )
+{
+  mText = text;
+}
+
+bool Element::text() const
+{
+  return mText;
 }
 
 
