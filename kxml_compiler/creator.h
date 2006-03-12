@@ -90,16 +90,7 @@ class Creator
   protected:
     void setExternalClassNames();
 
-    void createFileParserCustom( const Schema::Element &element );
-
     void createElementParser( KODE::Class &c, const Schema::Element &e );
-
-    void createElementParserCustom( KODE::Class &c, const Schema::Element &e );
-    void createTextElementParserCustom( KODE::Class &c,
-      const Schema::Element &e );
-    KODE::Code createAttributeScanner( const Schema::Attribute &a,
-      bool firstAttribute );
-    void createFoundTextFunction( const QString &text );
 
     void createElementWriter( KODE::Class &c, const Schema::Element &e );
 
