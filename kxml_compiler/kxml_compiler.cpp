@@ -21,6 +21,7 @@
 
 #include "parserrelaxng.h"
 #include "creator.h"
+#include "schema.h"
 
 #include <libkode/code.h>
 #include <libkode/printer.h>
@@ -122,6 +123,10 @@ int main( int argc, char **argv )
   std::cout << "--- TREE:" << std::endl;
   p.dumpTree( start );
 #endif
+
+  Schema::Document schemaDocument = p.convertToSchema( start );
+  std::cout << "--- SCHEMA:" << std::endl;
+  schemaDocument.dump();
 
   kDebug() << "Begin creating code" << endl;
 

@@ -299,3 +299,82 @@ void ParserRelaxng::dumpDefinitionMap()
     dumpElements( *it, 2 );
   }
 }
+
+Schema::Document ParserRelaxng::convertToSchema( Element *start )
+{
+  Element::List elements = start->elements;
+  if ( !elements.isEmpty() ) {
+    Schema::Element element = convertToSchemaElement( elements.first() );
+    mDocument.setStartElement( element );    
+  }
+  
+  return mDocument;
+}
+
+Schema::Element ParserRelaxng::convertToSchemaElement( Element *e )
+{
+  Schema::Element schemaElement;
+  schemaElement.setName( e->name );
+  schemaElement.setIdentifier( e->name );
+
+  if ( e->hasText ) schemaElement.setMixed( true );
+
+  foreach( Element *element, e->elements ) {
+    QString id = element->name;
+    if ( !mDocument.element( id ).isValid() ) {
+      Schema::Element relatedElement = convertToSchemaElement( element );
+    }
+    Schema::Relation relation = convertToRelation( element->pattern, id );
+    schemaElement.addElementRelation( relation );
+  }
+  
+  foreach( Attribute *attribute, e->attributes ) {
+    QString id = schemaElement.identifier() + "/" + attribute->name;
+    if ( !mDocument.attribute( id ).isValid() ) {
+      Schema::Attribute relatedAttribute = convertToSchemaAttribute(
+        schemaElement.identifier(), attribute );
+    }
+    Schema::Relation relation = convertToRelation( attribute->pattern, id );
+    schemaElement.addAttributeRelation( relation );
+  }
+
+  foreach( Reference *reference, e->references ) {
+    QString id = reference->name;
+    Schema::Relation relation = convertToRelation( reference->pattern, id );
+    schemaElement.addElementRelation( relation );
+  }
+
+  mDocument.addElement( schemaElement );  
+
+  return schemaElement;
+}
+
+Schema::Relation ParserRelaxng::convertToRelation( const Pattern &pattern,
+  const QString &id )
+{
+  Schema::Relation relation( id );
+  if ( pattern.optional ) {
+    relation.setMinOccurs( 0 );
+    relation.setMaxOccurs( 1 );
+  } else if ( pattern.zeroOrMore ) {
+    relation.setMinOccurs( 0 );
+    relation.setMaxOccurs( Schema::Relation::Unbounded );
+  } else if ( pattern.oneOrMore ) {
+    relation.setMinOccurs( 1 );
+    relation.setMaxOccurs( Schema::Relation::Unbounded );
+  }
+
+  return relation;
+}
+
+Schema::Attribute ParserRelaxng::convertToSchemaAttribute( const QString &path,
+  Attribute *a )
+{
+  Schema::Attribute schemaAttribute;
+  schemaAttribute.setName( a->name );
+  schemaAttribute.setIdentifier( path + "/" + a->name );
+
+  mDocument.addAttribute( schemaAttribute );
+
+  return schemaAttribute;
+}

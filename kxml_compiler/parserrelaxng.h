@@ -21,6 +21,8 @@
 #ifndef PARSERRELAXNG_H
 #define PARSERRELAXNG_H
 
+#include "schema.h"
+
 #include <libkode/code.h>
 #include <libkode/printer.h>
 #include <libkode/typedef.h>
@@ -120,6 +122,13 @@ class ParserRelaxng
 
     void substituteReferences( Element *s );
 
+    Schema::Document convertToSchema( Element *start );
+    Schema::Element convertToSchemaElement( Element *e );
+    Schema::Attribute convertToSchemaAttribute( const QString &path,
+      Attribute *a );
+    Schema::Relation convertToRelation( const Pattern &pattern,
+      const QString &id );
+
     void doIndent( int cols );
 
     void dumpPattern( Pattern pattern );
@@ -134,6 +143,8 @@ class ParserRelaxng
 
   private:
     QMap<QString,Element::List> mDefinitionMap;
+    
+    Schema::Document mDocument;
 };
 
 }

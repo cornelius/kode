@@ -64,7 +64,10 @@ void Creator::setExternalClassNames()
   mWriterClass.setName( mExternalClassPrefix + "Writer" );
 }
 
-KODE::File &Creator::file() { return mFile; }
+KODE::File &Creator::file()
+{
+  return mFile;
+}
 
 QString Creator::upperFirst( const QString &str )
 {
@@ -77,7 +80,7 @@ QString Creator::lowerFirst( const QString &str )
 }
 
 void Creator::createProperty( KODE::Class &c, const QString &type,
-                     const QString &name )
+  const QString &name )
 {
   KODE::MemberVariable v( name, type );
   c.addMemberVariable( v );
