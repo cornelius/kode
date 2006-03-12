@@ -7,6 +7,9 @@ runcheck: testfeatures
 	  >features.out.txt
 	$(srcdir)/checkfiles.pl $(srcdir)
 
+reference:
+	$(srcdir)/checkfiles.pl $(srcdir) --reference
+
 kde-features.h kde-features.cpp kde-features_parser.cpp: kde-features.xsd kde-features.rng ../kxml_compiler
 	../kxml_compiler --external-parser $(srcdir)/kde-features.rng
 
