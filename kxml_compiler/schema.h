@@ -48,6 +48,8 @@ class Relation
     void setTarget( const QString &identifier );
     QString target() const;
 
+    QString asString( const QString &type = QString::null ) const;
+
   private:
     QString mTarget;
 
@@ -91,6 +93,8 @@ class Element : public Node
     void addAttributeRelation( const Relation & );
     Relation::List attributeRelations() const;
 
+    bool isEmpty() const;
+
   private:
     bool mText;
 
@@ -117,19 +121,28 @@ class Document
     void addElement( const Element & );
     Element::List elements() const;
     Element element( const QString &identifier );
+    Element element( const Relation & );
 
     void addAttribute( const Attribute & );
     Attribute::List attributes() const;
     Attribute attribute( const QString &identifier );
+    Attribute attribute( const Relation & );
+
+    Element::List usedElements();
 
     void dump() const;
-    void dumpRelation( const Relation &r, const QString &type ) const;
+
+  protected:
+    void findUsedElements( const Element &e );
+    bool addUsedElement( const Element &element );
 
   private:
     Element mStartElement;
 
     Element::List mElements;
     Attribute::List mAttributes;
+
+    Element::List mUsedElements;
 };
 
 }

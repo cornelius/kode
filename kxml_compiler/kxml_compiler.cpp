@@ -139,32 +139,19 @@ int main( int argc, char **argv )
     pt = Creator::XmlParserDom;
   }
 
-  Creator c( pt );
+  Creator c( schemaDocument, pt );
 
   kDebug() << "Create classes" << endl;
-  QList<RNG::Element *>::ConstIterator it;
-  for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
-    c.createClass( *it );
+  foreach( Schema::Element e, schemaDocument.usedElements() ) {
+    c.createClass( e );
   }
   kDebug() << "Create parser" << endl;
-  for( it = start->elements.begin(); it != start->elements.end(); ++it ) {
-    c.setExternalClassPrefix( c.upperFirst( (*it)->name ) );
-    c.createFileParser( *it );
-    c.createFileWriter( *it, dtdFilename.replace( "rng", "dtd" ) );
-  }
+  Schema::Element startElement = schemaDocument.startElement();
+  c.setExternalClassPrefix( c.upperFirst( startElement.name() ) );
+  c.createFileParser( startElement );
+  c.createFileWriter( startElement, dtdFilename.replace( "rng", "dtd" ) );
 
   c.createListTypedefs();
-
-#if 0
-  QList<RNG::Reference *>::ConstIterator it2;
-  for( it2 = start->references.begin(); it2 != start->references.end();
-       ++it2 ) {
-    Element e;
-    e.name = (*it2)->name;
-    e.pattern = (*it2)->pattern;
-    c.createClass( &e );
-  }
-#endif
 
   kDebug() << "Begin printing code" << endl;
 

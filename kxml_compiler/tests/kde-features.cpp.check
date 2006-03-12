@@ -117,10 +117,8 @@ QString Feature::writeElement()
   xml += indent() + "<feature status=\"" + status() + "\" target=\"" + target() + "\">\n";
   indent( 2 );
   xml += indent() + "<summary>" + summary() + "</summary>\n";
-  Responsible::List list = responsibleList();
-  Responsible::List::ConstIterator it;
-  for( it = list.begin(); it != list.end(); ++it ) {
-    xml += (*it)->writeElement();
+  foreach( Responsible *e, responsibleList() ) {
+    xml += e->writeElement();
   }
   indent( -2 );
   xml += indent() + "</feature>\n";
@@ -173,15 +171,11 @@ QString Category::writeElement()
   QString xml;
   xml += indent() + "<category name=\"" + name() + "\">\n";
   indent( 2 );
-  Feature::List list = featureList();
-  Feature::List::ConstIterator it;
-  for( it = list.begin(); it != list.end(); ++it ) {
-    xml += (*it)->writeElement();
+  foreach( Feature *e, featureList() ) {
+    xml += e->writeElement();
   }
-  Category::List list2 = categoryList();
-  Category::List::ConstIterator it2;
-  for( it2 = list2.begin(); it2 != list2.end(); ++it2 ) {
-    xml += (*it2)->writeElement();
+  foreach( Category *e, categoryList() ) {
+    xml += e->writeElement();
   }
   indent( -2 );
   xml += indent() + "</category>\n";
@@ -209,10 +203,8 @@ QString Features::writeElement()
   QString xml;
   xml += indent() + "<features>\n";
   indent( 2 );
-  Category::List list = categoryList();
-  Category::List::ConstIterator it;
-  for( it = list.begin(); it != list.end(); ++it ) {
-    xml += (*it)->writeElement();
+  foreach( Category *e, categoryList() ) {
+    xml += e->writeElement();
   }
   indent( -2 );
   xml += indent() + "</features>\n";

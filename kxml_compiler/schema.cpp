@@ -59,6 +59,46 @@ Element Document::element( const QString &identifier )
   return Element();
 }
 
+Element Document::element( const Relation &relation )
+{
+  return element( relation.target() );
+}
+
+Element::List Document::usedElements()
+{
+  mUsedElements.clear();
+  findUsedElements( mStartElement );
+  return mUsedElements;
+}
+
+void Document::findUsedElements( const Element &e )
+{
+  addUsedElement( e );
+
+  foreach( Relation r, e.elementRelations() ) {
+    Element e2 = element( r );
+    if ( !e2.mixed() && addUsedElement( e2 ) ) {
+      findUsedElements( e2 );
+    }
+  }
+}
+
+bool Document::addUsedElement( const Element &element )
+{
+  bool found = false;
+  foreach( Element usedElement, mUsedElements ) {
+    if ( usedElement.identifier() == element.identifier() ) {
+      found = true;
+      break;
+    }
+  }
+  if ( !found ) {
+    mUsedElements.prepend( element );
+    return true;
+  } else {
+    return false;
+  }
+}
 
 void Document::addAttribute( const Attribute &a )
 {
@@ -78,6 +118,11 @@ Attribute Document::attribute( const QString &identifier )
   return Attribute();
 }
 
+Attribute Document::attribute( const Relation &relation )
+{
+  return attribute( relation.target() );
+}
+
 void Document::dump() const
 {
   foreach( Element e, mElements ) {
@@ -85,25 +130,14 @@ void Document::dump() const
     if ( e.text() ) qDebug() << "  TEXT";
     if ( e.mixed() ) qDebug() << "  MIXED";
     foreach( Relation r, e.elementRelations() ) {
-      dumpRelation( r, "ELEMENT" );
+      qDebug() << r.asString( "ELEMENT" );
     }
     foreach( Relation r, e.attributeRelations() ) {
-      dumpRelation( r, "ATTRIBUTE" );
+      qDebug() << r.asString( "ATTRIBUTE" );
     }
   }
   foreach( Attribute a, mAttributes ) {
     qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name();
-  }
-}
-
-void Document::dumpRelation( const Relation &r, const QString &type ) const
-{
-  if ( r.maxOccurs() == Relation::Unbounded ) {
-    qDebug() << "  R" << type << ":" << r.target() << " (" << r.minOccurs() <<
-      ", UNBOUNDED )";
-  } else {
-    qDebug() << "  R" << type << ":" << r.target() << " (" << r.minOccurs() <<
-      "," << r.maxOccurs() << ")";
   }
 }
 
@@ -144,7 +178,7 @@ bool Relation::isRequired() const
 
 bool Relation::isList() const
 {
-  return mMaxOccurs > 1;
+  return mMaxOccurs > 1 || mMaxOccurs == Unbounded;
 }
 
 void Relation::setTarget( const QString &identifier )
@@ -155,6 +189,20 @@ void Relation::setTarget( const QString &identifier )
 QString Relation::target() const
 {
   return mTarget;
+}
+
+QString Relation::asString( const QString &type ) const
+{
+  QString out = "  R " + type + ": " + target() + " (" +
+    QString::number( minOccurs() ) + ",";
+  if ( maxOccurs() == Relation::Unbounded ) {
+    out += "UNBOUNDED";
+  } else {
+    out += QString::number( maxOccurs() );
+  }
+  out += ")";
+
+  return out;
 }
 
 
@@ -228,6 +276,10 @@ bool Element::text() const
   return mText;
 }
 
+bool Element::isEmpty() const
+{
+  return !mText && mElementRelations.isEmpty();
+}
 
 Attribute::Attribute()
 {

@@ -45,8 +45,9 @@
 
 #include <iostream>
 
-Creator::Creator( XmlParserType p, XmlWriterType w )
-  : mXmlParserType( p ), mXmlWriterType( w )
+Creator::Creator( const Schema::Document &document, XmlParserType p,
+  XmlWriterType w )
+  : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w )
 {
   setExternalClassNames();
 }
@@ -96,30 +97,38 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
   c.addFunction( accessor );
 }
 
-void Creator::createElementFunctions( KODE::Class &c, RNG::Element *e )
+void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
+  const Schema::Relation &r )
 {
-  if ( e->hasText ) {
-    createProperty( c, "QString", e->name );
-    c.addHeaderInclude( "qstring.h" );
+#if 0
+  kDebug() << "Creator::createElementFunctions()" << endl;
+  kDebug() << "ELEMENT " << e.identifier() << endl;
+  kDebug() << "RELATION: " << r.asString() << endl;
+#endif
+
+  Schema::Element targetElement = mDocument.element( r );
+
+  if ( targetElement.text() ) {
+    createProperty( c, "QString", targetElement.name() );
+    c.addHeaderInclude( "QString" );
     if ( mXmlParserType == XmlParserCustomExternal ) {
-      createTextElementParserCustom( c, e );
+      createTextElementParserCustom( c, targetElement );
     }
     return;
   }
 
-  QString type = upperFirst( e->name );
+  QString type = upperFirst( targetElement.name() );
 
   if ( !mFile.hasClass( type ) ) {
     createClass( e );
   }
 
-  QString name = lowerFirst( e->name );
+  QString name = lowerFirst( targetElement.name() );
 
-  if ( e->pattern.oneOrMore || e->pattern.zeroOrMore ||
-       e->pattern.choice || e->pattern.optional ) {
+  if ( r.isList() ) {
     registerListTypedef( type );
 
-    c.addHeaderInclude( "qlist.h" );
+    c.addHeaderInclude( "QList" );
     type = type + "::List";
     QString className = upperFirst( name );
     name = name + "List";
@@ -138,9 +147,11 @@ void Creator::createElementFunctions( KODE::Class &c, RNG::Element *e )
   createProperty( c, type, name );
 }
 
-void Creator::createClass( RNG::Element *element )
+void Creator::createClass( const Schema::Element &element )
 {
-  QString className = upperFirst( element->name );
+  kDebug() << "Creator::createClass() " << element.identifier() << endl;
+
+  QString className = upperFirst( element.name() );
 
   if ( mProcessedClasses.contains( className ) )
     return;
@@ -149,27 +160,13 @@ void Creator::createClass( RNG::Element *element )
 
   mProcessedClasses.append( className );
 
-  QList<RNG::Attribute *>::ConstIterator itA;
-  for( itA = element->attributes.begin();
-       itA != element->attributes.end(); ++itA ) {
-    RNG::Attribute *a = *itA;
-
-    createProperty( c, "QString", a->name );
+  foreach( Schema::Relation r, element.attributeRelations() ) {
+    Schema::Attribute a = mDocument.attribute( r );
+    createProperty( c, "QString", a.name() );
   }
 
-  QList<RNG::Element *>::ConstIterator itE;
-  for( itE = element->elements.begin(); itE != element->elements.end();
-       ++itE ) {
-    createElementFunctions( c, *itE );
-  }
-
-  QList<RNG::Reference *>::ConstIterator itR;
-  for( itR = element->references.begin(); itR != element->references.end();
-       ++itR ) {
-    RNG::Element e;
-    e.name = (*itR)->name;
-    e.pattern = (*itR)->pattern;
-    createElementFunctions( c, &e );
+  foreach( Schema::Relation r, element.elementRelations() ) {
+    createElementFunctions( c, element, r );
   }
 
   createElementParser( c, element );
@@ -178,7 +175,8 @@ void Creator::createClass( RNG::Element *element )
   mFile.insertClass( c );
 }
 
-void Creator::createElementWriter( KODE::Class &c, RNG::Element *element )
+void Creator::createElementWriter( KODE::Class &c,
+  const Schema::Element &element )
 {
   KODE::Function writer( "writeElement", "QString" );
 
@@ -186,15 +184,15 @@ void Creator::createElementWriter( KODE::Class &c, RNG::Element *element )
 
   code += "QString xml;";
 
-  QString tag = "<" + element->name;
+  QString tag = "<" + element.name();
 
-  QList<RNG::Attribute *>::ConstIterator it3;
-  for( it3 = element->attributes.begin(); it3 != element->attributes.end();
-        ++it3 ) {
-    tag += " " + (*it3)->name + "=\\\"\" + " + (*it3)->name + "() + \"\\\"";
+  foreach( Schema::Relation r, element.attributeRelations() ) {
+    Schema::Attribute a = mDocument.attribute( r );
+
+    tag += " " + a.name() + "=\\\"\" + " + a.name() + "() + \"\\\"";
   }
 
-  if ( element->isEmpty ) {
+  if ( element.isEmpty() ) {
     tag += "/";
   }
 
@@ -202,52 +200,31 @@ void Creator::createElementWriter( KODE::Class &c, RNG::Element *element )
 
   code += "xml += indent() + \"" + tag + "\";";
 
-  if ( !element->isEmpty ) {
+  if ( !element.isEmpty() ) {
     code += "indent( 2 );";
 
-    QList<RNG::Element *>::ConstIterator it;
-    for( it = element->elements.begin(); it != element->elements.end(); ++it ) {
-      RNG::Element *e = *it;
-      QString type = upperFirst( e->name );
-      if ( e->pattern.oneOrMore || e->pattern.zeroOrMore ) {
-        code += type + "::List list = " + e->name + "List();";
-        code += type + "::List::ConstIterator it;";
-        code += "for( it = list.begin(); it != list.end(); ++it ) {";
+    foreach( Schema::Relation r, element.elementRelations() ) {
+      QString type = upperFirst( r.target() );
+      if ( r.isList() ) {
+        code += "foreach( " + type + " *e, " + r.target() + "List() ) {";
         code.indent();
-        code += "xml += (*it)->writeElement();";
+        code += "xml += e->writeElement();";
         code.unindent();
         code += "}";
       } else {
-        if ( e->hasText ) {
-          code += "xml += indent() + \"<" + e->name + ">\" + " + e->name + "() + \"</" +
-                  e->name + ">\\n\";";
+        Schema::Element e = mDocument.element( r );
+        if ( e.text() ) {
+          code += "xml += indent() + \"<" + e.name() + ">\" + " + e.name() +
+            "() + \"</" + e.name() + ">\\n\";";
         } else {
           code += "xml += " + type + "().writeElement();";
         }
       }
     }
-
-    QList<RNG::Reference *>::ConstIterator it2;
-    for( it2 = element->references.begin(); it2 != element->references.end();
-         ++it2 ) {
-      RNG::Reference *r = *it2;
-      QString type = upperFirst( r->name );
-      if ( r->pattern.oneOrMore || r->pattern.zeroOrMore ) {
-        code += type + "::List list2 = " + r->name + "List();";
-        code += type + "::List::ConstIterator it2;";
-        code += "for( it2 = list2.begin(); it2 != list2.end(); ++it2 ) {";
-        code.indent();
-        code += "xml += (*it2)->writeElement();";
-        code.unindent();
-        code += "}";
-      } else {
-        code += "xml += " + type + "().writeElement()";
-      }
-    }
-
+    
     code += "indent( -2 );";
 
-    code += "xml += indent() + \"</" + element->name + ">\\n\";";
+    code += "xml += indent() + \"</" + element.name() + ">\\n\";";
   }
 
   code += "return xml;";
@@ -257,7 +234,7 @@ void Creator::createElementWriter( KODE::Class &c, RNG::Element *element )
   c.addFunction( writer );
 }
 
-void Creator::createElementParser( KODE::Class &c, RNG::Element *e )
+void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
 {
   switch ( mXmlParserType ) {
     case XmlParserDom:
@@ -270,9 +247,10 @@ void Creator::createElementParser( KODE::Class &c, RNG::Element *e )
   }
 }
 
-void Creator::createTextElementParserCustom( KODE::Class &, RNG::Element *e )
+void Creator::createTextElementParserCustom( KODE::Class &,
+  const Schema::Element &e )
 {
-  KODE::Function parser( "parseElement" + upperFirst( e->name ), "QString" );
+  KODE::Function parser( "parseElement" + upperFirst( e.name() ), "QString" );
 
   KODE::Code code;
 
@@ -319,7 +297,7 @@ void Creator::createTextElementParserCustom( KODE::Class &, RNG::Element *e )
   stateCode += "if ( c == '>' ) {";
   stateCode += "  state = TEXT;";
   stateCode += "  result += mBuffer.mid( tagStart, mRunning - tagStart + 1 );";
-  stateCode += "} else if ( foundText" + upperFirst( e->name ) + "() ) {";
+  stateCode += "} else if ( foundText" + upperFirst( e.name() ) + "() ) {";
   stateCode += "  return result;";
   stateCode += "}";
 
@@ -347,9 +325,10 @@ void Creator::createTextElementParserCustom( KODE::Class &, RNG::Element *e )
   mParserClass.addFunction( parser );
 }
 
-void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
+void Creator::createElementParserCustom( KODE::Class &c,
+  const Schema::Element &e )
 {
-  KODE::Function parser( "parseElement" + upperFirst( e->name ),
+  KODE::Function parser( "parseElement" + upperFirst( e.name() ),
                          c.name() + " *" );
 
   KODE::Code code;
@@ -359,7 +338,7 @@ void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
 
   KODE::StateMachine sm;
 
-  if ( !e->isEmpty ) {
+  if ( !e.isEmpty() ) {
     KODE::Code stateCode;
     stateCode += "if ( c == '<' ) state = TAG;";
 
@@ -375,33 +354,25 @@ void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
     sm.setState( "TAG", stateCode );
 
     stateCode.clear();
-    if ( e->attributes.isEmpty() ) {
+    if ( e.attributeRelations().isEmpty() ) {
       stateCode += " if ( c == '/' ) {";
       stateCode += "    return result;";
       stateCode += " }";
     }
     stateCode += "if ( c == '>' ) {";
     stateCode += "  state = WHITESPACE;";
-    RNG::Element::List::ConstIterator it;
-    for( it = e->elements.begin(); it != e->elements.end(); ++it ) {
-      createFoundTextFunction( (*it)->name );
+    
+    foreach( Schema::Relation r, e.elementRelations() ) {
+      Schema::Element element = mDocument.element( r );
+      createFoundTextFunction( element.name() );
 
-      QString eName = upperFirst( (*it)->name );
+      QString eName = upperFirst( element.name() );
       stateCode += "} else if ( foundText" + eName + "() ) {";
       QString line = "  result->";
-      if ( (*it)->hasText ) line += "set";
+      if ( element.text() ) line += "set";
       else line += "add";
       line += eName + "( parseElement" + eName + "() );";
       stateCode += line;
-      stateCode += "  state = WHITESPACE;";
-    }
-    RNG::Reference::List::ConstIterator it3;
-    for( it3 = e->references.begin(); it3 != e->references.end(); ++it3 ) {
-      createFoundTextFunction( (*it3)->name );
-
-      QString eName = upperFirst( (*it3)->name );
-      stateCode += "} else if ( foundText" + eName + "() ) {";
-      stateCode += "  result->add" + eName + "( parseElement" + eName + "() );";
       stateCode += "  state = WHITESPACE;";
     }
     stateCode += "}";
@@ -417,16 +388,19 @@ void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
 
     sm.setState( "ENDTAG", stateCode );
 
-    if ( !e->attributes.isEmpty() ) {
+    Schema::Relation::List attributeRelations = e.attributeRelations();
+    if ( !attributeRelations.isEmpty() ) {
       stateCode.clear();
       stateCode += "if ( c == '>' ) {";
       stateCode += "  state = WHITESPACE;";
       stateCode += "}";
 
-      RNG::Attribute::List::ConstIterator it2;
-      for( it2 = e->attributes.begin(); it2 != e->attributes.end(); ++it2 ) {
-        bool first = it2 == e->attributes.begin();
-        stateCode.addBlock( createAttributeScanner( *it2, first ) );
+      Schema::Relation::List::ConstIterator it2;
+      for( it2 = attributeRelations.begin(); it2 != attributeRelations.end();
+        ++it2 ) {
+        bool first = it2 == attributeRelations.begin();
+        Schema::Attribute a = mDocument.attribute( *it2 );
+        stateCode.addBlock( createAttributeScanner( a, first ) );
       }
       stateCode += "} else if ( c =='/' ) {";
       stateCode += "  return result;";
@@ -443,10 +417,10 @@ void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
     code.newLine();
   }
 
-  if ( !e->attributes.isEmpty() ) {
-    RNG::Attribute::List::ConstIterator it;
-    for( it = e->attributes.begin(); it != e->attributes.end(); ++it ) {
-      code += "bool found" + upperFirst( (*it)->name ) + " = false;";
+  if ( !e.attributeRelations().isEmpty() ) {
+    foreach( Schema::Relation r, e.attributeRelations() ) {
+      Schema::Attribute a = mDocument.attribute( r );
+      code += "bool found" + upperFirst( a.name() ) + " = false;";
     }
     code.newLine();
     code += "int attrValueStart = -1;";
@@ -457,16 +431,19 @@ void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
   code.indent();
   code += "QChar c = mBuffer[ mRunning ];";
 
-  if ( e->isEmpty ) {
+  if ( e.isEmpty() ) {
     code += "if ( c == '>' ) {";
     code += "  return result;";
     code += "}";
 
-    if ( !e->attributes.isEmpty() ) {
-      RNG::Attribute::List::ConstIterator it;
-      for( it = e->attributes.begin(); it != e->attributes.end(); ++it ) {
-        code.addBlock( createAttributeScanner( *it,
-                                               it == e->attributes.begin() ) );
+    Schema::Relation::List attributeRelations = e.attributeRelations();
+    if ( !attributeRelations.isEmpty() ) {
+      Schema::Relation::List::ConstIterator it2;
+      for( it2 = attributeRelations.begin(); it2 != attributeRelations.end();
+        ++it2 ) {
+        Schema::Attribute a = mDocument.attribute( *it2 );
+        code.addBlock( createAttributeScanner( a,
+          it2 == attributeRelations.begin() ) );
       }
       code += "}";
     }
@@ -485,13 +462,14 @@ void Creator::createElementParserCustom( KODE::Class &c, RNG::Element *e )
   mParserClass.addFunction( parser );
 }
 
-KODE::Code Creator::createAttributeScanner( RNG::Attribute *a, bool firstAttribute )
+KODE::Code Creator::createAttributeScanner( const Schema::Attribute &a,
+  bool firstAttribute )
 {
   KODE::Code code;
 
-  QString aName = upperFirst( a->name );
+  QString aName = upperFirst( a.name() );
 
-  createFoundTextFunction( a->name );
+  createFoundTextFunction( a.name() );
 
   QString line;
   if ( !firstAttribute ) line = "} else ";
@@ -511,7 +489,7 @@ KODE::Code Creator::createAttributeScanner( RNG::Attribute *a, bool firstAttribu
   return code;
 }
 
-void Creator::createElementParserDom( KODE::Class &c, RNG::Element *e )
+void Creator::createElementParserDom( KODE::Class &c, const Schema::Element &e )
 {
   QString functionName;
   if ( externalParser() ) functionName = "parseElement" + c.name();
@@ -525,9 +503,9 @@ void Creator::createElementParserDom( KODE::Class &c, RNG::Element *e )
 
   KODE::Code code;
 
-  code += "if ( element.tagName() != \"" + e->name + "\" ) {";
+  code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
   code.indent();
-  code += "kError() << \"Expected '" + e->name + "', got '\" << " +
+  code += "kError() << \"Expected '" + e.name() + "', got '\" << " +
           "element.tagName() << \"'.\" << endl;";
   code += "return 0;";
   code.unindent();
@@ -543,18 +521,21 @@ void Creator::createElementParserDom( KODE::Class &c, RNG::Element *e )
   code.indent();
   code += "QDomElement e = n.toElement();";
 
-  QList<RNG::Element *>::ConstIterator it;
-  for( it = e->elements.begin(); it != e->elements.end(); ++it ) {
+  Schema::Relation::List elementRelations = e.elementRelations();
+  Schema::Relation::List::ConstIterator it;
+  for( it = elementRelations.begin(); it != elementRelations.end(); ++it ) {
     QString condition;
-    if ( it != e->elements.begin() ) condition = "else ";
+    if ( it != elementRelations.begin() ) condition = "else ";
     condition += "if";
 
-    code += condition + " ( e.tagName() == \"" + (*it)->name + "\" ) {";
+    code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
     code.indent();
 
-    QString className = upperFirst( (*it)->name );
+    QString className = upperFirst( (*it).target() );
 
-    if ( (*it)->hasText ) {
+    Schema::Element targetElement = mDocument.element( (*it).target() );
+
+    if ( targetElement.text() ) {
       code += "result->set" + className + "( e.text() );";
     } else {
       QString line = className + " *o = ";
@@ -573,42 +554,14 @@ void Creator::createElementParserDom( KODE::Class &c, RNG::Element *e )
     code += "}";
   }
 
-  code.newLine();
-
-  QList<RNG::Reference *>::ConstIterator it3;
-  for( it3 = e->references.begin(); it3 != e->references.end(); ++it3 ) {
-    QString condition;
-    if ( it3 != e->references.begin() ) condition = "else ";
-    condition += "if";
-
-    code += condition + " ( e.tagName() == \"" + (*it3)->name + "\" ) {";
-    code.indent();
-
-    QString className = upperFirst( (*it3)->name );
-
-    QString line = className + " *o = ";
-    if ( externalParser() ) {
-      line += "parseElement" + className;
-    } else {
-      line += className + "::parseElement";
-    }
-    line += "( e );";
-    code += line;
-
-    code += "if ( o ) result->add" + className + "( o );";
-
-    code.unindent();
-    code += "}";
-  }
-
   code.unindent();
   code += "}";
   code.newLine();
 
-  QList<RNG::Attribute *>::ConstIterator it2;
-  for( it2 = e->attributes.begin(); it2 != e->attributes.end(); ++it2 ) {
-    code += "result->set" + upperFirst( (*it2)->name ) +
-            "( element.attribute( \"" + (*it2)->name + "\" ) );";
+  foreach( Schema::Relation r, e.attributeRelations() ) {
+    Schema::Attribute a = mDocument.attribute( r );
+    code += "result->set" + upperFirst( a.name() ) +
+            "( element.attribute( \"" + a.name() + "\" ) );";
   }
   code.newLine();
 
@@ -657,9 +610,10 @@ void Creator::createIndenter( KODE::File &file )
   file.addFileFunction( indenter );
 }
 
-void Creator::createFileWriter( RNG::Element *element, const QString &dtd )
+void Creator::createFileWriter( const Schema::Element &element,
+  const QString &dtd )
 {
-  QString className = upperFirst( element->name );
+  QString className = upperFirst( element.name() );
 
   KODE::Class c = mFile.findClass( className );
 
@@ -703,7 +657,7 @@ void Creator::createFileWriter( RNG::Element *element, const QString &dtd )
   mFile.insertClass( c );
 }
 
-void Creator::createFileParser( RNG::Element *element )
+void Creator::createFileParser( const Schema::Element &element )
 {
   switch ( mXmlParserType ) {
     case XmlParserDom:
@@ -716,11 +670,11 @@ void Creator::createFileParser( RNG::Element *element )
   }
 }
 
-void Creator::createFileParserCustom( RNG::Element *element )
+void Creator::createFileParserCustom( const Schema::Element &element )
 {
   kDebug() << "Creator::createFileParserCustom()" << endl;
 
-  QString className = upperFirst( element->name );
+  QString className = upperFirst( element.name() );
 
   KODE::Function parser( "parseFile", className + " *" );
 
@@ -762,18 +716,18 @@ void Creator::createFileParserCustom( RNG::Element *element )
   stateCode += "if ( c == '>' ) {";
   stateCode += "  state = WHITESPACE;";
   stateCode += "} else if ( foundText" + className + "() ) {";
-  stateCode += "  " + element->name + " = parseElement" + className + "();";
+  stateCode += "  " + element.name() + " = parseElement" + className + "();";
   stateCode += "  state = WHITESPACE;";
   stateCode += "}";
 
-  createFoundTextFunction( element->name );
+  createFoundTextFunction( element.name() );
 
   sm.setState( "TAG", stateCode );
 
   code.addBlock( sm.stateDefinition() );
   code.newLine();
 
-  code += className + " *" + element->name + " = 0;";
+  code += className + " *" + element.name() + " = 0;";
   code.newLine();
 
   code += "while ( mRunning < mBuffer.length() ) {";
@@ -785,7 +739,7 @@ void Creator::createFileParserCustom( RNG::Element *element )
   code += "}";
   code.newLine();
 
-  code += "return " + element->name + ";";
+  code += "return " + element.name() + ";";
 
   parser.setBody( code );
 
@@ -813,11 +767,11 @@ void Creator::createFoundTextFunction( const QString &text )
   mParserClass.addFunction( f );
 }
 
-void Creator::createFileParserDom( RNG::Element *element )
+void Creator::createFileParserDom( const Schema::Element &element )
 {
   kDebug() << "Creator::createFileParserDom()" << endl;
 
-  QString className = upperFirst( element->name );
+  QString className = upperFirst( element.name() );
 
   KODE::Class c;
 

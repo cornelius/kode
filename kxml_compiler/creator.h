@@ -21,7 +21,7 @@
 #ifndef CREATOR_H
 #define CREATOR_H
 
-#include "parserrelaxng.h"
+#include "schema.h"
 
 #include <libkode/code.h>
 #include <libkode/printer.h>
@@ -53,7 +53,7 @@ class Creator
                          XmlParserCustomExternal };
     enum XmlWriterType { XmlWriterCustom, XmlWriterCustomExternal };
 
-    Creator( XmlParserType p = XmlParserDom,
+    Creator( const Schema::Document &document, XmlParserType p = XmlParserDom,
              XmlWriterType w = XmlWriterCustom );
 
     void setExternalClassPrefix( const QString & );
@@ -68,39 +68,44 @@ class Creator
     
     void createProperty( KODE::Class &c, const QString &type,
                          const QString &name );
-    void createElementFunctions( KODE::Class &c, RNG::Element *e );
-    void createClass( RNG::Element *element );
+    void createElementFunctions( KODE::Class &c, const Schema::Element &e,
+      const Schema::Relation & );
+    void createClass( const Schema::Element &element );
 
     void registerListTypedef( const QString &type );
 
     void createListTypedefs();
 
-    void createFileParser( RNG::Element *element );
+    void createFileParser( const Schema::Element &element );
 
-    void createFileWriter( RNG::Element *element, const QString &dtd );
+    void createFileWriter( const Schema::Element &element, const QString &dtd );
 
     void printFiles( KODE::Printer & );
 
   protected:
     void setExternalClassNames();
 
-    void createFileParserDom( RNG::Element *element );
-    void createFileParserCustom( RNG::Element *element );
+    void createFileParserDom( const Schema::Element &element );
+    void createFileParserCustom( const Schema::Element &element );
 
-    void createElementParser( KODE::Class &c, RNG::Element *e );
+    void createElementParser( KODE::Class &c, const Schema::Element &e );
 
-    void createElementParserDom( KODE::Class &c, RNG::Element *e );
+    void createElementParserDom( KODE::Class &c, const Schema::Element &e );
 
-    void createElementParserCustom( KODE::Class &c, RNG::Element *e );
-    void createTextElementParserCustom( KODE::Class &c, RNG::Element *e );
-    KODE::Code createAttributeScanner( RNG::Attribute *a, bool firstAttribute );
+    void createElementParserCustom( KODE::Class &c, const Schema::Element &e );
+    void createTextElementParserCustom( KODE::Class &c,
+      const Schema::Element &e );
+    KODE::Code createAttributeScanner( const Schema::Attribute &a,
+      bool firstAttribute );
     void createFoundTextFunction( const QString &text );
 
-    void createElementWriter( KODE::Class &c, RNG::Element *e );
+    void createElementWriter( KODE::Class &c, const Schema::Element &e );
 
     void createIndenter( KODE::File & );
 
   private:
+    Schema::Document mDocument;
+  
     XmlParserType mXmlParserType;
     XmlWriterType mXmlWriterType;
     QString mExternalClassPrefix;
