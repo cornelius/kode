@@ -240,7 +240,7 @@ void Creator::createElementWriter( KODE::Class &c,
 
 void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
 {
-  ParserCreator *parserCreator;
+  ParserCreator *parserCreator = 0L;
 
   switch ( mXmlParserType ) {
     case XmlParserDom:
@@ -339,7 +339,7 @@ void Creator::createFileWriter( const Schema::Element &element,
 
 void Creator::createFileParser( const Schema::Element &element )
 {
-  ParserCreator *parserCreator;
+  ParserCreator *parserCreator = 0L;
 
   switch ( mXmlParserType ) {
     case XmlParserDom:
