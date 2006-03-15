@@ -7,7 +7,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode $
 
 ########### next target ###############
 
-set(kxml_compiler_SRCS parserrelaxng.cpp creator.cpp kxml_compiler.cpp )
+set(kxml_compiler_SRCS parserrelaxng.cpp creator.cpp kxml_compiler.cpp schema.cpp parsercreatordom.cpp parsercreatorcustom.cpp)
 
 kde4_automoc(${kxml_compiler_SRCS})
 
