@@ -134,11 +134,11 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
   const Schema::Element &e )
 {
   KODE::Function parser( "parseElement" + creator()->upperFirst( e.name() ),
-                         c.name() + " *" );
+                         c.name() );
 
   KODE::Code code;
 
-  code += c.name() + " *result = new " + c.name() + "();";
+  code += c.name() + " result;";
   code.newLine();
 
   KODE::StateMachine sm;
@@ -173,7 +173,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
 
       QString eName = creator()->upperFirst( element.name() );
       stateCode += "} else if ( foundText" + eName + "() ) {";
-      QString line = "  result->";
+      QString line = "  result.";
       if ( element.text() ) line += "set";
       else line += "add";
       line += eName + "( parseElement" + eName + "() );";
@@ -285,7 +285,7 @@ KODE::Code ParserCreatorCustom::createAttributeScanner( const Schema::Attribute 
   code += "  if ( attrValueStart < 0 ) {";
   code += "    attrValueStart = mRunning + 1;";
   code += "  } else {";
-  code += "    result->set" + aName + "( mBuffer.mid( attrValueStart,";
+  code += "    result.set" + aName + "( mBuffer.mid( attrValueStart,";
   code += "                                  mRunning - attrValueStart ) );";
   code += "    attrValueStart = -1;";
   code += "    found" + aName + " = false;";
@@ -300,7 +300,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
 
   QString className = creator()->upperFirst( element.name() );
 
-  KODE::Function parser( "parseFile", className + " *" );
+  KODE::Function parser( "parseFile", className );
 
   parser.addArgument( "const QString &filename" );
 
@@ -318,7 +318,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
   code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
-  code += "  return 0;";
+  code += "  return " + className + "();";
   code += "}";
   code += "";
   code += "QTextStream ts( &file );";
@@ -351,7 +351,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
   code.addBlock( sm.stateDefinition() );
   code.newLine();
 
-  code += className + " *" + element.name() + " = 0;";
+  code += className + " " + element.name() + ";";
   code.newLine();
 
   code += "while ( mRunning < mBuffer.length() ) {";

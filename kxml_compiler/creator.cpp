@@ -138,10 +138,10 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     name = name + "List";
 
     KODE::Function adder( "add" + className, "void" );
-    adder.addArgument( className + " *v" );
+    adder.addArgument( "const " + className + " &v" );
 
     KODE::Code code;
-    code += "m" + upperFirst( name ) + ".append( *v );";
+    code += "m" + upperFirst( name ) + ".append( v );";
 
     adder.setBody( code );
 
@@ -240,7 +240,7 @@ void Creator::createElementWriter( KODE::Class &c,
 
 void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
 {
-  ParserCreator *parserCreator = 0L;
+  ParserCreator *parserCreator = 0;
 
   switch ( mXmlParserType ) {
     case XmlParserDom:
@@ -339,7 +339,7 @@ void Creator::createFileWriter( const Schema::Element &element,
 
 void Creator::createFileParser( const Schema::Element &element )
 {
-  ParserCreator *parserCreator = 0L;
+  ParserCreator *parserCreator = 0;
 
   switch ( mXmlParserType ) {
     case XmlParserDom:
