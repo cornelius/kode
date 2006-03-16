@@ -138,10 +138,10 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     name = name + "List";
 
     KODE::Function adder( "add" + className, "void" );
-    adder.addArgument( "const " + className + " &v" );
+    adder.addArgument( className + " *v" );
 
     KODE::Code code;
-    code += "m" + upperFirst( name ) + ".append( v );";
+    code += "m" + upperFirst( name ) + ".append( *v );";
 
     adder.setBody( code );
 
@@ -225,7 +225,7 @@ void Creator::createElementWriter( KODE::Class &c,
         }
       }
     }
-    
+
     code += "indent( -2 );";
 
     code += "xml += indent() + \"</" + element.name() + ">\\n\";";
