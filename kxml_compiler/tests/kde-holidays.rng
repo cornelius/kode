@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+<!-- A RELAX NG Schema for XML Holiday Files                                -->
+
+<!-- This file is part of libkholidays
+    Copyright (c) 2004,2006 Allen Winter <winter@kde.org>
+    Copyright (c) 2004 Reinhold Kainhofer <reinhold@kainhofer.com>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Steet, Fifth Floor, Boston, MA 02110-1301  USA
+
+    In addition, as a special exception, the copyright holders give
+    permission to link the code of this program with any edition of
+    the Qt library by Trolltech AS, Norway (or with modified versions
+    of Qt that use the same license as Qt), and distribute linked
+    combinations including the two.  You must obey the GNU General
+    Public License in all respects for all of the code used other than
+    Qt.  If you modify this file, you may extend this exception to
+    your version of the file, but you are not obligated to do so.  If
+    you do not wish to do so, delete this exception statement from
+    your version.
+-->
+
+<!-- You can validate this file using jing, which you can find at           -->
+<!-- http://www.thaiopensource.com/relaxng/jing.html                        -->
+
+  <start>
+    <ref name="holidayCalendar"/>
+  </start>
+
+  <!-- Define permissible day of the week names -->
+  <define name="DAYOFWEEK">
+    <choice>
+      <value>mon</value>
+      <value>tue</value>
+      <value>wed</value>
+      <value>thu</value>
+      <value>fri</value>
+      <value>sat</value>
+      <value>sun</value>
+      <value>Mon</value>
+      <value>Tue</value>
+      <value>Wed</value>
+      <value>Thu</value>
+      <value>Fri</value>
+      <value>Sat</value>
+      <value>Sun</value>
+      <value>monday</value>
+      <value>tuesday</value>
+      <value>wednesday</value>
+      <value>thursday</value>
+      <value>friday</value>
+      <value>saturday</value>
+      <value>sunday</value>
+      <value>Monday</value>
+      <value>Tuesday</value>
+      <value>Wednesday</value>
+      <value>Thursday</value>
+      <value>Friday</value>
+      <value>Saturday</value>
+      <value>Sunday</value>
+    </choice>
+  </define>
+
+  <!-- Define permissible ordinal weeks of the month -->
+  <define name="WEEKPOS">
+    <choice>
+      <value>first</value>
+      <value>second</value>
+      <value>third</value>
+      <value>fourth</value>
+      <value>fifth</value>
+      <value>last</value>
+      <value>First</value>
+      <value>Second</value>
+      <value>Third</value>
+      <value>Fourth</value>
+      <value>Fifth</value>
+      <value>Last</value>
+      <value>1</value>
+      <value>2</value>
+      <value>3</value>
+      <value>4</value>
+      <value>5</value>
+      <value>-1</value>
+      <value>-2</value>
+      <value>-3</value>
+      <value>-4</value>
+      <value>-5</value>
+    </choice>
+  </define>
+
+  <!-- Define the holiday calendar as a collection of holiday elements      -->
+  <!--                                                                      -->
+  <!-- The 'holiday calendar' element has the following attributes:         -->
+  <!--   name: the calendar name.                                           -->
+  <!--         if the calendar type is "political" then the Name should     -->
+  <!--         represent some political region.                             -->
+  <!--         if the Type is "religious" then the Name should represent    -->
+  <!--         a religion.                                                  -->
+  <!--         No checking is performed against the name so feel free to    -->
+  <!--         create a political calendar called "Allenville" (humor)      -->
+  <!--   type: (optional) "political" or "religious".                       -->
+  <!--         Default is "political".                                      -->
+  <!--   calendar: (optional) the calendar to use.  Default is "gregorian". --> 
+  <!--   hemisphere: (optional) the hemisphere ("northern" or "southern")   -->
+  <!--         where this political region (if this is a political calendar)-->
+  <!--         is located.  Default is "northern".                          -->
+  <!--   icon: (optional) an icon to use for each holiday                   -->
+  <!--                                                                      -->
+  <!-- The 'holiday calendar' element has the following sub-elements:       -->
+  <!--   include: a holiday file to include (not required).                 -->
+  <!--   holiday: a holiday element (1 or more such elements required).     -->
+  <!--                                                                      -->
+  <define name="holidayCalendar">
+    <element name="holidayCalendar">
+      <ref name="holidayCalendar.attlist"/>
+      <zeroOrMore>
+        <ref name="include"/>
+      </zeroOrMore>
+      <oneOrMore>
+        <ref name="holiday"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="holidayCalendar.attlist" combine="interleave">
+    <attribute name="name">
+      <text/>
+    </attribute>
+    <optional>
+      <attribute name="type" a:defaultValue="political">
+        <choice>
+          <value>political</value>
+          <value>religious</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="calendar" a:defaultValue="gregorian">
+        <choice>
+          <value>gregorian</value>
+          <value>hebrew</value>
+          <value>islamic</value>
+          <value>chinese</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="hemisphere" a:defaultValue="northern">
+        <choice>
+          <value>northern</value>
+          <value>southern</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="icon">
+        <text/>
+      </attribute>
+    </optional>
+  </define>
+  
+  <!-- Define the include element -->
+  <define name="include">
+    <attribute name="include">
+      <text/>
+    </attribute>
+  </define>
+
+  <!-- Define the holiday element                                           -->
+  <!--                                                                      -->
+  <!-- The 'holiday' element has the following attributes:                  -->
+  <!--   type: (optional) "public", "cultural", "religious", "financial",   -->
+  <!--         "noteworthy", "holy", or "nameday".  Default is "public"     -->
+  <!--   workDayOff: (optional) "true" or "false".  Default is "false".     -->
+  <!--   schoolDayOff: (optional) "true" or "false".  Default is "false".   -->
+  <!--   bankClosed: (optional) "true" or "false".  Default is "false".     -->
+  <!--   length: (optional) the holiday length in days.  Default is 1 day.  -->
+  <!--   icon: (optional) an icon to use for this holiday.                  -->
+  <!--                                                                      -->
+  <!-- The 'holiday' element has the following sub-elements:                -->
+  <!--   name: the holiday name, preferably in US English for translation.  -->
+  <!--         if the Name has no English equivalent or if English is not   -->
+  <!--         practical the Name can be written in another language (see   -->
+  <!--         the language attribute for the 'name' element).              -->
+  <!--   datespec: the holiday date specification.                          -->
+  <!--   description: (optional) the description of the holiday, preferably -->
+  <!--         in US English for translation.  If English is not practical  -->
+  <!--         the Description can be written in another language (see the  -->
+  <!--         language attribute for the 'description' element).           --> 
+  <!--                                                                      -->
+  <define name="holiday">
+    <element name="holiday">
+      <ref name="holiday.attlist"/>
+      <ref name="name"/>
+      <ref name="datespec"/>
+      <optional><ref name="description"/></optional>
+    </element>
+  </define>
+  <define name="holiday.attlist" combine="interleave">
+    <optional>
+      <attribute name="type" a:defaultValue="public">
+        <choice>
+          <value>public</value>
+          <value>cultural</value>
+          <value>religious</value>
+          <value>financial</value>
+          <value>noteworthy</value>
+          <value>holy</value>
+          <value>nameday</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="workDayOff" a:defaultValue="false">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="schoolDayOff" a:defaultValue="false">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="bankClosed" a:defaultValue="false">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="length" a:defaultValue="1">
+        <data type="positiveInteger">
+          <param name="maxInclusive">100</param>  <!-- increase? -->
+        </data>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="icon">
+        <text/>
+      </attribute>
+    </optional>
+  </define>
+
+  <!-- Define a name element with the following attributes:                 -->
+  <!--   language: (optional) the language the name is written in.          -->
+  <!--         Default 'language' is US English                             -->
+  <!--                                                                      -->
+  <define name="name">
+    <element name="name">
+      <optional><attribute name="language"/></optional>
+      <text/>
+    </element>
+  </define>
+
+  <!-- Define a description element with the following attributes:          -->
+  <!--   language: (optional) the language the description is written in.   -->
+  <!--         Default 'language' is US English                             -->
+  <!--                                                                      -->
+  <define name="description">
+    <element name="description">
+      <optional><attribute name="language"/></optional>
+      <text/>
+    </element>
+  </define>
+  
+
+  <!-- Define the date specification element                                -->
+  <!--                                                                      -->
+  <!-- The 'datespec' element has the following attributes:                 -->
+  <!--   weekendAlternative: (optional) "before" or "after".                -->
+  <!--       * "before" means that the holiday date is moved to the first   -->
+  <!--          workday/schoolday before the weekend.                       -->
+  <!--       * "after" means that the holiday date is moved to the first    -->
+  <!--          workday/schoolday after the weekend.                        -->
+  <!--                                                                      -->
+  <!-- The 'datespec' element has the following sub-elements:               -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   fixdate:  date is fixed on the calendar.                           -->
+  <!--   posdate:  date is positional on the calendar.                      -->
+  <!--   moon:     date corresponds to specified phase of the moon          -->
+  <!--   solstice: date corresponds to the june or december solstice        -->
+  <!--   equinox:  date corresponds to the march or september equinox       -->
+  <!--   christmas:                                                         -->
+  <!--   easter:                                                            -->
+  <!--                                                                      -->
+  <define name="datespec">
+    <element name="datespec">
+      <text/>
+      <optional>
+        <attribute name="weekendAlternative">
+          <choice>
+            <value>before</value> <!-- move to first workday before weekend -->
+            <value>after</value>  <!-- move to first workday after weekend -->
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="fixdate"/>  <!-- a fixed date in the calendar -->
+          <ref name="posdate"/>  <!-- a positional date in the calendar -->
+          <ref name="moon"/>     <!-- a date based on the phase of the moon -->
+          <ref name="solstice"/> <!-- a date based on a solstice -->
+          <ref name="equinox"/>  <!-- a date based on an equinox -->
+          <ref name="christmas"/>
+          <ref name="easter"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define a fixed date (fixdate) element.                               -->
+  <!-- The date should be in the calendar specified by the holidayCalendar. -->
+  <!--                                                                      -->
+  <!-- The 'fixdate' element has the following attributes:                  -->
+  <!--   day: the cardinal day of the month, a positiveInteger.             -->
+  <!--   month: the cardinal month of the year, a positiveInteger.          -->
+  <!--   year: (optional) the year, a positiveInteger.                      -->
+  <!--                                                                      -->
+  <!-- Example: \<fixdate day="25" month="12"\>                             -->
+  <!--                                                                      -->
+  <!-- The 'fixdate' element has the following sub-elements:                -->
+  <!--   yearMod: to skipping years on a regular interval.                  -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   plus: add some time to the date.                                   -->
+  <!--   minus: subtract some time for the date.                            -->
+  <!--                                                                      -->
+  <define name="fixdate">
+    <element name="fixdate">
+      <attribute name="day">
+        <data type="positiveInteger">
+          <param name="minInclusive">1</param>
+          <param name="maxInclusive">31</param>
+        </data>
+      </attribute>
+      <attribute name="month">
+        <data type="positiveInteger">
+          <param name="minInclusive">1</param>
+          <param name="maxInclusive">12</param>
+        </data>
+      </attribute>
+      <optional>
+        <attribute name="year">
+          <data type="positiveInteger">
+            <param name="maxInclusive">10000</param>  <!-- increase? -->
+          </data>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="yearMod"/>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define a positional date (posdate) element.                          -->
+  <!-- The date should be in the calendar specified by the holidayCalendar. -->
+  <!--                                                                      -->
+  <!-- The 'posdate' element has the following attributes:                  -->
+  <!--   position: the WEEKPOS, an ordinal.                                 -->
+  <!--   dayOfWeek: the day of the week (sun, mon, .. fri, sat).            -->
+  <!--   month: the cardinal month of the year, a positiveInteger.          -->
+  <!--   year: (optional) the year, a positiveInteger.                      -->
+  <!--                                                                      -->
+  <!-- Example: \<posdate position="fourth" dayofweek="thu" month=11\>      -->
+  <!--                                                                      -->
+  <!-- The 'posdate' element has the following sub-elements:                -->
+  <!--   yearMod: to skipping years on a regular interval.                  -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   plus: add some time to the date.                                   -->
+  <!--   minus: subtract some time for the date.                            -->
+  <!--                                                                      -->
+  <define name="posdate">
+    <element name="posdate">
+      <attribute name="position"><ref name="WEEKPOS"/></attribute>
+      <attribute name="dayOfWeek"><ref name="DAYOFWEEK"/></attribute>
+      <attribute name="month">
+        <data type="positiveInteger">
+          <param name="minInclusive">1</param>
+          <param name="maxInclusive">12</param>
+        </data>
+      </attribute>
+      <optional>
+        <attribute name="year">
+          <data type="positiveInteger">
+            <param name="maxInclusive">10000</param>  <!-- increase? -->
+          </data>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="yearMod"/>
+      </optional>
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define a moon element.                                               -->
+  <!-- A very good description of the lunar phases can be read at the       -->
+  <!-- Wikipedia, http://en.wikipedia.org/wiki/Lunar_phase                  -->
+  <!--                                                                      -->
+  <!-- In the southern hemisphere the order of the phases is reversed.      -->
+  <!-- So, to be accurate we need to know the hemisphere.                   -->
+  <!--                                                                      -->
+  <!-- The 'moon' element can have one of the following attributes:         -->
+  <!--   phase "new", "first quarter", "full", or "last quarter"            -->
+  <!--     * new: the moon is not visible; or traditionally: first visible  -->
+  <!--            crescent of the Moon.  For religious purposes, the new    -->
+  <!--            month begins when the first crescent moon can be seen.    -->
+  <!--            Thus, it is impossible to be certain in advance of when   -->
+  <!--            months will begin; in particular, the exact date on which -->
+  <!--            Ramadan will begin is not known in advance. In Saudi      -->
+  <!--            Arabia, observers are sent up in airplanes if the weather -->
+  <!--            is cloudy when the new moon is expected.                  -->
+  <!--    * first quarter: the right 50% of the moon is visible.            -->
+  <!--    * full: the moon is fully visible.                                -->
+  <!--    * last quarter: the left 50% of the moon is visible.              -->
+  <!--                                                                      -->
+  <!-- The 'moon' element has the following sub-elements:                   -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   plus: add some time to the date.                                   -->
+  <!--   minus: subtract some time for the date.                            -->
+  <!--                                                                      -->
+  <define name="moon">
+    <element name="moon">
+      <attribute name="phase">
+        <choice>
+          <!-- In the southern hemisphere, the order is reversed -->
+          <value>new</value>
+          <value>first quarter</value>
+          <value>full</value>
+          <value>last quarter</value>
+        </choice>
+      </attribute>
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define a solstice element.                                           -->
+  <!-- A very good description of the solstices can be read at the          -->
+  <!-- Wikipedia, http://en.wikipedia.org/wiki/Solstice                     -->
+  <!--                                                                      -->
+  <!-- The 'solstice' element can have one of the following attributes:     -->
+  <!--   type "june" or "december"                                          -->
+  <!--     * june: the june solstice.                                       -->
+  <!--     * december: the december solstice.                               -->
+  <!--                                                                      -->
+  <!-- The 'solstice' element has the following sub-elements:               -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   plus: add some time to the date.                                   -->
+  <!--   minus: subtract some time for the date.                            -->
+  <!--                                                                      -->
+  <define name="solstice">
+    <element name="solstice">
+      <attribute name="type">
+        <choice>
+          <value>june</value>
+          <value>december</value>
+        </choice>
+      </attribute>
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define an equinox element.                                           -->
+  <!-- A very good description of the equinoxes can be read at the          -->
+  <!-- Wikipedia, http://en.wikipedia.org/wiki/Equinox                      -->
+  <!--                                                                      -->
+  <!-- The 'equinox' element can have one of the following attributes:      -->
+  <!--   type "march" or "september"                                        -->
+  <!--     * march: the march equinox.                                      -->
+  <!--     * september: the september equinox.                              -->
+  <!--                                                                      -->
+  <!-- The 'equinox' element has the following sub-elements:                -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   plus: add some time to the date.                                   -->
+  <!--   minus: subtract some time for the date.                            -->
+  <!--                                                                      -->
+  <define name="equinox">
+    <element name="equinox">
+      <attribute name="type">
+        <choice>
+          <value>march</value>
+          <value>september</value>
+        </choice>
+      </attribute>
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define holidays that are widely used -->
+  <!--                                                                      -->
+  <!-- These elements have the following sub-elements:                      -->
+  <!-- (Choose from one of the following)                                   -->
+  <!--   plus: add some time to the date.                                   -->
+  <!--   minus: subtract some time for the date.                            -->
+  <!--                                                                      -->
+  <define name="christmas">
+    <element name="christmas">
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+  <define name="easter">
+    <element name="easter">
+      <optional>
+        <choice>
+          <ref name="plus"/>
+          <ref name="minus"/>
+        </choice>
+      </optional>
+    </element>
+  </define>
+
+  <!-- Define a plus days element.                                          -->
+  <!--                                                                      -->
+  <!-- The 'plus' element has the following attributes:                     -->
+  <!--   days: the number of days to add to a date, a positiveInteger       -->
+  <!--                                                                      -->
+  <define name="plus">
+    <element name="plus">
+      <attribute name="days">
+        <data type="positiveInteger">
+          <param name="maxInclusive">6</param>
+        </data>
+      </attribute>
+    </element>
+  </define>
+
+  <!-- Define a minus days element.                                         -->
+  <!--                                                                      -->
+  <!-- The 'minus' element has the following attributes:                    -->
+  <!--   days: the number of days to subtract from a date, a positiveInteger-->
+  <!--                                                                      -->
+  <define name="minus">
+    <element name="minus">
+      <attribute name="days">
+        <data type="positiveInteger">
+          <param name="maxInclusive">6</param>
+        </data>
+      </attribute>
+    </element>
+  </define>
+
+  <!-- Define a yearMod element.                                            -->
+  <!-- The holiday occurs only if the date year modulo 'yearMod' is zero.   -->
+  <!-- This is useful for holidays that every other year or every fourth    -->
+  <!-- year, like election days.                                            -->
+  <!--                                                                      -->
+  <define name="yearMod">
+    <element name="yearMod">
+      <data type="positiveInteger">
+        <param name="minInclusive">2</param>
+      </data>
+    </element>
+  </define>
+
+</grammar>

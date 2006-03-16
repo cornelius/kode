@@ -1,7 +1,7 @@
 /*
     This file is part of kdepim.
 
-    Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2006 Cornelius Schumacher <schumacher@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -19,8 +19,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "kde-features.h"
-#include "kde-features_parser.h"
+#include "kde-holidays.h"
+#include "kde-holidays_parser.h"
 
 #include <kapplication.h>
 #include <kcmdlineargs.h>
@@ -34,40 +34,15 @@
 
 static const KCmdLineOptions options[] =
 {
-  { "+featurelist", "Name of featurelist XML file", 0 },
+  { "+holidayfile", "Name of holiday XML file", 0 },
   { "output <file>", "Name of output file", 0 },
   KCmdLineLastOption
 };
 
-void displayFeature( const Feature &f )
-{
-  std::cout << "FEATURE: " << f.summary().local8Bit().data() << std::endl;
-  foreach( Responsible r, f.responsibleList() ) {
-    std::cout << "  RESPONSIBLE: " << r.name().local8Bit().data() << " ("
-              << r.email().local8Bit().data() << ")" << std::endl;
-  }
-  std::cout << "  TARGET: " << f.target().local8Bit().data() << std::endl;
-  std::cout << "  STATUS: " << f.status().local8Bit().data() << std::endl;
-}
-
-void displayCategory( Category::List categories )
-{
-  foreach( Category c, categories ) {
-    std::cout << "CATEGORY: " << c.name().local8Bit().data() << std::endl;
-    
-    Feature::List features = c.featureList();
-    foreach( Feature f, features ) {
-      displayFeature( f );
-    }
-  
-    displayCategory( c.categoryList() );
-  }
-}
-
 int main( int argc, char **argv )
 {
   KApplication::disableAutoDcopRegistration();
-  KAboutData aboutData( "testfeatures", "Dump XML feature list to stdout",
+  KAboutData aboutData( "testholidays", "Dump holidays to stdout",
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
@@ -82,21 +57,20 @@ int main( int argc, char **argv )
 
   QString filename = QFile::decodeName( args->arg( 0 ) );
 
-  FeaturesParser parser;
+  HolidayCalendarParser parser;
 
   bool ok;
-  Features features = parser.parseFile( filename, &ok );
+  HolidayCalendar holidays = parser.parseFile( filename, &ok );
 
   if ( !ok ) {
     kError() << "Parse error" << endl;
   } else {
-    Category::List categories = features.categoryList();
-    displayCategory( categories );
+    // TODO: Print data to stdout
   }
 
   if ( args->isSet( "output" ) ) {
     QString out = args->getOption( "output" );
-    if ( !features.writeFile( out ) ) {
+    if ( !holidays.writeFile( out ) ) {
       kError() << "Write error" << endl;
     }
   }
