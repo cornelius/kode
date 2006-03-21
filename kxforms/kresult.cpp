@@ -1,7 +1,7 @@
 /*
-    This file is part of KDE.
+    This file is part of KXForms.
 
-    Copyright (c) 2005 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2005,2006 Cornelius Schumacher <schumacher@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
