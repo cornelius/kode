@@ -4,7 +4,8 @@ add_subdirectory( libkode )
 add_subdirectory( common ) 
 add_subdirectory( schema ) 
 add_subdirectory( kxml_compiler ) 
-
+MESSAGE(STATUS "Add kxforms")
+#add_subdirectory(kxforms)
 include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
 
 
