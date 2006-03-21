@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=KXForms
+Exec=kxforms %i %m -caption "%c"
+Icon=kxforms
+Type=Application
+DocPath=kxforms/kxforms.html
+GenericName=XML Form Editor
+Terminal=0

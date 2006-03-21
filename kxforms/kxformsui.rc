@@ -1,0 +1,11 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<kpartgui name="kdummy" version="1">
+<MenuBar>
+  <Menu name="custom"><text>C&amp;ustom</text>
+    <Action name="custom_action" />
+  </Menu>
+  <Menu name="help">
+    <Action name="update" />
+  </Menu>
+</MenuBar>
+</kpartgui>

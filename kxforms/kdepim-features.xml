@@ -1,0 +1,693 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE features SYSTEM "kde-features.dtd">
+<!--
+
+This file serves as central repository of planned KDE features. It's parsed by
+the PHP scripts in "features.inc" which are used by "kde-3.n-features.html" to
+generate HTML versions for the web.
+
+If you plan to add a feature to KDE please add it to this file. A feature can
+have one of three status types: "todo", "inprogress", "done". Please update
+the status from time to time. For a release there shouldn't be any features
+with other states than "done". If you can't complete a feature for a release
+please move the feature to the next release. The "target" attribute specifies
+for which release the feature should be finished.
+
+Each feature consists of a summary giving a short description what the feature is
+about and one or more responsible persons.
+
+A draft for a DTD of the features file can be found in "kde-features.dtd". Use
+"xmllint -valid -noout kdepim-features.xml" to validate the xml file against the
+DTD. If there are errors in the XML document they will be shown, if not the
+command will not output anything.
+
+If you have questions or comments please post them to the mailing list or contact
+Cornelius Schumacher <schumacher@kde.org>.
+
+ * * me thinks this makes editing for VI-users easier (akrille) * *
+ vim: et tw=80 ts=2 sw=2
+--><features>
+  <category name="KDE PIM (Personal Information Management)" >
+    <category name="Kontact" >
+      <feature status="done" target="4.0" >
+        <summary>Merged configuration view.</summary>
+        <responsible email="Kretz@kde.org" name="Matthias Kretz" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Add alternative tab-based viewmode.</summary>
+        <responsible email="molkentin@kde.org" name="Daniel Molkentin" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Fix sidebar to use other icon sizes</summary>
+        <responsible email="molkentin@kde.org" name="Daniel Molkentin" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Various usability fixes (with the OpenUsability team)</summary>
+        <responsible email="molkentin@kde.org" name="Daniel Molkentin" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>SnapIn/SnapOut actions for changing between an app running
+        stand-alone or embedded in Kontact at run-time.</summary>
+        <responsible email="" name="" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Make Kontact (KOrganizer/KMail) work with Exchange 2000.</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+        <responsible email="molkentin@kde.org" name="Daniel Molkentin" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Add support for OpenXchange</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>KOrganizer Journal Plugin.</summary>
+        <responsible email="winter@kde.org" name="Allen Winter" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Special Dates Summary Plugin.</summary>
+        <responsible email="winter@kde.org" name="Allen Winter" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Offline mode for calendar and addressbook resources</summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+        <responsible name="Will Stephenson" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add GUI option for selecting the module on start (75949)</summary>
+        <responsible email="molkentin@kde.org" name="Daniel Molkentin" />
+      </feature>
+    </category>
+    <category name="KMail" >
+      <feature status="inprogress" target="3.5" >
+        <summary>Client side IMAP filtering.</summary>
+        <responsible email="adam@kde.org" name="Till Adam" />
+        <responsible email="sanders@kde.org" name="Don Sanders" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Namespace support for IMAP kioslave</summary>
+        <responsible email="burghardt@kde.org" name="Carsten Burghardt" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Namespace support for IMAP</summary>
+        <responsible email="burghardt@kde.org" name="Carsten Burghardt" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Using komposer</summary>
+        <responsible email="rusin@kde.org" name="Zack Rusin" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>X-Face support</summary>
+        <responsible email="js@camaya.net" name="Jakob Schröter" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Get rid of mimelib (a.k.a. KMime).</summary>
+        <responsible email="mutz@kde.org" name="Marc Mutz" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Redesign filters to use Sieve internally. Allow editing of
+          Sieve scripts on IMAP servers to get rid of the bug reports a
+          la &quot;KMail doesn't support IMAP folders for
+          filtering&quot;</summary>
+        <responsible email="mutz@kde.org" name="Marc Mutz" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Make the visible headers configurable, allow for &quot;show all
+        and hide specified headers&quot; as well as &quot;show specified headers
+        &quot;. Already available as a <a href="http://www.kalass.de/patches/kmail/showheader.html" >patch</a>.
+        </summary>
+        <responsible email="klas@kde.org" name="Klas Kalass" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Rewrite the composer window to drop KEdit and support richtext engines.
+          (old ktexteditor patch available <a href="http://freenux.org/kde/patchs/" >here</a>). See also the new code in libkdepim/komposer</summary>
+        <responsible email="zack@kde.org" name="Zack Rusin" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Improved configuration of header and attachment views</summary>
+        <responsible email="aseigo@kde.org" name="Aaron J. Seigo" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Type-specific configuration dialogs for folders</summary>
+        <responsible email="aseigo@kde.org" name="Aaron J. Seigo" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Asynchronization of crypto operations.</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Kloecker" />
+        <responsible email="marc@klaralvdalens-datakonsult.se" name="Marc Mutz" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Asynchronization of expensive filter actions.</summary>
+        <responsible email="till@adam-lilienthal.de" name="Till Adam" />
+        <responsible email="sanders@kde.org" name="Don Sanders" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Imap folders as targets for filter move actions.</summary>
+        <responsible email="till@adam-lilienthal.de" name="Till Adam" />
+        <responsible email="sanders@kde.org" name="Don Sanders" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Quick insertion of common phrases.</summary>
+        <responsible email="sanders@kde.org" name="Don Sanders" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Make use of KWallet.</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Improved recipients display and selection in KMail composer
+        </summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Ability to compress attachments after attaching them in the composer
+        </summary>
+        <responsible email="albertca@hotpop.com" name="Albert Cervera Areny" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Store mail in $KDEHOME/apps/kmail/mail instead of ~/Mail</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Klöcker" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Hide dead.letter</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Klöcker" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Configurable font for unread/new/important messages</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Klöcker" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Smileys</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Klöcker" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Automatically add replied-to addresses to address book</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Klöcker" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Backup mail folders</summary>
+        <responsible email="gventuri73@tiscali.it" name="Giovanni Venturi" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Improve POP filters and add option to filter by start of message body (<a href="http://www.kde-look.org/content/show.php?content=13841" >patch on kde-look</a>)</summary>
+        <responsible email="kloecker@kde.org" name="Ingo Klöcker" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>KMailCVT: import to subfolders in KMail.</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>KMailCVT: new importfilter to import kmail maildir.</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>KMailCVT: new importfilter to import from Sylpheed (Claws).</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>KMailCVT: new importfilter to import from The Bat!.</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>KMailCVT: new importfilter to import from MS Outlook.</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>KMailCVT: add possibility to merge kmaildir import with existing local mailfolder.</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>KMailCVT: update importfilter (Outlook Express, Pegasus Mail, Thunderbird, Evolution) for recreating folder structure.</summary>
+        <responsible email="danny.kukawka@web.de" name="Danny Kukawka" />
+      </feature>
+    </category>
+    <category name="KOrganizer" >
+      <category name="Merge of KO/Pi code" >
+        <feature status="todo" target="3.5" >
+          <summary>DateNavigator</summary>
+          <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Printing: layout bug-fixing and more.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Printing of what's next view.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Printing of selected incidences.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Show extended info, which is shown as What's This info in KO/Pi</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Highlight days in the date navigator depending on the view.
+          For example when the JournalView is active highlight days with journal
+          entries.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Button to go to week by selecting the week number.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Merge KO/Pi What's Next view as additional view separate from the existing WHat's Next view.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Templates for journals.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Day headers labels in agenda view. Show also &quot;tomorrow&quot;, &quot;today&quot;, &quot;yesterday&quot; when enough space. Labels are clickable to go to single day or month and back.</summary>
+        </feature>
+        <feature status="done" target="3.5" >
+          <summary>Prettification of time label bar</summary>
+          <responsible email="molkentin@kde.org" name="Daniel Molkentin" />
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Replace month view by KO/Pi month view.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Search dialog.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Show category colors in category selection dialog.</summary>
+        </feature>
+        <feature status="todo" target="3.5" >
+          <summary>Put recurrence info text in the incidence viewer.</summary>
+        </feature>
+      </category>
+      <feature status="done" target="3.4" >
+        <summary>Moving / detaching recurring events in the agenda view</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>tighter integration with KNotes - ability to pin a note to a contact</summary>
+        <responsible email="mark at houseoffish org" name="Mark Westcott" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Plugin system for printing, more printing styles.</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Integrate plugin configuration into main configuration dialog.
+        </summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Dissociate (single or all future) events from a recurring event.</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Lunar Phases.</summary>
+        <responsible email="winter@kde.org" name="Allen Winter" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Resource colors (different color indicator for events from different calendars)</summary>
+        <responsible email="emeteo@escomposlinux.org" name="Mario Teijeiro Otero" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Blogging resource for libkcal (journals as blogs on a server)</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Full support for Exchange servers (events, todos, and journals)</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Support for Novell Groupwise servers</summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Support for OpenGroupware.org servers</summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+        <responsible email="adam@kde.org" name="Till Adam" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Preview pane in KOrganizer</summary>
+        <responsible email="emeteo@escomposlinux.org" name="Mario Teijeiro Otero" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>What's next view for any date range</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Ability to record completed todos in journals</summary>
+        <responsible email="bramschoenmakers@kde.nl" name="Bram Schoenmakers" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Using libkholidays to reflect true workdays/non-workdays in the calendar</summary>
+        <responsible email="m.koller@surfeu.at" name="Martin Koller" />
+      </feature>
+    </category>
+    <category name="KPilot" >
+      <feature status="todo" target="3.5" >
+        <summary>Port to pilot-link 0.12</summary>
+        <responsible email="groot@kde.org" name="Adriaan de Groot" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Extend addressbook support with OS5 fields</summary>
+        <responsible email="groot@kde.org" name="Adriaan de Groot" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Extend datebook support with OS5 fields</summary>
+        <responsible email="groot@kde.org" name="Adriaan de Groot" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Syncing with Evolution (via the resources)</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Address import/export via CSV</summary>
+        <responsible email="" name="" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Memo import/export all/some with format (.txt, .xml) support</summary>
+        <responsible email="" name="" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>JPilot proxy conduit (wraps JPilot plugins for use with KPilot).</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>General, easy-to-use framework for 3rd party conduits.</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Good documentation on how to write a KPilot conduit, for 3rd party
+        developers.</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>New internal viewer/editor for calendar.</summary>
+        <responsible email="reinhold@kainhofer.com" name="Reinhold Kainhofer" />
+      </feature>
+    </category>
+    <category name="KAlarm" >
+      <feature status="done" target="3.4" >
+        <summary>Allow the user to specify the late-cancellation period for an alarm</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add option to automatically close window after late-cancellation period</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add facility to enable and disable individual alarms</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add simple repetition facility, including repetition within a recurrence</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add option to pick a KMail identity to use as sender of email alarms</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add option to copy emails sent via sendmail, to KMail sent-mail folder</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Make time edit controls use 12-hour clock when that is the user's default</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Show main alarm times in alarm list, not reminder times</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>New revised DCOP request interface (old interface still kept for compatibility)</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Use KMix whenever possible to set hardware sound volume</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Provide option to run command alarms in a terminal window</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Allow a script to be edited to execute for command alarms</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add Undo/Redo facility for alarm edit/creation/deletion/reactivation</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add text search facility</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add 'New alarm from template' menu option and toolbar button</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add fade option for playing sound files</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Email drag-and-drop from KMail now presets alarm edit dialog with full From/To/Cc/Subject headers and body text</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add option for email text alarms to locate the email in KMail</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add option to log command alarm output to a file</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add Edit button to alarm message window to allow the alarm to be edited</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Add option to show alarms in KOrganizer's active calendar</summary>
+        <responsible email="software@astrojar.org.uk" name="David Jarvie" />
+      </feature>
+    </category>
+    <category name="KArm" >
+      <feature status="todo" target="3.5" >
+        <summary>Allow user to annotate time entry with comment.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Add estimated hours field for tasks.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Edit timecard history.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Advanced locking--react after other app changes ics.</summary>
+        <responsible email="dev@staerk.de" name="Thorsten Staerk" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Import of Planner tasks.</summary>
+        <responsible email="dev@staerk.de" name="Thorsten Staerk" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Import of TaskJuggler taks.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Update timecard report.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Enable CVS export to be saved to kurls.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Enable remote resources for timecard storage.</summary>
+        <responsible email="mark@hubcapconsulting.com" name="Mark Bucciarelli" />
+      </feature>
+    </category>
+    <category name="KNotes" >
+      <feature status="done" target="3.4" >
+        <summary>Make all shortcuts configurable</summary>
+        <responsible email="brade@kde.org" name="Michael Brade" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Support for read-only notes</summary>
+        <responsible email="brade@kde.org" name="Michael Brade" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Implement searching notes</summary>
+        <responsible email="brade@kde.org" name="Michael Brade" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Add Alarms for the notes</summary>
+        <responsible email="brade@kde.org" name="Michael Brade" />
+      </feature>
+    </category>
+    <category name="KitchenSync" >
+      <feature status="inprogress" target="3.5" >
+        <summary>Syncing with Qtopia/OPIE</summary>
+        <responsible email="freyther@kde.org" name="Holger Freyther" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Move syncing funtionality of Kandy to KitchenSync</summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+      </feature>
+    </category>
+    <category name="KNode" >
+      <feature status="todo" target="4.0" >
+        <summary>Better attachment handling</summary>
+        <responsible email="roberto@kde.org" name="Roberto Selbach Teixeira" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>Using Komposer</summary>
+        <responsible email="roberto@kde.org" name="Roberto Selbach Teixeira" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>Share more code with KMail.</summary>
+        <responsible email="roberto@kde.org" name="Roberto Teixeira" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>Use new subscription dialog from libkdenetwork.</summary>
+        <responsible email="roberto@kde.org" name="Roberto Teixeira" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>Rewrite the filter system.</summary>
+        <responsible email="roberto@kde.org" name="Roberto Teixeira" />
+      </feature>
+      <feature status="inprogress" target="4.0" >
+        <summary>Implement S/NEWS support</summary>
+        <responsible email="roberto@kde.org" name="Roberto Teixeira" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>Add support for PGP/MIME</summary>
+        <responsible email="roberto@kde.org" name="Roberto Teixeira " />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>SMTP authentication</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>SMTP encryption (SSL/TLS)</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Asynchronous wallet support</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>KHTML-based, KMail-like article viewer</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.5" >
+        <summary>Emoticon support</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>X-Face support</summary>
+        <responsible email="js@camaya.net" name="Jakob Schröter" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Macros for custom headers</summary>
+        <responsible email="js@camaya.net" name="Jakob Schröter" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Per account and per group expiration settings</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>On-demand wallet loading</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Support the 'LIST OVERVIEW.FMT' NNTP command (allows scoring on headers optionally provided by the server)</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>KMail look&amp;feel for group and header view</summary>
+        <responsible email="volker.krause@rwth-aachen.de" name="Volker Krause" />
+      </feature>
+    </category>
+    <category name="KAddressBook" >
+      <feature status="todo" target="3.5" >
+        <summary>Input mask for phone numbers</summary>
+        <responsible email="tokoe@kde.org" name="Tobias Koenig" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Creation of 'Contact' menu with the ability to create new contacts from the
+        same company, create a todo or event with the selected contact as an
+        attendee, and a 'Write a letter' entry to launch KWord with the contacts
+        details.</summary>
+        <responsible email="mark at houseoffish org" name="Mark Westcott" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Show entries sorted by categories.</summary>
+        <responsible email="" name="" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Retrieve pictures from RSS feeds.</summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+      </feature>
+    </category>
+    <category name="KonsoleKalendar" >
+      <feature status="todo" target="3.5" >
+        <summary>Support remote calendars</summary>
+        <responsible email="illuusio@mailcity.com" name="Tuukka Pasanen" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Support calendar locking</summary>
+        <responsible email="winter@kde.org" name="Allen Winter" />
+      </feature>
+    </category>
+    <category name="libkcal" >
+      <feature status="todo" target="3.5" >
+        <summary>Move to new libical version.</summary>
+        <responsible email="schumacher@kde.org" name="Cornelius Schumacher" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Functions to sort incidences (events/to-dos/journals) by a variety of criteria and in ascending or descending order.</summary>
+        <responsible email="winter@kde.org" name="Allen Winter" />
+      </feature>
+    </category>
+    <category name="libkholidays" >
+      <feature status="todo" target="3.5" >
+        <summary>New library for handling political, cultural, and religious holidays.</summary>
+        <responsible email="winter@kde.org" name="Allen Winter" />
+      </feature>
+    </category>
+    <category name="Akregator" >
+      <feature status="done" target="3.4" >
+        <summary>Move into kdepim to be part of KDE 3.4.</summary>
+        <responsible email="staikos@kde.org" name="George Staikos" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Make HTTP caching optional</summary>
+        <responsible email="sashmit@gmail.com" name="Sashmit Bhaduri" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Add appearance/font settings</summary>
+        <responsible email="sashmit@gmail.com" name="Sashmit Bhaduri" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Support for tags and filters (possibly combined with RSS categories)</summary>
+        <responsible email="frank.osterfeld@kdemail.net" name="Frank Osterfeld" />
+      </feature>
+      <feature status="todo" target="3.5" >
+        <summary>Semi-automatic article classification (for tagging)</summary>
+        <responsible email="frank.osterfeld@kdemail.net" name="Frank Osterfeld" />
+      </feature>
+      <feature status="inprogress" target="3.5" >
+        <summary>Add basic support for enclosures (podcasts)</summary>
+        <responsible email="frank.osterfeld@kdemail.net" name="Frank Osterfeld" />
+      </feature>
+      <feature status="todo" target="4.0" >
+        <summary>Add kontact summary widget.</summary>
+        <responsible email="frank.osterfeld@kdemail.net" name="Frank Osterfeld" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Use KNotify for notification.</summary>
+        <responsible email="frank.osterfeld@kdemail.net" name="Frank Osterfeld" />
+      </feature>
+      <feature status="done" target="3.4" >
+        <summary>Use KDEPIM's progressbar.</summary>
+        <responsible email="tpr@d5k.net" name="Teemu Rytilahti" />
+      </feature>
+    </category>
+  </category>
+</features>

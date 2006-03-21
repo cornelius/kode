@@ -1,0 +1,76 @@
+<kxforms>
+  <form ref="features">
+    <list>
+      <xf:label>Categories</xf:label>
+      <itemclass ref="category">
+        <itemlabel><arg ref="@name"/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+
+  <form ref="category">
+    <xf:input ref="@name">
+      <xf:label>Name</xf:label>
+    </xf:input>
+    <list>
+      <xf:label>Item</xf:label>
+      <itemclass ref="category">
+        <itemlabel>Category <arg ref="@name"/></itemlabel>
+      </itemclass>
+      <itemclass ref="feature">
+        <itemlabel>Feature <arg ref="summary" truncate="20"/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+
+  <form ref="feature">
+    <xf:textarea ref="summary">
+      <xf:label>Summary</xf:label>
+    </xf:textarea>
+    <xf:select1 ref="@status">
+      <xf:label>Status</xf:label>
+      <xf:item>
+        <xf:label>Todo</xf:label>
+        <xf:value>todo</xf:value>
+      </xf:item>
+      <xf:item>
+        <xf:label>In Progress</xf:label>
+        <xf:value>inprogress</xf:value>
+      </xf:item>
+      <xf:item>
+        <xf:label>Done</xf:label>
+        <xf:value>done</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 ref="@target">
+      <xf:label>Target</xf:label>
+      <xf:item>
+        <xf:label>3.4</xf:label>
+        <xf:value>3.4</xf:value>
+      </xf:item>
+      <xf:item>
+        <xf:label>3.5</xf:label>
+        <xf:value>3.5</xf:value>
+      </xf:item>
+      <xf:item>
+        <xf:label>4.0</xf:label>
+        <xf:value>4.0</xf:value>
+      </xf:item>
+    </xf:select1>
+    <list>
+      <xf:label>Responsibles</xf:label>
+      <itemclass ref="responsible">
+        <itemlabel>Name: <arg ref="@name"/> Email: <arg ref="@email"/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+
+  <form ref="responsible">
+    <xf:input ref="@name">
+      <xf:label>Name</xf:label>
+    </xf:input>
+    <xf:input ref="@email">
+      <xf:label>Email:</xf:label>
+    </xf:input>
+  </form>
+</kxform>
