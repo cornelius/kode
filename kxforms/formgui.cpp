@@ -31,7 +31,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 using namespace KXForms;
 
@@ -40,7 +40,7 @@ FormGui::FormGui( Manager *m, QWidget *parent )
 {
   kDebug() << "FormGui()" << endl;
 
-  mTopLayout = new Q3VBoxLayout( this );
+  mTopLayout = new QVBoxLayout( this );
   mTopLayout->setSpacing( KDialog::spacingHint() );
 
   mRefLabel = new QLabel( this );

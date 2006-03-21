@@ -25,7 +25,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
 #include <QComboBox>
 
 using namespace KXForms;
@@ -33,7 +33,7 @@ using namespace KXForms;
 Select1::Select1( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  Q3BoxLayout *topLayout = new Q3HBoxLayout( this );
+  QBoxLayout *topLayout = new QHBoxLayout( this );
 
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );

@@ -23,7 +23,7 @@
 
 #include "reference.h"
 
-#include <q3valuelist.h>
+#include <QList>
 #include <qdom.h>
 #include <qwidget.h>
 
@@ -32,7 +32,7 @@ namespace KXForms {
 class GuiElement : public QWidget
 {
   public:
-    typedef Q3ValueList<GuiElement *> List;
+    typedef QList<GuiElement *> List;
 
     GuiElement( QWidget *parent );
     virtual ~GuiElement();

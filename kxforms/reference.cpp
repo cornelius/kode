@@ -76,7 +76,7 @@ void Reference::Segment::fromString( const QString &str )
     QString count = str.mid( pos1 + 1, pos2 - pos1 - 1 );
     bool ok;
     mCount = count.toInt( &ok );
-    if ( !ok ) kdError() << "Illegal count in reference '" << str << "'" << endl;
+    if ( !ok ) kError() << "Illegal count in reference '" << str << "'" << endl;
   } else {
     mCount = 0;
   }

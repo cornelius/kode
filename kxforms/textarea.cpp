@@ -26,7 +26,7 @@
 #include <qlayout.h>
 #include <q3textedit.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 #include <QTextStream>
 
 using namespace KXForms;
@@ -34,7 +34,7 @@ using namespace KXForms;
 TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
+  QBoxLayout *topLayout = new QVBoxLayout( this );
 
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );
@@ -70,17 +70,17 @@ void TextArea::saveData()
 
   QString xml = "<" + tag + ">" + mEdit->text() + "</" + tag + ">";
 
-  kdDebug() << "XML: " << xml << endl;
+  kDebug() << "XML: " << xml << endl;
 
   QDomDocument doc;
   doc.setContent( xml );
 
-  kdDebug() << "DOC: " << doc.toString( 2 ) << "END OF DOC" << endl;
+  kDebug() << "DOC: " << doc.toString( 2 ) << "END OF DOC" << endl;
 
   QDomElement docElement = doc.documentElement();
   QDomNode n;
   for( n = docElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    kdDebug() << "TAG: " << n.toElement().tagName() << endl;
+    kDebug() << "TAG: " << n.toElement().tagName() << endl;
     e.appendChild( n.cloneNode() );
   }   
 }

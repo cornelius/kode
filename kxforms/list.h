@@ -24,7 +24,7 @@
 
 #include <qdom.h>
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 
 namespace KXForms {
 
@@ -50,7 +50,7 @@ class List : public GuiElement
     class ItemClass
     {
       public:
-        typedef Q3ValueList<ItemClass> List;
+        typedef QList<ItemClass> List;
 
         ItemClass() {}
 

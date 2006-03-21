@@ -31,7 +31,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 #include <QFrame>
 
 using namespace KXForms;
@@ -41,7 +41,7 @@ FormDialog::FormDialog( QWidget *parent, const QString &title, Manager *m )
     KDialogBase::Ok, KDialogBase::Ok, false ), mFormGui( 0 ), mManager( m )
 {
   QFrame *topFrame = makeMainWidget();
-  mTopLayout = new Q3VBoxLayout( topFrame );
+  mTopLayout = new QVBoxLayout( topFrame );
 }
 
 void FormDialog::setGui( FormGui *gui )

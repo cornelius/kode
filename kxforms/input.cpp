@@ -26,14 +26,14 @@
 #include <qlabel.h>
 #include <qlayout.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
 
 using namespace KXForms;
 
 Input::Input( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  Q3BoxLayout *topLayout = new Q3HBoxLayout( this );
+  QBoxLayout *topLayout = new QHBoxLayout( this );
 
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );
@@ -44,17 +44,17 @@ Input::Input( Manager *m, const QString &label, QWidget *parent )
 
 void Input::loadData()
 {
-  kdDebug() << "Input::loadData() " << ref().toString() << "  context: "
+  kDebug() << "Input::loadData() " << ref().toString() << "  context: "
     << context().tagName() << endl;
 
   Reference::Segment s = ref().segments().last();
 
   QString txt;
   if ( s.isAttribute() ) {
-    kdDebug() << "S.NAME: " << s.name() << endl;
+    kDebug() << "S.NAME: " << s.name() << endl;
     txt = context().attribute( s.name() );
   } else {
-    kdDebug() << "S.ELE" << endl;
+    kDebug() << "S.ELE" << endl;
     txt = refElement().text();
   }
 
@@ -63,7 +63,7 @@ void Input::loadData()
 
 void Input::saveData()
 {
-  kdDebug() << "Input::saveData()" << endl;
+  kDebug() << "Input::saveData()" << endl;
 
   Reference::Segment s = ref().segments().last();
 

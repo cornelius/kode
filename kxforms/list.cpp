@@ -32,7 +32,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 using namespace KXForms;
 
@@ -50,7 +50,7 @@ List::List( Manager *m, const QString &label, QWidget *parent )
 {
   kDebug() << "List() " << label << endl;
 
-  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
+  QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
 
   mListView = new K3ListView( this );

@@ -21,7 +21,7 @@
 #ifndef KXFORMS_REFERENCE_H
 #define KXFORMS_REFERENCE_H
 
-#include <q3valuelist.h>
+#include <QList>
 #include <qstring.h>
 
 namespace KXForms {
@@ -35,7 +35,7 @@ class Reference
   public:
     class Segment {
       public:
-        typedef Q3ValueList<Segment> List;
+        typedef QList<Segment> List;
 
         Segment();
         Segment( const QString &str );
