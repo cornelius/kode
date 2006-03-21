@@ -24,7 +24,7 @@
 #include "kresult.h"
 #include "guihandler.h"
 
-#include <qdom.h>
+#include <QDomElement>
 
 namespace KXForms {
 

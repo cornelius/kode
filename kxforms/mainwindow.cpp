@@ -29,12 +29,9 @@
 #include <kmessagebox.h>
 #include <kfiledialog.h>
 
-#include <qfile.h>
-#include <qtextstream.h>
-//Added by qt3to4:
-#include <QDragEnterEvent>
+#include <QFile>
+#include <QTextStream>
 #include <QLabel>
-#include <QDropEvent>
 
 MainWindow::MainWindow()
     : KMainWindow( 0, "MainWindow" ),

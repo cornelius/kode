@@ -21,7 +21,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 
-#include <qdom.h>
+#include <QDomDocument>
 
 using namespace KXForms;
 

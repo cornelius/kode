@@ -6,10 +6,6 @@
 #include <kapplication.h>
 #include <kmainwindow.h>
 #include <kurl.h>
-//Added by qt3to4:
-#include <QDragEnterEvent>
-#include <QLabel>
-#include <QDropEvent>
 
 class KPrinter;
 class QLabel;

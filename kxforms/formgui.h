@@ -20,9 +20,8 @@
 
 #include "guielement.h"
 
-#include <qwidget.h>
-#include <qdom.h>
-//Added by qt3to4:
+#include <QWidget>
+#include <QDomElement>
 #include <QLabel>
 #include <QList>
 

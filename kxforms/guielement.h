@@ -24,8 +24,8 @@
 #include "reference.h"
 
 #include <QList>
-#include <qdom.h>
-#include <qwidget.h>
+#include <QDomElement>
+#include <QWidget>
 
 namespace KXForms {
 

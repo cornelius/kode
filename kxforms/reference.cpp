@@ -23,7 +23,7 @@
 
 #include <kdebug.h>
 
-#include <qstringlist.h>
+#include <QStringList>
 
 using namespace KXForms;
 

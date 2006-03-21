@@ -23,7 +23,7 @@
 
 #include "guielement.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 
 class QComboBox;
 

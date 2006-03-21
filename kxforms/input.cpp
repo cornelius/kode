@@ -23,9 +23,7 @@
 #include <klineedit.h>
 #include <kdebug.h>
 
-#include <qlabel.h>
-#include <qlayout.h>
-//Added by qt3to4:
+#include <QLabel>
 #include <QHBoxLayout>
 
 using namespace KXForms;

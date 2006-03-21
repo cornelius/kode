@@ -19,7 +19,7 @@
 #define KXFORMS_FORM_H
 
 #include <QList>
-#include <qdom.h>
+#include <QDomElement>
 
 class QWidget;
 

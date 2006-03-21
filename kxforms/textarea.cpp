@@ -22,10 +22,8 @@
 
 #include <kdebug.h>
 
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
 #include <QTextEdit>
-//Added by qt3to4:
 #include <QVBoxLayout>
 #include <QTextStream>
 

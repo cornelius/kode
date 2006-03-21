@@ -22,7 +22,7 @@
 #define KXFORMS_REFERENCE_H
 
 #include <QList>
-#include <qstring.h>
+#include <QString>
 
 namespace KXForms {
 

@@ -20,8 +20,8 @@
 #ifndef KXFORMS_XFORMSCOMMON_H
 #define KXFORMS_XFORMSCOMMON_H
 
-#include <qdom.h>
-#include <qstring.h>
+#include <QDomElement>
+#include <QString>
 
 namespace KXForms {
 

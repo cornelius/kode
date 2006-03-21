@@ -21,7 +21,7 @@
 #ifndef KRESULT_H
 #define KRESULT_H
 
-#include <qstring.h>
+#include <QString>
 
 /**
   This class represents the result of an operation. It's meant to be used as
