@@ -23,7 +23,7 @@
 
 #include "formgui.h"
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class QWidget;
 class QBoxLayout;
@@ -33,7 +33,7 @@ namespace KXForms {
 class Manager;
 class Form;
 
-class FormDialog : public KDialogBase
+class FormDialog : public KDialog
 {
     Q_OBJECT
   public:

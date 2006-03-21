@@ -37,11 +37,14 @@
 using namespace KXForms;
 
 FormDialog::FormDialog( QWidget *parent, const QString &title, Manager *m )
-  : KDialogBase( parent, 0, true, title,
-    KDialogBase::Ok, KDialogBase::Ok, false ), mFormGui( 0 ), mManager( m )
+  : KDialog( parent, title, Ok ),
+    mFormGui( 0 ), mManager( m )
 {
-  QFrame *topFrame = makeMainWidget();
+  QFrame *topFrame = new QFrame( this );
+  setMainWidget( topFrame );
   mTopLayout = new QVBoxLayout( topFrame );
+
+  connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
 }
 
 void FormDialog::setGui( FormGui *gui )
