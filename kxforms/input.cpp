@@ -25,13 +25,15 @@
 
 #include <qlabel.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
 
 using namespace KXForms;
 
 Input::Input( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  QBoxLayout *topLayout = new QHBoxLayout( this );
+  Q3BoxLayout *topLayout = new Q3HBoxLayout( this );
 
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );

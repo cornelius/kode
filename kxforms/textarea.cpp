@@ -24,19 +24,22 @@
 
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QTextStream>
 
 using namespace KXForms;
 
 TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
 
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );
 
-  mEdit = new QTextEdit( this );
+  mEdit = new Q3TextEdit( this );
   topLayout->addWidget( mEdit );
 }
 
@@ -45,7 +48,7 @@ void TextArea::loadData()
   QDomElement e = refElement();
 
   QString txt;
-  QTextStream ts( &txt, IO_WriteOnly );
+  QTextStream ts( &txt, QIODevice::WriteOnly );
   e.save( ts, 0 );
 
   // Remove top-level tag

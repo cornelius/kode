@@ -26,7 +26,7 @@
 #include <kdialogbase.h>
 
 class QWidget;
-class QBoxLayout;
+class Q3BoxLayout;
 
 namespace KXForms {
 
@@ -45,7 +45,7 @@ class FormDialog : public KDialogBase
     void slotOk();
 
   private:
-    QBoxLayout *mTopLayout;
+    Q3BoxLayout *mTopLayout;
     
     FormGui *mFormGui;
     

@@ -20,18 +20,20 @@
 
 #include "guielement.h"
 
-#include <klistview.h>
+#include <k3listview.h>
 
 #include <qdom.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 namespace KXForms {
 
 class Manager;
 
-class ListItem : public KListViewItem
+class ListItem : public K3ListViewItem
 {
   public:
-    ListItem( KListView *, const Reference &, const QString &label );
+    ListItem( K3ListView *, const Reference &, const QString &label );
 
     Reference ref() const { return mRef; }
     
@@ -48,7 +50,7 @@ class List : public GuiElement
     class ItemClass
     {
       public:
-        typedef QValueList<ItemClass> List;
+        typedef Q3ValueList<ItemClass> List;
 
         ItemClass() {}
 
@@ -80,7 +82,7 @@ class List : public GuiElement
 
     ItemClass::List mItemClasses;
 
-    KListView *mListView;
+    K3ListView *mListView;
 };
 
 }

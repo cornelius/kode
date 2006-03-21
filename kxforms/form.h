@@ -18,7 +18,7 @@
 #ifndef KXFORMS_FORM_H
 #define KXFORMS_FORM_H
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qdom.h>
 
 class QWidget;
@@ -31,7 +31,7 @@ class FormGui;
 class Form
 {
   public:
-    typedef QValueList<Form *> List;
+    typedef Q3ValueList<Form *> List;
 
     Form( Manager * );
 

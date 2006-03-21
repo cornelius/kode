@@ -6,6 +6,10 @@
 #include <kapplication.h>
 #include <kmainwindow.h>
 #include <kurl.h>
+//Added by qt3to4:
+#include <QDragEnterEvent>
+#include <QLabel>
+#include <QDropEvent>
 
 class KPrinter;
 class QLabel;
@@ -26,19 +30,12 @@ class MainWindow : public KMainWindow
     MainWindow();
     virtual ~MainWindow();
 
-    bool load( const KURL & );
-    bool save( const KURL & );
+    bool load( const KUrl & );
+    bool save( const KUrl & );
 
-    void loadForm( const KURL & );
+    void loadForm( const KUrl & );
 
     void setVersion( const QString & );
-
-  protected:
-    /**
-     * Overridden virtuals for Qt drag 'n drop (XDND)
-     */
-    virtual void dragEnterEvent(QDragEnterEvent *event);
-    virtual void dropEvent(QDropEvent *event);
 
   protected:
     /**
@@ -78,7 +75,7 @@ class MainWindow : public KMainWindow
 
     KXForms::Manager mFormsManager;
 
-    KURL mDataUrl;
+    KUrl mDataUrl;
 };
 
 #endif

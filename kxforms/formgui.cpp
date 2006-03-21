@@ -30,15 +30,17 @@
 
 #include <qlayout.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 
 using namespace KXForms;
 
 FormGui::FormGui( Manager *m, QWidget *parent )
   : QWidget( parent ), mManager( m )
 {
-  kdDebug() << "FormGui()" << endl;
+  kDebug() << "FormGui()" << endl;
 
-  mTopLayout = new QVBoxLayout( this );
+  mTopLayout = new Q3VBoxLayout( this );
   mTopLayout->setSpacing( KDialog::spacingHint() );
 
   mRefLabel = new QLabel( this );
@@ -67,13 +69,13 @@ Reference FormGui::ref() const
 
 void FormGui::parseElement( const QDomElement &element )
 {
-  kdDebug() << "FormGui::parseElement()" << endl;
+  kDebug() << "FormGui::parseElement()" << endl;
 
   QDomNode n;
   for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
     QString tag = e.tagName();
-    kdDebug() << "  Found element '" << tag << "'" << endl;
+    kDebug() << "  Found element '" << tag << "'" << endl;
     XFormsCommon c = XFormsCommon::parseElement( e );
     GuiElement *guiElement = 0;
     if ( tag == "list" ) {
@@ -89,7 +91,7 @@ void FormGui::parseElement( const QDomElement &element )
       guiElement = new Select1( mManager, c.label(), this );
       guiElement->setRef( e.attribute( "ref" ) );
     } else {
-      kdWarning() << "  Unsupported element" << endl;
+      kWarning() << "  Unsupported element" << endl;
     }
     
     if ( guiElement ) {
@@ -99,7 +101,7 @@ void FormGui::parseElement( const QDomElement &element )
     }
   }
 
-  kdDebug() << "FormGui::parseElement() done" << endl;
+  kDebug() << "FormGui::parseElement() done" << endl;
 }
 
 QDomElement FormGui::findContextElement( const QDomDocument &doc )
@@ -111,12 +113,12 @@ QDomElement FormGui::findContextElement( const QDomDocument &doc )
   for( it = segments.begin(); it != segments.end(); ++it ) {
     Reference::Segment segment = *it;
     if ( contextElement.isNull() ) {
-      kdDebug() << "ROOT" << endl;
+      kDebug() << "ROOT" << endl;
       if ( doc.documentElement().tagName() == segment.name() ) {
         contextElement = doc.documentElement();
         continue;
       } else {
-        kdError() << "Document element '" << doc.documentElement().tagName() <<
+        kError() << "Document element '" << doc.documentElement().tagName() <<
            "' isn't '" << segment.name() << "'" << endl;
         return QDomElement();
       }
@@ -136,7 +138,7 @@ QDomElement FormGui::findContextElement( const QDomDocument &doc )
       counts.insert( e.tagName(), ++count );
     }
     if ( n.isNull() ) {
-      kdError() << "FormGui::loadData(): Unable to find element '" <<
+      kError() << "FormGui::loadData(): Unable to find element '" <<
         segment.toString() << "'" << endl;
       return QDomElement();
     }
@@ -147,7 +149,7 @@ QDomElement FormGui::findContextElement( const QDomDocument &doc )
 
 void FormGui::loadData( const QDomDocument &doc )
 {
-  kdDebug() << "FormGui::loadData() " << ref().toString() << endl;
+  kDebug() << "FormGui::loadData() " << ref().toString() << endl;
 
   QDomElement contextElement = findContextElement( doc );
 

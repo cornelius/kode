@@ -30,6 +30,9 @@
 
 #include <qlayout.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QFrame>
 
 using namespace KXForms;
 
@@ -38,7 +41,7 @@ FormDialog::FormDialog( QWidget *parent, const QString &title, Manager *m )
     KDialogBase::Ok, KDialogBase::Ok, false ), mFormGui( 0 ), mManager( m )
 {
   QFrame *topFrame = makeMainWidget();
-  mTopLayout = new QVBoxLayout( topFrame );
+  mTopLayout = new Q3VBoxLayout( topFrame );
 }
 
 void FormDialog::setGui( FormGui *gui )
@@ -49,7 +52,7 @@ void FormDialog::setGui( FormGui *gui )
 
 void FormDialog::slotOk()
 {
-  kdDebug() << "FormDialog::slotOk()" << endl;
+  kDebug() << "FormDialog::slotOk()" << endl;
 
   mFormGui->saveData();
   
@@ -66,7 +69,7 @@ GuiHandler::GuiHandler( Manager *m )
 
 FormGui *GuiHandler::createRootGui( QWidget *parent )
 {
-  kdDebug() << "GuiHandler::createRootGui()" << endl;
+  kDebug() << "GuiHandler::createRootGui()" << endl;
 
   Form *f = mManager->rootForm();
 
@@ -81,7 +84,7 @@ FormGui *GuiHandler::createRootGui( QWidget *parent )
   gui->parseElement( f->element() );
 
   if ( mManager->hasData() ) {
-    kdDebug() << "Manager::createGui() Load data on creation" << endl;
+    kDebug() << "Manager::createGui() Load data on creation" << endl;
     mManager->loadData( gui );
   }
 
@@ -90,7 +93,7 @@ FormGui *GuiHandler::createRootGui( QWidget *parent )
 
 FormGui *GuiHandler::createGui( const Reference &ref, QWidget *parent )
 {
-  kdDebug() << "GuiHandler::createGui() ref: '" << ref.toString() << "'" << endl;
+  kDebug() << "GuiHandler::createGui() ref: '" << ref.toString() << "'" << endl;
 
   if ( ref.isEmpty() ) {
     KMessageBox::sorry( parent, i18n("No reference.") );
@@ -121,7 +124,7 @@ FormGui *GuiHandler::createGui( const Reference &ref, QWidget *parent )
   dlg.setGui( gui );
 
   if ( mManager->hasData() ) {
-    kdDebug() << "Manager::createGui() Load data on creation" << endl;
+    kDebug() << "Manager::createGui() Load data on creation" << endl;
     mManager->loadData( gui );
   }
 
@@ -132,10 +135,10 @@ FormGui *GuiHandler::createGui( const Reference &ref, QWidget *parent )
 
 FormGui *GuiHandler::createGui( Form *form, QWidget *parent )
 {
-  kdDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
+  kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
 
   if ( !form ) {
-    kdError() << "KXForms::Manager::createGui(): form is null." << endl;
+    kError() << "KXForms::Manager::createGui(): form is null." << endl;
     return 0;
   }
 

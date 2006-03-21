@@ -20,7 +20,6 @@
 #include <kfiledialog.h>
 #include <kconfig.h>
 #include <kurl.h>
-#include <kurldrag.h>
 #include <kurlrequesterdlg.h>
 #include <kedittoolbar.h>
 #include <kstdaccel.h>
@@ -32,19 +31,20 @@
 
 #include <qfile.h>
 #include <qtextstream.h>
+//Added by qt3to4:
+#include <QDragEnterEvent>
+#include <QLabel>
+#include <QDropEvent>
 
 MainWindow::MainWindow()
     : KMainWindow( 0, "MainWindow" ),
       m_printer(0)
 {
-    // accept dnd
-    setAcceptDrops(true);
-
     mLabel = new QLabel( i18n("Welcome!"), this );
 
     QFont font( "Arial", 100 );
     mLabel->setFont( font );
-    mLabel->setAlignment( AlignCenter );
+    mLabel->setAlignment( Qt::AlignCenter );
 
     // tell the KMainWindow that this is indeed the main widget
     setCentralWidget( mLabel );
@@ -68,7 +68,7 @@ void MainWindow::setVersion( const QString &version )
   mLabel->setText( version );
 }
 
-bool MainWindow::load(const KURL& url)
+bool MainWindow::load(const KUrl& url)
 {
   if ( !url.isLocalFile() ) {
     KMessageBox::sorry( this, i18n("Non-local URL '%1' not supported.")
@@ -76,7 +76,7 @@ bool MainWindow::load(const KURL& url)
   } else {
     QString filename = url.path();
     QFile f( filename );
-    if ( !f.open( IO_ReadOnly ) ) {
+    if ( !f.open( QIODevice::ReadOnly ) ) {
       KMessageBox::sorry( this, i18n("Unable to open file '%1'.")
         .arg( filename ) );
     } else {
@@ -96,7 +96,7 @@ bool MainWindow::load(const KURL& url)
   return false;
 }
 
-bool MainWindow::save( const KURL & url )
+bool MainWindow::save( const KUrl & url )
 {
   if ( !url.isLocalFile() ) {
     KMessageBox::sorry( this, i18n("Non-local URL '%1' not supported.")
@@ -104,7 +104,7 @@ bool MainWindow::save( const KURL & url )
   } else {
     QString filename = url.path();
     QFile f( filename );
-    if ( !f.open( IO_WriteOnly ) ) {
+    if ( !f.open( QIODevice::WriteOnly ) ) {
       KMessageBox::sorry( this, i18n("Unable to open file '%1'.")
         .arg( filename ) );
     } else {
@@ -165,30 +165,6 @@ void MainWindow::readProperties(KConfig *config)
 
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
-{
-    // accept uri drops only
-    event->accept(KURLDrag::canDecode(event));
-}
-
-void MainWindow::dropEvent(QDropEvent *event)
-{
-    // this is a very simplistic implementation of a drop event.  we
-    // will only accept a dropped URL.  the Qt dnd code can do *much*
-    // much more, so please read the docs there
-    KURL::List urls;
-
-    // see if we can decode a URI.. if not, just ignore it
-    if (KURLDrag::decode(event, urls) && !urls.isEmpty())
-    {
-        // okay, we have a URI.. process it
-        const KURL &url = urls.first();
-
-        // load in the file
-        load(url);
-    }
-}
-
 void MainWindow::fileNew()
 {
     // this slot is called whenever the File->New menu is selected,
@@ -201,7 +177,7 @@ void MainWindow::fileNew()
 
 void MainWindow::fileOpen()
 {
-  KURL url = KFileDialog::getOpenURL( QString::null, QString::null, this,
+  KUrl url = KFileDialog::getOpenURL( QString::null, QString::null, this,
     i18n("Open XML File") );
 
   if ( !url.isEmpty() ) {
@@ -216,7 +192,7 @@ void MainWindow::fileSave()
 
 void MainWindow::fileSaveAs()
 {
-  KURL file_url = KFileDialog::getSaveURL();
+  KUrl file_url = KFileDialog::getSaveURL();
   if ( !file_url.isEmpty() && file_url.isValid() ) {
     save( file_url );
   }
@@ -255,7 +231,7 @@ void MainWindow::changeCaption(const QString& text)
     setCaption(text);
 }
 
-void MainWindow::loadForm( const KURL &url )
+void MainWindow::loadForm( const KUrl &url )
 {
   if ( !url.isLocalFile() ) {
     KMessageBox::sorry( this,
@@ -263,7 +239,7 @@ void MainWindow::loadForm( const KURL &url )
   } else {
     QString filename = url.path();
     QFile f( filename );
-    if ( !f.open( IO_ReadOnly ) ) {
+    if ( !f.open( QIODevice::ReadOnly ) ) {
       KMessageBox::sorry( this, i18n("Unable to open file '%1'.")
         .arg( filename ) );
     } else {

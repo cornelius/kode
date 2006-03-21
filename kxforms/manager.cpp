@@ -40,7 +40,7 @@ Manager::~Manager()
 
 bool Manager::parseForms( const QString &xml )
 {
-  kdDebug() << "Manager::parseForms()" << endl;
+  kDebug() << "Manager::parseForms()" << endl;
 
   clearForms();
 
@@ -50,7 +50,7 @@ bool Manager::parseForms( const QString &xml )
   QDomElement docElement = doc.documentElement();
 
   if ( docElement.tagName() != "kxforms" ) {
-    kdError() << "Top element is '" << docElement.tagName() <<
+    kError() << "Top element is '" << docElement.tagName() <<
       "'. Expected 'kxforms'." << endl;
     return false;
   }
@@ -63,7 +63,7 @@ bool Manager::parseForms( const QString &xml )
       if ( !form ) return false;
       mForms.append( form );
     } else {
-      kdError() << "Expected 'form' element. Got '" << e.tagName() << "'" << endl;
+      kError() << "Expected 'form' element. Got '" << e.tagName() << "'" << endl;
       return false;
     }
   }
@@ -74,7 +74,7 @@ bool Manager::parseForms( const QString &xml )
 Form *Manager::parseForm( const QDomElement &element )
 {
   QString ref = element.attribute( "ref" );
-  kdDebug() << "Manager::parseForm() ref '" << ref << "'" << endl;
+  kDebug() << "Manager::parseForm() ref '" << ref << "'" << endl;
   if ( ref.isEmpty() ) return 0;
 
   Form *form = new Form( this );
@@ -87,7 +87,7 @@ Form *Manager::parseForm( const QDomElement &element )
 Form *Manager::rootForm()
 {
   if ( mForms.isEmpty() ) {
-    kdError() << "No forms." << endl;
+    kError() << "No forms." << endl;
     return 0;
   }
 
@@ -105,10 +105,10 @@ Form *Manager::form( const QString &ref )
 
 KResult Manager::loadData( const QString &xml )
 {
-  kdDebug() << "Manager::loadData()" << endl;
+  kDebug() << "Manager::loadData()" << endl;
 
   if ( mForms.isEmpty() ) {
-    kdError() << "No Forms" << endl;
+    kError() << "No Forms" << endl;
     return KResultError( i18n("No Forms loaded.") );
   }
 
@@ -133,7 +133,7 @@ KResult Manager::loadData( const QString &xml )
 
 KResult Manager::saveData( QString &xml )
 {
-  kdDebug() << "Manager::saveData()" << endl;
+  kDebug() << "Manager::saveData()" << endl;
   
   if ( !mDataLoaded ) return KResultError( i18n("No data loaded.") );
 

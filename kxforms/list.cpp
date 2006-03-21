@@ -22,7 +22,6 @@
 #include "manager.h"
 #include "formgui.h"
 
-#include <klistview.h>
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -32,12 +31,14 @@
 
 #include <qlayout.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 
 using namespace KXForms;
 
-ListItem::ListItem( KListView *parent, const Reference &ref,
+ListItem::ListItem( K3ListView *parent, const Reference &ref,
   const QString &label )
-  : KListViewItem( parent ), mRef( ref )
+  : K3ListViewItem( parent ), mRef( ref )
 {
   setText( 0, label );
   setText( 1, mRef.toString() );
@@ -47,16 +48,16 @@ ListItem::ListItem( KListView *parent, const Reference &ref,
 List::List( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  kdDebug() << "List() " << label << endl;
+  kDebug() << "List() " << label << endl;
 
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
 
-  mListView = new KListView( this );
+  mListView = new K3ListView( this );
   mListView->addColumn( label );
   mListView->addColumn( i18n("Reference") );
   topLayout->addWidget( mListView );
-  connect( mListView, SIGNAL( doubleClicked( QListViewItem *, const QPoint &,
+  connect( mListView, SIGNAL( doubleClicked( Q3ListViewItem *, const QPoint &,
     int ) ), SLOT( editItem() ) );
 
   QPushButton *button = new QPushButton( i18n("New Item..."), this );
@@ -151,13 +152,13 @@ void List::parseElement( const QDomElement &element )
 
 void List::loadData()
 {
-  kdDebug() << "List::loadData() ref: " << ref().toString() << endl;
+  kDebug() << "List::loadData() ref: " << ref().toString() << endl;
 
   QMap<QString, int> counts;
   QDomNode n;
   for( n = context().firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
-//    kdDebug() << "E: " << e.tagName() << endl;
+//    kDebug() << "E: " << e.tagName() << endl;
     ItemClass ic = itemClass( e.tagName() );
     if ( ic.isValid() ) {
       int count = 1;
@@ -166,7 +167,7 @@ void List::loadData()
       Reference::Segment s( ic.refName(), count );
       Reference r = ref() + s;
       QString itemLabel = ic.refName() + QString::number( count );
-//      kdDebug() << "item label: " << itemLabel << endl;
+//      kDebug() << "item label: " << itemLabel << endl;
       new ListItem( mListView, r, itemLabel );
       counts.insert( ic.refName(), ++count );
     }
@@ -175,7 +176,7 @@ void List::loadData()
 
 void List::saveData()
 {
-  kdDebug() << "List::saveData()" << endl;
+  kDebug() << "List::saveData()" << endl;
 }
 
 List::ItemClass List::itemClass( const QString &ref )

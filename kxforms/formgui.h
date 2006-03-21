@@ -22,8 +22,11 @@
 
 #include <qwidget.h>
 #include <qdom.h>
+//Added by qt3to4:
+#include <QLabel>
+#include <Q3ValueList>
 
-class QBoxLayout;
+class Q3BoxLayout;
 class QLabel;
 
 namespace KXForms {
@@ -33,7 +36,7 @@ class Manager;
 class FormGui : public QWidget
 {
   public:
-    typedef QValueList<FormGui *> List;
+    typedef Q3ValueList<FormGui *> List;
 
     FormGui( Manager *, QWidget *parent );
 
@@ -57,7 +60,7 @@ class FormGui : public QWidget
 
     GuiElement::List mGuiElements;
 
-    QBoxLayout *mTopLayout;
+    Q3BoxLayout *mTopLayout;
     QLabel *mRefLabel;
 };
 

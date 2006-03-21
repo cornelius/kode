@@ -22,16 +22,18 @@
 
 #include <kdebug.h>
 
-#include <qcombobox.h>
 #include <qlabel.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QComboBox>
 
 using namespace KXForms;
 
 Select1::Select1( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  QBoxLayout *topLayout = new QHBoxLayout( this );
+  Q3BoxLayout *topLayout = new Q3HBoxLayout( this );
 
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );
@@ -67,7 +69,7 @@ void Select1::parseElement( const QDomElement &formElement )
 
 void Select1::loadData()
 {
-  kdDebug() << "Select1::loadData() " << ref().toString() << "  context: "
+  kDebug() << "Select1::loadData() " << ref().toString() << "  context: "
     << context().tagName() << endl;
 
   Reference::Segment s = ref().segments().last();
@@ -87,13 +89,13 @@ void Select1::loadData()
   if ( it != mValues.end() ) {
     mComboBox->setCurrentItem( count );
   } else {
-    kdWarning() << "Select1::loadData() unknown value: " << txt << endl;
+    kWarning() << "Select1::loadData() unknown value: " << txt << endl;
   }
 }
 
 void Select1::saveData()
 {
-  kdDebug() << "Select1::saveData()" << endl;
+  kDebug() << "Select1::saveData()" << endl;
 
   Reference::Segment s = ref().segments().last();
 
