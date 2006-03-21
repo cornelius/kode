@@ -52,27 +52,27 @@ MainWindow::MainWindow()
     : KMainWindow( 0, "MainWindow" ),
       m_printer(0)
 {
-    mLabel = new QLabel( i18n("Welcome!"), this );
+  mLabel = new QLabel( i18n("Welcome!"), this );
 
-    QFont font( "Arial", 100 );
-    mLabel->setFont( font );
-    mLabel->setAlignment( Qt::AlignCenter );
+  QFont font( "Arial", 100 );
+  mLabel->setFont( font );
+  mLabel->setAlignment( Qt::AlignCenter );
 
-    // tell the KMainWindow that this is indeed the main widget
-    setCentralWidget( mLabel );
+  // tell the KMainWindow that this is indeed the main widget
+  setCentralWidget( mLabel );
 
-    // then, setup our actions
-    setupActions();
+  // then, setup our actions
+  setupActions();
 
-    // Add typical actions and save size/toolbars/statusbar
-    setupGUI();
+  // Add typical actions and save size/toolbars/statusbar
+  setupGUI();
 
-    statusBar()->message( i18n("Ready.") );
+  statusBar()->message( i18n("Ready.") );
 }
 
 MainWindow::~MainWindow()
 {
-    delete m_printer;
+  delete m_printer;
 }
 
 void MainWindow::setVersion( const QString &version )
@@ -138,53 +138,51 @@ bool MainWindow::save( const KUrl & url )
 
 void MainWindow::setupActions()
 {
-    KStdAction::openNew(this, SLOT(fileNew()), actionCollection());
-    KStdAction::open(this, SLOT(fileOpen()), actionCollection());
-    KStdAction::save(this, SLOT(fileSave()), actionCollection());
-    KStdAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
-    KStdAction::quit(kapp, SLOT(quit()), actionCollection());
+  KStdAction::openNew(this, SLOT(fileNew()), actionCollection());
+  KStdAction::open(this, SLOT(fileOpen()), actionCollection());
+  KStdAction::save(this, SLOT(fileSave()), actionCollection());
+  KStdAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
+  KStdAction::quit(kapp, SLOT(quit()), actionCollection());
 
-    KStdAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
+  KStdAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
 #if 0
-    // this doesn't do anything useful.  it's just here to illustrate
-    // how to insert a custom menu and menu item
-    KAction *custom = new KAction(i18n("Cus&tom Menuitem"), 0,
-                                  this, SLOT(optionsPreferences()),
-                                  actionCollection(), "custom_action");
-    Q_UNUSED( custom );
+  // this doesn't do anything useful.  it's just here to illustrate
+  // how to insert a custom menu and menu item
+  KAction *custom = new KAction(i18n("Cus&tom Menuitem"), 0,
+                                this, SLOT(optionsPreferences()),
+                                actionCollection(), "custom_action");
+  Q_UNUSED( custom );
 #endif
-
 }
 
 void MainWindow::saveProperties(KConfig *config)
 {
-    // the 'config' object points to the session managed
-    // config file.  anything you write here will be available
-    // later when this app is restored
+  // the 'config' object points to the session managed
+  // config file.  anything you write here will be available
+  // later when this app is restored
 
   Q_UNUSED( config );
 }
 
 void MainWindow::readProperties(KConfig *config)
 {
-    // the 'config' object points to the session managed
-    // config file.  this function is automatically called whenever
-    // the app is being restored.  read in here whatever you wrote
-    // in 'saveProperties'
+  // the 'config' object points to the session managed
+  // config file.  this function is automatically called whenever
+  // the app is being restored.  read in here whatever you wrote
+  // in 'saveProperties'
 
   Q_UNUSED( config );
-
 }
 
 void MainWindow::fileNew()
 {
-    // this slot is called whenever the File->New menu is selected,
-    // the New shortcut is pressed (usually CTRL+N) or the New toolbar
-    // button is clicked
+  // this slot is called whenever the File->New menu is selected,
+  // the New shortcut is pressed (usually CTRL+N) or the New toolbar
+  // button is clicked
 
-    // create a new window
-    (new MainWindow)->show();
+  // create a new window
+  (new MainWindow)->show();
 }
 
 void MainWindow::fileOpen()
