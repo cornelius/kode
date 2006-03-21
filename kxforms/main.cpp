@@ -36,12 +36,11 @@ int main(int argc, char **argv)
 
   if ( args->isSet( "kxform" ) ) {
     QString form = args->getOption( "kxform" );
-    KUrl formUrl( form );
-    widget->loadForm( formUrl );
+    widget->loadForm( KUrl::fromPath( form ) );
   }
 
   if ( args->count() == 1 ) {
-    widget->load( KUrl( args->arg( 0 ) ) );
+    widget->load( KUrl::fromPath( args->arg( 0 ) ) );
   }
 
   return app.exec();
