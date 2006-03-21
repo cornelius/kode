@@ -24,7 +24,7 @@
 
 #include <qlabel.h>
 #include <qlayout.h>
-#include <q3textedit.h>
+#include <QTextEdit>
 //Added by qt3to4:
 #include <QVBoxLayout>
 #include <QTextStream>
@@ -39,7 +39,7 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
   QLabel *l = new QLabel( label, this );
   topLayout->addWidget( l );
 
-  mEdit = new Q3TextEdit( this );
+  mEdit = new QTextEdit( this );
   topLayout->addWidget( mEdit );
 }
 

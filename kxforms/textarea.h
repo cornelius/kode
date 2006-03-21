@@ -23,7 +23,7 @@
 
 #include "guielement.h"
 
-class Q3TextEdit;
+class QTextEdit;
 
 namespace KXForms {
 
@@ -40,7 +40,7 @@ class TextArea : public GuiElement
   private:
     Manager *mManager;
 
-    Q3TextEdit *mEdit;
+    QTextEdit *mEdit;
 };
 
 }
