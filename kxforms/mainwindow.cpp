@@ -210,19 +210,19 @@ void MainWindow::fileSaveAs()
 
 void MainWindow::optionsConfigureToolbars()
 {
-    // use the standard toolbar editor
-    saveMainWindowSettings( KGlobal::config(), autoSaveGroup() );
-    KEditToolbar dlg(actionCollection());
-    connect(&dlg, SIGNAL(newToolbarConfig()), this, SLOT(newToolbarConfig()));
-    dlg.exec();
+  // use the standard toolbar editor
+  saveMainWindowSettings( KGlobal::config(), autoSaveGroup() );
+  KEditToolbar dlg(actionCollection());
+  connect(&dlg, SIGNAL(newToolbarConfig()), this, SLOT(newToolbarConfig()));
+  dlg.exec();
 }
 
 void MainWindow::newToolbarConfig()
 {
-    // this slot is called when user clicks "Ok" or "Apply" in the toolbar editor.
-    // recreate our GUI, and re-apply the settings (e.g. "text under icons", etc.)
-    createGUI();
-    applyMainWindowSettings( KGlobal::config(), autoSaveGroup() );
+  // this slot is called when user clicks "Ok" or "Apply" in the toolbar editor.
+  // recreate our GUI, and re-apply the settings (e.g. "text under icons", etc.)
+  createGUI();
+  applyMainWindowSettings( KGlobal::config(), autoSaveGroup() );
 }
 
 void MainWindow::optionsPreferences()
@@ -231,14 +231,14 @@ void MainWindow::optionsPreferences()
 
 void MainWindow::changeStatusbar(const QString& text)
 {
-    // display the text on the statusbar
-    statusBar()->message(text);
+  // display the text on the statusbar
+  statusBar()->message(text);
 }
 
 void MainWindow::changeCaption(const QString& text)
 {
-    // display the text on the caption
-    setCaption(text);
+  // display the text on the caption
+  setCaption(text);
 }
 
 void MainWindow::loadForm( const KUrl &url )
