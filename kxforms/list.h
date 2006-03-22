@@ -102,6 +102,8 @@ class List : public GuiElement
     void moveUp();
     void moveDown();
 
+    void resizeColumns();
+
   private:
     Manager *mManager;
 

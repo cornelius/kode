@@ -32,6 +32,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QTreeView>
+#include <QTimer>
 
 using namespace KXForms;
 
@@ -80,10 +81,14 @@ QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
 
 void ListModel::addItem( const QString &label, const Reference &ref )
 {
+  beginInsertRows( QModelIndex(), mItems.size(), mItems.size() );
+
   Item *item = new Item;
   item->label = label;
   item->ref = ref;
   mItems.append( item );
+  
+  endInsertRows();
 }
 
 bool ListModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -282,6 +287,13 @@ void List::loadData()
       counts.insert( ic.refName(), ++count );
     }
   }
+
+  QTimer::singleShot( 0, this, SLOT( resizeColumns() ) );
+}
+
+void List::resizeColumns()
+{
+  mView->resizeColumnToContents( 0 );
 }
 
 void List::saveData()
