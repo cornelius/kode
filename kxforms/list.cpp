@@ -93,7 +93,6 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   kDebug() << "List() " << label << endl;
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
-  topLayout->setSpacing( KDialog::spacingHint() );
 
   mModel = new ListModel( this );
   mView = new QTreeView( this );
@@ -102,24 +101,26 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   connect( mView, SIGNAL( doubleClicked( const QModelIndex & ) ),
     SLOT( editItem() ) );
 
+  QBoxLayout *buttonLayout = new QHBoxLayout( topLayout );
+
   QPushButton *button = new QPushButton( i18n("New Item..."), this );
-  topLayout->addWidget( button );
+  buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( newItem() ) );
 
   button = new QPushButton( i18n("Delete Selected Item"), this );
-  topLayout->addWidget( button );
+  buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( deleteItem() ) );
 
   button = new QPushButton( i18n("Edit Item..."), this );
-  topLayout->addWidget( button );
+  buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( editItem() ) );
 
   button = new QPushButton( i18n("Move Item Up"), this );
-  topLayout->addWidget( button );
+  buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveUp() ) );
 
   button = new QPushButton( i18n("Move Item Down"), this );
-  topLayout->addWidget( button );
+  buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveDown() ) );
 }
 

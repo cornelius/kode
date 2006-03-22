@@ -42,7 +42,6 @@ FormGui::FormGui( Manager *m, QWidget *parent )
   kDebug() << "FormGui()" << endl;
 
   mTopLayout = new QVBoxLayout( this );
-  mTopLayout->setSpacing( KDialog::spacingHint() );
 
   mRefLabel = new QLabel( this );
   mTopLayout->addWidget( mRefLabel );
