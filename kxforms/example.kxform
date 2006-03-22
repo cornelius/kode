@@ -15,10 +15,10 @@
     <list>
       <xf:label>Item</xf:label>
       <itemclass ref="category">
-        <itemlabel>Category <arg ref="@name"/></itemlabel>
+        <itemlabel>Category: <arg ref="@name"/></itemlabel>
       </itemclass>
       <itemclass ref="feature">
-        <itemlabel>Feature <arg ref="summary" truncate="20"/></itemlabel>
+        <itemlabel>Feature: <arg ref="summary" truncate="50"/></itemlabel>
       </itemclass>
     </list>
   </form>
@@ -60,7 +60,7 @@
     <list>
       <xf:label>Responsibles</xf:label>
       <itemclass ref="responsible">
-        <itemlabel>Name: <arg ref="@name"/> Email: <arg ref="@email"/></itemlabel>
+        <itemlabel><arg ref="@name"/> &lt;<arg ref="@email"/>&gt;</itemlabel>
       </itemclass>
     </list>
   </form>

@@ -35,12 +35,16 @@ class ListModel : public QAbstractTableModel
 {
   public:
     ListModel( QObject *parent );
+    ~ListModel();
+
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     QVariant data( const QModelIndex & index,
       int role = Qt::DisplayRole ) const;
     QVariant headerData ( int section, Qt::Orientation orientation,
       int role = Qt::DisplayRole ) const;
+    bool removeRows( int row, int count,
+      const QModelIndex &parent = QModelIndex() );
 
     struct Item
     {
@@ -49,10 +53,10 @@ class ListModel : public QAbstractTableModel
     };
     
     void addItem( const QString &label, const Reference &ref );
-    Item item( const QModelIndex &index );
+    Item *item( const QModelIndex &index );
 
   private:
-    QList<Item> mItems;
+    QList<Item *> mItems;
 };
 
 class List : public GuiElement
@@ -72,9 +76,13 @@ class List : public GuiElement
 
         void setRefName( const QString &r ) { mRef = r; }
         QString refName() const { return mRef; }
+        
+        void setLabelDom( const QDomElement &e ) { mLabelDom = e; }
+        QDomElement labelDom() const { return mLabelDom; } 
 
       private:
         QString mRef;
+        QDomElement mLabelDom;
     };
 
     void parseElement( const QDomElement & );
@@ -85,7 +93,7 @@ class List : public GuiElement
     ItemClass itemClass( const QString &ref );
 
   protected:
-    ListModel::Item List::selectedItem();
+    QModelIndex selectedItem();
 
   protected slots:
     void newItem();

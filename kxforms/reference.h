@@ -23,6 +23,7 @@
 
 #include <QList>
 #include <QString>
+#include <QDomElement>
 
 namespace KXForms {
 
@@ -92,6 +93,8 @@ class Reference
 
     bool operator==( const Reference & ) const;
     bool operator!=( const Reference & ) const;
+
+    QString text( const QDomElement & ) const;
 
   private:
     Segment::List mSegments;

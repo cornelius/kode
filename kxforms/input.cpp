@@ -46,6 +46,8 @@ void Input::loadData()
   kDebug() << "Input::loadData() " << ref().toString() << "  context: "
     << context().tagName() << endl;
 
+  // TODO: Move common code to Reference
+
   Reference::Segment s = ref().segments().last();
 
   QString txt;

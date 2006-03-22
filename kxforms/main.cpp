@@ -28,6 +28,12 @@
 #include <klocale.h>
 #include <kdebug.h>
 
+#include <QDir>
+#include <QByteArray>
+
+#include <unistd.h>
+#include <limits.h>
+
 static const char description[] =
     I18N_NOOP("XML Forms Editor");
 
@@ -38,6 +44,26 @@ static KCmdLineOptions options[] =
   { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
   KCmdLineLastOption
 };
+
+KUrl makeURL( const QString &arg )
+{
+   if (!QDir::isRelativePath( arg ))
+   {
+      KUrl result;
+      result.setPath( arg );
+      return result; // Absolute path.
+   }
+
+   if ( !KUrl::isRelativeURL( arg ) )
+     return KUrl( arg ); // Argument is a URL
+
+  KUrl result;
+  char cwd[ PATH_MAX + 1 ];
+  getcwd( cwd, PATH_MAX );
+  result.setPath( QFile::decodeName( QByteArray( cwd ) ) + "/" + arg );
+  result.cleanPath();
+  return result;  // Relative path
+}
 
 int main(int argc, char **argv)
 {
@@ -57,11 +83,11 @@ int main(int argc, char **argv)
 
   if ( args->isSet( "kxform" ) ) {
     QString form = args->getOption( "kxform" );
-    widget->loadForm( KUrl::fromPath( form ) );
+    widget->loadForm( makeURL( form ) );
   }
 
   if ( args->count() == 1 ) {
-    widget->load( KUrl::fromPath( args->arg( 0 ) ) );
+    widget->load( args->url( 0 ) );
   }
 
   return app.exec();

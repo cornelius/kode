@@ -82,6 +82,12 @@ void MainWindow::setVersion( const QString &version )
 
 bool MainWindow::load(const KUrl& url)
 {
+  if ( !url.isValid() ) {
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
+      .arg( url.prettyURL() ) );    
+    return false;
+  }
+
   if ( !url.isLocalFile() ) {
     KMessageBox::sorry( this, i18n("Non-local URL '%1' not supported.")
       .arg( url.prettyURL() ) );
@@ -110,6 +116,12 @@ bool MainWindow::load(const KUrl& url)
 
 bool MainWindow::save( const KUrl & url )
 {
+  if ( !url.isValid() ) {
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
+      .arg( url.prettyURL() ) );    
+    return false;
+  }
+
   if ( !url.isLocalFile() ) {
     KMessageBox::sorry( this, i18n("Non-local URL '%1' not supported.")
       .arg( url.prettyURL() ) );
@@ -243,6 +255,12 @@ void MainWindow::changeCaption(const QString& text)
 
 void MainWindow::loadForm( const KUrl &url )
 {
+  if ( !url.isValid() ) {
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
+      .arg( url.prettyURL() ) );    
+    return;
+  }
+
   if ( !url.isLocalFile() ) {
     KMessageBox::sorry( this,
       i18n("Non-local URL '%1' not supported.").arg( url.prettyURL() ) );

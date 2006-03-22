@@ -47,8 +47,10 @@ QDomElement GuiElement::context() const
   return mContext;
 }
 
+// TODO: Move to Reference
 QDomElement GuiElement::refElement() const
 {
+  // TODO: Make real check.
   Reference::Segment s = ref().segments().last();
 
   QDomNode n;

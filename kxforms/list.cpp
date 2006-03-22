@@ -39,6 +39,11 @@ ListModel::ListModel( QObject *parent ) : QAbstractTableModel( parent )
 {
 }
 
+ListModel::~ListModel()
+{
+  qDeleteAll( mItems );
+}
+
 int ListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
@@ -54,9 +59,9 @@ int ListModel::columnCount( const QModelIndex &parent ) const
 QVariant ListModel::data( const QModelIndex & index, int role ) const
 {
   if ( role == Qt::DisplayRole ) {
-    Item item = mItems.at( index.row() );
-    if ( index.column() == 0 ) return item.label;
-    else if ( index.column() == 1 ) return item.ref.toString();
+    Item *item = mItems.at( index.row() );
+    if ( index.column() == 0 ) return item->label;
+    else if ( index.column() == 1 ) return item->ref.toString();
   }
   return QVariant();
 }
@@ -75,13 +80,26 @@ QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
 
 void ListModel::addItem( const QString &label, const Reference &ref )
 {
-  Item item;
-  item.label = label;
-  item.ref = ref;
+  Item *item = new Item;
+  item->label = label;
+  item->ref = ref;
   mItems.append( item );
 }
 
-ListModel::Item ListModel::item( const QModelIndex &index )
+bool ListModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+  beginRemoveRows( parent, row, row + count - 1 );
+  
+  for( int i = 0; i < count; ++i ) {
+    mItems.removeAt( row + i );
+  }
+  
+  endRemoveRows();
+  
+  return true;
+}
+
+ListModel::Item *ListModel::item( const QModelIndex &index )
 {
   return mItems.at( index.row() );
 }
@@ -152,19 +170,32 @@ void List::newItem()
 
 void List::deleteItem()
 {
+  QModelIndex index = selectedItem();
+
+  if ( !index.isValid() ) return;
+
+  ListModel::Item *item = mModel->item( index );
+
+  int result = KMessageBox::warningContinueCancel( this,
+    i18n("Delete item '%1'?").arg( item->label ) );
+  if ( result == KMessageBox::Continue ) {
+    mModel->removeRows( index.row(), 1 );
+  }
 }
 
-ListModel::Item List::selectedItem()
+QModelIndex List::selectedItem()
 {
   QModelIndexList selected = mView->selectionModel()->selectedIndexes();
-  if ( selected.isEmpty() ) return ListModel::Item();
-  else return mModel->item( selected.first() );
+  if ( selected.isEmpty() ) return QModelIndex();
+  else return selected.first();
 }
 
 void List::editItem()
 {
-  ListModel::Item item = selectedItem();
-  if ( !item.ref.isEmpty() ) mManager->createGui( item.ref, this );
+  QModelIndex index = selectedItem();
+  if ( index.isValid() ) {
+    mManager->createGui( mModel->item( index )->ref, this );
+  }
 }
 
 void List::moveUp()
@@ -189,7 +220,7 @@ void List::parseElement( const QDomElement &element )
       for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
         QDomElement e2 = n2.toElement();
         if ( e2.tagName() == "itemlabel" ) {
-          // TODO: Implement item label support
+          c.setLabelDom( e2 );
         }
       }
 
@@ -214,7 +245,38 @@ void List::loadData()
       if ( it != counts.end() ) count = it.data();
       Reference::Segment s( ic.refName(), count );
       Reference r = ref() + s;
-      QString itemLabel = ic.refName() + QString::number( count );
+
+      QString itemLabel;
+      QDomNode n;
+      for( n = ic.labelDom().firstChild(); !n.isNull(); n = n.nextSibling() ) {
+        if ( n.isText() ) {
+          itemLabel.append( n.toText().data() );
+        } else if ( n.isElement() ) {
+          QDomElement e2 = n.toElement();
+          if ( e2.tagName() != "arg" ) {
+            kWarning() << "Illegal tag in itemlabel element: " << e2.tagName()
+              << endl;
+          } else {
+            Reference ref( e2.attribute( "ref" ) );
+            QString txt = ref.text( e );
+            if ( e2.hasAttribute( "truncate" ) ) {
+              QString truncate = e2.attribute( "truncate" );
+              bool ok;
+              int newLen = truncate.toInt( &ok );
+              if ( !ok ) {
+                kError() << "Illegal truncate value: '" << truncate << "'"
+                  << endl;
+              } else {
+                if ( int( txt.length() ) > newLen ) {
+                  txt.truncate( newLen );
+                  txt += "...";
+                }
+              }
+            }
+            itemLabel.append( txt );
+          }
+        }
+      }
 //      kDebug() << "item label: " << itemLabel << endl;
       mModel->addItem( itemLabel, r );
       counts.insert( ic.refName(), ++count );
