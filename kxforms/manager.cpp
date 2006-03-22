@@ -183,3 +183,8 @@ void Manager::loadData( FormGui *gui )
 {
   gui->loadData( mData );
 }
+
+QDomElement Manager::applyReference( const Reference &ref )
+{
+  return ref.apply( mData );
+}

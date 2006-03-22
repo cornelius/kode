@@ -106,45 +106,7 @@ void FormGui::parseElement( const QDomElement &element )
 
 QDomElement FormGui::findContextElement( const QDomDocument &doc )
 {
-  QDomElement contextElement;
-
-  Reference::Segment::List segments = ref().segments();
-  Reference::Segment::List::ConstIterator it;
-  for( it = segments.begin(); it != segments.end(); ++it ) {
-    Reference::Segment segment = *it;
-    if ( contextElement.isNull() ) {
-      kDebug() << "ROOT" << endl;
-      if ( doc.documentElement().tagName() == segment.name() ) {
-        contextElement = doc.documentElement();
-        continue;
-      } else {
-        kError() << "Document element '" << doc.documentElement().tagName() <<
-           "' isn't '" << segment.name() << "'" << endl;
-        return QDomElement();
-      }
-    }
-
-    QMap<QString, int> counts;
-    QDomNode n;
-    for( n = contextElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-      QDomElement e = n.toElement();
-      int count = 1;
-      QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
-      if ( itCount != counts.end() ) count = itCount.data();
-      if ( e.tagName() == segment.name() && count == segment.count() ) {
-        contextElement = e;
-        break;
-      }
-      counts.insert( e.tagName(), ++count );
-    }
-    if ( n.isNull() ) {
-      kError() << "FormGui::loadData(): Unable to find element '" <<
-        segment.toString() << "'" << endl;
-      return QDomElement();
-    }
-  }
-  
-  return contextElement;
+  return ref().apply( doc );
 }
 
 void FormGui::loadData( const QDomDocument &doc )

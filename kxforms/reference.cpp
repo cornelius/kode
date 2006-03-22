@@ -24,6 +24,7 @@
 #include <kdebug.h>
 
 #include <QStringList>
+#include <QMap>
 
 using namespace KXForms;
 
@@ -250,4 +251,46 @@ QString Reference::text( const QDomElement &element ) const
   }
 
   return QString::null;
+}
+
+QDomElement Reference::apply( const QDomDocument &doc ) const
+{
+  QDomElement result;
+
+  Reference::Segment::List::ConstIterator it;
+  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+    Reference::Segment segment = *it;
+    if ( result.isNull() ) {
+      kDebug() << "ROOT" << endl;
+      if ( doc.documentElement().tagName() == segment.name() ) {
+        result = doc.documentElement();
+        continue;
+      } else {
+        kError() << "Document element '" << doc.documentElement().tagName() <<
+           "' isn't '" << segment.name() << "'" << endl;
+        return QDomElement();
+      }
+    }
+
+    QMap<QString, int> counts;
+    QDomNode n;
+    for( n = result.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+      QDomElement e = n.toElement();
+      int count = 1;
+      QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
+      if ( itCount != counts.end() ) count = itCount.data();
+      if ( e.tagName() == segment.name() && count == segment.count() ) {
+        result = e;
+        break;
+      }
+      counts.insert( e.tagName(), ++count );
+    }
+    if ( n.isNull() ) {
+      kError() << "Reference::apply(): Unable to find element '" <<
+        segment.toString() << "'" << endl;
+      return QDomElement();
+    }
+  }
+  
+  return result;
 }

@@ -57,6 +57,8 @@ class Manager
 
     bool hasData() const;
 
+    QDomElement applyReference( const Reference & );
+
   private:
     GuiHandler *mGuiHandler;
   

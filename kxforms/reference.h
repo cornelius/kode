@@ -96,6 +96,8 @@ class Reference
 
     QString text( const QDomElement & ) const;
 
+    QDomElement apply( const QDomDocument & ) const;
+
   private:
     Segment::List mSegments;
 

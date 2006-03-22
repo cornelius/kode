@@ -184,6 +184,8 @@ void List::deleteItem()
   int result = KMessageBox::warningContinueCancel( this,
     i18n("Delete item '%1'?").arg( item->label ) );
   if ( result == KMessageBox::Continue ) {
+    QDomElement element = mManager->applyReference( item->ref );
+    element.parentNode().removeChild( element );
     mModel->removeRows( index.row(), 1 );
   }
 }
