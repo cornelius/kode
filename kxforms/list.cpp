@@ -31,15 +31,59 @@
 
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QTreeView>
 
 using namespace KXForms;
 
-ListItem::ListItem( K3ListView *parent, const Reference &ref,
-  const QString &label )
-  : K3ListViewItem( parent ), mRef( ref )
+ListModel::ListModel( QObject *parent ) : QAbstractTableModel( parent )
 {
-  setText( 0, label );
-  setText( 1, mRef.toString() );
+}
+
+int ListModel::rowCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  return mItems.size();
+}
+
+int ListModel::columnCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  return 2;
+}
+
+QVariant ListModel::data( const QModelIndex & index, int role ) const
+{
+  if ( role == Qt::DisplayRole ) {
+    Item item = mItems.at( index.row() );
+    if ( index.column() == 0 ) return item.label;
+    else if ( index.column() == 1 ) return item.ref.toString();
+  }
+  return QVariant();
+}
+
+QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
+  int role ) const
+{
+  if ( orientation == Qt::Horizontal ) {
+    if ( role == Qt::DisplayRole ) {
+      if ( section == 0 ) return i18n("Label");
+      else if ( section == 1 ) return i18n("Reference");
+    }
+  }
+  return QVariant();
+}
+
+void ListModel::addItem( const QString &label, const Reference &ref )
+{
+  Item item;
+  item.label = label;
+  item.ref = ref;
+  mItems.append( item );
+}
+
+ListModel::Item ListModel::item( const QModelIndex &index )
+{
+  return mItems.at( index.row() );
 }
 
 
@@ -51,12 +95,12 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
 
-  mListView = new K3ListView( this );
-  mListView->addColumn( label );
-  mListView->addColumn( i18n("Reference") );
-  topLayout->addWidget( mListView );
-  connect( mListView, SIGNAL( doubleClicked( Q3ListViewItem *, const QPoint &,
-    int ) ), SLOT( editItem() ) );
+  mModel = new ListModel( this );
+  mView = new QTreeView( this );
+  topLayout->addWidget( mView );
+  mView->setModel( mModel );
+  connect( mView, SIGNAL( doubleClicked( const QModelIndex & ) ),
+    SLOT( editItem() ) );
 
   QPushButton *button = new QPushButton( i18n("New Item..."), this );
   topLayout->addWidget( button );
@@ -100,7 +144,7 @@ void List::newItem()
     return;
   }
 
-  Reference::Segment segment( formRef, mListView->childCount() + 1 );
+  Reference::Segment segment( formRef, mModel->rowCount() + 1 );
 
   mManager->createGui( ref() + segment, this );
 }
@@ -109,12 +153,17 @@ void List::deleteItem()
 {
 }
 
+ListModel::Item List::selectedItem()
+{
+  QModelIndexList selected = mView->selectionModel()->selectedIndexes();
+  if ( selected.isEmpty() ) return ListModel::Item();
+  else return mModel->item( selected.first() );
+}
+
 void List::editItem()
 {
-  ListItem *item = static_cast<ListItem *>( mListView->selectedItem() );
-  if ( !item ) return;
-  
-  mManager->createGui( item->ref(), this );
+  ListModel::Item item = selectedItem();
+  if ( !item.ref.isEmpty() ) mManager->createGui( item.ref, this );
 }
 
 void List::moveUp()
@@ -166,7 +215,7 @@ void List::loadData()
       Reference r = ref() + s;
       QString itemLabel = ic.refName() + QString::number( count );
 //      kDebug() << "item label: " << itemLabel << endl;
-      new ListItem( mListView, r, itemLabel );
+      mModel->addItem( itemLabel, r );
       counts.insert( ic.refName(), ++count );
     }
   }

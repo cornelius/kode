@@ -20,24 +20,39 @@
 
 #include "guielement.h"
 
-#include <k3listview.h>
-
 #include <QDomElement>
 #include <QList>
+#include <QAbstractTableModel>
+
+class QTableView;
+class QTreeView;
 
 namespace KXForms {
 
 class Manager;
 
-class ListItem : public K3ListViewItem
+class ListModel : public QAbstractTableModel
 {
   public:
-    ListItem( K3ListView *, const Reference &, const QString &label );
+    ListModel( QObject *parent );
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    QVariant data( const QModelIndex & index,
+      int role = Qt::DisplayRole ) const;
+    QVariant headerData ( int section, Qt::Orientation orientation,
+      int role = Qt::DisplayRole ) const;
 
-    Reference ref() const { return mRef; }
+    struct Item
+    {
+      QString label;
+      Reference ref;
+    };
     
+    void addItem( const QString &label, const Reference &ref );
+    Item item( const QModelIndex &index );
+
   private:
-    Reference mRef;
+    QList<Item> mItems;
 };
 
 class List : public GuiElement
@@ -69,6 +84,9 @@ class List : public GuiElement
 
     ItemClass itemClass( const QString &ref );
 
+  protected:
+    ListModel::Item List::selectedItem();
+
   protected slots:
     void newItem();
     void deleteItem();
@@ -81,7 +99,9 @@ class List : public GuiElement
 
     ItemClass::List mItemClasses;
 
-    K3ListView *mListView;
+    QTreeView *mView;
+
+    ListModel *mModel;
 };
 
 }
