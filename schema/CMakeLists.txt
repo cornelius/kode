@@ -20,7 +20,7 @@ kde4_automoc(${schema_LIB_SRCS})
 
 kde4_add_library(schema SHARED ${schema_LIB_SRCS})
 
-target_link_libraries(schema  ${QT_AND_KDECORE_LIBS} kdecore kio kxmlcommon )
+target_link_libraries(schema  ${KDE4_KDECORE_LIBS} kdecore kio kxmlcommon )
 
 set_target_properties(schema PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} schema )
@@ -34,7 +34,7 @@ kde4_automoc(${schematest_SRCS})
 
 kde4_add_executable(schematest ${schematest_SRCS})
 
-target_link_libraries(schematest  ${QT_AND_KDECORE_LIBS} schema )
+target_link_libraries(schematest  ${KDE4_KDECORE_LIBS} schema )
 
 install_targets(/bin schematest )
 

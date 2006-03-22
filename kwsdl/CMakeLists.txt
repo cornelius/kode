@@ -30,7 +30,7 @@ kde4_automoc(${kwsdl_compiler_SRCS})
 
 kde4_add_executable(kwsdl_compiler ${kwsdl_compiler_SRCS})
 
-target_link_libraries(kwsdl_compiler  ${QT_AND_KDECORE_LIBS} kode wsdl )
+target_link_libraries(kwsdl_compiler  ${KDE4_KDECORE_LIBS} kode wsdl )
 
 install_targets(/bin kwsdl_compiler )
 

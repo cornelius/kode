@@ -18,7 +18,7 @@ kde4_automoc(${kode_bin_SRCS})
 kde4_add_executable(kode_bin ${kode_bin_SRCS})
 set_target_properties(kode_bin PROPERTIES OUTPUT_NAME kode)
 
-target_link_libraries(kode_bin  ${QT_AND_KDECORE_LIBS} kode kabc )
+target_link_libraries(kode_bin  ${KDE4_KDECORE_LIBS} kode kabc )
 
 install_targets(/bin kode_bin )
 

@@ -33,7 +33,7 @@ kde4_automoc(${kung_SRCS})
 
 kde4_add_executable(kung ${kung_SRCS})
 
-target_link_libraries(kung  ${QT_AND_KDECORE_LIBS} schema wscl wsdl kparts )
+target_link_libraries(kung  ${KDE4_KDECORE_LIBS} schema wscl wsdl kparts )
 
 install_targets(/bin kung )
 

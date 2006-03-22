@@ -24,7 +24,7 @@ kde4_automoc(${kode_LIB_SRCS})
 
 kde4_add_library(kode SHARED ${kode_LIB_SRCS})
 
-target_link_libraries(kode  ${QT_AND_KDECORE_LIBS} kdecore )
+target_link_libraries(kode  ${KDE4_KDECORE_LIBS} kdecore )
 
 set_target_properties(kode PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} kode )

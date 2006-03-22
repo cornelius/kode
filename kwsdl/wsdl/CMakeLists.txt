@@ -27,7 +27,7 @@ kde4_automoc(${wsdl_LIB_SRCS})
 
 kde4_add_library(wsdl SHARED ${wsdl_LIB_SRCS})
 
-target_link_libraries(wsdl  ${QT_AND_KDECORE_LIBS} kxmlcommon schema )
+target_link_libraries(wsdl  ${KDE4_KDECORE_LIBS} kxmlcommon schema )
 
 set_target_properties(wsdl PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} wsdl )
