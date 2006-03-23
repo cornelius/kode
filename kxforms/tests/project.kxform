@@ -44,6 +44,12 @@
     </xf:input>
   </form>
 
+  <form ref="arch">
+    <xf:input ref=".">
+      <xf:label>Architecture</xf:label>
+    </xf:input>
+  </form>    
+
   <form ref="repository">
     <xf:input ref="@name">
       <xf:label>Name</xf:label>

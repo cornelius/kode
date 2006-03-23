@@ -21,6 +21,8 @@
 
 #include "input.h"
 
+#include "manager.h"
+
 #include <klineedit.h>
 #include <kdebug.h>
 
@@ -63,6 +65,11 @@ void Input::saveData()
   } else {
     QDomElement e = ref().applyElement( context() );
     QDomText t = e.firstChild().toText();
-    t.setData( txt );
+    if ( t.isNull() ) {
+      t = mManager->document().createTextNode( txt );
+      e.appendChild( t ); 
+    } else {
+      t.setData( txt );
+    }
   }
 }

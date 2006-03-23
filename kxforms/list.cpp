@@ -228,7 +228,10 @@ void List::newItem()
 
   Reference::Segment segment( formRef, mModel->itemCount( formRef ) + 1 );
 
-  mManager->createGui( ref() + segment, this );
+  Reference reference = ref();
+  if ( segment.name() != "." ) reference.append( segment );
+
+  mManager->createGui( reference, this );
 
   QString il = itemLabel( itemClass( formRef ), newElement );
   mModel->addItem( il, ref() + segment );
