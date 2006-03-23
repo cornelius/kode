@@ -230,7 +230,8 @@ void List::newItem()
 
   mManager->createGui( ref() + segment, this );
 
-  mModel->addItem( "tobedone", ref() + segment );
+  QString il = itemLabel( itemClass( formRef ), newElement );
+  mModel->addItem( il, ref() + segment );
 }
 
 void List::deleteItem()
