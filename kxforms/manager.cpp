@@ -179,6 +179,11 @@ bool Manager::hasData() const
   return mDataLoaded;
 }
 
+QDomDocument Manager::document() const
+{
+  return mData;
+}
+
 void Manager::loadData( FormGui *gui )
 {
   gui->loadData( mData );

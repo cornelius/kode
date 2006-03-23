@@ -56,6 +56,7 @@ class Manager
     void destroyGui( FormGui * );
 
     bool hasData() const;
+    QDomDocument document() const;
 
     QDomElement applyReference( const Reference & );
 

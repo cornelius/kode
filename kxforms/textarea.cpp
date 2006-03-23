@@ -21,6 +21,8 @@
 
 #include "textarea.h"
 
+#include "manager.h"
+
 #include <kdebug.h>
 
 #include <QLabel>
@@ -59,7 +61,14 @@ void TextArea::loadData()
 
 void TextArea::saveData()
 {
+  kDebug() << "TextArea::saveData()" << endl;
+
   QDomElement e = refElement();
+
+  if ( e.isNull() ) {
+    e = mManager->document().createElement( ref().lastSegment().name() );
+    context().appendChild( e );
+  }
 
   QString tag = e.tagName();
     
@@ -81,5 +90,5 @@ void TextArea::saveData()
   for( n = docElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     kDebug() << "TAG: " << n.toElement().tagName() << endl;
     e.appendChild( n.cloneNode() );
-  }   
+  }
 }

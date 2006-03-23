@@ -208,9 +208,14 @@ void List::newItem()
     return;
   }
 
+  QDomElement newElement = mManager->document().createElement( formRef );
+  context().appendChild( newElement );
+
   Reference::Segment segment( formRef, mModel->itemCount( formRef ) + 1 );
 
   mManager->createGui( ref() + segment, this );
+
+  mModel->addItem( "tobedone", ref() + segment );
 }
 
 void List::deleteItem()
