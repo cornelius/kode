@@ -98,8 +98,9 @@ class Reference
     bool operator!=( const Reference & ) const;
 
     QDomElement apply( const QDomDocument & ) const;
-    QDomElement apply( const QDomElement & ) const;
 
+    QDomElement applyElement( const QDomElement &context ) const;
+    QDomElement applyAttributeContext( const QDomElement &context ) const;
     QString applyString( const QDomElement & ) const;
 
   private:

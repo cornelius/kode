@@ -29,7 +29,7 @@
 using namespace KXForms;
 
 Reference::Segment::Segment()
-  : mCount( 0 ), mIsAttribute( false )
+  : mCount( 1 ), mIsAttribute( false )
 {
 }
 
@@ -79,7 +79,7 @@ void Reference::Segment::fromString( const QString &str )
     mCount = count.toInt( &ok );
     if ( !ok ) kError() << "Illegal count in reference '" << str << "'" << endl;
   } else {
-    mCount = 0;
+    mCount = 1;
   }
 }
 
@@ -287,20 +287,64 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
   return result;
 }
 
-QDomElement Reference::apply( const QDomElement &context ) const
+QDomElement Reference::applyElement( const QDomElement &context ) const
 {
-  // TODO: Make real check.
-  QString lastSegmentName = lastSegment().name();
+  kDebug() << "Reference::applyElement() " << toString() << " Context: "
+    << context.tagName() << endl;
 
-  QDomNode n;
-  for( n = context.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if ( e.tagName() == lastSegmentName ) {
-      return e;
+  QDomElement result = context;
+
+  Reference::Segment::List::ConstIterator it;
+  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+    Reference::Segment segment = *it;
+
+    kDebug() << "  Segment: " << segment.toString() << " Count: " <<
+      segment.count() << endl;
+
+    QMap<QString, int> counts;
+    QDomNode n;
+    for( n = result.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+      QDomElement e = n.toElement();
+      
+      kDebug() << "  E: " << e.tagName() << endl;
+      
+      int count = 1;
+      QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
+      if ( itCount != counts.end() ) count = itCount.data();
+      
+      kDebug() << "  COUNT: " << count << endl;
+
+      if ( e.tagName() == segment.name() && count == segment.count() ) {
+        result = e;
+        break;
+      }
+      counts.insert( e.tagName(), ++count );
+    }
+    if ( n.isNull() ) {
+      kError() << "Reference::apply(): Unable to find element '" <<
+        segment.toString() << "'" << endl;
+      return QDomElement();
     }
   }
   
-  return QDomElement();
+  return result;
+}
+
+QDomElement Reference::applyAttributeContext( const QDomElement &context ) const
+{
+  if ( mSegments.count() == 1 ) {
+    return context;
+  } else {
+    Reference r;
+    Segment::List::ConstIterator it = mSegments.begin();
+    do {
+      r.append( *it );
+      ++it;
+      Segment::List::ConstIterator it2 = it;
+      if ( ++it2 == mSegments.end() ) break;
+    } while( it != mSegments.end() );
+    return r.applyElement( context );
+  }
 }
 
 QString Reference::applyString( const QDomElement &context ) const
@@ -309,11 +353,10 @@ QString Reference::applyString( const QDomElement &context ) const
 
   QString txt;
   if ( s.isAttribute() ) {
-//    kDebug() << "S.NAME: " << s.name() << endl;
-    txt = context.attribute( s.name() );
+    QDomElement targetElement = applyAttributeContext( context );
+    txt = targetElement.attribute( s.name() );
   } else {
-//    kDebug() << "S.ELE" << endl;
-    txt = apply( context ).text();
+    txt = applyElement( context ).text();
   }
 
   return txt;

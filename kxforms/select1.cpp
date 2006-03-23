@@ -97,7 +97,7 @@ void Select1::saveData()
   if ( s.isAttribute() ) {
     context().setAttribute( s.name(), txt );
   } else {
-    QDomElement e = ref().apply( context() );
+    QDomElement e = ref().applyElement( context() );
     QDomText t = e.firstChild().toText();
     t.setData( txt );
   }

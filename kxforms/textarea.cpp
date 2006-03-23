@@ -46,7 +46,7 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
 
 void TextArea::loadData()
 {
-  QDomElement e = ref().apply( context() );
+  QDomElement e = ref().applyElement( context() );
 
   QString txt;
   QTextStream ts( &txt, QIODevice::WriteOnly );
@@ -63,7 +63,7 @@ void TextArea::saveData()
 {
   kDebug() << "TextArea::saveData()" << endl;
 
-  QDomElement e = ref().apply( context() );
+  QDomElement e = ref().applyElement( context() );
 
   if ( e.isNull() ) {
     e = mManager->document().createElement( ref().lastSegment().name() );
