@@ -72,8 +72,12 @@ QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
 {
   if ( orientation == Qt::Horizontal ) {
     if ( role == Qt::DisplayRole ) {
-      if ( section == 0 ) return i18n("Label");
-      else if ( section == 1 ) return i18n("Reference");
+      if ( section == 0 ) {
+        if ( mLabel.isEmpty() ) return i18n("Label");
+        else return mLabel;
+      } else if ( section == 1 ) {
+        return i18n("Reference");
+      }
     }
   }
   return QVariant();
@@ -149,6 +153,16 @@ ListModel::Item *ListModel::item( const QModelIndex &index )
   return mItems.at( index.row() );
 }
 
+void ListModel::setLabel( const QString &label )
+{
+  mLabel = label;
+}
+
+QString ListModel::label() const
+{
+  return mLabel;
+}
+
 
 List::List( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
@@ -158,6 +172,7 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
   mModel = new ListModel( this );
+  mModel->setLabel( label );
   mView = new QTreeView( this );
   topLayout->addWidget( mView );
   mView->setModel( mModel );

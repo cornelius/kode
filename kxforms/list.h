@@ -59,8 +59,12 @@ class ListModel : public QAbstractTableModel
 
     int itemCount( const QString &itemClass );
 
+    void setLabel( const QString & );
+    QString label() const;
+
   private:
     QList<Item *> mItems;
+    QString mLabel;
 };
 
 class List : public GuiElement
