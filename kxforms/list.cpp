@@ -91,6 +91,17 @@ void ListModel::addItem( const QString &label, const Reference &ref )
   endInsertRows();
 }
 
+int ListModel::itemCount( const QString &itemClass )
+{
+  int count = 0;
+
+  foreach( Item *item, mItems ) {
+    if ( item->ref.lastSegment().name() == itemClass ) count++;
+  }
+  
+  return count;
+}
+
 bool ListModel::removeRows( int row, int count, const QModelIndex &parent )
 {
   beginRemoveRows( parent, row, row + count - 1 );
@@ -197,7 +208,7 @@ void List::newItem()
     return;
   }
 
-  Reference::Segment segment( formRef, mModel->rowCount() + 1 );
+  Reference::Segment segment( formRef, mModel->itemCount( formRef ) + 1 );
 
   mManager->createGui( ref() + segment, this );
 }

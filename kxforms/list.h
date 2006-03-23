@@ -57,6 +57,8 @@ class ListModel : public QAbstractTableModel
     void addItem( const QString &label, const Reference &ref );
     Item *item( const QModelIndex &index );
 
+    int itemCount( const QString &itemClass );
+
   private:
     QList<Item *> mItems;
 };
