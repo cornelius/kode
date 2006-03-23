@@ -100,6 +100,9 @@ class List : public GuiElement
 
     ItemClass itemClass( const QString &ref );
 
+    QString itemLabel( const ItemClass &itemClass,
+      const QDomElement &itemElement );
+
   protected:
     QModelIndex selectedItem();
 

@@ -321,6 +321,7 @@ QDomElement Reference::apply( const QDomElement &context ) const
   return QDomElement();
 }
 
+// TODO: Merge with text()?
 QString Reference::applyString( const QDomElement &context ) const
 {
   Reference::Segment s = lastSegment();

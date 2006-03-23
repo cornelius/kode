@@ -314,44 +314,52 @@ void List::loadData()
       Reference::Segment s( ic.refName(), count );
       Reference r = ref() + s;
 
-      QString itemLabel;
-      QDomNode n;
-      for( n = ic.labelDom().firstChild(); !n.isNull(); n = n.nextSibling() ) {
-        if ( n.isText() ) {
-          itemLabel.append( n.toText().data() );
-        } else if ( n.isElement() ) {
-          QDomElement e2 = n.toElement();
-          if ( e2.tagName() != "arg" ) {
-            kWarning() << "Illegal tag in itemlabel element: " << e2.tagName()
-              << endl;
-          } else {
-            Reference ref( e2.attribute( "ref" ) );
-            QString txt = ref.text( e );
-            if ( e2.hasAttribute( "truncate" ) ) {
-              QString truncate = e2.attribute( "truncate" );
-              bool ok;
-              int newLen = truncate.toInt( &ok );
-              if ( !ok ) {
-                kError() << "Illegal truncate value: '" << truncate << "'"
-                  << endl;
-              } else {
-                if ( int( txt.length() ) > newLen ) {
-                  txt.truncate( newLen );
-                  txt += "...";
-                }
-              }
-            }
-            itemLabel.append( txt );
-          }
-        }
-      }
-//      kDebug() << "item label: " << itemLabel << endl;
-      mModel->addItem( itemLabel, r );
+      QString il = itemLabel( ic, e );
+//      kDebug() << "item label: " << il << endl;
+      mModel->addItem( il, r );
       counts.insert( ic.refName(), ++count );
     }
   }
 
   QTimer::singleShot( 0, this, SLOT( resizeColumns() ) );
+}
+
+QString List::itemLabel( const ItemClass &itemClass,
+  const QDomElement &itemElement )
+{
+  QString itemLabel;
+  QDomNode n;
+  for( n = itemClass.labelDom().firstChild(); !n.isNull();
+       n = n.nextSibling() ) {
+    if ( n.isText() ) {
+      itemLabel.append( n.toText().data() );
+    } else if ( n.isElement() ) {
+      QDomElement e2 = n.toElement();
+      if ( e2.tagName() != "arg" ) {
+        kWarning() << "Illegal tag in itemlabel element: " << e2.tagName()
+          << endl;
+      } else {
+        Reference ref( e2.attribute( "ref" ) );
+        QString txt = ref.text( itemElement );
+        if ( e2.hasAttribute( "truncate" ) ) {
+          QString truncate = e2.attribute( "truncate" );
+          bool ok;
+          int newLen = truncate.toInt( &ok );
+          if ( !ok ) {
+            kError() << "Illegal truncate value: '" << truncate << "'"
+              << endl;
+          } else {
+            if ( int( txt.length() ) > newLen ) {
+              txt.truncate( newLen );
+              txt += "...";
+            }
+          }
+        }
+        itemLabel.append( txt );
+      }
+    }
+  }
+  return itemLabel;
 }
 
 void List::resizeColumns()
