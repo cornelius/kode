@@ -97,8 +97,6 @@ class Reference
     bool operator==( const Reference & ) const;
     bool operator!=( const Reference & ) const;
 
-    QString text( const QDomElement & ) const;
-
     QDomElement apply( const QDomDocument & ) const;
     QDomElement apply( const QDomElement & ) const;
 

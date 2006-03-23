@@ -245,24 +245,6 @@ Reference &Reference::operator=( const char *str )
   return *this;
 }
 
-QString Reference::text( const QDomElement &element ) const
-{
-  Segment s = segments().last();
-  if ( s.isAttribute() ) {
-    return element.attribute( s.name() );
-  } else {
-    QDomNode n;
-    for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-      QDomElement e = n.toElement();
-      if ( e.tagName() == s.name() ) {
-        return e.text();
-      }
-    }
-  }
-
-  return QString::null;
-}
-
 QDomElement Reference::apply( const QDomDocument &doc ) const
 {
   QDomElement result;
@@ -321,7 +303,6 @@ QDomElement Reference::apply( const QDomElement &context ) const
   return QDomElement();
 }
 
-// TODO: Merge with text()?
 QString Reference::applyString( const QDomElement &context ) const
 {
   Reference::Segment s = lastSegment();

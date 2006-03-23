@@ -341,7 +341,7 @@ QString List::itemLabel( const ItemClass &itemClass,
           << endl;
       } else {
         Reference ref( e2.attribute( "ref" ) );
-        QString txt = ref.text( itemElement );
+        QString txt = ref.applyString( itemElement );
         if ( e2.hasAttribute( "truncate" ) ) {
           QString truncate = e2.attribute( "truncate" );
           bool ok;
