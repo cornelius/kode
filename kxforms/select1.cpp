@@ -73,12 +73,7 @@ void Select1::loadData()
 
   Reference::Segment s = ref().segments().last();
 
-  QString txt;
-  if ( s.isAttribute() ) {
-    txt = context().attribute( s.name() );
-  } else {
-    txt = ref().apply( context() ).text();
-  }
+  QString txt = ref().applyString( context() );
 
   int count = 0;
   QStringList::ConstIterator it;

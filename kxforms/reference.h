@@ -102,6 +102,8 @@ class Reference
     QDomElement apply( const QDomDocument & ) const;
     QDomElement apply( const QDomElement & ) const;
 
+    QString applyString( const QDomElement & ) const;
+
   private:
     Segment::List mSegments;
 

@@ -46,18 +46,7 @@ void Input::loadData()
   kDebug() << "Input::loadData() " << ref().toString() << "  context: "
     << context().tagName() << endl;
 
-  // TODO: Move common code to Reference
-
-  Reference::Segment s = ref().segments().last();
-
-  QString txt;
-  if ( s.isAttribute() ) {
-    kDebug() << "S.NAME: " << s.name() << endl;
-    txt = context().attribute( s.name() );
-  } else {
-    kDebug() << "S.ELE" << endl;
-    txt = ref().apply( context() ).text();
-  }
+  QString txt = ref().applyString( context() );
 
   mLineEdit->setText( txt );
 }

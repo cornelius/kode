@@ -320,3 +320,19 @@ QDomElement Reference::apply( const QDomElement &context ) const
   
   return QDomElement();
 }
+
+QString Reference::applyString( const QDomElement &context ) const
+{
+  Reference::Segment s = lastSegment();
+
+  QString txt;
+  if ( s.isAttribute() ) {
+//    kDebug() << "S.NAME: " << s.name() << endl;
+    txt = context.attribute( s.name() );
+  } else {
+//    kDebug() << "S.ELE" << endl;
+    txt = apply( context ).text();
+  }
+
+  return txt;
+}
