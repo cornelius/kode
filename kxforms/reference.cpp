@@ -294,6 +294,8 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
 
   QDomElement result = context;
 
+  if ( mSegments.count() == 1 && lastSegment().name() == "." ) return result;
+
   Reference::Segment::List::ConstIterator it;
   for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
     Reference::Segment segment = *it;
