@@ -1,0 +1,19 @@
+<project name="plutimikation">
+  <title>Plutimikation</title>
+  <description></description>
+  <person role="maintainer" userid="cschum" />
+  <package revision="1" name="plutimikation" />
+  <repository name="FC4">
+    <path project="FC4" repository="standard" />
+    <arch>i586</arch>
+  </repository>
+  <repository name="sl10.0">
+    <path project="SL10.0" repository="standard" />
+    <arch>x86_64</arch>
+    <arch>i586</arch>
+  </repository>
+  <repository name="mandriva">
+    <path project="Mandriva-2006" repository="standard" />
+    <arch>i586</arch>
+  </repository>
+</project>
