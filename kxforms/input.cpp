@@ -56,7 +56,7 @@ void Input::loadData()
     txt = context().attribute( s.name() );
   } else {
     kDebug() << "S.ELE" << endl;
-    txt = refElement().text();
+    txt = ref().apply( context() ).text();
   }
 
   mLineEdit->setText( txt );
@@ -72,7 +72,7 @@ void Input::saveData()
   if ( s.isAttribute() ) {
     context().setAttribute( s.name(), txt );
   } else {
-    QDomElement e = refElement();
+    QDomElement e = ref().apply( context() );
     QDomText t = e.firstChild().toText();
     t.setData( txt );
   }

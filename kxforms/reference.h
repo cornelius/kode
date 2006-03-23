@@ -89,6 +89,7 @@ class Reference
     Segment::List segments() const;
 
     Segment &lastSegment();
+    const Segment &lastSegment() const;
 
     Reference operator+( const Reference & ) const;
     Reference operator+( const Reference::Segment & ) const;
@@ -99,6 +100,7 @@ class Reference
     QString text( const QDomElement & ) const;
 
     QDomElement apply( const QDomDocument & ) const;
+    QDomElement apply( const QDomElement & ) const;
 
   private:
     Segment::List mSegments;

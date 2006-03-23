@@ -165,6 +165,11 @@ Reference::Segment &Reference::lastSegment()
   return mSegments.last();
 }
 
+const Reference::Segment &Reference::lastSegment() const
+{
+  return mSegments.last();
+}
+
 bool Reference::isAbsolute() const
 {
   return mAbsolute;
@@ -298,4 +303,20 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
   }
   
   return result;
+}
+
+QDomElement Reference::apply( const QDomElement &context ) const
+{
+  // TODO: Make real check.
+  QString lastSegmentName = lastSegment().name();
+
+  QDomNode n;
+  for( n = context.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    QDomElement e = n.toElement();
+    if ( e.tagName() == lastSegmentName ) {
+      return e;
+    }
+  }
+  
+  return QDomElement();
 }

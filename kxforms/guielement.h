@@ -43,7 +43,6 @@ class GuiElement : public QWidget
     Reference ref() const;
 
     QDomElement context() const;
-    QDomElement refElement() const;
 
     void loadData( const QDomElement &context );
 

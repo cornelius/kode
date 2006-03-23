@@ -47,23 +47,6 @@ QDomElement GuiElement::context() const
   return mContext;
 }
 
-// TODO: Move to Reference
-QDomElement GuiElement::refElement() const
-{
-  // TODO: Make real check.
-  Reference::Segment s = ref().segments().last();
-
-  QDomNode n;
-  for( n = context().firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if ( e.tagName() == s.name() ) {
-      return e;
-    }
-  }
-  
-  return QDomElement();
-}
-
 void GuiElement::loadData( const QDomElement &element )
 {
   mContext = element;

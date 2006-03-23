@@ -77,7 +77,7 @@ void Select1::loadData()
   if ( s.isAttribute() ) {
     txt = context().attribute( s.name() );
   } else {
-    txt = refElement().text();
+    txt = ref().apply( context() ).text();
   }
 
   int count = 0;
@@ -102,7 +102,7 @@ void Select1::saveData()
   if ( s.isAttribute() ) {
     context().setAttribute( s.name(), txt );
   } else {
-    QDomElement e = refElement();
+    QDomElement e = ref().apply( context() );
     QDomText t = e.firstChild().toText();
     t.setData( txt );
   }
