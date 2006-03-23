@@ -88,6 +88,8 @@ class Reference
 
     Segment::List segments() const;
 
+    Segment &lastSegment();
+
     Reference operator+( const Reference & ) const;
     Reference operator+( const Reference::Segment & ) const;
 

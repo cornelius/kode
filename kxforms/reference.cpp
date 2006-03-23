@@ -160,6 +160,11 @@ Reference::Segment::List Reference::segments() const
   return mSegments;
 }
 
+Reference::Segment &Reference::lastSegment()
+{
+  return mSegments.last();
+}
+
 bool Reference::isAbsolute() const
 {
   return mAbsolute;

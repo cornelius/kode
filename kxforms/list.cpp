@@ -104,6 +104,33 @@ bool ListModel::removeRows( int row, int count, const QModelIndex &parent )
   return true;
 }
 
+void ListModel::recalculateSegmentCounts()
+{
+  int startRow = 0;
+  int endRow = 0;
+
+  QMap<QString, int> counts;
+
+  foreach( Item *item, mItems ) {
+    int count = 1;
+    Reference::Segment segment = item->ref.segments().last();
+    QMap<QString, int>::ConstIterator it = counts.find( segment.name() );
+    if ( it != counts.end() ) count = it.data();
+    
+    if ( count != segment.count() ) {
+      item->ref.lastSegment().setCount( count );
+    } else {
+      startRow++;
+    }
+
+    endRow++;
+    
+    counts.insert( segment.name(), ++count );
+  }
+
+  emit dataChanged( createIndex( startRow, 1 ), createIndex( endRow, 1 ) );
+}
+
 ListModel::Item *ListModel::item( const QModelIndex &index )
 {
   return mItems.at( index.row() );
@@ -187,6 +214,7 @@ void List::deleteItem()
     QDomElement element = mManager->applyReference( item->ref );
     element.parentNode().removeChild( element );
     mModel->removeRows( index.row(), 1 );
+    mModel->recalculateSegmentCounts();
   }
 }
 

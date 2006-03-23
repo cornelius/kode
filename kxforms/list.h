@@ -46,6 +46,8 @@ class ListModel : public QAbstractTableModel
     bool removeRows( int row, int count,
       const QModelIndex &parent = QModelIndex() );
 
+    void recalculateSegmentCounts();
+
     struct Item
     {
       QString label;
