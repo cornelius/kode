@@ -32,7 +32,6 @@
 #include <common/parsercontext.h>
 #include "parser.h"
 
-static const unsigned int UNBOUNDED( 100000 );
 static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
 static const QString WSDLSchemaURI( "http://schemas.xmlsoap.org/wsdl/" );
 
@@ -261,7 +260,7 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
   while ( !childElement.isNull() ) {
     QName name = childElement.tagName();
     if ( name.localName() == "element" ) {
-      addElement( context, childElement, ct );
+      addElement( context, childElement, ct, childElement );
     } else if ( name.localName() == "annotation" ) {
       parseAnnotation( context, childElement, ct );
     }
@@ -274,13 +273,18 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
 void Parser::cs( ParserContext *context, const QDomElement &element, ComplexType &ct )
 {
   QName name = element.tagName();
-  if ( name.localName() == "choice" || name.localName() == "sequence" ) {
+  bool isChoice = name.localName() == "choice";
+  bool isSequence = name.localName() == "sequence";
+  if ( isChoice || isSequence ) {
     QDomElement childElement = element.firstChildElement();
 
     while ( !childElement.isNull() ) {
       QName csName = childElement.tagName();
       if ( csName.localName() == "element" )
-        addElement( context, childElement, ct );
+        if ( isChoice )
+          addElement( context, childElement, ct, element );
+        else
+          addElement( context, childElement, ct, childElement );          
       else if ( csName.localName() == "any" )
         addAny( context, childElement, ct );
       else if ( csName.localName() == "choice" )
@@ -293,7 +297,8 @@ void Parser::cs( ParserContext *context, const QDomElement &element, ComplexType
   }
 }
 
-void Parser::addElement( ParserContext *context, const QDomElement &element, ComplexType &complexType )
+void Parser::addElement( ParserContext *context, const QDomElement &element,
+  ComplexType &complexType, const QDomElement &occurrenceElement )
 {
   Element newElement( complexType.nameSpace() );
 
@@ -315,7 +320,7 @@ void Parser::addElement( ParserContext *context, const QDomElement &element, Com
     newElement.setReference( reference );
   }
 
-  setOccurrenceAttributes( newElement, element );
+  setOccurrenceAttributes( newElement, occurrenceElement );
 
   newElement.setDefaultValue( element.attribute( "default" ) );
   newElement.setFixedValue( element.attribute( "fixed" ) );
@@ -637,7 +642,7 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
 void Parser::parseElement( ParserContext *context, const QDomElement &element )
 {
   ComplexType complexType( mNameSpace );
-  addElement( context, element, complexType );
+  addElement( context, element, complexType, element );
 
   // don't add elements twice
   Element newElement = complexType.elements().first();

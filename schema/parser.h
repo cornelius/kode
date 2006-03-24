@@ -37,6 +37,8 @@ namespace XSD {
 class Parser
 {
   public:
+    enum { UNBOUNDED = 100000 };
+
     Parser( const QString &nameSpace = QString() );
     ~Parser();
 
@@ -77,7 +79,8 @@ class Parser
     void setOccurrenceAttributes( Element &newElement,
       const QDomElement &element );
 
-    void addElement( ParserContext *context, const QDomElement&, ComplexType& );
+    void addElement( ParserContext *context, const QDomElement&, ComplexType&,
+      const QDomElement &occurrenceElement );
 
     void addAttribute( ParserContext *context, const QDomElement&, ComplexType& );
     void addAny( ParserContext *context, const QDomElement&, ComplexType& );
