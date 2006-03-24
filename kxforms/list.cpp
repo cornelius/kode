@@ -272,10 +272,18 @@ void List::editItem()
 
 void List::moveUp()
 {
+  QModelIndex index = selectedItem();
+  if ( !index.isValid() || index.row() == 0 ) return;
+  
+  
 }
 
 void List::moveDown()
 {
+  QModelIndex index = selectedItem();
+  if ( !index.isValid() || index.row() == mModel->rowCount() - 1 ) return;
+
+
 }
 
 void List::parseElement( const QDomElement &element )
