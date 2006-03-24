@@ -30,7 +30,7 @@ class ParserXsd
   public:
     ParserXsd();
     
-    Schema::Document parse( const QFile & );
+    Schema::Document parse( QFile & );
 
   private:
     Schema::Document mDocument;
