@@ -83,7 +83,9 @@ class Creator
 
     void createFileParser( const Schema::Element &element );
 
-    void createFileWriter( const Schema::Element &element, const QString &dtd );
+    void setDtd( const QString &dtd );
+
+    void createFileWriter( const Schema::Element &element );
 
     void printFiles( KODE::Printer & );
 
@@ -108,6 +110,8 @@ class Creator
     KODE::Class mWriterClass;
     QStringList mProcessedClasses;
     QStringList mListTypedefs;
+
+    QString mDtd;
 };
 
 class ParserCreator

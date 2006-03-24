@@ -290,8 +290,12 @@ void Creator::createIndenter( KODE::File &file )
   file.addFileFunction( indenter );
 }
 
-void Creator::createFileWriter( const Schema::Element &element,
-  const QString &dtd )
+void Creator::setDtd( const QString &dtd )
+{
+  mDtd = dtd;
+}
+
+void Creator::createFileWriter( const Schema::Element &element )
 {
   QString className = upperFirst( element.name() );
 
@@ -323,7 +327,9 @@ void Creator::createFileWriter( const Schema::Element &element,
   code += "QTextStream ts( &file );";
 
   code += "ts << \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\\n\";";
-  code += "ts << \"<!DOCTYPE features SYSTEM \\\"" + dtd + "\\\">\\n\";";
+  if ( !mDtd.isEmpty() ) {
+    code += "ts << \"<!DOCTYPE features SYSTEM \\\"" + mDtd + "\\\">\\n\";";
+  }
 
   code += "ts << writeElement();";
   code += "file.close();";
