@@ -823,9 +823,13 @@ void Parser::resolveForwardDeclarations()
 
     Element::List elements = mComplexTypes[ i ].elements();
     for ( int j = 0; j < elements.count(); ++j ) {
-      if ( !elements[ j ].isResolved() ) {
-        Element refElement = findElement( elements[ j ].reference() );
-        elements[ j ] = refElement;
+      Element element = elements[ j ];
+      if ( !element.isResolved() ) {
+        Element refElement = findElement( element.reference() );
+        Element resolvedElement = refElement;
+        resolvedElement.setMinOccurs( element.minOccurs() );
+        resolvedElement.setMaxOccurs( element.maxOccurs() );
+        elements[ j ] = resolvedElement;
       }
     }
     mComplexTypes[ i ].setElements( elements );
