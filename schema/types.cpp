@@ -83,3 +83,12 @@ QStringList Types::namespaces() const
   return mNamespaces;
 }
 
+
+ComplexType Types::complexType( const Element &element )
+{
+  foreach( ComplexType type, mComplexTypes ) {
+    if( element.type() == type.name() ) return type;
+  }
+  return ComplexType();
+}
+
