@@ -64,14 +64,14 @@ Element Document::element( const Relation &relation ) const
   return element( relation.target() );
 }
 
-Element::List Document::usedElements()
+Element::List Document::usedElements() const
 {
   mUsedElements.clear();
   findUsedElements( mStartElement );
   return mUsedElements;
 }
 
-void Document::findUsedElements( const Element &e )
+void Document::findUsedElements( const Element &e ) const
 {
   addUsedElement( e );
 
@@ -83,7 +83,7 @@ void Document::findUsedElements( const Element &e )
   }
 }
 
-bool Document::addUsedElement( const Element &element )
+bool Document::addUsedElement( const Element &element ) const
 {
   bool found = false;
   foreach( Element usedElement, mUsedElements ) {

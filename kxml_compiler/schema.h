@@ -128,15 +128,15 @@ class Document
     Attribute attribute( const QString &identifier ) const;
     Attribute attribute( const Relation & ) const;
 
-    Element::List usedElements();
+    Element::List usedElements() const;
 
     void dump() const;
 
     bool isEmpty() const;
 
   protected:
-    void findUsedElements( const Element &e );
-    bool addUsedElement( const Element &element );
+    void findUsedElements( const Element &e ) const;
+    bool addUsedElement( const Element &element ) const;
 
   private:
     Element mStartElement;
@@ -144,7 +144,7 @@ class Document
     Element::List mElements;
     Attribute::List mAttributes;
 
-    Element::List mUsedElements;
+    mutable Element::List mUsedElements;
 };
 
 }
