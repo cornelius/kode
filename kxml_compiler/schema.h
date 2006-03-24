@@ -132,6 +132,8 @@ class Document
 
     void dump() const;
 
+    bool isEmpty() const;
+
   protected:
     void findUsedElements( const Element &e );
     bool addUsedElement( const Element &element );

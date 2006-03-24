@@ -123,6 +123,11 @@ Attribute Document::attribute( const Relation &relation ) const
   return attribute( relation.target() );
 }
 
+bool Document::isEmpty() const
+{
+  return mElements.isEmpty();
+}
+
 void Document::dump() const
 {
   foreach( Element e, mElements ) {

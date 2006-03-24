@@ -20,6 +20,7 @@
 */
 
 #include "parserrelaxng.h"
+#include "parserxsd.h"
 #include "creator.h"
 #include "schema.h"
 
@@ -100,23 +101,29 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  QString errorMsg;
-  int errorLine, errorCol;
-  QDomDocument doc;
-  if ( !doc.setContent( &schemaFile, false, &errorMsg, &errorLine, &errorCol ) ) {
-    kError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
-    return 1;
-  }
-
   kDebug() << "Begin parsing" << endl;
 
   Schema::Document schemaDocument;
 
   QFileInfo fi( schemaFile );
   if ( args->isSet( "xsd" ) || fi.suffix() == "xsd" ) {
-    kError() << "XSD support not implemented yet." << endl;
-    return 1;
+    ParserXsd p;
+    
+    schemaDocument = p.parse( schemaFile );
+
+    if ( schemaDocument.isEmpty() ) {
+      kError() << "Error parsing schema '" << schemaFilename << "'" << endl;
+      return 1;
+    }
   } else if ( args->isSet( "rng" ) || fi.suffix() == "rng" ) {
+    QString errorMsg;
+    int errorLine, errorCol;
+    QDomDocument doc;
+    if ( !doc.setContent( &schemaFile, false, &errorMsg, &errorLine, &errorCol ) ) {
+      kError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
+      return 1;
+    }
+
     RNG::ParserRelaxng p;
     RNG::Element *start = p.parse( doc.documentElement() );
     if ( !start ) {

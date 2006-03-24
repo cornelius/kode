@@ -11,7 +11,7 @@ reference:
 	$(srcdir)/checkfiles.pl $(srcdir) --reference
 
 kde-features.h kde-features.cpp kde-features_parser.cpp: kde-features.xsd kde-features.rng ../kxml_compiler
-	../kxml_compiler --external-parser $(srcdir)/kde-features.rng
+	../kxml_compiler --external-parser $(srcdir)/kde-features.xsd
 
 kde-holidays.h kde-holidays.cpp kde-holidays_parser.cpp: kde-holidays.rng ../kxml_compiler
 	../kxml_compiler --external-parser $(srcdir)/kde-holidays.rng
