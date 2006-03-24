@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE features SYSTEM "/build/kde/svn/trunk/KDE/kdepim/kode/kxml_compiler/tests/kde-features.dtd">
 <features>
   <category name="KDE PIM (Personal Information Management)">
     <category name="Kontact">

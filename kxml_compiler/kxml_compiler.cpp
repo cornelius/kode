@@ -165,7 +165,7 @@ int main( int argc, char **argv )
   Schema::Element startElement = schemaDocument.startElement();
   c.setExternalClassPrefix( c.upperFirst( startElement.name() ) );
   c.createFileParser( startElement );
-  c.setDtd( schemaFilename.replace( "rng", "dtd" ) );
+//  c.setDtd( schemaFilename.replace( "rng", "dtd" ) );
   c.createFileWriter( startElement );
 
   c.createListTypedefs();
