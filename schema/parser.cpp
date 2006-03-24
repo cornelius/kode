@@ -315,12 +315,7 @@ void Parser::addElement( ParserContext *context, const QDomElement &element, Com
     newElement.setReference( reference );
   }
 
-  newElement.setMinOccurs( element.attribute( "minOccurs", "1" ).toInt() );
-  QString value = element.attribute( "maxOccurs", "1" );
-  if ( value == "unbounded" )
-    newElement.setMaxOccurs( UNBOUNDED );
-  else
-    newElement.setMaxOccurs( value.toInt() );
+  setOccurrenceAttributes( newElement, element );
 
   newElement.setDefaultValue( element.attribute( "default" ) );
   newElement.setFixedValue( element.attribute( "fixed" ) );
@@ -372,6 +367,14 @@ void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &co
 {
   Element newElement( complexType.nameSpace() );
   newElement.setName( "any" );
+  setOccurrenceAttributes( newElement, element );
+
+  complexType.addElement( newElement );
+}
+
+void Parser::setOccurrenceAttributes( Element &newElement,
+  const QDomElement &element )
+{
   newElement.setMinOccurs( element.attribute( "minOccurs", "1" ).toInt() );
 
   QString value = element.attribute( "maxOccurs", "1" );
@@ -379,8 +382,6 @@ void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &co
     newElement.setMaxOccurs( UNBOUNDED );
   else
     newElement.setMaxOccurs( value.toInt() );
-
-  complexType.addElement( newElement );
 }
 
 void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, ComplexType &complexType )
