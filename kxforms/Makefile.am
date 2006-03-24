@@ -1,12 +1,16 @@
-INCLUDES         = $(all_includes)
+INCLUDES = -I$(top_srcdir)/kode $(all_includes)
 
-bin_PROGRAMS = kxforms
+bin_PROGRAMS = kxforms schema2kxform
 
 kxforms_LDFLAGS = $(KDE_RPATH) $(all_libraries)
 kxforms_LDADD   = $(LIB_KFILE)
 kxforms_SOURCES = main.cpp mainwindow.cpp manager.cpp form.cpp list.cpp \
   input.cpp formgui.cpp xformscommon.cpp guielement.cpp kresult.cpp \
   guihandler.cpp reference.cpp textarea.cpp select1.cpp listmodel.cpp
+
+schema2kxform_LDFLAGS = $(KDE_RPATH) $(all_libraries)
+schema2kxform_LDADD   = ../kxml_compiler/libkschema.la  $(LIB_KDECORE)
+schema2kxform_SOURCES = schema2kxform.cpp xmlbuilder.cpp formcreator.cpp
 
 check_PROGRAMS = testreferences
 

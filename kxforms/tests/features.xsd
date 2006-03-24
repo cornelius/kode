@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  
+  <xs:element name="features">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="category"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="category">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="feature"/>
+        <xs:element ref="category"/>
+      </xs:choice>
+      <xs:attributeGroup ref="attlist.category"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:attributeGroup name="attlist.category">
+    <xs:attribute name="name" use="required"/>
+  </xs:attributeGroup>
+  
+  <xs:element name="feature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="summary"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="responsible"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="attlist.feature"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:attributeGroup name="attlist.feature">
+    <xs:attribute name="status" default="todo">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="inprogress"/>
+          <xs:enumeration value="todo"/>
+          <xs:enumeration value="done"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="target" use="required"/>
+  </xs:attributeGroup>
+  
+  <xs:element name="responsible">
+    <xs:complexType>
+      <xs:attributeGroup ref="attlist.responsible"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:attributeGroup name="attlist.responsible">
+    <xs:attribute name="name"/>
+    <xs:attribute name="email"/>
+  </xs:attributeGroup>
+  
+  <xs:element name="summary">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="i"/>
+        <xs:element ref="a"/>
+        <xs:element ref="b"/>
+        <xs:element ref="em"/>
+        <xs:element ref="strong"/>
+        <xs:element ref="br"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="i" type="xs:string"/>
+  
+  <xs:element name="b" type="xs:string"/>
+
+  <xs:element name="em" type="xs:string"/>
+
+  <xs:element name="strong" type="xs:string"/>
+
+  <xs:element name="br">
+    <xs:complexType/>
+  </xs:element>
+
+  <xs:element name="a">
+    <xs:complexType mixed="true">
+      <xs:attributeGroup ref="attlist.a"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:attributeGroup name="attlist.a">
+    <xs:attribute name="href"/>
+    <xs:attribute name="title"/>
+  </xs:attributeGroup>
+
+</xs:schema>
