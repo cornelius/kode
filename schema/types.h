@@ -50,7 +50,7 @@ class Types
     QStringList namespaces() const;
 
 
-    ComplexType complexType( const Element & );
+    ComplexType complexType( const Element & ) const;
 
   private:
     SimpleType::List mSimpleTypes;
