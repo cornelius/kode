@@ -21,8 +21,7 @@
 #include "guielement.h"
 
 #include <QDomElement>
-#include <QList>
-#include <QAbstractTableModel>
+#include <QModelIndex>
 
 class QTableView;
 class QTreeView;
@@ -30,42 +29,7 @@ class QTreeView;
 namespace KXForms {
 
 class Manager;
-
-class ListModel : public QAbstractTableModel
-{
-  public:
-    ListModel( QObject *parent );
-    ~ListModel();
-
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex & index,
-      int role = Qt::DisplayRole ) const;
-    QVariant headerData ( int section, Qt::Orientation orientation,
-      int role = Qt::DisplayRole ) const;
-    bool removeRows( int row, int count,
-      const QModelIndex &parent = QModelIndex() );
-
-    void recalculateSegmentCounts();
-
-    struct Item
-    {
-      QString label;
-      Reference ref;
-    };
-    
-    void addItem( const QString &label, const Reference &ref );
-    Item *item( const QModelIndex &index );
-
-    int itemCount( const QString &itemClass );
-
-    void setLabel( const QString & );
-    QString label() const;
-
-  private:
-    QList<Item *> mItems;
-    QString mLabel;
-};
+class ListModel;
 
 class List : public GuiElement
 {

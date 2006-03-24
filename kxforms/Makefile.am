@@ -6,7 +6,7 @@ kxforms_LDFLAGS = $(KDE_RPATH) $(all_libraries)
 kxforms_LDADD   = $(LIB_KFILE)
 kxforms_SOURCES = main.cpp mainwindow.cpp manager.cpp form.cpp list.cpp \
   input.cpp formgui.cpp xformscommon.cpp guielement.cpp kresult.cpp \
-  guihandler.cpp reference.cpp textarea.cpp select1.cpp
+  guihandler.cpp reference.cpp textarea.cpp select1.cpp listmodel.cpp
 
 check_PROGRAMS = testreferences
 
