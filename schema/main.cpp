@@ -1,5 +1,5 @@
-#include <qfile.h>
-#include <qxml.h>
+#include <QFile>
+#include <QDebug>
 
 #include <schema/parser.h>
 
@@ -23,34 +23,17 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  QXmlInputSource source( &file );
-  QXmlSimpleReader reader;
-  reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
-
-  QDomDocument document( "KWSDL" );
-
-  QString errorMsg;
-  int errorLine, errorCol;
-  QDomDocument doc;
-  if ( !doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
-    qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
-    return 2;
-  }
-
   NSManager namespaceManager;
   MessageHandler messageHandler;
   ParserContext context;
   context.setNamespaceManager( &namespaceManager );
   context.setMessageHandler( &messageHandler );
 
-  QDomElement element = doc.documentElement();
-  if ( element.tagName() != "xs:schema" ) {
-    qDebug( "document element is '%s'", qPrintable( element.tagName() ) );
-    return 3;
-  }
-
   XSD::Parser parser;
-  parser.parseSchemaTag( &context, element );
+  if ( !parser.parseFile( &context, file ) ) {
+    qDebug() << "Error parsing file " << filename;
+    return 1;
+  }
 
   XSD::Types types = parser.types();
 

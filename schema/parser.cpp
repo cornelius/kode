@@ -60,6 +60,31 @@ void Parser::clear()
   mAttributeGroups.clear();
 }
 
+bool Parser::parseFile( ParserContext *context, QFile &file )
+{
+  QXmlInputSource source( &file );
+  QXmlSimpleReader reader;
+  reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
+
+  QDomDocument document( "KWSDL" );
+
+  QString errorMsg;
+  int errorLine, errorCol;
+  QDomDocument doc;
+  if ( !doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
+    qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
+    return false;
+  }
+
+  QDomElement element = doc.documentElement();
+  if ( element.tagName() != "xs:schema" ) {
+    qDebug( "document element is '%s'", qPrintable( element.tagName() ) );
+    return false;
+  }
+
+  return parseSchemaTag( context, element );
+}
+
 bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 {
   QName name = root.tagName();
@@ -108,8 +133,6 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
       mAttributeGroups.append( parseAttributeGroup( context, element ) );
     } else if ( name.localName() == "annotation" ) {
       parseAnnotation( context, element );
-    } else if ( name.localName() == "import" ) {
-      // TODO
     } else if ( name.localName() == "include" ) {
       // TODO
     }
@@ -625,8 +648,9 @@ void Parser::parseElement( ParserContext *context, const QDomElement &element )
     }
   }
 
-  if ( !found )
+  if ( !found ) {
     mElements.append( newElement );
+  }
 }
 
 Attribute Parser::parseAttribute( ParserContext *context,

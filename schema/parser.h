@@ -25,6 +25,7 @@
 
 #include <QDomElement>
 #include <QList>
+#include <QFile>
 
 #include "types.h"
 #include "typestable.h"
@@ -42,6 +43,12 @@ class Parser
     Types types() const;
 
     void clear();
+
+    /**
+      Parse schema from file. The file has to be open. Returns true on success,
+      otherwise false.
+    */
+    bool parseFile( ParserContext *context, QFile &file );
 
     bool parseSchemaTag( ParserContext *context, const QDomElement &element );
 
