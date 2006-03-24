@@ -25,11 +25,12 @@
 using namespace XSD;
 
 XSDType::XSDType()
+  : mContentModel( SIMPLE )
 {
 }
 
 XSDType::XSDType( const QString &nameSpace )
-  : XmlElement( nameSpace )
+  : XmlElement( nameSpace ), mContentModel( SIMPLE )
 {
 }
 
