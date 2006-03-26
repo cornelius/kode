@@ -74,7 +74,8 @@ class Parser
     ComplexType parseComplexType( ParserContext *context, const QDomElement& );
 
     void all( ParserContext *context, const QDomElement&, ComplexType& );
-    void cs( ParserContext *context, const QDomElement&, ComplexType& );
+    void parseCompositor( ParserContext *context,
+      const QDomElement&, ComplexType& );
 
     void setOccurrenceAttributes( Element &newElement,
       const QDomElement &element );

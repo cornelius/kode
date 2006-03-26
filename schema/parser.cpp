@@ -227,9 +227,9 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     if ( name.localName() == "all" ) {
       all( context, childElement, newType );
     } else if ( name.localName() == "sequence" ) {
-      cs( context, childElement, newType );
+      parseCompositor( context, childElement, newType );
     } else if ( name.localName() == "choice" ) {
-      cs( context, childElement, newType );
+      parseCompositor( context, childElement, newType );
     } else if ( name.localName() == "attribute" ) {
       addAttribute( context, childElement, newType );
     } else if ( name.localName() == "attributeGroup" ) {
@@ -269,8 +269,8 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
   }
 }
 
-
-void Parser::cs( ParserContext *context, const QDomElement &element, ComplexType &ct )
+void Parser::parseCompositor( ParserContext *context,
+  const QDomElement &element, ComplexType &ct )
 {
   QName name = element.tagName();
   bool isChoice = name.localName() == "choice";
@@ -284,13 +284,13 @@ void Parser::cs( ParserContext *context, const QDomElement &element, ComplexType
         if ( isChoice )
           addElement( context, childElement, ct, element );
         else
-          addElement( context, childElement, ct, childElement );          
+          addElement( context, childElement, ct, childElement );
       else if ( csName.localName() == "any" )
         addAny( context, childElement, ct );
-      else if ( csName.localName() == "choice" )
-        cs( context, childElement, ct );
-      else if ( csName.localName() == "sequence" )
-        cs( context, childElement, ct );
+      else if ( isChoice )
+        parseCompositor( context, childElement, ct );
+      else if ( isSequence )
+        parseCompositor( context, childElement, ct );
 
       childElement = childElement.nextSiblingElement();
     }
@@ -579,9 +579,9 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
           if ( name.localName() == "all" ) {
             all( context, ctElement, complexType );
           } else if ( name.localName() == "sequence" ) {
-            cs( context, ctElement, complexType );
+            parseCompositor( context, ctElement, complexType );
           } else if ( name.localName() == "choice" ) {
-            cs( context, ctElement, complexType );
+            parseCompositor( context, ctElement, complexType );
           } else if ( name.localName() == "attribute" ) {
             addAttribute( context, ctElement, complexType );
           } else if ( name.localName() == "anyAttribute" ) {
