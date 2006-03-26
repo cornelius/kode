@@ -222,7 +222,18 @@ QString Relation::asString( const QString &type ) const
 
 
 Node::Node()
+  : mType( String )
 {
+}
+
+void Node::setType( Type t )
+{
+  mType = t;
+}
+
+Node::Type Node::type() const
+{
+  return mType;
 }
 
 void Node::setIdentifier( const QString &i )
@@ -248,6 +259,16 @@ QString Node::name() const
 bool Node::isValid() const
 {
   return !mIdentifier.isEmpty() && !mName.isEmpty();
+}
+
+void Node::setEnumerationValues( const QStringList &v )
+{
+  mEnumerationValues = v;
+}
+
+QStringList Node::enumerationValues() const
+{
+  return mEnumerationValues;
 }
 
 

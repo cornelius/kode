@@ -112,6 +112,11 @@ Schema::Document ParserXsd::parse( QFile &file )
     Schema::Attribute a;
     a.setIdentifier( attribute.name() );
     a.setName( attribute.name() );
+
+    if ( !attribute.type().isEmpty() ) {
+      XSD::SimpleType simpleType = types.simpleType( attribute.type() );
+      setType( a, simpleType );
+    }
     
     mDocument.addAttribute( a );
   }
@@ -119,4 +124,20 @@ Schema::Document ParserXsd::parse( QFile &file )
 //  return Schema::Document();
 
   return mDocument;
+}
+
+void ParserXsd::setType( Schema::Node &node, const XSD::SimpleType &simpleType )
+{
+  if ( simpleType.subType() == XSD::SimpleType::TypeRestriction ) {
+    if ( simpleType.facetType() == XSD::SimpleType::ENUM ) {
+      node.setType( Schema::Node::Enumeration );
+      node.setEnumerationValues( simpleType.facetEnums() );
+    } else {
+      qDebug() << "SimpleType::facetType(): " << simpleType.facetType()
+        << " not supported.";
+    }
+  } else {
+    qDebug() << "SimpleType::subType: " << simpleType.subType() 
+      << " not supported.";
+  }
 }

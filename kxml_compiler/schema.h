@@ -23,6 +23,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 namespace Schema {
 
@@ -65,7 +66,12 @@ class Relation
 class Node
 {
   public:
+    enum Type { String, Enumeration };
+  
     Node();
+
+    void setType( Type );
+    Type type() const;
     
     void setIdentifier( const QString & );
     QString identifier() const;
@@ -74,10 +80,16 @@ class Node
     QString name() const;
     
     bool isValid() const;
+
+    void setEnumerationValues( const QStringList & );
+    QStringList enumerationValues() const;
     
   private:
+    Type mType;
     QString mIdentifier;
     QString mName;
+
+    QStringList mEnumerationValues;
 };
 
 class Element : public Node
