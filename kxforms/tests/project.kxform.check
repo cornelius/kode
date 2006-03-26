@@ -1,0 +1,66 @@
+<kxforms>
+  <form ref="project">
+    <xf:input ref="@name">
+      <xf:label>Name</xf:label>
+    </xf:input>
+    <xf:input ref="title">
+      <xf:label>Title</xf:label>
+    </xf:input>
+    <xf:textarea ref="description">
+      <xf:label>Description</xf:label>
+    </xf:textarea>
+    <list>
+      <xf:label>Persons</xf:label>
+      <itemclass ref="person">
+        <itemlabel><arg ref="@userid"/> (Role: <arg ref="@role"/>)</itemlabel>
+      </itemclass>
+    </list>
+    <list>
+      <xf:label>Packages</xf:label>
+      <itemclass ref="package">
+        <itemlabel><arg ref="@name"/></itemlabel>
+      </itemclass>
+    </list>
+    <list>
+      <xf:label>Repositories</xf:label>
+      <itemclass ref="repository">
+        <itemlabel><arg ref="@name"/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+  <form ref="arch">
+    <xf:input ref=".">
+      <xf:label>Architecture</xf:label>
+    </xf:input>
+  </form>    
+  <form ref="repository">
+    <xf:input ref="@name">
+      <xf:label>Name</xf:label>
+    </xf:input>
+    <xf:input ref="path/@project">
+      <xf:label>Project</xf:label>
+    </xf:input>
+    <xf:input ref="path/@repository">
+      <xf:label>Repository</xf:label>
+    </xf:input>
+    <list>
+      <xf:label>Architecture</xf:label>
+      <itemclass ref="arch">
+        <itemlabel><arg ref="."/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+  <form ref="package">
+    <xf:input ref="@name">
+      <xf:label>Name</xf:label>
+    </xf:input>
+  </form>  
+  <form ref="person">
+    <xf:input ref="@userid">
+      <xf:label>User Id</xf:label>
+    </xf:input>
+    <xf:input ref="@role">
+      <xf:label>Role</xf:label>
+    </xf:input>
+  </form>
+</kxforms>
