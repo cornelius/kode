@@ -80,18 +80,37 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
     qDebug() << "CHILD" << r.target();
     qDebug() << "  CHOICE: " << r.choice();
     if ( r.isList() ) {
+      bool isMixedList = r.choice().contains( "+" );
+      
       if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
         list = form->tag( "list" );
         QString label;
-        if ( r.choice().contains( "+" ) ) {
+        if ( isMixedList ) {
           label = "Item";
         } else {
           label = humanizeString( r.target(), true );
         }
         list->tag( "xf:label", label );
       }
-      list->tag( "itemclass" )->attribute( "ref", r.target() )
-        ->tag( "itemlabel", r.target() );
+      XmlBuilder *item = list->tag( "itemclass" );
+      item->attribute( "ref", r.target() );
+
+      // Try to guess a suitable item label.
+      QString itemLabel;
+      Schema::Element itemElement = mDocument.element( r );
+      foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
+        if ( r2.target() == "name" ) {
+          if ( isMixedList ) {
+            itemLabel = humanizeString( itemElement.name() ) + ": ";
+          }
+          itemLabel += "<arg ref=\"@name\"/>";
+          break;
+        }
+      }
+
+      if ( itemLabel.isEmpty() ) itemLabel = humanizeString( r.target() );
+      item->tag( "itemlabel", itemLabel );
+
       currentChoice = r.choice();
     } else {
       form->tag( "xf:textarea" )->attribute( "ref", r.target() )
