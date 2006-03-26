@@ -63,7 +63,7 @@ class Parser
 
   private:
     void parseImport( ParserContext *context, const QDomElement& );
-    void parseElement( ParserContext *context, const QDomElement& );
+    void addGlobalElement( const Element & );
     Attribute parseAttribute( ParserContext *context, const QDomElement& );
     AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
 

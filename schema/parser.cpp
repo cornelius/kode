@@ -119,7 +119,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
     if ( name.localName() == "import" ) {
       parseImport( context, element );
     } else if ( name.localName() == "element" ) {
-      parseElement( context, element );
+      addGlobalElement( parseElement( context, element, mNameSpace, element ) );
     } else if ( name.localName() == "complexType" ) {
       ComplexType ct = parseComplexType( context, element );
       mComplexTypes.append( ct );
@@ -660,10 +660,8 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
   }
 }
 
-void Parser::parseElement( ParserContext *context, const QDomElement &element )
+void Parser::addGlobalElement( const Element &newElement )
 {
-  Element newElement = parseElement( context, element, mNameSpace, element );
-
   // don't add elements twice
   bool found = false;
   for ( int i = 0; i < mElements.count(); ++i ) {
