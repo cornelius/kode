@@ -35,37 +35,45 @@ QString FormCreator::create( const Schema::Document &schemaDocument )
 {
   XmlBuilder xml( "kxforms" );
 
-  createForm( xml, schemaDocument.startElement() );
+  createForm( &xml, schemaDocument.startElement() );
 
   foreach ( Schema::Element element, schemaDocument.usedElements() ) {
     if ( element.identifier() != schemaDocument.startElement().identifier() ) {
-      createForm( xml, element );
+      createForm( &xml, element );
     }
   }
 
   return xml.print();
 }
 
-void FormCreator::createForm( XmlBuilder &xml, const Schema::Element &element )
+void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 {
   qDebug() << "ELEMENT" << element.name(); 
-  XmlBuilder &form = xml.tag( "form" ).attribute( "ref", element.name() );
+  XmlBuilder *form = xml->tag( "form" )->attribute( "ref", element.name() );
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
-    form.tag( "xf:input" ).attribute( "ref", "@" + r.target() )
-      .tag( "xf:label", r.target() );
+    form->tag( "xf:input" )->attribute( "ref", "@" + r.target() )
+      ->tag( "xf:label", r.target() );
   }
+
+  QString currentChoice;
+
+  XmlBuilder *list = 0;
 
   foreach( Schema::Relation r, element.elementRelations() ) {
     qDebug() << "CHILD" << r.target();
+    qDebug() << "  CHOICE: " << r.choice();
     if ( r.isList() ) {
-      XmlBuilder &list = form.tag( "list" );
-      list.tag( "xf:label", r.target() );
-      list.tag( "itemclass" ).attribute( "ref", r.target() )
-        .tag( "itemlabel", r.target() );
+      if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
+        list = form->tag( "list" );
+        list->tag( "xf:label", r.target() );
+      }
+      list->tag( "itemclass" )->attribute( "ref", r.target() )
+        ->tag( "itemlabel", r.target() );
+      currentChoice = r.choice();
     } else {
-      form.tag( "xf:input" ).attribute( "ref", "@" + r.target() )
-        .tag( "xf:label", r.target() );
+      form->tag( "xf:input" )->attribute( "ref", "@" + r.target() )
+        ->tag( "xf:label", r.target() );
     }
   }
 }

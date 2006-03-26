@@ -35,7 +35,7 @@ class FormCreator
     QString create( const Schema::Document & );
 
   protected:
-    void createForm( XmlBuilder &xml, const Schema::Element &element );
+    void createForm( XmlBuilder *xml, const Schema::Element &element );
 };
 
 }

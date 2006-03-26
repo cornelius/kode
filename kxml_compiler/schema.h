@@ -48,6 +48,9 @@ class Relation
     void setTarget( const QString &identifier );
     QString target() const;
 
+    void setChoice( const QString & );
+    QString choice() const;
+
     QString asString( const QString &type = QString::null ) const;
 
   private:
@@ -55,6 +58,8 @@ class Relation
 
     int mMinOccurs;
     int mMaxOccurs;
+    
+    QString mChoice;
 };
 
 class Node
@@ -89,7 +94,7 @@ class Element : public Node
 
     void addElementRelation( const Relation & );
     Relation::List elementRelations() const;
-  
+
     void addAttributeRelation( const Relation & );
     Relation::List attributeRelations() const;
 

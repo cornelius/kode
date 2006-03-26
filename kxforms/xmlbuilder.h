@@ -33,11 +33,11 @@ class XmlBuilder
     XmlBuilder( const QString &tagName );
     ~XmlBuilder();
 
-    XmlBuilder &tag( const QString &tagName, const QString &text = QString() );
+    XmlBuilder *tag( const QString &tagName, const QString &text = QString() );
 
-    XmlBuilder &attribute( const QString &name, const QString &value );
+    XmlBuilder *attribute( const QString &name, const QString &value );
 
-    XmlBuilder &text( const QString &text );
+    XmlBuilder *text( const QString &text );
 
     QString print( int indent = 0, bool newLine = true ) const;
 

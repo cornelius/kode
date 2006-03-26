@@ -79,6 +79,16 @@ Schema::Document ParserXsd::parse( QFile &file )
       } else {
         eRelation.setMaxOccurs( subElement.maxOccurs() );
       }
+      XSD::Compositor compositor = subElement.compositor();
+      qDebug() << "  Compositor " << compositor.type();
+      if ( compositor.type() == XSD::Compositor::Choice ) {
+        QString choice;
+        foreach( QName qname, compositor.children() ) {
+          if ( !choice.isEmpty() ) choice += "+";
+          choice += qname.qname();
+        }
+        eRelation.setChoice( choice );
+      }
       e.addElementRelation( eRelation );
     }
 

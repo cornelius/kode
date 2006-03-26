@@ -297,7 +297,6 @@ void Parser::parseCompositor( ParserContext *context,
           newElement = parseElement( context, childElement,
             ct.nameSpace(), childElement );
         }
-        ct.addElement( newElement );
         newElements.append( newElement );
         compositor.addChild( csName );
       } else if ( csName.localName() == "any" ) {
@@ -313,6 +312,7 @@ void Parser::parseCompositor( ParserContext *context,
     
     foreach( Element e, newElements ) {
       e.setCompositor( compositor );
+      ct.addElement( e );
     }
   }
 }
@@ -847,6 +847,7 @@ void Parser::resolveForwardDeclarations()
         Element resolvedElement = refElement;
         resolvedElement.setMinOccurs( element.minOccurs() );
         resolvedElement.setMaxOccurs( element.maxOccurs() );
+        resolvedElement.setCompositor( element.compositor() );
         elements[ j ] = resolvedElement;
       }
     }

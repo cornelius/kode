@@ -196,6 +196,16 @@ QString Relation::target() const
   return mTarget;
 }
 
+void Relation::setChoice( const QString &choice )
+{
+  mChoice = choice;
+}
+
+QString Relation::choice() const
+{
+  return mChoice;
+}
+
 QString Relation::asString( const QString &type ) const
 {
   QString out = "  R " + type + ": " + target() + " (" +

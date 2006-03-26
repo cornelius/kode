@@ -66,7 +66,7 @@ XmlBuilder::~XmlBuilder()
   }
 }
 
-XmlBuilder &XmlBuilder::tag( const QString &tagName, const QString &text )
+XmlBuilder *XmlBuilder::tag( const QString &tagName, const QString &text )
 {
   XmlBuilder *builder = new XmlBuilder( tagName );
   builder->text( text );
@@ -74,24 +74,24 @@ XmlBuilder &XmlBuilder::tag( const QString &tagName, const QString &text )
   mChildren.append( Node( builder ) );
   mHasChildElements = true;
 
-  return *( mChildren.last().xml() );
+  return builder;
 }
 
-XmlBuilder &XmlBuilder::attribute( const QString &name, const QString &value )
+XmlBuilder *XmlBuilder::attribute( const QString &name, const QString &value )
 {
   mAttributes[ name ] = value;
   
-  return *this;
+  return this;
 }
 
-XmlBuilder &XmlBuilder::text( const QString &text )
+XmlBuilder *XmlBuilder::text( const QString &text )
 {
   if ( !text.isEmpty() ) {
     mChildren.append( Node( text ) );
     mHasText = true; 
   }
    
-  return *this;
+  return this;
 }
 
 QString XmlBuilder::print( int indentation, bool newLine ) const
