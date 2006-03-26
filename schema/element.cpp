@@ -140,3 +140,13 @@ bool Element::isResolved() const
 {
   return !mType.isEmpty();
 }
+
+void Element::setCompositor( const Compositor &c )
+{
+  mCompositor = c;
+}
+
+Compositor Element::compositor() const
+{
+  return mCompositor;
+}

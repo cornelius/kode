@@ -80,8 +80,8 @@ class Parser
     void setOccurrenceAttributes( Element &newElement,
       const QDomElement &element );
 
-    void addElement( ParserContext *context, const QDomElement&, ComplexType&,
-      const QDomElement &occurrenceElement );
+    Element parseElement( ParserContext *context, const QDomElement &,
+      const QString &nameSpace, const QDomElement &occurrenceElement );
 
     void addAttribute( ParserContext *context, const QDomElement&, ComplexType& );
     void addAny( ParserContext *context, const QDomElement&, ComplexType& );

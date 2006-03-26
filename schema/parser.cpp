@@ -260,7 +260,8 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
   while ( !childElement.isNull() ) {
     QName name = childElement.tagName();
     if ( name.localName() == "element" ) {
-      addElement( context, childElement, ct, childElement );
+      ct.addElement( parseElement( context, childElement, ct.nameSpace(),
+        childElement ) );
     } else if ( name.localName() == "annotation" ) {
       parseAnnotation( context, childElement, ct );
     }
@@ -275,32 +276,52 @@ void Parser::parseCompositor( ParserContext *context,
   QName name = element.tagName();
   bool isChoice = name.localName() == "choice";
   bool isSequence = name.localName() == "sequence";
+
+  Compositor compositor;
+  if ( isChoice ) compositor.setType( Compositor::Choice );
+  else if ( isSequence ) compositor.setType( Compositor::Sequence );
+
   if ( isChoice || isSequence ) {
+    Element::List newElements;
+
     QDomElement childElement = element.firstChildElement();
 
     while ( !childElement.isNull() ) {
       QName csName = childElement.tagName();
-      if ( csName.localName() == "element" )
-        if ( isChoice )
-          addElement( context, childElement, ct, element );
-        else
-          addElement( context, childElement, ct, childElement );
-      else if ( csName.localName() == "any" )
+      if ( csName.localName() == "element" ) {
+        Element newElement;
+        if ( isChoice ) {
+          newElement = parseElement( context, childElement,
+            ct.nameSpace(), element );
+        } else {
+          newElement = parseElement( context, childElement,
+            ct.nameSpace(), childElement );
+        }
+        ct.addElement( newElement );
+        newElements.append( newElement );
+        compositor.addChild( csName );
+      } else if ( csName.localName() == "any" ) {
         addAny( context, childElement, ct );
-      else if ( isChoice )
+      } else if ( isChoice ) {
         parseCompositor( context, childElement, ct );
-      else if ( isSequence )
+      } else if ( isSequence ) {
         parseCompositor( context, childElement, ct );
+      }
 
       childElement = childElement.nextSiblingElement();
+    }
+    
+    foreach( Element e, newElements ) {
+      e.setCompositor( compositor );
     }
   }
 }
 
-void Parser::addElement( ParserContext *context, const QDomElement &element,
-  ComplexType &complexType, const QDomElement &occurrenceElement )
+Element Parser::parseElement( ParserContext *context,
+  const QDomElement &element, const QString &nameSpace,
+  const QDomElement &occurrenceElement )
 {
-  Element newElement( complexType.nameSpace() );
+  Element newElement( nameSpace );
 
   newElement.setName( element.attribute( "name" ) );
 
@@ -365,7 +386,7 @@ void Parser::addElement( ParserContext *context, const QDomElement &element,
     }
   }
 
-  complexType.addElement( newElement );
+  return newElement;
 }
 
 void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &complexType )
@@ -641,11 +662,9 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
 
 void Parser::parseElement( ParserContext *context, const QDomElement &element )
 {
-  ComplexType complexType( mNameSpace );
-  addElement( context, element, complexType, element );
+  Element newElement = parseElement( context, element, mNameSpace, element );
 
   // don't add elements twice
-  Element newElement = complexType.elements().first();
   bool found = false;
   for ( int i = 0; i < mElements.count(); ++i ) {
     if ( mElements[ i ].qualifiedName() == newElement.qualifiedName() ) {

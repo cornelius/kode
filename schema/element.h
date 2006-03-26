@@ -27,6 +27,7 @@
 #include <QString>
 
 #include "xmlelement.h"
+#include "compositor.h"
 
 namespace XSD {
 
@@ -70,6 +71,9 @@ class Element : public XmlElement
 
     bool isResolved() const;
 
+    void setCompositor( const Compositor & );
+    Compositor compositor() const;
+
   private:
     QName mType;
     QString mDocumentation;
@@ -81,6 +85,7 @@ class Element : public XmlElement
     QString mFixedValue;
     int mOccurrence;
     QName mReference;
+    Compositor mCompositor;
 };
 
 }
