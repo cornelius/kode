@@ -39,7 +39,13 @@ int main( int argc, char **argv )
 
   const XSD::SimpleType::List simpleTypes = types.simpleTypes();
   for ( int i = 0; i < simpleTypes.count(); ++i ) {
-    qDebug( "SimpleType: %s %s", qPrintable( simpleTypes[ i ].name() ), qPrintable( simpleTypes[ i ].baseTypeName().qname() ) );
+    XSD::SimpleType t = simpleTypes[ i ];
+    qDebug() << "SimpleType: " << t.name() << t.baseTypeName().qname()
+      << t.subType();
+    qDebug() << "FacetType: " << t.facetType();
+    if ( t.facetType() == XSD::SimpleType::ENUM ) {
+      qDebug() << "  ENUMS " << t.facetEnums();
+    }
   }
 
   const XSD::ComplexType::List complexTypes = types.complexTypes();
