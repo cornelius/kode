@@ -21,6 +21,8 @@
 
 #include "types.h"
 
+#include <QDebug>
+
 using namespace XSD;
 
 void Types::setSimpleTypes( const SimpleType::List &simpleTypes )
@@ -92,3 +94,13 @@ ComplexType Types::complexType( const Element &element ) const
   return ComplexType();
 }
 
+SimpleType Types::simpleType( const QName &typeName ) const
+{
+  qDebug() << "Types::simpleType()" << typeName.qname();
+  foreach( SimpleType type, mSimpleTypes ) {
+    qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname();
+    if ( type.qualifiedName() == typeName ) return type;
+  }
+  qDebug() << "not found";
+  return SimpleType();
+}

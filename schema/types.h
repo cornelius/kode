@@ -52,6 +52,8 @@ class Types
 
     ComplexType complexType( const Element & ) const;
 
+    SimpleType simpleType( const QName & ) const;
+
   private:
     SimpleType::List mSimpleTypes;
     ComplexType::List mComplexTypes;
