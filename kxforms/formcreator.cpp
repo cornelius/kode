@@ -33,6 +33,8 @@ FormCreator::FormCreator()
 
 QString FormCreator::create( const Schema::Document &schemaDocument )
 {
+  mDocument = schemaDocument;
+
   XmlBuilder xml( "kxforms" );
 
   createForm( &xml, schemaDocument.startElement() );
@@ -52,8 +54,21 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
   XmlBuilder *form = xml->tag( "form" )->attribute( "ref", element.name() );
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
-    form->tag( "xf:input" )->attribute( "ref", "@" + r.target() )
-      ->tag( "xf:label", r.target() );
+    Schema::Attribute a = mDocument.attribute( r );
+    if ( a.type() == Schema::Attribute::String ) {
+      form->tag( "xf:input" )->attribute( "ref", "@" + a.name() )
+        ->tag( "xf:label", r.target() );
+    } else if ( a.type() == Schema::Attribute::Enumeration ) {
+      XmlBuilder *selection1 = form->tag( "xf:selection1" );
+      selection1->attribute( "ref", "@" + a.name() );
+      foreach( QString value, a.enumerationValues() ) {
+        XmlBuilder *item = selection1->tag( "xf:item" );
+        item->tag( "xf:label", value );
+        item->tag( "xf:value", value );  
+      }
+    } else {
+      qDebug() << "Unsupported type: " << a.type();
+    }
   }
 
   QString currentChoice;

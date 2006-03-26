@@ -36,6 +36,9 @@ class FormCreator
 
   protected:
     void createForm( XmlBuilder *xml, const Schema::Element &element );
+
+  private:
+    Schema::Document mDocument;
 };
 
 }
