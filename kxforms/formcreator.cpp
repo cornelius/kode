@@ -94,7 +94,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
         ->tag( "itemlabel", r.target() );
       currentChoice = r.choice();
     } else {
-      form->tag( "xf:input" )->attribute( "ref", r.target() )
+      form->tag( "xf:textarea" )->attribute( "ref", r.target() )
         ->tag( "xf:label", humanizeString( r.target() ) );
     }
   }
