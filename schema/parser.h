@@ -64,7 +64,7 @@ class Parser
   private:
     void parseImport( ParserContext *context, const QDomElement& );
     void addGlobalElement( const Element & );
-    Attribute parseAttribute( ParserContext *context, const QDomElement& );
+    void addGlobalAttribute( const Attribute & );
     AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
 
     void parseAnnotation( ParserContext *context, const QDomElement& );
@@ -83,7 +83,7 @@ class Parser
     Element parseElement( ParserContext *context, const QDomElement &,
       const QString &nameSpace, const QDomElement &occurrenceElement );
 
-    void addAttribute( ParserContext *context, const QDomElement&, ComplexType& );
+    Attribute parseAttribute( ParserContext *context, const QDomElement& );
     void addAny( ParserContext *context, const QDomElement&, ComplexType& );
     void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
 

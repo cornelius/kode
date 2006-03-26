@@ -127,7 +127,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
       SimpleType st = parseSimpleType( context, element );
       mSimpleTypes.append( st );
     } else if ( name.localName() == "attribute" ) {
-      parseAttribute( context, element );
+      addGlobalAttribute( parseAttribute( context, element ) );
     } else if ( name.localName() == "attributeGroup" ) {
       mAttributeGroups.append( parseAttributeGroup( context, element ) );
     } else if ( name.localName() == "annotation" ) {
@@ -231,7 +231,7 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     } else if ( name.localName() == "choice" ) {
       parseCompositor( context, childElement, newType );
     } else if ( name.localName() == "attribute" ) {
-      addAttribute( context, childElement, newType );
+      newType.addAttribute( parseAttribute( context, childElement ) );
     } else if ( name.localName() == "attributeGroup" ) {
       AttributeGroup g = parseAttributeGroup( context, childElement );
       attributeGroups.append( g );
@@ -420,7 +420,8 @@ void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, Comple
   complexType.addAttribute( newAttribute );
 }
 
-void Parser::addAttribute( ParserContext *context, const QDomElement &element, ComplexType &complexType )
+Attribute Parser::parseAttribute( ParserContext *context,
+  const QDomElement &element )
 {
   Attribute newAttribute;
 
@@ -480,7 +481,7 @@ void Parser::addAttribute( ParserContext *context, const QDomElement &element, C
     childElement = childElement.nextSiblingElement();
   }
 
-  complexType.addAttribute( newAttribute );
+  return newAttribute;
 }
 
 SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &element )
@@ -604,7 +605,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
           } else if ( name.localName() == "choice" ) {
             parseCompositor( context, ctElement, complexType );
           } else if ( name.localName() == "attribute" ) {
-            addAttribute( context, ctElement, complexType );
+            complexType.addAttribute( parseAttribute( context, ctElement ) );
           } else if ( name.localName() == "anyAttribute" ) {
             addAnyAttribute( context, ctElement, complexType );
           }
@@ -649,7 +650,7 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
         while ( !ctElement.isNull() ) {
           QName name = ctElement.tagName();
           if ( name.localName() == "attribute" )
-            addAttribute( context, ctElement, complexType );
+            complexType.addAttribute( parseAttribute( context, ctElement ) );
 
           ctElement = ctElement.nextSiblingElement();
         }
@@ -676,14 +677,9 @@ void Parser::addGlobalElement( const Element &newElement )
   }
 }
 
-Attribute Parser::parseAttribute( ParserContext *context,
-  const QDomElement &element )
+void Parser::addGlobalAttribute( const Attribute &newAttribute )
 {
-  ComplexType complexType( mNameSpace );
-  addAttribute( context, element, complexType );
-
   // don't add attributes twice
-  Attribute newAttribute = complexType.attributes().first();
   bool found = false;
   for ( int i = 0; i < mAttributes.count(); ++i ) {
     if ( mAttributes[ i ].qualifiedName() == newAttribute.qualifiedName() ) {
@@ -695,8 +691,6 @@ Attribute Parser::parseAttribute( ParserContext *context,
   if ( !found ) {
     mAttributes.append( newAttribute );
   }
-
-  return newAttribute;
 }
 
 AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
@@ -721,7 +715,9 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
     QDomElement e = n.toElement();
     QName childName = QName( e.tagName() );
     if ( childName.localName() == "attribute" ) {
-      attributes.append( parseAttribute( context, e ) );
+      Attribute a = parseAttribute( context, e );
+      addGlobalAttribute( a );
+      attributes.append( a );
     }
   }
 
@@ -857,6 +853,7 @@ void Parser::resolveForwardDeclarations()
     mComplexTypes[ i ].setElements( elements );
 
     Attribute::List attributes = mComplexTypes[ i ].attributes();
+
     for ( int j = 0; j < attributes.count(); ++j ) {
       if ( !attributes[ j ].isResolved() ) {
         Attribute refAttribute = findAttribute( attributes[ j ].reference() );
