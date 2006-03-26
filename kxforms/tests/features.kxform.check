@@ -12,7 +12,7 @@
       <xf:label>Name</xf:label>
     </xf:input>
     <xf:input ref="@email">
-      <xf:label>Email:</xf:label>
+      <xf:label>Email</xf:label>
     </xf:input>
   </form>
   <form ref="feature">
@@ -62,12 +62,12 @@
     </xf:input>
     <list>
       <xf:label>Item</xf:label>
-      <itemclass ref="category">
-        <itemlabel>Category: <arg ref="@name"/></itemlabel>
-      </itemclass>
       <itemclass ref="feature">
         <itemlabel>Feature: <arg ref="summary" truncate="50"/></itemlabel>
       </itemclass>
+      <itemclass ref="category">
+        <itemlabel>Category: <arg ref="@name"/></itemlabel>
+      </itemclass>
     </list>
   </form>
-</kxform>
+</kxforms>

@@ -57,13 +57,14 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
     Schema::Attribute a = mDocument.attribute( r );
     if ( a.type() == Schema::Attribute::String ) {
       form->tag( "xf:input" )->attribute( "ref", "@" + a.name() )
-        ->tag( "xf:label", r.target() );
+        ->tag( "xf:label", humanizeString( r.target() ) );
     } else if ( a.type() == Schema::Attribute::Enumeration ) {
-      XmlBuilder *selection1 = form->tag( "xf:selection1" );
-      selection1->attribute( "ref", "@" + a.name() );
+      XmlBuilder *select1 = form->tag( "xf:select1" );
+      select1->attribute( "ref", "@" + a.name() );
+      select1->tag( "xf:label", humanizeString( a.name() ) );
       foreach( QString value, a.enumerationValues() ) {
-        XmlBuilder *item = selection1->tag( "xf:item" );
-        item->tag( "xf:label", value );
+        XmlBuilder *item = select1->tag( "xf:item" );
+        item->tag( "xf:label", humanizeString( value ) );
         item->tag( "xf:value", value );  
       }
     } else {
@@ -81,14 +82,35 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
     if ( r.isList() ) {
       if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
         list = form->tag( "list" );
-        list->tag( "xf:label", r.target() );
+        QString label;
+        if ( r.choice().contains( "+" ) ) {
+          label = "Item";
+        } else {
+          label = humanizeString( r.target(), true );
+        }
+        list->tag( "xf:label", label );
       }
       list->tag( "itemclass" )->attribute( "ref", r.target() )
         ->tag( "itemlabel", r.target() );
       currentChoice = r.choice();
     } else {
-      form->tag( "xf:input" )->attribute( "ref", "@" + r.target() )
-        ->tag( "xf:label", r.target() );
+      form->tag( "xf:input" )->attribute( "ref", r.target() )
+        ->tag( "xf:label", humanizeString( r.target() ) );
     }
   }
+}
+
+QString FormCreator::humanizeString( const QString &str, bool pluralize )
+{
+  if ( str.isEmpty() ) return str;
+  QString result = str[0].toUpper() + str.mid( 1 );
+  if ( pluralize ) {
+    if ( result.endsWith( "y" ) ) {
+      result = result.left( str.length() - 1 ) + "ies";
+    } else {
+      result += "s";
+    }
+  }
+
+  return result;
 }

@@ -37,6 +37,8 @@ class FormCreator
   protected:
     void createForm( XmlBuilder *xml, const Schema::Element &element );
 
+    QString humanizeString( const QString &, bool pluralize = false );
+
   private:
     Schema::Document mDocument;
 };
