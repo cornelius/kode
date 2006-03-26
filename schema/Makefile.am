@@ -9,9 +9,9 @@ libschema_la_SOURCES = attribute.cpp complextype.cpp element.cpp \
 libschema_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -no-undefined
 libschema_la_LIBADD = $(LIB_QTCORE) -lkdecore -lkio $(top_builddir)/kode/common/libkxmlcommon.la
 
-bin_PROGRAMS = schematest
+check_PROGRAMS = schematest
 schematest_LDFLAGS = $(all_libraries) $(KDE_RPATH)
-schematest_SOURCES = main.cpp
+schematest_SOURCES = schematest.cpp
 schematest_LDADD = libschema.la
 
 METASOURCES = AUTO
