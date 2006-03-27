@@ -12,7 +12,8 @@ kxforms_SOURCES = main.cpp mainwindow.cpp manager.cpp form.cpp list.cpp \
 
 schema2kxform_LDFLAGS = $(KDE_RPATH) $(all_libraries)
 schema2kxform_LDADD   = ../kxml_compiler/libkschema.la  $(LIB_KDECORE)
-schema2kxform_SOURCES = schema2kxform.cpp xmlbuilder.cpp formcreator.cpp
+schema2kxform_SOURCES = schema2kxform.cpp xmlbuilder.cpp formcreator.cpp \
+  hints.cpp
 
 check_PROGRAMS = testreferences
 

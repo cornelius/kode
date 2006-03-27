@@ -20,6 +20,7 @@
 */
 
 #include "formcreator.h"
+#include "hints.h"
 
 #include <kxml_compiler/schema.h>
 #include <kxml_compiler/parserxsd.h>
@@ -44,6 +45,7 @@
 
 static const KCmdLineOptions options[] =
 {
+  { "ugh <file>", I18N_NOOP("UI Generation Hints"), 0 },
   { "+schema", I18N_NOOP("Schema of XML file"), 0 },
   KCmdLineLastOption
 };
@@ -80,6 +82,25 @@ int main(int argc, char **argv)
   if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
     kError() << "Unable to open '" << schemaFilename << "'" << endl;
     return 1;
+  }
+
+  KXForms::Hints hints;
+
+  if ( args->isSet("ugh" ) ) {
+    QString ughFileName = args->getOption( "ugh" );
+    QFile ughFile( ughFileName );
+    if ( !ughFile.open( QIODevice::ReadOnly ) ) {
+      kError() << "Unable to open '" << ughFileName << endl;
+      return 1;
+    }
+
+    hints.parseFile( ughFile );
+
+    foreach( KXForms::Hint h, hints.hints() ) {
+      qDebug() << "Hint" << h.ref() << h.label();
+    }
+
+    return 0;
   }
 
   ParserXsd parser;
