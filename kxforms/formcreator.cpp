@@ -33,6 +33,8 @@ FormCreator::FormCreator()
 
 QString FormCreator::create( const Schema::Document &schemaDocument )
 {
+  qDebug() << "---FormCreator::create()";
+
   mDocument = schemaDocument;
 
   XmlBuilder xml( "kxforms" );
@@ -44,6 +46,8 @@ QString FormCreator::create( const Schema::Document &schemaDocument )
       createForm( &xml, element );
     }
   }
+
+  qDebug() << "---FormCreator::create() done";
 
   return xml.print();
 }

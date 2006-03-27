@@ -38,6 +38,8 @@ ParserXsd::ParserXsd()
 
 Schema::Document ParserXsd::parse( QFile &file )
 {
+  qDebug() << "----ParserXsd::parse()";
+
   mDocument = Schema::Document();
 
   NSManager namespaceManager;
@@ -97,6 +99,17 @@ Schema::Document ParserXsd::parse( QFile &file )
       
       Schema::Relation aRelation( attribute.name() );
       e.addAttributeRelation( aRelation );
+
+      Schema::Attribute a;
+      a.setIdentifier( attribute.name() );
+      a.setName( attribute.name() );
+
+      if ( !attribute.type().isEmpty() ) {
+        XSD::SimpleType simpleType = types.simpleType( attribute.type() );
+        setType( a, simpleType );
+      }
+
+      mDocument.addAttribute( a );
     }
     
     mDocument.addElement( e );
@@ -106,20 +119,7 @@ Schema::Document ParserXsd::parse( QFile &file )
     }
   }
 
-  foreach( XSD::Attribute attribute, types.attributes() ) {
-    qDebug() << "Attribute: " << attribute.name();
-  
-    Schema::Attribute a;
-    a.setIdentifier( attribute.name() );
-    a.setName( attribute.name() );
-
-    if ( !attribute.type().isEmpty() ) {
-      XSD::SimpleType simpleType = types.simpleType( attribute.type() );
-      setType( a, simpleType );
-    }
-    
-    mDocument.addAttribute( a );
-  }
+  qDebug() << "----ParserXsd::parse() done";
 
 //  return Schema::Document();
 
