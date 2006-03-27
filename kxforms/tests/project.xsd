@@ -94,7 +94,7 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="arch" type="xs:string">
+  <xs:element name="arch" type="xs:token">
     <xs:annotation>
       <xs:documentation>
         Hardware architecture.

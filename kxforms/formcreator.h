@@ -41,6 +41,8 @@ class FormCreator
 
   private:
     Schema::Document mDocument;
+
+    QStringList mCollapsedForms;
 };
 
 }

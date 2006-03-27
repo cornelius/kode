@@ -69,8 +69,14 @@ Schema::Document ParserXsd::parse( QFile &file )
       e.setText( true );
     }
 
-    if ( element.type().qname() == "xs:normalizedString" ) {
+    if ( element.type().qname() == "xs:string" ) {
+      e.setType( Schema::Node::String );
+    } else if ( element.type().qname() == "xs:normalizedString" ) {
       e.setType( Schema::Node::NormalizedString );
+    } else if ( element.type().qname() == "xs:token" ) {
+      e.setType( Schema::Node::Token );
+    } else {
+      e.setType( Schema::Node::ComplexType );
     }
 
     foreach( XSD::Element subElement, complexType.elements() ) {

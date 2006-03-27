@@ -32,17 +32,25 @@
     <xf:input ref=".">
       <xf:label>Architecture</xf:label>
     </xf:input>
-  </form>    
+  </form>
+  <form ref="path">
+    <xf:input ref="@project">
+      <xf:label>Project</xf:label>
+    </xf:input>
+    <xf:input ref="@repository">
+      <xf:label>Repository</xf:label>
+    </xf:input>
+  </form>
   <form ref="repository">
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>
-    <xf:input ref="path/@project">
-      <xf:label>Project</xf:label>
-    </xf:input>
-    <xf:input ref="path/@repository">
-      <xf:label>Repository</xf:label>
-    </xf:input>
+    <list>
+      <xf:label>Paths</xf:label>
+      <itemclass ref="path">
+        <itemlabel>Path</itemlabel>
+      </itemclass>
+    </list>
     <list>
       <xf:label>Architecture</xf:label>
       <itemclass ref="arch">
@@ -54,13 +62,16 @@
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>
-  </form>  
-  <form ref="person">
-    <xf:input ref="@userid">
-      <xf:label>User Id</xf:label>
+    <xf:input ref="@revision">
+      <xf:label>Revision</xf:label>
     </xf:input>
+  </form>
+  <form ref="person">
     <xf:input ref="@role">
       <xf:label>Role</xf:label>
+    </xf:input>
+    <xf:input ref="@userid">
+      <xf:label>User Id</xf:label>
     </xf:input>
   </form>
 </kxforms>

@@ -66,7 +66,7 @@ class Relation
 class Node
 {
   public:
-    enum Type { String, NormalizedString, Enumeration };
+    enum Type { String, NormalizedString, Token, Enumeration, ComplexType };
   
     Node();
 
