@@ -117,8 +117,15 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
       currentChoice = r.choice();
     } else {
-      form->tag( "xf:textarea" )->attribute( "ref", r.target() )
-        ->tag( "xf:label", humanizeString( r.target() ) );
+      Schema::Element textElement = mDocument.element( r.target() );
+      XmlBuilder *textInput = 0;
+      if ( textElement.type() == Schema::Node::NormalizedString ) {
+        textInput = form->tag( "xf:input" );
+      } else {
+        textInput = form->tag( "xf:textarea" );
+      }
+      textInput->attribute( "ref", textElement.name() );
+      textInput->tag( "xf:label", humanizeString( textElement.name() ) );
     }
   }
 }

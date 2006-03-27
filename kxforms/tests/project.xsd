@@ -27,7 +27,7 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="title" type="xs:string">
+  <xs:element name="title" type="xs:normalizedString">
     <xs:annotation>
       <xs:documentation>
         Title of the project.

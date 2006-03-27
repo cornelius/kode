@@ -69,6 +69,10 @@ Schema::Document ParserXsd::parse( QFile &file )
       e.setText( true );
     }
 
+    if ( element.type().qname() == "xs:normalizedString" ) {
+      e.setType( Schema::Node::NormalizedString );
+    }
+
     foreach( XSD::Element subElement, complexType.elements() ) {
       qDebug() << "  Element: " << subElement.name();
       qDebug() << "    " << subElement.minOccurs() << ","
