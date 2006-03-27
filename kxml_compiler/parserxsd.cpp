@@ -105,8 +105,12 @@ Schema::Document ParserXsd::parse( QFile &file )
       a.setName( attribute.name() );
 
       if ( !attribute.type().isEmpty() ) {
-        XSD::SimpleType simpleType = types.simpleType( attribute.type() );
-        setType( a, simpleType );
+        if ( attribute.type().qname() == "xs:string" ) {
+          a.setType( Schema::Node::String );
+        } else {
+          XSD::SimpleType simpleType = types.simpleType( attribute.type() );
+          setType( a, simpleType );
+        }
       }
 
       mDocument.addAttribute( a );
@@ -129,7 +133,9 @@ Schema::Document ParserXsd::parse( QFile &file )
 void ParserXsd::setType( Schema::Node &node, const XSD::SimpleType &simpleType )
 {
   if ( simpleType.subType() == XSD::SimpleType::TypeRestriction ) {
-    if ( simpleType.facetType() == XSD::SimpleType::ENUM ) {
+    if ( simpleType.facetType() == XSD::SimpleType::NONE ) {
+      // Nothing to do.
+    } else if ( simpleType.facetType() == XSD::SimpleType::ENUM ) {
       node.setType( Schema::Node::Enumeration );
       node.setEnumerationValues( simpleType.facetEnums() );
     } else {
