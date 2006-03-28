@@ -14,7 +14,8 @@ set(schema_LIB_SRCS
    types.cpp 
    xmlelement.cpp 
    xsdtype.cpp 
-   attributegroup.cpp )
+   attributegroup.cpp 
+	compositor.cpp)
 
 kde4_automoc(${schema_LIB_SRCS})
 
@@ -28,7 +29,7 @@ install_targets(${LIB_INSTALL_DIR} schema )
 
 ########### next target ###############
 
-set(schematest_SRCS main.cpp )
+set(schematest_SRCS schematest.cpp )
 
 kde4_automoc(${schematest_SRCS})
 
