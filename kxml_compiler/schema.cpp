@@ -226,6 +226,10 @@ Node::Node()
 {
 }
 
+Node::~Node()
+{
+}
+
 void Node::setType( Type t )
 {
   mType = t;
@@ -277,6 +281,11 @@ Element::Element()
 {
 }
 
+QString Element::ref() const
+{
+  return name();
+}
+
 void Element::addElementRelation( const Relation &r )
 {
   mElementRelations.append( r );
@@ -319,4 +328,9 @@ bool Element::isEmpty() const
 
 Attribute::Attribute()
 {
+}
+
+QString Attribute::ref() const
+{
+  return "@" + name();
 }

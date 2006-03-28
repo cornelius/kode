@@ -69,6 +69,7 @@ class Node
     enum Type { String, NormalizedString, Token, Enumeration, ComplexType };
   
     Node();
+    virtual ~Node();
 
     void setType( Type );
     Type type() const;
@@ -78,7 +79,9 @@ class Node
     
     void setName( const QString & );
     QString name() const;
-    
+
+    virtual QString ref() const = 0;
+
     bool isValid() const;
 
     void setEnumerationValues( const QStringList & );
@@ -98,6 +101,8 @@ class Element : public Node
     typedef QList<Element> List;
   
     Element();
+
+    QString ref() const;
 
     bool mixed() const;
 
@@ -125,6 +130,8 @@ class Attribute : public Node
     typedef QList<Attribute> List;
 
     Attribute();
+
+    QString ref() const;
 };
 
 class Document
