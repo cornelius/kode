@@ -22,6 +22,7 @@
 #define FORMCREATOR_H
 
 #include "xmlbuilder.h"
+#include "hints.h"
 
 #include <kxml_compiler/schema.h>
 
@@ -34,13 +35,22 @@ class FormCreator
 
     QString create( const Schema::Document & );
 
+    void setHints( const Hints & );
+
   protected:
     void createForm( XmlBuilder *xml, const Schema::Element &element );
+
+    void createLabel( XmlBuilder *parent, const Schema::Node &node );
+
+    QString getLabel( const QString &ref, const QString &fallback = QString(),
+      bool pluralize = false );
 
     QString humanizeString( const QString &, bool pluralize = false );
 
   private:
     Schema::Document mDocument;
+
+    Hints mHints;
 
     QStringList mCollapsedForms;
 };

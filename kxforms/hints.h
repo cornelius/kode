@@ -44,11 +44,15 @@ class Hint
     
     void setLabel( const QString & );
     QString label() const;
-    
+
+    void setEnumValue( const QString &value, const QString &replacement );    
+    QString enumValue( const QString &value );
+
   private:
     QString mRef;
     
     QString mLabel;
+    QMap<QString, QString> mEnums;
 };
 
 class Hints

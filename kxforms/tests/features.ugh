@@ -1,0 +1,17 @@
+<ugh>
+  <hint ref="category/feature">
+    <label>Feature: &lt;arg ref="summary" truncate="50"/&gt;</label>
+  </hint>
+  <hint ref="feature/responsible">
+    <label>&lt;arg ref="@name"/&gt; &amp;lt;&lt;arg ref="@email"/&gt;&amp;gt;</label>
+  </hint>
+  <hint ref="arch">
+    <label>Architecture</label>
+  </hint>
+  <hint ref="userid">
+    <label>User Id</label>
+  </hint>
+  <hint ref="feature/@status">
+    <enum value="inprogress">In Progress</enum>
+  </hint>
+</ugh>

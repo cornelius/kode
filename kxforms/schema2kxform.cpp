@@ -99,14 +99,13 @@ int main(int argc, char **argv)
     foreach( KXForms::Hint h, hints.hints() ) {
       qDebug() << "Hint" << h.ref() << h.label();
     }
-
-    return 0;
   }
 
   ParserXsd parser;
   Schema::Document schemaDocument = parser.parse( schemaFile );
 
   KXForms::FormCreator creator;
+  creator.setHints( hints );
   
   QString form = creator.create( schemaDocument );
 

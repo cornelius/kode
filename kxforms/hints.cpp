@@ -61,6 +61,17 @@ QString Hint::label() const
   return mLabel;
 }
 
+void Hint::setEnumValue( const QString &value, const QString &replacement )
+{
+  mEnums.insert( value, replacement );
+}
+
+QString Hint::enumValue( const QString &value )
+{
+  if ( mEnums.contains( value ) ) return mEnums[ value ];
+  else return QString();
+}
+
 
 Hints::Hints()
 {
@@ -101,9 +112,11 @@ void Hints::parseHint( const QDomElement &element )
     QDomElement e = n.toElement();
     if ( e.tagName() == "label" ) {
       hint.setLabel( e.text() );
+    } else if ( e.tagName() == "enum" ) {
+      hint.setEnumValue( e.attribute( "value" ), e.text() );
     }
   }
-  
+
   mHints[ ref ] = hint;
 }
 

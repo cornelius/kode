@@ -63,16 +63,24 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
+
+    qDebug() << "  ATTRIBUTE: " << a.identifier();
+
     if ( a.type() == Schema::Attribute::String ) {
-      form->tag( "xf:input" )->attribute( "ref", "@" + a.name() )
-        ->tag( "xf:label", humanizeString( r.target() ) );
+      XmlBuilder *input = form->tag( "xf:input" );
+      input->attribute( "ref", a.ref() );
+      createLabel( input, a );
     } else if ( a.type() == Schema::Attribute::Enumeration ) {
       XmlBuilder *select1 = form->tag( "xf:select1" );
-      select1->attribute( "ref", "@" + a.name() );
-      select1->tag( "xf:label", humanizeString( a.name() ) );
+      select1->attribute( "ref", a.ref() );
+      createLabel( select1, a );
       foreach( QString value, a.enumerationValues() ) {
         XmlBuilder *item = select1->tag( "xf:item" );
-        item->tag( "xf:label", humanizeString( value ) );
+        QString itemLabel;
+        Hint hint = mHints.hint( element.identifier() + "/" + a.ref() );
+        if ( hint.isValid() ) itemLabel = hint.enumValue( value );
+        if ( itemLabel.isEmpty() ) itemLabel = humanizeString( value );
+        item->tag( "xf:label", itemLabel );
         item->tag( "xf:value", value );  
       }
     } else {
@@ -82,20 +90,22 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
 
   if ( element.type() == Schema::Node::String ) {
-    form->tag( "xf:textarea" )->attribute( "ref", "." )
-      ->tag( "xf:label", humanizeString( element.name() ) );
+    XmlBuilder *textArea = form->tag( "xf:textarea" );
+    textArea->attribute( "ref", "." );
+    createLabel( textArea, element );
   } else if ( element.type() == Schema::Node::NormalizedString ||
               element.type() == Schema::Node::Token ) {
-    form->tag( "xf:input" )->attribute( "ref", "." )
-      ->tag( "xf:label", humanizeString( element.name() ) );
+    XmlBuilder *input = form->tag( "xf:input" );
+    input->attribute( "ref", "." );
+    createLabel( input, element );
   } else {
     QString currentChoice;
 
     XmlBuilder *list = 0;
 
     foreach( Schema::Relation r, element.elementRelations() ) {
-      qDebug() << "CHILD" << r.target();
-      qDebug() << "  CHOICE: " << r.choice();
+      qDebug() << "  CHILD ELEMENT" << r.target();
+      qDebug() << "    CHOICE" << r.choice();
       if ( r.isList() ) {
         bool isMixedList = r.choice().contains( "+" );
 
@@ -105,23 +115,32 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
           if ( isMixedList ) {
             label = "Item";
           } else {
-            label = humanizeString( r.target(), true );
+            label = getLabel( element.identifier() + "[" + r.target() + "]" );
+            if ( label.isEmpty() ) {
+              label = humanizeString( r.target(), true );
+            }
           }
           list->tag( "xf:label", label );
         }
         XmlBuilder *item = list->tag( "itemclass" );
         item->attribute( "ref", r.target() );
 
-        // Try to guess a suitable item label.
         QString itemLabel;
+
+        itemLabel = getLabel( element.identifier() + "/" + r.target() );
+
         Schema::Element itemElement = mDocument.element( r );
-        foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
-          if ( r2.target() == "name" ) {
-            if ( isMixedList ) {
-              itemLabel = humanizeString( itemElement.name() ) + ": ";
+
+        if ( itemLabel.isEmpty() ) {
+          // Try to guess a suitable item label.
+          foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
+            if ( r2.target() == "name" ) {
+              if ( isMixedList ) {
+                itemLabel = humanizeString( itemElement.name() ) + ": ";
+              }
+              itemLabel += "<arg ref=\"@name\"/>";
+              break;
             }
-            itemLabel += "<arg ref=\"@name\"/>";
-            break;
           }
         }
 
@@ -147,7 +166,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
           textInput = form->tag( "xf:textarea" );
         }
         textInput->attribute( "ref", textElement.name() );
-        textInput->tag( "xf:label", humanizeString( textElement.name() ) );
+        createLabel( textInput, textElement );
       
         mCollapsedForms.append( r.target() );
       }
@@ -168,4 +187,29 @@ QString FormCreator::humanizeString( const QString &str, bool pluralize )
   }
 
   return result;
+}
+
+void FormCreator::setHints( const Hints &hints )
+{
+  mHints = hints;
+}
+
+void FormCreator::createLabel( XmlBuilder *parent, const Schema::Node &node )
+{
+  parent->tag( "xf:label", getLabel( node.identifier(), node.name() ) );
+}
+
+QString FormCreator::getLabel( const QString &ref, const QString &fallback,
+  bool pluralize )
+{
+//  qDebug() << "GETLABEL: " << ref;
+
+  QString label;
+
+  Hint hint = mHints.hint( ref );
+  if ( hint.isValid() ) label = hint.label();
+  
+  if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
+  
+  return label;
 }
