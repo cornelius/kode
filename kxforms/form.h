@@ -46,6 +46,8 @@ class Form
     void setElement( const QDomElement & );
     QDomElement element() const;
 
+    QString label() const;
+
   private:
     Manager *mManager;
 

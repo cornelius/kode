@@ -38,6 +38,27 @@ class Manager;
 class Form;
 class FormGui;
 
+class BreadCrumbNavigator : public QFrame
+{
+    Q_OBJECT
+  public:
+    BreadCrumbNavigator( QWidget *parent );
+
+    void push( FormGui * );
+    FormGui *pop();
+
+    FormGui *last() const;
+    int count() const;
+
+  protected:
+    void updateLabel();
+
+  private:
+    QStack<FormGui *> mHistory;
+
+    QLabel *mLabel; 
+};
+
 class GuiHandlerFlat : public QObject, public GuiHandler
 {
     Q_OBJECT
@@ -55,8 +76,9 @@ class GuiHandlerFlat : public QObject, public GuiHandler
 
   private:
     QWidget *mMainWidget;
+    
+    BreadCrumbNavigator *mBreadCrumbNavigator;
     QStackedWidget *mStackWidget;
-    QStack<FormGui *> mPreviousWidgets;
     QPushButton *mBackButton;
 };
 

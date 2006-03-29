@@ -37,7 +37,7 @@
 
 using namespace KXForms;
 
-FormGui::FormGui( Manager *m, QWidget *parent )
+FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
   : QWidget( parent ), mManager( m )
 {
   kDebug() << "FormGui()" << endl;
@@ -45,7 +45,7 @@ FormGui::FormGui( Manager *m, QWidget *parent )
   mTopLayout = new QVBoxLayout( this );
 
 
-  mLabel = new QLabel( this );
+  mLabel = new QLabel( label, this );
   QFont f = mLabel->font();
   f.setBold( true );
   mLabel->setFont( f );
@@ -81,6 +81,11 @@ void FormGui::setRefLabel( const Reference &ref )
 Reference FormGui::ref() const
 {
   return mRef;
+}
+
+QString FormGui::label() const
+{
+  return mLabel->text();
 }
 
 void FormGui::parseElement( const QDomElement &element )

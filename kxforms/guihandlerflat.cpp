@@ -35,6 +35,70 @@
 
 using namespace KXForms;
 
+BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
+  : QFrame( parent )
+{
+  QBoxLayout *topLayout = new QHBoxLayout( this );
+
+  QPalette p = palette();
+  p.setColor( QPalette::Background, "yellow" ); // Why doesn't this work?
+  setPalette( p );
+
+  setFrameStyle( Plain | Panel );
+  setLineWidth( 1 );
+
+  mLabel = new QLabel( "Bread Crumbs", this );
+  topLayout->addWidget( mLabel );
+  mLabel->setPalette( p );
+}
+
+void BreadCrumbNavigator::push( FormGui *gui )
+{
+  mHistory.push( gui );
+
+  updateLabel();
+}
+
+FormGui *BreadCrumbNavigator::pop()
+{
+  FormGui *result;
+
+  if ( mHistory.isEmpty() ) result = 0;
+  else result = mHistory.pop();
+
+  updateLabel();
+  
+  return result;
+}
+
+FormGui *BreadCrumbNavigator::last() const
+{
+  if ( mHistory.isEmpty() ) return 0;
+  else return mHistory.last();
+}
+
+int BreadCrumbNavigator::count() const
+{
+  return mHistory.count();
+}
+
+void BreadCrumbNavigator::updateLabel()
+{
+  QString text;
+  foreach( FormGui *gui, mHistory ) {
+    if ( !text.isEmpty() ) {
+      text.append( " / " );
+    }
+    QString label = gui->label();
+    if ( label.isEmpty() ) {
+      label = "...";
+    }
+    text.append( label );
+  }
+  mLabel->setText( text );
+}
+
+
 GuiHandlerFlat::GuiHandlerFlat( Manager *m )
   : GuiHandler( m )
 {
@@ -47,6 +111,9 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   mMainWidget = new QWidget( parent );
   
   QBoxLayout *topLayout = new QVBoxLayout( mMainWidget );
+
+  mBreadCrumbNavigator = new BreadCrumbNavigator( mMainWidget );
+  topLayout->addWidget( mBreadCrumbNavigator );
 
   mStackWidget = new QStackedWidget( mMainWidget );
   topLayout->addWidget( mStackWidget );
@@ -130,11 +197,11 @@ FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
     return 0;
   }
 
-  FormGui *gui = new FormGui( manager(), parent );
+  FormGui *gui = new FormGui( form->label(), manager(), parent );
 
   if ( gui ) {
     manager()->registerGui( gui );
-    mPreviousWidgets.push( gui );
+    mBreadCrumbNavigator->push( gui );
   }
 
   return gui;
@@ -142,16 +209,16 @@ FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
 
 void GuiHandlerFlat::goBack()
 {
-  FormGui *gui = mPreviousWidgets.pop();
+  FormGui *gui = mBreadCrumbNavigator->pop();
   gui->saveData();
-  
-  if ( mPreviousWidgets.count() > 0 ) {
-    FormGui *previousGui = mPreviousWidgets.last();
-    mStackWidget->setCurrentWidget( previousGui );
-    manager()->loadData( previousGui );
+
+  FormGui *current = mBreadCrumbNavigator->last();
+  if ( current ) {
+    mStackWidget->setCurrentWidget( current );
+    manager()->loadData( current );
   }
   
-  if ( mPreviousWidgets.count() == 1 ) {
+  if ( mBreadCrumbNavigator->count() == 1 ) {
     mBackButton->setEnabled( false );
   }
 }

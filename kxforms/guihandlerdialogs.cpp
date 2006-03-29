@@ -141,7 +141,7 @@ FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
     return 0;
   }
 
-  FormGui *gui = new FormGui( manager(), parent );
+  FormGui *gui = new FormGui( form->label(), manager(), parent );
   if ( gui ) manager()->registerGui( gui );
 
   return gui;

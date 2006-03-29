@@ -56,3 +56,16 @@ bool Form::isValid() const
 {
   return !mRef.isEmpty();
 }
+
+QString Form::label() const
+{
+  QDomNode n;
+  for ( n = mElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    QDomElement e = n.toElement();
+    QString tag = e.tagName();
+    if ( tag == "xf:label" ) {
+      return e.text();
+    }
+  }
+  return QString();
+}

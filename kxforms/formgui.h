@@ -40,12 +40,14 @@ class FormGui : public QWidget
   public:
     typedef QList<FormGui *> List;
 
-    FormGui( Manager *, QWidget *parent );
+    FormGui( const QString &label, Manager *, QWidget *parent );
 
     void parseElement( const QDomElement & );
 
     void setRef( const Reference &ref );
     Reference ref() const;
+
+    QString label() const;
 
     void loadData( const QDomDocument & );
     void saveData();
