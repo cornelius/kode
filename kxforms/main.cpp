@@ -24,6 +24,7 @@
 #include "manager.h"
 #include "guihandlerdialogs.h"
 #include "guihandlerflat.h"
+#include "prefs.h"
 
 #include <kapplication.h>
 #include <dcopclient.h>
@@ -47,6 +48,7 @@ static KCmdLineOptions options[] =
   { "kxform <URL>", I18N_NOOP( "Form description" ), 0 },
   { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
   { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
+  { "developer", I18N_NOOP( "Use developer mode of user interface" ), 0 },
   KCmdLineLastOption
 };
 
@@ -81,6 +83,8 @@ int main(int argc, char **argv)
   KApplication app;
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
+  Prefs::setDeveloperMode( args->isSet( "developer" ) );
 
   MainWindow *widget = new MainWindow;
 

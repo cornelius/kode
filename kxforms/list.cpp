@@ -22,6 +22,7 @@
 #include "manager.h"
 #include "formgui.h"
 #include "listmodel.h"
+#include "prefs.h"
 
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -73,6 +74,10 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   button = new QPushButton( i18n("Move Item Down"), this );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveDown() ) );
+
+  if ( !Prefs::developerMode() ) {
+    mView->hideColumn( 1 );
+  }
 }
 
 void List::newItem()
