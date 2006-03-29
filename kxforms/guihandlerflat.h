@@ -18,62 +18,46 @@
     the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
     Boston, MA 02111-1307, USA.
 */
-#ifndef KXFORMS_MANAGER_H
-#define KXFORMS_MANAGER_H
+#ifndef GUIHANDLERFLAT_H
+#define GUIHANDLERFLAT_H
 
-#include "form.h"
-#include "formgui.h"
-#include "kresult.h"
 #include "guihandler.h"
+#include "formgui.h"
 
-#include <QDomElement>
+#include <QObject>
+#include <QStack>
+
+class QWidget;
+class QBoxLayout;
+class QStackedWidget;
+class QPushButton;
 
 namespace KXForms {
 
-class Manager
+class Manager;
+class Form;
+class FormGui;
+
+class GuiHandlerFlat : public QObject, public GuiHandler
 {
+    Q_OBJECT
   public:
-    Manager();
-    ~Manager();
-
-    void setGuiHandler( GuiHandler * );
-
-    bool parseForms( const QString & );
-
-    Form *parseForm( const QDomElement & );
-
-    Form *rootForm();
-
-    Form *form( const QString &ref );
-
-    KResult loadData( const QString & );
-    KResult saveData( QString & );
-
-    void loadData( FormGui * );
-
-    void clearForms();
+    GuiHandlerFlat( Manager * );
 
     QWidget *createRootGui( QWidget *parent );
     void createGui( const Reference &ref, QWidget *parent );
 
-    void registerGui( FormGui * );
-    void unregisterGui( FormGui * );
+  protected:
+    FormGui *createGui( Form *form, QWidget *parent );
 
-
-    bool hasData() const;
-    QDomDocument document() const;
-
-    QDomElement applyReference( const Reference & );
+  protected slots:
+    void goBack();
 
   private:
-    GuiHandler *mGuiHandler;
-  
-    Form::List mForms;
-
-    FormGui::List mGuis;
-
-    QDomDocument mData;
-    bool mDataLoaded;
+    QWidget *mMainWidget;
+    QStackedWidget *mStackWidget;
+    QStack<FormGui *> mPreviousWidgets;
+    QPushButton *mBackButton;
 };
 
 }

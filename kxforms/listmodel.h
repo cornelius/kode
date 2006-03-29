@@ -56,6 +56,8 @@ class ListModel : public QAbstractTableModel
     void setLabel( const QString & );
     QString label() const;
 
+    void clear();
+
   private:
     QList<Item *> mItems;
     QString mLabel;

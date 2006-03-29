@@ -21,52 +21,30 @@
 #ifndef GUIHANDLER_H
 #define GUIHANDLER_H
 
-#include "formgui.h"
-
-#include <kdialog.h>
+#include "reference.h"
 
 class QWidget;
-class QBoxLayout;
 
 namespace KXForms {
 
 class Manager;
-class Form;
-
-class FormDialog : public KDialog
-{
-    Q_OBJECT
-  public:
-    FormDialog( QWidget *parent, const QString &title, Manager * );
-
-    void setGui( FormGui * );
-
-  protected slots:
-    void slotOk();
-
-  private:
-    QBoxLayout *mTopLayout;
-    
-    FormGui *mFormGui;
-    
-    Manager *mManager;
-};
 
 class GuiHandler
 {
   public:
+    /**
+      Create GuiHandler and register it with the manager. The manager takes
+      ownership of the GuiHandler object.
+    */
     GuiHandler( Manager * );
 
-    FormGui *createRootGui( QWidget *parent );
-    FormGui *createGui( const Reference &ref, QWidget *parent );
+    virtual QWidget *createRootGui( QWidget *parent ) = 0;
+    virtual void createGui( const Reference &ref, QWidget *parent ) = 0;
 
-  protected:
-    FormGui *createGui( Form *form, QWidget *parent );
-
+    Manager *manager() const;
+    
   private:
-    Manager *mManager;    
-
-    FormGui::List mGuis;
+    Manager *mManager;
 };
 
 }

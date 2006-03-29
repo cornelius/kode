@@ -53,6 +53,8 @@ class MainWindow : public KMainWindow
 
     void setVersion( const QString & );
 
+    KXForms::Manager *formsManager();
+
   protected:
     /**
      * This function is called when it is time for the app to save its
@@ -66,7 +68,6 @@ class MainWindow : public KMainWindow
      * with @ref saveProperties
      */
     void readProperties(KConfig *);
-
 
   private slots:
     void fileNew();

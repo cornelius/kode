@@ -186,6 +186,8 @@ void List::loadData()
 {
   kDebug() << "List::loadData() ref: " << ref().toString() << endl;
 
+  mModel->clear();
+
   QMap<QString, int> counts;
   QDomNode n;
   for( n = context().firstChild(); !n.isNull(); n = n.nextSibling() ) {

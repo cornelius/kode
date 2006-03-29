@@ -22,6 +22,7 @@
 #include "mainwindow.h"
 
 #include "formgui.h"
+#include "guihandlerdialogs.h"
 
 #include <kprinter.h>
 #include <kdeversion.h>
@@ -48,6 +49,8 @@
 #include <QTextStream>
 #include <QLabel>
 
+using namespace KXForms;
+
 MainWindow::MainWindow()
     : KMainWindow( 0, "MainWindow" ),
       m_printer(0)
@@ -73,6 +76,11 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
   delete m_printer;
+}
+
+KXForms::Manager *MainWindow::formsManager()
+{
+  return &mFormsManager;
 }
 
 void MainWindow::setVersion( const QString &version )

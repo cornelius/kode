@@ -18,62 +18,51 @@
     the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
     Boston, MA 02111-1307, USA.
 */
-#ifndef KXFORMS_MANAGER_H
-#define KXFORMS_MANAGER_H
+#ifndef GUIHANDLERDIALOGS_H
+#define GUIHANDLERDIALOGS_H
 
-#include "form.h"
-#include "formgui.h"
-#include "kresult.h"
 #include "guihandler.h"
+#include "formgui.h"
 
-#include <QDomElement>
+#include <kdialog.h>
+
+class QWidget;
+class QBoxLayout;
 
 namespace KXForms {
 
-class Manager
+class Manager;
+class Form;
+
+class FormDialog : public KDialog
+{
+    Q_OBJECT
+  public:
+    FormDialog( QWidget *parent, const QString &title, Manager * );
+
+    void setGui( FormGui * );
+
+  protected slots:
+    void slotOk();
+
+  private:
+    QBoxLayout *mTopLayout;
+    
+    FormGui *mFormGui;
+    
+    Manager *mManager;
+};
+
+class GuiHandlerDialogs : public GuiHandler
 {
   public:
-    Manager();
-    ~Manager();
-
-    void setGuiHandler( GuiHandler * );
-
-    bool parseForms( const QString & );
-
-    Form *parseForm( const QDomElement & );
-
-    Form *rootForm();
-
-    Form *form( const QString &ref );
-
-    KResult loadData( const QString & );
-    KResult saveData( QString & );
-
-    void loadData( FormGui * );
-
-    void clearForms();
+    GuiHandlerDialogs( Manager * );
 
     QWidget *createRootGui( QWidget *parent );
     void createGui( const Reference &ref, QWidget *parent );
 
-    void registerGui( FormGui * );
-    void unregisterGui( FormGui * );
-
-
-    bool hasData() const;
-    QDomDocument document() const;
-
-    QDomElement applyReference( const Reference & );
-
-  private:
-    GuiHandler *mGuiHandler;
-  
-    Form::List mForms;
-
-    FormGui::List mGuis;
-
-    QDomDocument mData;
-    bool mDataLoaded;
+  protected:
+    FormGui *createGui( Form *form, QWidget *parent );
 };
 
 }

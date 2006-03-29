@@ -21,6 +21,10 @@
 
 #include "mainwindow.h"
 
+#include "manager.h"
+#include "guihandlerdialogs.h"
+#include "guihandlerflat.h"
+
 #include <kapplication.h>
 #include <dcopclient.h>
 #include <kaboutdata.h>
@@ -42,6 +46,7 @@ static KCmdLineOptions options[] =
   { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
   { "kxform <URL>", I18N_NOOP( "Form description" ), 0 },
   { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
+  { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
   KCmdLineLastOption
 };
 
@@ -78,6 +83,12 @@ int main(int argc, char **argv)
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   MainWindow *widget = new MainWindow;
+
+  if ( args->isSet( "dialogs" ) ) {
+    new KXForms::GuiHandlerDialogs( widget->formsManager() );
+  } else {
+    new KXForms::GuiHandlerFlat( widget->formsManager() );
+  }
 
   widget->show();
 

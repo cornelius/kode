@@ -26,9 +26,8 @@
 using namespace KXForms;
 
 Manager::Manager()
-  : mDataLoaded( false )
+  : mGuiHandler( 0 ), mDataLoaded( false )
 {
-  mGuiHandler = new GuiHandler( this );
 }
 
 Manager::~Manager()
@@ -36,6 +35,11 @@ Manager::~Manager()
   clearForms();
 
   delete mGuiHandler;
+}
+
+void Manager::setGuiHandler( GuiHandler *handler )
+{
+  mGuiHandler = handler;
 }
 
 bool Manager::parseForms( const QString &xml )
@@ -158,18 +162,30 @@ void Manager::clearForms()
 
 QWidget *Manager::createRootGui( QWidget *parent )
 {
-  FormGui *gui = mGuiHandler->createRootGui( parent );
-  mGuis.append( gui );
-  return gui;
+  if ( !mGuiHandler ) {
+    kError() << "Manager::createRootGui(): No GuiHandler" << endl;
+    return 0;
+  }
+
+  return mGuiHandler->createRootGui( parent );
 }
 
 void Manager::createGui( const Reference &ref, QWidget *parent )
 {
-  FormGui *gui = mGuiHandler->createGui( ref, parent );
-  if ( gui ) mGuis.append( gui );
+  if ( !mGuiHandler ) {
+    kError() << "Manager::createGui(): No GuiHandler" << endl;
+    return;
+  }
+
+  mGuiHandler->createGui( ref, parent );
 }
 
-void Manager::destroyGui( FormGui *gui )
+void Manager::registerGui( FormGui *gui )
+{
+  mGuis.append( gui );
+}
+
+void Manager::unregisterGui( FormGui *gui )
 {
   mGuis.remove( gui );
 }
