@@ -71,6 +71,8 @@ void FormGui::parseElement( const QDomElement &element )
 {
   kDebug() << "FormGui::parseElement()" << endl;
 
+  bool hasList = false;
+
   QDomNode n;
   for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
@@ -81,6 +83,7 @@ void FormGui::parseElement( const QDomElement &element )
     if ( tag == "list" ) {
       guiElement = new KXForms::List( mManager, c.label(), this );
       guiElement->setRef( ref() );
+      hasList = true;
     } else if ( tag == "xf:input" ) {
       guiElement = new Input( mManager, c.label(), this );
       guiElement->setRef( e.attribute( "ref" ) );
@@ -100,6 +103,8 @@ void FormGui::parseElement( const QDomElement &element )
       mGuiElements.append( guiElement );
     }
   }
+
+  if ( !hasList ) mTopLayout->addStretch( 0 );
 
   kDebug() << "FormGui::parseElement() done" << endl;
 }
