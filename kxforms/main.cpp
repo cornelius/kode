@@ -86,6 +86,12 @@ int main(int argc, char **argv)
 
   Prefs::setDeveloperMode( args->isSet( "developer" ) );
 
+#if 1
+  // Hack: force a decent font
+  QFont f( "Arial", 11 );
+  QApplication::setFont( f );
+#endif
+
   MainWindow *widget = new MainWindow;
 
   if ( args->isSet( "dialogs" ) ) {
