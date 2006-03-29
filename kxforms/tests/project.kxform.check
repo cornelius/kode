@@ -1,5 +1,6 @@
 <kxforms>
   <form ref="project">
+    <xf:label>Project</xf:label>
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>
@@ -29,11 +30,13 @@
     </list>
   </form>
   <form ref="arch">
+    <xf:label>Arch</xf:label>
     <xf:input ref=".">
       <xf:label>Architecture</xf:label>
     </xf:input>
   </form>
   <form ref="path">
+    <xf:label>Path</xf:label>
     <xf:input ref="@project">
       <xf:label>Project</xf:label>
     </xf:input>
@@ -42,6 +45,7 @@
     </xf:input>
   </form>
   <form ref="repository">
+    <xf:label>Repository</xf:label>
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>
@@ -59,6 +63,7 @@
     </list>
   </form>
   <form ref="package">
+    <xf:label>Package</xf:label>
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>
@@ -67,6 +72,7 @@
     </xf:input>
   </form>
   <form ref="person">
+    <xf:label>Person</xf:label>
     <xf:input ref="@role">
       <xf:label>Role</xf:label>
     </xf:input>

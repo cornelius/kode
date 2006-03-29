@@ -1,5 +1,6 @@
 <kxforms>
   <form ref="features">
+    <xf:label>Features</xf:label>
     <list>
       <xf:label>Categories</xf:label>
       <itemclass ref="category">
@@ -8,6 +9,7 @@
     </list>
   </form>
   <form ref="responsible">
+    <xf:label>Responsible</xf:label>
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>
@@ -16,6 +18,7 @@
     </xf:input>
   </form>
   <form ref="feature">
+    <xf:label>Feature</xf:label>
     <xf:select1 ref="@status">
       <xf:label>Status</xf:label>
       <xf:item>
@@ -57,6 +60,7 @@
     </list>
   </form>
   <form ref="category">
+    <xf:label>Category</xf:label>
     <xf:input ref="@name">
       <xf:label>Name</xf:label>
     </xf:input>

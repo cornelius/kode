@@ -26,6 +26,7 @@
 #include "input.h"
 #include "textarea.h"
 #include "select1.h"
+#include "prefs.h"
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -43,10 +44,25 @@ FormGui::FormGui( Manager *m, QWidget *parent )
 
   mTopLayout = new QVBoxLayout( this );
 
+
+  mLabel = new QLabel( this );
+  QFont f = mLabel->font();
+  f.setBold( true );
+  mLabel->setFont( f );
+  mTopLayout->addWidget( mLabel );
+  mLabel->hide();
+
   mRefLabel = new QLabel( this );
+  f = mRefLabel->font();
+  f.setPointSize( f.pointSize() - 2 );
+  mRefLabel->setFont( f );
   mTopLayout->addWidget( mRefLabel );
 
   setRefLabel( "[undefined reference]" );
+
+  if ( !Prefs::developerMode() ) {
+    mRefLabel->hide();
+  }
 }
 
 void FormGui::setRef( const Reference &ref )
@@ -80,7 +96,10 @@ void FormGui::parseElement( const QDomElement &element )
     kDebug() << "  Found element '" << tag << "'" << endl;
     XFormsCommon c = XFormsCommon::parseElement( e );
     GuiElement *guiElement = 0;
-    if ( tag == "list" ) {
+    if ( tag == "xf:label" ) {
+      mLabel->setText( e.text() );
+      mLabel->show();
+    } else if ( tag == "list" ) {
       guiElement = new KXForms::List( mManager, c.label(), this );
       guiElement->setRef( ref() );
       hasList = true;

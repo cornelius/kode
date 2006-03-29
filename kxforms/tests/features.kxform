@@ -1,5 +1,6 @@
 <kxforms>
   <form ref="features">
+    <xf:label>Features</xf:label>
     <list>
       <xf:label>Categories</xf:label>
       <itemclass ref="category">

@@ -63,6 +63,8 @@ class FormGui : public QWidget
     GuiElement::List mGuiElements;
 
     QBoxLayout *mTopLayout;
+
+    QLabel *mLabel;
     QLabel *mRefLabel;
 };
 

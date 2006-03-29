@@ -61,6 +61,8 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
   qDebug() << "ELEMENT" << element.name(); 
   XmlBuilder *form = xml->tag( "form" )->attribute( "ref", element.name() );
 
+  form->tag( "xf:label", humanizeString( element.name() ) );
+
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
 
