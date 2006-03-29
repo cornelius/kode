@@ -31,6 +31,7 @@ class QWidget;
 class QBoxLayout;
 class QStackedWidget;
 class QPushButton;
+class KActiveLabel;
 
 namespace KXForms {
 
@@ -56,7 +57,7 @@ class BreadCrumbNavigator : public QFrame
   private:
     QStack<FormGui *> mHistory;
 
-    QLabel *mLabel; 
+    KActiveLabel *mLabel; 
 };
 
 class GuiHandlerFlat : public QObject, public GuiHandler

@@ -26,6 +26,7 @@
 #include <kdebug.h>
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kactivelabel.h>
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -41,13 +42,15 @@ BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
   QBoxLayout *topLayout = new QHBoxLayout( this );
 
   QPalette p = palette();
-  p.setColor( QPalette::Background, "yellow" ); // Why doesn't this work?
+  p.setColor( QPalette::Base, "#ffffa0" );
   setPalette( p );
 
+#if 0
   setFrameStyle( Plain | Panel );
   setLineWidth( 1 );
+#endif
 
-  mLabel = new QLabel( "Bread Crumbs", this );
+  mLabel = new KActiveLabel( "Bread Crumbs", this );
   topLayout->addWidget( mLabel );
   mLabel->setPalette( p );
 }
@@ -85,15 +88,15 @@ int BreadCrumbNavigator::count() const
 void BreadCrumbNavigator::updateLabel()
 {
   QString text;
-  foreach( FormGui *gui, mHistory ) {
+  for( int i = 0; i < mHistory.size(); ++i ) {
     if ( !text.isEmpty() ) {
       text.append( " / " );
     }
-    QString label = gui->label();
+    QString label = mHistory[ i ]->label();
     if ( label.isEmpty() ) {
       label = "...";
     }
-    text.append( label );
+    text.append( "<a href=\"" + QString::number( i ) + "\">" + label + "</a>" );
   }
   mLabel->setText( text );
 }
@@ -116,7 +119,7 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   topLayout->addWidget( mBreadCrumbNavigator );
 
   mStackWidget = new QStackedWidget( mMainWidget );
-  topLayout->addWidget( mStackWidget );
+  topLayout->addWidget( mStackWidget, 1 );
 
   Form *f = manager()->rootForm();
 
