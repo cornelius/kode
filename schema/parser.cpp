@@ -62,6 +62,18 @@ void Parser::clear()
 bool Parser::parseFile( ParserContext *context, QFile &file )
 {
   QXmlInputSource source( &file );
+  return parse( context, &source );
+}
+
+bool Parser::parseString( ParserContext *context, const QString &data )
+{
+  QXmlInputSource source;
+  source.setData( data );
+  return parse( context, &source );
+}
+
+bool Parser::parse( ParserContext *context, QXmlInputSource *source )
+{
   QXmlSimpleReader reader;
   reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
 
@@ -70,7 +82,7 @@ bool Parser::parseFile( ParserContext *context, QFile &file )
   QString errorMsg;
   int errorLine, errorCol;
   QDomDocument doc;
-  if ( !doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
+  if ( !doc.setContent( source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
     qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
     return false;
   }

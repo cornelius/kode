@@ -92,23 +92,33 @@ int main(int argc, char **argv)
   QApplication::setFont( f );
 #endif
 
-  MainWindow *widget = new MainWindow;
+  MainWindow *mainWindow = new MainWindow;
 
   if ( args->isSet( "dialogs" ) ) {
-    new KXForms::GuiHandlerDialogs( widget->formsManager() );
+    new KXForms::GuiHandlerDialogs( mainWindow->formsManager() );
   } else {
-    new KXForms::GuiHandlerFlat( widget->formsManager() );
+    new KXForms::GuiHandlerFlat( mainWindow->formsManager() );
   }
 
-  widget->show();
+  mainWindow->show();
 
-  if ( args->isSet( "kxform" ) ) {
-    QString form = args->getOption( "kxform" );
-    widget->loadForm( makeURL( form ) );
+  if ( args->isSet( "schema" ) && args->isSet( "kxform" ) ) {
+    kWarning() << "KXForm will be generated from schema. Ignoring --kxform "
+      << "option" << endl;
+  }
+
+  if ( args->isSet( "schema" ) ) {
+    QString schema = args->getOption( "schema" );
+    mainWindow->loadSchema( makeURL( schema ) );
+  } else {
+    if ( args->isSet( "kxform" ) ) {
+      QString form = args->getOption( "kxform" );
+      mainWindow->loadForm( makeURL( form ) );
+    }
   }
 
   if ( args->count() == 1 ) {
-    widget->load( args->url( 0 ) );
+    mainWindow->load( args->url( 0 ) );
   }
 
   return app.exec();

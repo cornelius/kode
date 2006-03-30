@@ -65,6 +65,9 @@ class Manager
 
     QDomElement applyReference( const Reference & );
 
+  protected:
+    void loadData();
+
   private:
     GuiHandler *mGuiHandler;
   

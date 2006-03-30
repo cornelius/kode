@@ -2,19 +2,25 @@ SUBDIRS = tests
 
 INCLUDES = -I$(top_srcdir)/kode $(all_includes)
 
+lib_LTLIBRARIES = libkxforms.la
+
+libkxforms_la_SOURCES = formcreator.cpp xmlbuilder.cpp hints.cpp
+libkxforms_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -no-undefined
+libkxforms_la_LIBADD = ../kxml_compiler/libkschema.la $(LIB_KDECORE)
+
+
 bin_PROGRAMS = kxforms schema2kxform
 
 kxforms_LDFLAGS = $(KDE_RPATH) $(all_libraries)
-kxforms_LDADD   = $(LIB_KFILE)
+kxforms_LDADD   = libkxforms.la $(LIB_KFILE)
 kxforms_SOURCES = main.cpp mainwindow.cpp manager.cpp form.cpp list.cpp \
   input.cpp formgui.cpp xformscommon.cpp guielement.cpp kresult.cpp \
   guihandler.cpp reference.cpp textarea.cpp select1.cpp listmodel.cpp \
   guihandlerdialogs.cpp guihandlerflat.cpp prefs.kcfgc remotefile.cpp
 
 schema2kxform_LDFLAGS = $(KDE_RPATH) $(all_libraries)
-schema2kxform_LDADD   = ../kxml_compiler/libkschema.la  $(LIB_KDECORE)
-schema2kxform_SOURCES = schema2kxform.cpp xmlbuilder.cpp formcreator.cpp \
-  hints.cpp
+schema2kxform_LDADD   = libkxforms.la  $(LIB_KDECORE)
+schema2kxform_SOURCES = schema2kxform.cpp
 
 check_PROGRAMS = testreferences
 

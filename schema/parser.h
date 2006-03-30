@@ -51,6 +51,7 @@ class Parser
       otherwise false.
     */
     bool parseFile( ParserContext *context, QFile &file );
+    bool parseString( ParserContext *context, const QString &data );
 
     bool parseSchemaTag( ParserContext *context, const QDomElement &element );
 
@@ -60,6 +61,9 @@ class Parser
       Returns the default schema URI.
      */
     static QString schemaUri();
+
+  protected:
+    bool parse( ParserContext *context, QXmlInputSource *source );
 
   private:
     void parseImport( ParserContext *context, const QDomElement& );

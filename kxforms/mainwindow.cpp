@@ -24,6 +24,10 @@
 #include "formgui.h"
 #include "guihandlerdialogs.h"
 #include "remotefile.h"
+#include "formcreator.h"
+
+#include <kxml_compiler/schema.h>
+#include <kxml_compiler/parserxsd.h>
 
 #include <kprinter.h>
 #include <kdeversion.h>
@@ -72,6 +76,10 @@ MainWindow::MainWindow()
   setupGUI();
 
   statusBar()->message( i18n("Ready.") );
+
+  mSchemaFile = new RemoteFile( this );
+  connect( mSchemaFile, SIGNAL( resultGet( bool ) ),
+    SLOT( slotGetSchemaResult( bool ) ) );
 
   mFormFile = new RemoteFile( this );
   connect( mFormFile, SIGNAL( resultGet( bool ) ),
@@ -239,6 +247,33 @@ void MainWindow::changeCaption(const QString& text)
   setCaption(text);
 }
 
+void MainWindow::loadSchema( const KUrl &url )
+{
+  if ( !url.isValid() ) {
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
+      .arg( url.prettyURL() ) );    
+    return;
+  }
+
+  mSchemaFile->get( url );
+}
+
+void MainWindow::slotGetSchemaResult( bool ok )
+{
+  if ( !ok ) {
+    return;
+  }
+
+  ParserXsd parser;
+  Schema::Document schemaDocument = parser.parse( mSchemaFile->data() );
+
+  KXForms::FormCreator creator;
+  
+  QString form = creator.create( schemaDocument );
+ 
+  parseForm( form );
+}
+
 void MainWindow::loadForm( const KUrl &url )
 {
   if ( !url.isValid() ) {
@@ -255,8 +290,13 @@ void MainWindow::slotGetFormResult( bool ok )
   if ( !ok ) {
     return;
   }
-  
-  if ( !mFormsManager.parseForms( mFormFile->data() ) ) {
+
+  parseForm( mFormFile->data() );
+}
+
+void MainWindow::parseForm( const QString &data )
+{
+  if ( !mFormsManager.parseForms( data ) ) {
     KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.")
       .arg( mFormFile->url().prettyURL() ) );
   } else {

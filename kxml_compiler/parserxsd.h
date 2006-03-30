@@ -24,6 +24,7 @@
 #include "schema.h"
 
 #include <schema/simpletype.h>
+#include <schema/parser.h>
 
 #include <qfile.h>
 
@@ -33,9 +34,12 @@ class ParserXsd
     ParserXsd();
     
     Schema::Document parse( QFile & );
+    Schema::Document parse( const QString & );
 
   protected:
     void setType( Schema::Node &node, const XSD::SimpleType &simpleType );
+
+    Schema::Document parse( const XSD::Parser &parser );
 
   private:
     Schema::Document mDocument;

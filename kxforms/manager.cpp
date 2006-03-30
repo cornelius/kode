@@ -72,6 +72,8 @@ bool Manager::parseForms( const QString &xml )
     }
   }
 
+  if ( hasData() ) loadData();
+
   return true;
 }
 
@@ -112,8 +114,7 @@ KResult Manager::loadData( const QString &xml )
   kDebug() << "Manager::loadData()" << endl;
 
   if ( mForms.isEmpty() ) {
-    kError() << "No Forms" << endl;
-    return KResultError( i18n("No Forms loaded.") );
+    kDebug() << "No Forms" << endl;
   }
 
   QString errorMsg;
@@ -125,14 +126,19 @@ KResult Manager::loadData( const QString &xml )
     return KResultError( KResult::ParseError, msg );
   }
 
-  FormGui::List::ConstIterator it;
-  for( it = mGuis.begin(); it != mGuis.end(); ++it ) {
-    (*it)->loadData( mData );
-  }
+  loadData();
 
   mDataLoaded = true;
 
   return KResultOk();
+}
+
+void Manager::loadData()
+{
+  FormGui::List::ConstIterator it;
+  for( it = mGuis.begin(); it != mGuis.end(); ++it ) {
+    (*it)->loadData( mData );
+  }
 }
 
 KResult Manager::saveData( QString &xml )

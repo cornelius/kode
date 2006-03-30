@@ -36,11 +36,28 @@ ParserXsd::ParserXsd()
 {
 }
 
+Schema::Document ParserXsd::parse( const QString &data )
+{
+  qDebug() << "----ParserXsd::parse() string";
+
+  NSManager namespaceManager;
+  MessageHandler messageHandler;
+  ParserContext context;
+  context.setNamespaceManager( &namespaceManager );
+  context.setMessageHandler( &messageHandler );
+
+  XSD::Parser parser;
+  if ( !parser.parseString( &context, data ) ) {
+    qDebug() << "Error parsing data.";
+    return Schema::Document();
+  } else {
+    return parse( parser );
+  }
+}
+
 Schema::Document ParserXsd::parse( QFile &file )
 {
-  qDebug() << "----ParserXsd::parse()";
-
-  mDocument = Schema::Document();
+  qDebug() << "----ParserXsd::parse() file";
 
   NSManager namespaceManager;
   MessageHandler messageHandler;
@@ -52,8 +69,13 @@ Schema::Document ParserXsd::parse( QFile &file )
   if ( !parser.parseFile( &context, file ) ) {
     qDebug() << "Error parsing file " << file.fileName();
     return Schema::Document();
+  } else {
+    return parse( parser );
   }
+}
 
+Schema::Document ParserXsd::parse( const XSD::Parser &parser )
+{
   XSD::Types types = parser.types();
 
   foreach ( XSD::Element element, types.elements() ) {
