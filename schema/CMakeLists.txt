@@ -21,7 +21,7 @@ kde4_automoc(${schema_LIB_SRCS})
 
 kde4_add_library(schema SHARED ${schema_LIB_SRCS})
 
-target_link_libraries(schema  ${KDE4_KDECORE_LIBS} kdecore kio kxmlcommon )
+target_link_libraries(schema  ${KDE4_KIO_LIBS} kxmlcommon )
 
 set_target_properties(schema PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} schema )
