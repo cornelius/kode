@@ -1,32 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<!DOCTYPE features SYSTEM "kde-features.dtd">
-<!--
-
-This file serves as central repository of planned KDE features. It's parsed by
-the PHP scripts in "features.inc" which are used by "kde-3.n-features.html" to
-generate HTML versions for the web.
-
-If you plan to add a feature to KDE please add it to this file. A feature can
-have one of three status types: "todo", "inprogress", "done". Please update
-the status from time to time. For a release there shouldn't be any features
-with other states than "done". If you can't complete a feature for a release
-please move the feature to the next release. The "target" attribute specifies
-for which release the feature should be finished.
-
-Each feature consists of a summary giving a short description what the feature is
-about and one or more responsible persons.
-
-A draft for a DTD of the features file can be found in "kde-features.dtd". Use
-"xmllint -valid -noout kdepim-features.xml" to validate the xml file against the
-DTD. If there are errors in the XML document they will be shown, if not the
-command will not output anything.
-
-If you have questions or comments please post them to the mailing list or contact
-Cornelius Schumacher <schumacher@kde.org>.
-
- * * me thinks this makes editing for VI-users easier (akrille) * *
- vim: et tw=80 ts=2 sw=2
---><features>
+<features xmlns="http://www.kde.org/standards/features/1.0"
+      xmlns:xsix="http://www.w3.org/2001/XMLSchema-instance"
+      xsix:schemaLocation="http://www.kde.org/standards/features/1.0
+      file:///build/kde/svn/trunk/KDE/kdepim/kode/kxforms/tests/features.xsd">
   <category name="KDE PIM (Personal Information Management)" >
     <category name="Kontact" >
       <feature status="done" target="4.0" >

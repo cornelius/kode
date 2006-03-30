@@ -59,11 +59,12 @@ class Manager
     void registerGui( FormGui * );
     void unregisterGui( FormGui * );
 
-
     bool hasData() const;
     QDomDocument document() const;
 
     QDomElement applyReference( const Reference & );
+
+    QString schemaUri() const;
 
   protected:
     void loadData();
@@ -77,6 +78,8 @@ class Manager
 
     QDomDocument mData;
     bool mDataLoaded;
+
+    QString mSchemaUri;
 };
 
 }

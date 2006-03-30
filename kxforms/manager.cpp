@@ -22,6 +22,8 @@
 #include <klocale.h>
 
 #include <QDomDocument>
+#include <QXmlInputSource>
+#include <QXmlSimpleReader>
 
 using namespace KXForms;
 
@@ -117,13 +119,29 @@ KResult Manager::loadData( const QString &xml )
     kDebug() << "No Forms" << endl;
   }
 
+  QXmlInputSource source;
+  source.setData( xml );
+  QXmlSimpleReader reader;
+  reader.setFeature( "http://xml.org/sax/features/namespaces", true );
+  reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", false );
+
   QString errorMsg;
   int errorLine;
   int errorCol;
-  if ( !mData.setContent( xml, &errorMsg, &errorLine, &errorCol ) ) {
+  if ( !mData.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
     QString msg = i18n("%1 (line %2, column %3)").arg( errorMsg,
       QString::number( errorLine ), QString::number( errorCol ) );
     return KResultError( KResult::ParseError, msg );
+  }
+
+  QString schemaLocationAttribute = mData.documentElement().attributeNS(
+    "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation" );
+  QStringList schemaLocation =
+    schemaLocationAttribute.simplified().split( " " );
+  if ( schemaLocation.count() > 1 ) {
+    mSchemaUri = schemaLocation[ 1 ];
+  } else {
+    mSchemaUri.clear();
   }
 
   loadData();
@@ -214,4 +232,9 @@ void Manager::loadData( FormGui *gui )
 QDomElement Manager::applyReference( const Reference &ref )
 {
   return ref.apply( mData );
+}
+
+QString Manager::schemaUri() const
+{
+  return mSchemaUri;
 }

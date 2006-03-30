@@ -249,6 +249,8 @@ void MainWindow::changeCaption(const QString& text)
 
 void MainWindow::loadSchema( const KUrl &url )
 {
+  kDebug() << "MainWindow::loadSchema() " << url << endl;
+
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
       .arg( url.prettyURL() ) );    
@@ -320,6 +322,10 @@ void MainWindow::slotGetDataResult( bool ok )
   } else {    
     KMessageBox::sorry( this, result.fullMessage(),
       i18n("Error loading data") );
+  }
+
+  if ( !mSchemaFile->isValid() && !mFormsManager.schemaUri().isEmpty() ) {
+    loadSchema( mFormsManager.schemaUri() );
   }
 }
 

@@ -31,6 +31,8 @@ RemoteFile::RemoteFile( QWidget *parent )
 
 void RemoteFile::get( const KUrl &url )
 {
+  kDebug() << "RemoteFile::get() " << url << endl;
+
   mUrl = url;
 
   mGetJob = KIO::get( mUrl, false, false );
@@ -127,6 +129,11 @@ void RemoteFile::slotJobResultPut( KIO::Job *job )
     emit resultPut( true );
   }
   mPutJob = 0;
+}
+
+bool RemoteFile::isValid() const
+{
+  return mUrl.isValid();
 }
 
 #include "remotefile.moc"

@@ -49,6 +49,8 @@ class RemoteFile : public QObject
     void setUrl( const KUrl & );
     KUrl url() const;
 
+    bool isValid() const;
+
   signals:
     void resultGet( bool ok );
     void resultPut( bool ok );
