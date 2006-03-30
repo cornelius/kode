@@ -24,6 +24,8 @@
 #include "guihandler.h"
 #include "formgui.h"
 
+#include <kactivelabel.h>
+
 #include <QObject>
 #include <QStack>
 
@@ -31,13 +33,25 @@ class QWidget;
 class QBoxLayout;
 class QStackedWidget;
 class QPushButton;
-class KActiveLabel;
 
 namespace KXForms {
 
 class Manager;
 class Form;
 class FormGui;
+
+class BreadCrumbLabel : public KActiveLabel
+{
+    Q_OBJECT
+  public:
+    BreadCrumbLabel( QWidget *parent );
+    
+  public slots:
+    void openLink( const QUrl &link );
+
+  signals:
+    void crumbClicked( int index );
+};
 
 class BreadCrumbNavigator : public QFrame
 {
@@ -51,13 +65,19 @@ class BreadCrumbNavigator : public QFrame
     FormGui *last() const;
     int count() const;
 
+  signals:
+    void guiSelected( FormGui * );
+
   protected:
     void updateLabel();
+
+  protected slots:
+    void slotCrumbClicked( int index );
 
   private:
     QStack<FormGui *> mHistory;
 
-    KActiveLabel *mLabel; 
+    BreadCrumbLabel *mLabel; 
 };
 
 class GuiHandlerFlat : public QObject, public GuiHandler
@@ -74,6 +94,8 @@ class GuiHandlerFlat : public QObject, public GuiHandler
 
   protected slots:
     void goBack();
+
+    void showGui( FormGui *gui );
 
   private:
     QWidget *mMainWidget;

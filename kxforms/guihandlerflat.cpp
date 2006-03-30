@@ -26,15 +26,25 @@
 #include <kdebug.h>
 #include <kmessagebox.h>
 #include <klocale.h>
-#include <kactivelabel.h>
 
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QFrame>
 #include <QStackedWidget>
 #include <QPushButton>
+#include <QDebug>
 
 using namespace KXForms;
+
+BreadCrumbLabel::BreadCrumbLabel( QWidget *parent )
+  : KActiveLabel( parent )
+{
+}
+    
+void BreadCrumbLabel::openLink( const QUrl &link )
+{
+  emit crumbClicked( link.toString().toInt() );
+}
 
 BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
   : QFrame( parent )
@@ -50,9 +60,11 @@ BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
   setLineWidth( 1 );
 #endif
 
-  mLabel = new KActiveLabel( "Bread Crumbs", this );
+  mLabel = new BreadCrumbLabel( this );
   topLayout->addWidget( mLabel );
   mLabel->setPalette( p );
+  connect( mLabel, SIGNAL( crumbClicked( int ) ),
+    SLOT( slotCrumbClicked( int ) ) );
 }
 
 void BreadCrumbNavigator::push( FormGui *gui )
@@ -70,6 +82,8 @@ FormGui *BreadCrumbNavigator::pop()
   else result = mHistory.pop();
 
   updateLabel();
+
+  result->saveData();
   
   return result;
 }
@@ -101,6 +115,22 @@ void BreadCrumbNavigator::updateLabel()
   mLabel->setText( text );
 }
 
+void BreadCrumbNavigator::slotCrumbClicked( int index )
+{
+  if ( mHistory.size() <= index ) return;
+
+  FormGui *gui = last();
+  gui->saveData();
+
+  while( mHistory.size() > index + 1 ) {
+    gui = mHistory.pop();
+  }
+
+  updateLabel();
+  
+  emit guiSelected( last() );
+}
+
 
 GuiHandlerFlat::GuiHandlerFlat( Manager *m )
   : GuiHandler( m )
@@ -117,6 +147,8 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
 
   mBreadCrumbNavigator = new BreadCrumbNavigator( mMainWidget );
   topLayout->addWidget( mBreadCrumbNavigator );
+  connect( mBreadCrumbNavigator, SIGNAL( guiSelected( FormGui * ) ),
+    SLOT( showGui( FormGui * ) ) );
 
   mStackWidget = new QStackedWidget( mMainWidget );
   topLayout->addWidget( mStackWidget, 1 );
@@ -212,13 +244,17 @@ FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
 
 void GuiHandlerFlat::goBack()
 {
-  FormGui *gui = mBreadCrumbNavigator->pop();
-  gui->saveData();
+  mBreadCrumbNavigator->pop();
 
   FormGui *current = mBreadCrumbNavigator->last();
-  if ( current ) {
-    mStackWidget->setCurrentWidget( current );
-    manager()->loadData( current );
+  showGui( current );
+}
+
+void GuiHandlerFlat::showGui( FormGui *gui )
+{
+  if ( gui ) {
+    mStackWidget->setCurrentWidget( gui );
+    manager()->loadData( gui );
   }
   
   if ( mBreadCrumbNavigator->count() == 1 ) {
