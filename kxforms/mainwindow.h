@@ -30,6 +30,7 @@
 class KPrinter;
 class QLabel;
 class KUpdate;
+class RemoteFile;
 
 /**
  * This class serves as the main window for MainWindow.  It handles the
@@ -69,10 +70,16 @@ class MainWindow : public KMainWindow
      */
     void readProperties(KConfig *);
 
+  protected slots:
+    void slotGetFormResult( bool ok );
+    void slotGetDataResult( bool ok );
+    void slotPutDataResult( bool ok );
+
+    bool save();
+
   private slots:
     void fileNew();
     void fileOpen();
-    void fileSave();
     void fileSaveAs();
     void optionsConfigureToolbars();
     void optionsPreferences();
@@ -92,7 +99,8 @@ class MainWindow : public KMainWindow
 
     KXForms::Manager mFormsManager;
 
-    KUrl mDataUrl;
+    RemoteFile *mFormFile;
+    RemoteFile *mDataFile;
 };
 
 #endif

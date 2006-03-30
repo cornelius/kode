@@ -9,7 +9,7 @@ kxforms_LDADD   = $(LIB_KFILE)
 kxforms_SOURCES = main.cpp mainwindow.cpp manager.cpp form.cpp list.cpp \
   input.cpp formgui.cpp xformscommon.cpp guielement.cpp kresult.cpp \
   guihandler.cpp reference.cpp textarea.cpp select1.cpp listmodel.cpp \
-  guihandlerdialogs.cpp guihandlerflat.cpp prefs.kcfgc
+  guihandlerdialogs.cpp guihandlerflat.cpp prefs.kcfgc remotefile.cpp
 
 schema2kxform_LDFLAGS = $(KDE_RPATH) $(all_libraries)
 schema2kxform_LDADD   = ../kxml_compiler/libkschema.la  $(LIB_KDECORE)

@@ -23,6 +23,7 @@
 
 #include "formgui.h"
 #include "guihandlerdialogs.h"
+#include "remotefile.h"
 
 #include <kprinter.h>
 #include <kdeversion.h>
@@ -71,6 +72,16 @@ MainWindow::MainWindow()
   setupGUI();
 
   statusBar()->message( i18n("Ready.") );
+
+  mFormFile = new RemoteFile( this );
+  connect( mFormFile, SIGNAL( resultGet( bool ) ),
+    SLOT( slotGetFormResult( bool ) ) );
+
+  mDataFile = new RemoteFile( this );
+  connect( mDataFile, SIGNAL( resultGet( bool ) ),
+    SLOT( slotGetDataResult( bool ) ) );
+  connect( mDataFile, SIGNAL( resultGet( bool ) ),
+    SLOT( slotPutDataResult( bool ) ) );
 }
 
 MainWindow::~MainWindow()
@@ -96,30 +107,9 @@ bool MainWindow::load(const KUrl& url)
     return false;
   }
 
-  if ( !url.isLocalFile() ) {
-    KMessageBox::sorry( this, i18n("Non-local URL '%1' not supported.")
-      .arg( url.prettyURL() ) );
-  } else {
-    QString filename = url.path();
-    QFile f( filename );
-    if ( !f.open( QIODevice::ReadOnly ) ) {
-      KMessageBox::sorry( this, i18n("Unable to open file '%1'.")
-        .arg( filename ) );
-    } else {
-      QTextStream ts( &f );
-      KResult result = mFormsManager.loadData( ts.read() );
-      if ( result ) {
-        setCaption( url.prettyURL() );
-        mDataUrl = url;
-        return true;
-      } else {
-        KMessageBox::sorry( this, result.fullMessage(),
-          i18n("Error loading data") );
-      }
-    }
-  }
+  mDataFile->get( url );
 
-  return false;
+  return true;
 }
 
 bool MainWindow::save( const KUrl & url )
@@ -129,38 +119,31 @@ bool MainWindow::save( const KUrl & url )
       .arg( url.prettyURL() ) );    
     return false;
   }
-
-  if ( !url.isLocalFile() ) {
-    KMessageBox::sorry( this, i18n("Non-local URL '%1' not supported.")
-      .arg( url.prettyURL() ) );
-  } else {
-    QString filename = url.path();
-    QFile f( filename );
-    if ( !f.open( QIODevice::WriteOnly ) ) {
-      KMessageBox::sorry( this, i18n("Unable to open file '%1'.")
-        .arg( filename ) );
-    } else {
-      QString xml;
-      KResult result = mFormsManager.saveData( xml );
-      if ( !result ) {
-        KMessageBox::sorry( this, result.fullMessage(),
-          i18n("Error saving data") );
-      } else {
-        QTextStream ts( &f );
-        ts << xml;
-        return true;
-      }
-    }
-  }
   
-  return false;
+  mDataFile->setUrl( url );
+
+  return save();
+}
+
+bool MainWindow::save()
+{
+  QString xml;
+  KResult result = mFormsManager.saveData( xml );
+  if ( result ) {
+    mDataFile->put( xml );
+    return true;
+  } else {
+    KMessageBox::sorry( this, result.fullMessage(),
+      i18n("Error saving data") );
+    return false;
+  }
 }
 
 void MainWindow::setupActions()
 {
   KStdAction::openNew(this, SLOT(fileNew()), actionCollection());
   KStdAction::open(this, SLOT(fileOpen()), actionCollection());
-  KStdAction::save(this, SLOT(fileSave()), actionCollection());
+  KStdAction::save(this, SLOT(save()), actionCollection());
   KStdAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
   KStdAction::quit(kapp, SLOT(quit()), actionCollection());
 
@@ -215,11 +198,6 @@ void MainWindow::fileOpen()
   }
 }
 
-void MainWindow::fileSave()
-{
-  save( mDataUrl );
-}
-
 void MainWindow::fileSaveAs()
 {
   KUrl file_url = KFileDialog::getSaveURL();
@@ -269,28 +247,46 @@ void MainWindow::loadForm( const KUrl &url )
     return;
   }
 
-  if ( !url.isLocalFile() ) {
-    KMessageBox::sorry( this,
-      i18n("Non-local URL '%1' not supported.").arg( url.prettyURL() ) );
+  mFormFile->get( url );
+}
+
+void MainWindow::slotGetFormResult( bool ok )
+{
+  if ( !ok ) {
+    return;
+  }
+  
+  if ( !mFormsManager.parseForms( mFormFile->data() ) ) {
+    KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.")
+      .arg( mFormFile->url().prettyURL() ) );
   } else {
-    QString filename = url.path();
-    QFile f( filename );
-    if ( !f.open( QIODevice::ReadOnly ) ) {
-      KMessageBox::sorry( this, i18n("Unable to open file '%1'.")
-        .arg( filename ) );
-    } else {
-      QTextStream ts( &f );
-      if ( !mFormsManager.parseForms( ts.read() ) ) {
-        KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.")
-          .arg( url.prettyURL() ) );
-      } else {
-        delete mLabel;
-        mLabel = 0;
-        QWidget *gui = mFormsManager.createRootGui( this );
-        setCentralWidget( gui );
-        gui->show();
-      }
-    }
+    delete mLabel;
+    mLabel = 0;
+    QWidget *gui = mFormsManager.createRootGui( this );
+    setCentralWidget( gui );
+    gui->show();
+  }
+}
+
+void MainWindow::slotGetDataResult( bool ok )
+{
+  if ( !ok ) {
+    return;
+  }
+
+  KResult result = mFormsManager.loadData( mDataFile->data() );
+  if ( result ) {
+    setCaption( mDataFile->url().prettyURL() );
+  } else {    
+    KMessageBox::sorry( this, result.fullMessage(),
+      i18n("Error loading data") );
+  }
+}
+
+void MainWindow::slotPutDataResult( bool ok )
+{
+  if ( !ok ) {
+    return;
   }
 }
 
