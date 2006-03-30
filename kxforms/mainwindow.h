@@ -51,6 +51,7 @@ class MainWindow : public KMainWindow
     bool save( const KUrl & );
 
     void loadSchema( const KUrl & );
+    void loadHints( const KUrl & );
     void loadForm( const KUrl & );
 
     void setVersion( const QString & );
@@ -71,10 +72,12 @@ class MainWindow : public KMainWindow
      */
     void readProperties(KConfig *);
 
+    void parseSchema();
     void parseForm( const QString &data );
 
   protected slots:
     void slotGetSchemaResult( bool ok );
+    void slotGetHintsResult( bool ok );
     void slotGetFormResult( bool ok );
     void slotGetDataResult( bool ok );
     void slotPutDataResult( bool ok );
@@ -106,6 +109,7 @@ class MainWindow : public KMainWindow
     RemoteFile *mFormFile;
     RemoteFile *mDataFile;
     RemoteFile *mSchemaFile;
+    RemoteFile *mHintsFile;
 };
 
 #endif

@@ -25,7 +25,7 @@
 #include <kio/job.h>
 
 RemoteFile::RemoteFile( QWidget *parent )
-  : mParent( parent )
+  : mParent( parent ), mGetJob( 0 ), mPutJob( 0 ), mLoaded( false )
 {
 }
 
@@ -34,6 +34,7 @@ void RemoteFile::get( const KUrl &url )
   kDebug() << "RemoteFile::get() " << url << endl;
 
   mUrl = url;
+  mLoaded = false;
 
   mGetJob = KIO::get( mUrl, false, false );
 
@@ -94,6 +95,7 @@ void RemoteFile::slotJobResultGet( KIO::Job *job )
     emit resultGet( false );
   } else {
     emit resultGet( true );
+    mLoaded = true;
   }
   mGetJob = 0;
 }
@@ -134,6 +136,16 @@ void RemoteFile::slotJobResultPut( KIO::Job *job )
 bool RemoteFile::isValid() const
 {
   return mUrl.isValid();
+}
+
+bool RemoteFile::isLoading() const
+{
+  return mGetJob;
+}
+
+bool RemoteFile::isLoaded() const
+{
+  return mLoaded;
 }
 
 #include "remotefile.moc"

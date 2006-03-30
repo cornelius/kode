@@ -45,8 +45,9 @@ static const char description[] =
 static KCmdLineOptions options[] =
 {
   { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
-  { "kxform <URL>", I18N_NOOP( "Form description" ), 0 },
+  { "kxform <URL>", I18N_NOOP( "KXForms description" ), 0 },
   { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
+  { "ugh <URL>", I18N_NOOP( "UI Generation Hints" ), 0 },
   { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
   { "developer", I18N_NOOP( "Use developer mode of user interface" ), 0 },
   KCmdLineLastOption
@@ -107,6 +108,11 @@ int main(int argc, char **argv)
       << "option" << endl;
   }
 
+  if ( args->isSet( "ugh" ) ) {
+    QString ugh = args->getOption( "ugh" );
+    mainWindow->loadHints( makeURL( ugh ) );
+  }
+
   if ( args->isSet( "schema" ) ) {
     QString schema = args->getOption( "schema" );
     mainWindow->loadSchema( makeURL( schema ) );
@@ -116,6 +122,7 @@ int main(int argc, char **argv)
       mainWindow->loadForm( makeURL( form ) );
     }
   }
+
 
   if ( args->count() == 1 ) {
     mainWindow->load( args->url( 0 ) );

@@ -61,12 +61,14 @@ class Hints
     Hints();
 
     bool parseFile( QFile & );
+    bool parseString( const QString & );
 
     Hint hint( const QString &ref ) const;
 
     Hint::List hints() const;
 
   protected:
+    bool parse( const QDomDocument &doc );
     void parseHint( const QDomElement & );
 
   private:

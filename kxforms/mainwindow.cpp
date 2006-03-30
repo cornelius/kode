@@ -81,6 +81,10 @@ MainWindow::MainWindow()
   connect( mSchemaFile, SIGNAL( resultGet( bool ) ),
     SLOT( slotGetSchemaResult( bool ) ) );
 
+  mHintsFile = new RemoteFile( this );
+  connect( mHintsFile, SIGNAL( resultGet( bool ) ),
+    SLOT( slotGetHintsResult( bool ) ) );
+
   mFormFile = new RemoteFile( this );
   connect( mFormFile, SIGNAL( resultGet( bool ) ),
     SLOT( slotGetFormResult( bool ) ) );
@@ -266,14 +270,51 @@ void MainWindow::slotGetSchemaResult( bool ok )
     return;
   }
 
+  if ( !mHintsFile->isValid() || !mHintsFile->isLoading() ) {
+    parseSchema();
+  }
+}
+
+void MainWindow::parseSchema()
+{
   ParserXsd parser;
   Schema::Document schemaDocument = parser.parse( mSchemaFile->data() );
 
   KXForms::FormCreator creator;
+
+  if ( mHintsFile->isLoaded() ) {
+    KXForms::Hints hints;
+    hints.parseString( mHintsFile->data() );
+    creator.setHints( hints );
+  }
   
   QString form = creator.create( schemaDocument );
  
   parseForm( form );
+}
+
+void MainWindow::loadHints( const KUrl &url )
+{
+  kDebug() << "MainWindow::loadHints() " << url << endl;
+
+  if ( !url.isValid() ) {
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
+      .arg( url.prettyURL() ) );    
+    return;
+  }
+
+  mHintsFile->get( url );
+}
+
+void MainWindow::slotGetHintsResult( bool ok )
+{
+  if ( !ok ) {
+    return;
+  }
+
+  if ( mSchemaFile->isLoaded() ) {
+    parseSchema();
+  }
 }
 
 void MainWindow::loadForm( const KUrl &url )

@@ -51,6 +51,9 @@ class RemoteFile : public QObject
 
     bool isValid() const;
 
+    bool isLoading() const;
+    bool isLoaded() const;
+
   signals:
     void resultGet( bool ok );
     void resultPut( bool ok );
@@ -74,6 +77,8 @@ class RemoteFile : public QObject
 
     KIO::Job *mGetJob;
     KIO::Job *mPutJob;
+
+    bool mLoaded;
 };
 
 #endif

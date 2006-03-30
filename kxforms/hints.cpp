@@ -84,6 +84,21 @@ bool Hints::parseFile( QFile &file )
   QDomDocument doc;
   doc.setContent( &file );
   
+  return parse( doc );
+}
+
+bool Hints::parseString( const QString &data )
+{
+  qDebug() << "---Hints::parseString() ";
+
+  QDomDocument doc;
+  doc.setContent( data );
+
+  return parse( doc );
+}
+
+bool Hints::parse( const QDomDocument &doc )
+{  
   QDomElement documentElement = doc.documentElement();
   QDomNode n;
   for( n = documentElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
@@ -91,7 +106,7 @@ bool Hints::parseFile( QFile &file )
     parseHint( e );
   }
 
-  qDebug() << "---Hints::parseFile() done";
+  qDebug() << "---Hints::parse() done";
 
   return true;
 }
