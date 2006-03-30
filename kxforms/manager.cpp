@@ -138,17 +138,20 @@ KResult Manager::loadData( const QString &xml )
     "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation" );
   QStringList schemaLocation =
     schemaLocationAttribute.simplified().split( " " );
+
   if ( schemaLocation.count() > 1 ) {
     mSchemaUri = schemaLocation[ 1 ];
   } else {
     mSchemaUri.clear();
   }
 
+#if 1
   if ( !mData.setContent( xml, &errorMsg, &errorLine, &errorCol ) ) {
     QString msg = i18n("%1 (line %2, column %3)").arg( errorMsg,
       QString::number( errorLine ), QString::number( errorCol ) );
     return KResultError( KResult::ParseError, msg );
   }
+#endif
 
   loadData();
 
@@ -177,6 +180,7 @@ KResult Manager::saveData( QString &xml )
   }
   
   xml = mData.toString( 2 );
+  xml.append( "\n" );
   
   return KResultOk();
 }

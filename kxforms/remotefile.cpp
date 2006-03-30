@@ -102,7 +102,8 @@ void RemoteFile::slotJobResultGet( KIO::Job *job )
 
 void RemoteFile::slotJobDataGet( KIO::Job *, const QByteArray &data )
 {
-  mData.append( QByteArray( data.data(), data.size() + 1 ) );
+  mData.append(
+    QString::fromUtf8( QByteArray( data.data(), data.size() + 1 ).data() ) );
 }
 
 void RemoteFile::slotDataReq( KIO::Job *, QByteArray &data )

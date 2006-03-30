@@ -1,8 +1,5 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<features xmlns="http://www.kde.org/standards/features/1.0"
-      xmlns:xsix="http://www.w3.org/2001/XMLSchema-instance"
-      xsix:schemaLocation="http://www.kde.org/standards/features/1.0
-      file:///build/kde/svn/trunk/KDE/kdepim/kode/kxforms/tests/features.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<features xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.kde.org/standards/features/1.0" xsi:schemaLocation="http://www.kde.org/standards/features/1.0 file:///build/kde/svn/trunk/KDE/kdepim/kode/kxforms/tests/features.xsd" >
   <category name="KDE PIM (Personal Information Management)" >
     <category name="Kontact" >
       <feature status="done" target="4.0" >
@@ -82,14 +79,14 @@
       <feature status="todo" target="3.5" >
         <summary>Redesign filters to use Sieve internally. Allow editing of
           Sieve scripts on IMAP servers to get rid of the bug reports a
-          la &quot;KMail doesn't support IMAP folders for
-          filtering&quot;</summary>
+          la "KMail doesn't support IMAP folders for
+          filtering"</summary>
         <responsible email="mutz@kde.org" name="Marc Mutz" />
       </feature>
       <feature status="todo" target="3.5" >
-        <summary>Make the visible headers configurable, allow for &quot;show all
-        and hide specified headers&quot; as well as &quot;show specified headers
-        &quot;. Already available as a <a href="http://www.kalass.de/patches/kmail/showheader.html" >patch</a>.
+        <summary>Make the visible headers configurable, allow for "show all
+        and hide specified headers" as well as "show specified headers
+        ". Already available as a <a href="http://www.kalass.de/patches/kmail/showheader.html" >patch</a>.
         </summary>
         <responsible email="klas@kde.org" name="Klas Kalass" />
       </feature>
@@ -229,7 +226,7 @@
           <summary>Templates for journals.</summary>
         </feature>
         <feature status="todo" target="3.5" >
-          <summary>Day headers labels in agenda view. Show also &quot;tomorrow&quot;, &quot;today&quot;, &quot;yesterday&quot; when enough space. Labels are clickable to go to single day or month and back.</summary>
+          <summary>Day headers labels in agenda view. Show also "tomorrow", "today", "yesterday" when enough space. Labels are clickable to go to single day or month and back.</summary>
         </feature>
         <feature status="done" target="3.5" >
           <summary>Prettification of time label bar</summary>
