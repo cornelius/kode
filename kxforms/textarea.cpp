@@ -46,15 +46,15 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
 
 void TextArea::loadData()
 {
-  QDomElement e = ref().applyElement( context() );
+  QDomElement element = ref().applyElement( context() );
 
   QString txt;
   QTextStream ts( &txt, QIODevice::WriteOnly );
-  e.save( ts, 0 );
 
-  // Remove top-level tag
-  txt = txt.mid( e.tagName().length() + 2, txt.length() -
-    2 * e.tagName().length() - 6 );
+  QDomNode n;
+  for( n = element.firstChild(); ! n.isNull(); n = n.nextSibling() ) {
+    n.save( ts, 0 );
+  }
 
   mEdit->setText( txt );
 }

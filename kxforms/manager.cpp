@@ -144,6 +144,12 @@ KResult Manager::loadData( const QString &xml )
     mSchemaUri.clear();
   }
 
+  if ( !mData.setContent( xml, &errorMsg, &errorLine, &errorCol ) ) {
+    QString msg = i18n("%1 (line %2, column %3)").arg( errorMsg,
+      QString::number( errorLine ), QString::number( errorCol ) );
+    return KResultError( KResult::ParseError, msg );
+  }
+
   loadData();
 
   mDataLoaded = true;
