@@ -109,7 +109,9 @@ void FormGui::parseElement( const QDomElement &element )
       guiElement->setRef( ref() );
       hasList = true;
     } else if ( tag == "xf:input" ) {
-      guiElement = new Input( mManager, c.label(), this );
+      Input *input = new Input( mManager, c.label(), this );
+      connect( input, SIGNAL( returnPressed() ), SIGNAL( editingFinished() ) );
+      guiElement = input;
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "xf:textarea" ) {
       guiElement = new TextArea( mManager, c.label(), this );
@@ -157,3 +159,5 @@ void FormGui::saveData()
     (*itGui)->saveData();
   }
 }
+
+#include "formgui.moc"

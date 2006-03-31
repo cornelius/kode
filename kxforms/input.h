@@ -31,11 +31,15 @@ class Manager;
 
 class Input : public GuiElement
 {
+    Q_OBJECT
   public:
     Input( Manager *, const QString &label, QWidget *parent );
 
     void loadData();
     void saveData();
+
+  signals:
+    void returnPressed();
 
   private:
     Manager *mManager;

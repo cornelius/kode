@@ -237,6 +237,7 @@ FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
   if ( gui ) {
     manager()->registerGui( gui );
     mBreadCrumbNavigator->push( gui );
+    connect( gui, SIGNAL( editingFinished() ), SLOT( goBack() ) );
   }
 
   return gui;

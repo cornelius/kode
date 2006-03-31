@@ -37,6 +37,7 @@ class Manager;
 
 class FormGui : public QWidget
 {
+    Q_OBJECT
   public:
     typedef QList<FormGui *> List;
 
@@ -51,6 +52,9 @@ class FormGui : public QWidget
 
     void loadData( const QDomDocument & );
     void saveData();
+
+  signals:
+    void editingFinished();
 
   protected:
     void setRefLabel( const Reference &ref );

@@ -41,6 +41,8 @@ Input::Input( Manager *m, const QString &label, QWidget *parent )
 
   mLineEdit = new KLineEdit( this );
   topLayout->addWidget( mLineEdit );
+
+  connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
 }
 
 void Input::loadData()
@@ -73,3 +75,5 @@ void Input::saveData()
     }
   }
 }
+
+#include "input.moc"
