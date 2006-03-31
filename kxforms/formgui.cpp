@@ -38,12 +38,11 @@
 using namespace KXForms;
 
 FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
-  : QWidget( parent ), mManager( m )
+  : QWidget( parent ), mManager( m ), mLabelHidden( false )
 {
   kDebug() << "FormGui()" << endl;
 
   mTopLayout = new QVBoxLayout( this );
-
 
   mLabel = new QLabel( label, this );
   QFont f = mLabel->font();
@@ -88,6 +87,11 @@ QString FormGui::label() const
   return mLabel->text();
 }
 
+void FormGui::setLabelHidden( bool hidden )
+{
+  mLabelHidden = hidden;
+}
+
 void FormGui::parseElement( const QDomElement &element )
 {
   kDebug() << "FormGui::parseElement()" << endl;
@@ -103,7 +107,7 @@ void FormGui::parseElement( const QDomElement &element )
     GuiElement *guiElement = 0;
     if ( tag == "xf:label" ) {
       mLabel->setText( e.text() );
-      mLabel->show();
+      if ( !mLabelHidden ) mLabel->show();
     } else if ( tag == "list" ) {
       guiElement = new KXForms::List( mManager, c.label(), this );
       guiElement->setRef( ref() );

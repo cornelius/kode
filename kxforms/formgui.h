@@ -53,6 +53,8 @@ class FormGui : public QWidget
     void loadData( const QDomDocument & );
     void saveData();
 
+    void setLabelHidden( bool );
+
   signals:
     void editingFinished();
 
@@ -72,6 +74,8 @@ class FormGui : public QWidget
 
     QLabel *mLabel;
     QLabel *mRefLabel;
+    
+    bool mLabelHidden;
 };
 
 }

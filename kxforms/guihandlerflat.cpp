@@ -26,6 +26,7 @@
 #include <kdebug.h>
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kdialog.h>
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -49,11 +50,14 @@ void BreadCrumbLabel::openLink( const QUrl &link )
 BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
   : QFrame( parent )
 {
-  QBoxLayout *topLayout = new QHBoxLayout( this );
+  QBoxLayout *topLayout = new QVBoxLayout( this );
 
+#if 0
+  // Why doesn't this work?
   QPalette p = palette();
-  p.setColor( QPalette::Base, "#ffffa0" );
+  p.setColor( QPalette::Window, "#ffffa0" );
   setPalette( p );
+#endif
 
 #if 0
   setFrameStyle( Plain | Panel );
@@ -62,7 +66,6 @@ BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
 
   mLabel = new BreadCrumbLabel( this );
   topLayout->addWidget( mLabel );
-  mLabel->setPalette( p );
   connect( mLabel, SIGNAL( crumbClicked( int ) ),
     SLOT( slotCrumbClicked( int ) ) );
 }
@@ -105,14 +108,22 @@ void BreadCrumbNavigator::updateLabel()
   for( int i = 0; i < mHistory.size(); ++i ) {
     if ( !text.isEmpty() ) {
       text.append( " / " );
+    } else {
+#if 0
+      text.append( "/ " );
+#endif
     }
     QString label = mHistory[ i ]->label();
     if ( label.isEmpty() ) {
       label = "...";
     }
-    text.append( "<a href=\"" + QString::number( i ) + "\">" + label + "</a>" );
+    if ( i == mHistory.size() - 1 ) {
+      text.append( "<b>" + label + "</b>" );
+    } else {
+      text.append( "<a href=\"" + QString::number( i ) + "\">" + label + "</a>" );
+    }
   }
-  mLabel->setText( text );
+  mLabel->setText( "<qt>" + text + "</qt>" );
 }
 
 void BreadCrumbNavigator::slotCrumbClicked( int index )
@@ -144,11 +155,17 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   mMainWidget = new QWidget( parent );
   
   QBoxLayout *topLayout = new QVBoxLayout( mMainWidget );
+  topLayout->setMargin( 0 );
 
   mBreadCrumbNavigator = new BreadCrumbNavigator( mMainWidget );
   topLayout->addWidget( mBreadCrumbNavigator );
   connect( mBreadCrumbNavigator, SIGNAL( guiSelected( FormGui * ) ),
     SLOT( showGui( FormGui * ) ) );
+
+  QFrame *line = new QFrame( mMainWidget );
+  topLayout->addWidget( line );
+  line->setFrameStyle( QFrame::HLine | QFrame::Plain );
+  line->setLineWidth( 1 );
 
   mStackWidget = new QStackedWidget( mMainWidget );
   topLayout->addWidget( mStackWidget, 1 );
@@ -173,6 +190,7 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   mStackWidget->addWidget( gui );
 
   QBoxLayout *buttonLayout = new QHBoxLayout( topLayout );
+  buttonLayout->setMargin( KDialog::marginHint() );
   
   buttonLayout->addStretch( 1 );
   
@@ -238,6 +256,7 @@ FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
     manager()->registerGui( gui );
     mBreadCrumbNavigator->push( gui );
     connect( gui, SIGNAL( editingFinished() ), SLOT( goBack() ) );
+    gui->setLabelHidden( true );
   }
 
   return gui;
