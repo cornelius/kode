@@ -43,7 +43,12 @@ List::List( Manager *m, const QString &label, QWidget *parent )
 {
   kDebug() << "List() " << label << endl;
 
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  QBoxLayout *topLayout;
+  if ( Prefs::verticalListButtons() ) {
+    topLayout = new QHBoxLayout( this );
+  } else {
+    topLayout = new QVBoxLayout( this );
+  }
 
   mModel = new ListModel( this );
   mModel->setLabel( label );
@@ -53,7 +58,16 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   connect( mView, SIGNAL( doubleClicked( const QModelIndex & ) ),
     SLOT( editItem() ) );
 
-  QBoxLayout *buttonLayout = new QHBoxLayout( topLayout );
+  QBoxLayout *buttonLayout;
+  if ( Prefs::verticalListButtons() ) {
+    buttonLayout = new QVBoxLayout( topLayout );
+  } else {
+    buttonLayout = new QHBoxLayout( topLayout );
+  }
+
+  if ( Prefs::verticalListButtons() ) {
+    buttonLayout->addStretch( 1 );
+  }
 
   QPushButton *button = new QPushButton( i18n("New Item..."), this );
   buttonLayout->addWidget( button );

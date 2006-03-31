@@ -13,4 +13,10 @@
       <default>false</default>
     </entry>
   </group>
+
+  <group name="GuiElements">
+    <entry type="Bool" key="VerticalListButtons">
+      <default>true</default>
+    </entry>
+  </group>
 </kcfg>

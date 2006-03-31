@@ -50,6 +50,7 @@ static KCmdLineOptions options[] =
   { "ugh <URL>", I18N_NOOP( "UI Generation Hints" ), 0 },
   { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
   { "developer", I18N_NOOP( "Use developer mode of user interface" ), 0 },
+  { "vertical-list-buttons", I18N_NOOP( "Use vertical list buttons" ), 0 },
   KCmdLineLastOption
 };
 
@@ -86,6 +87,7 @@ int main(int argc, char **argv)
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   Prefs::setDeveloperMode( args->isSet( "developer" ) );
+  Prefs::setVerticalListButtons( args->isSet( "vertical-list-buttons" ) );
 
 #if 1
   // Hack: force a decent font
