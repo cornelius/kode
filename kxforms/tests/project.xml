@@ -1,4 +1,4 @@
-<project name="plutimikation">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://api.opensuse.org/apidocs/project" xsi:schemaLocation="http://api.opensuse.org/apidocs/project file:///build/kde/svn/trunk/KDE/kdepim/kode/kxforms/tests/project.xsd" name="plutimikation">
   <title>Plutimikation</title>
   <description>Huhu</description>
   <person role="maintainer" userid="cschum" />
