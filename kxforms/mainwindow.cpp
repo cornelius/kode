@@ -75,7 +75,7 @@ MainWindow::MainWindow()
   // Add typical actions and save size/toolbars/statusbar
   setupGUI();
 
-  statusBar()->message( i18n("Ready.") );
+//  statusBar()->message( i18n("Ready.") );
 
   mSchemaFile = new RemoteFile( this );
   connect( mSchemaFile, SIGNAL( resultGet( bool ) ),
