@@ -37,6 +37,7 @@ class GuiHandler
       ownership of the GuiHandler object.
     */
     GuiHandler( Manager * );
+    virtual ~GuiHandler();
 
     virtual QWidget *createRootGui( QWidget *parent ) = 0;
     virtual void createGui( const Reference &ref, QWidget *parent ) = 0;

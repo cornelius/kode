@@ -40,6 +40,10 @@ GuiHandler::GuiHandler( Manager *m )
   mManager->setGuiHandler( this );
 }
 
+GuiHandler::~GuiHandler()
+{
+}
+
 Manager *GuiHandler::manager() const
 {
   return mManager;
