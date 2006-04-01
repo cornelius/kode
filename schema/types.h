@@ -49,7 +49,6 @@ class Types
     void setNamespaces( const QStringList &namespaces );
     QStringList namespaces() const;
 
-
     ComplexType complexType( const Element & ) const;
 
     SimpleType simpleType( const QName & ) const;

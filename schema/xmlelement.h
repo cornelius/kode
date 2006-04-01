@@ -19,12 +19,16 @@
     Boston, MA 02110-1301, USA.
  */
 
-#ifndef XML_ELEMENT_H
-#define XML_ELEMENT_H
+#ifndef XMLELEMENT_H
+#define XMLELEMENT_H
+
+#include "annotation.h"
+
+#include <common/qname.h>
 
 #include <qstring.h>
 
-#include <common/qname.h>
+namespace XSD {
 
 class XmlElement
 {
@@ -41,9 +45,17 @@ class XmlElement
 
     QName qualifiedName() const;
 
+    void addAnnotation( const Annotation & );
+    void setAnnotations( const Annotation::List & );
+    Annotation::List annotations() const;
+
   private:
     QString mName;
     QString mNameSpace;
+
+    Annotation::List mAnnotations;
 };
+
+}
 
 #endif

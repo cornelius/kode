@@ -76,5 +76,9 @@ int main( int argc, char **argv )
     qDebug( "AttributeGroup: %s", qPrintable( attributeGroups[ i ].name() ) );
   }
 
+  foreach( XSD::Annotation a, parser.annotations() ) {
+    qDebug() << "Annotation:" << a.domElement().tagName();
+  }
+
   return 0;
 }

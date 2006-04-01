@@ -29,6 +29,7 @@
 
 #include "types.h"
 #include "typestable.h"
+#include "annotation.h"
 
 class ParserContext;
 
@@ -43,6 +44,8 @@ class Parser
     ~Parser();
 
     Types types() const;
+
+    Annotation::List annotations() const;
 
     void clear();
 
@@ -71,10 +74,7 @@ class Parser
     void addGlobalAttribute( const Attribute & );
     AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
 
-    void parseAnnotation( ParserContext *context, const QDomElement& );
-    void parseAnnotation( ParserContext *context, const QDomElement&, QString& );
-    void parseAnnotation( ParserContext *context, const QDomElement&, ComplexType& );
-    void parseAnnotation( ParserContext *context, const QDomElement&, SimpleType& );
+    Annotation::List parseAnnotation( ParserContext *context, const QDomElement& );
     ComplexType parseComplexType( ParserContext *context, const QDomElement& );
 
     void all( ParserContext *context, const QDomElement&, ComplexType& );
@@ -112,6 +112,7 @@ class Parser
     Element::List mElements;
     Attribute::List mAttributes;
     AttributeGroup::List mAttributeGroups;
+    Annotation::List mAnnotations;
 
     QStringList mImportedSchemas;
     QStringList mNamespaces;

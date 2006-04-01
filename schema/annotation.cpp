@@ -1,7 +1,7 @@
 /*
     This file is part of KDE Schema Parser
 
-    Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2006 Cornelius Schumacher <schumacher@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -19,61 +19,62 @@
     Boston, MA 02110-1301, USA.
  */
 
-#include "xmlelement.h"
+#include "annotation.h"
+
+#include <common/qname.h>
 
 namespace XSD {
 
-XmlElement::XmlElement()
+Annotation::Annotation()
 {
 }
 
-XmlElement::XmlElement( const QString &nameSpace )
-  : mNameSpace( nameSpace )
+Annotation::Annotation( const QDomElement &e )
+  : mDomElement( e )
 {
 }
 
-XmlElement::~XmlElement()
+void Annotation::setDomElement( const QDomElement &e )
 {
+  mDomElement = e;
 }
 
-void XmlElement::setName( const QString &name )
+QDomElement Annotation::domElement() const
 {
-  mName = name;
+  return mDomElement;
 }
 
-QString XmlElement::name() const
+bool Annotation::isDocumentation() const
 {
-  return mName;
+  return QName( mDomElement.tagName() ).localName() == "documentation";
 }
 
-void XmlElement::setNameSpace( const QString &nameSpace )
+bool Annotation::isAppinfo() const
 {
-  mNameSpace = nameSpace;
+  return QName( mDomElement.tagName() ).localName() == "appinfo";
 }
 
-QString XmlElement::nameSpace() const
+QString Annotation::documentation() const
 {
-  return mNameSpace;
+  QString result;
+
+  if ( isDocumentation() ) {
+    result = mDomElement.text().trimmed();
+  }
+  
+  return result;
 }
 
-QName XmlElement::qualifiedName() const
-{
-  return QName( mNameSpace, mName );
-}
 
-void XmlElement::addAnnotation( const Annotation &a )
+QString Annotation::List::documentation() const
 {
-  mAnnotations.append( a );
-}
+  QString result;
 
-void XmlElement::setAnnotations( const Annotation::List &l )
-{
-  mAnnotations = l;
-}
-
-Annotation::List XmlElement::annotations() const
-{
-  return mAnnotations;
+  foreach( Annotation a, *this ) {
+    result.append( a.documentation() );
+  }
+  
+  return result;
 }
 
 }

@@ -143,7 +143,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
     } else if ( name.localName() == "attributeGroup" ) {
       mAttributeGroups.append( parseAttributeGroup( context, element ) );
     } else if ( name.localName() == "annotation" ) {
-      parseAnnotation( context, element );
+      mAnnotations = parseAnnotation( context, element );
     } else if ( name.localName() == "include" ) {
       // TODO
     }
@@ -178,47 +178,23 @@ void Parser::parseImport( ParserContext *context, const QDomElement &element )
   }
 }
 
-void Parser::parseAnnotation( ParserContext*, const QDomElement& )
+Annotation::List Parser::parseAnnotation( ParserContext *,
+  const QDomElement &element )
 {
-}
+  Annotation::List result;
 
-void Parser::parseAnnotation( ParserContext*, const QDomElement &element, QString &documentation )
-{
-  QDomElement childElement = element.firstChildElement();
-
-  while ( !childElement.isNull() ) {
-    QName name = childElement.tagName();
-    if ( name.localName() == "documentation" )
-      documentation = childElement.text().trimmed();
-
-    childElement = childElement.nextSiblingElement();
+  QDomElement e;
+  for( e = element.firstChildElement(); !e.isNull();
+       e = e.nextSiblingElement() ) {
+    QName name = e.tagName();
+    if ( name.localName() == "documentation" ) {
+      result.append( Annotation( e ) );
+    } else if ( name.localName() == "appinfo" ) {
+      result.append( Annotation( e ) );
+    }
   }
-}
 
-void Parser::parseAnnotation( ParserContext*, const QDomElement &element, ComplexType &complexType )
-{
-  QDomElement childElement = element.firstChildElement();
-
-  while ( !childElement.isNull() ) {
-    QName name = childElement.tagName();
-    if ( name.localName() == "documentation" )
-      complexType.setDocumentation( childElement.text().trimmed() );
-
-    childElement = childElement.nextSiblingElement();
-  }
-}
-
-void Parser::parseAnnotation( ParserContext*, const QDomElement &element, SimpleType &simpleType )
-{
-  QDomElement childElement = element.firstChildElement();
-
-  while ( !childElement.isNull() ) {
-    QName name = childElement.tagName();
-    if ( name.localName() == "documentation" )
-      simpleType.setDocumentation( childElement.text().trimmed() );
-
-    childElement = childElement.nextSiblingElement();
-  }
+  return result;
 }
 
 ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement &element )
@@ -254,7 +230,8 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     } else if ( name.localName() == "simpleContent" ) {
       parseSimpleContent( context, childElement, newType );
     } else if ( name.localName() == "annotation" ) {
-      parseAnnotation( context, childElement, newType );
+      Annotation::List annotations = parseAnnotation( context, childElement );
+      newType.setDocumentation( annotations.documentation() );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -275,7 +252,8 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
       ct.addElement( parseElement( context, childElement, ct.nameSpace(),
         childElement ) );
     } else if ( name.localName() == "annotation" ) {
-      parseAnnotation( context, childElement, ct );
+      Annotation::List annotations = parseAnnotation( context, childElement );
+      ct.setDocumentation( annotations.documentation() );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -389,9 +367,8 @@ Element Parser::parseElement( ParserContext *context,
 
         newElement.setType( st.qualifiedName() );
       } else if ( childName.localName() == "annotation" ) {
-        QString documentation;
-        parseAnnotation( context, childElement, documentation );
-        newElement.setDocumentation( documentation );
+        Annotation::List annotations = parseAnnotation( context, childElement );
+        newElement.setDocumentation( annotations.documentation() );
       }
 
       childElement = childElement.nextSiblingElement();
@@ -485,9 +462,8 @@ Attribute Parser::parseAttribute( ParserContext *context,
 
       newAttribute.setType( st.qualifiedName() );
     } else if ( childName.localName() == "annotation" ) {
-      QString documentation;
-      parseAnnotation( context, childElement, documentation );
-      newAttribute.setDocumentation( documentation );
+      Annotation::List annotations = parseAnnotation( context, childElement );
+      newAttribute.setDocumentation( annotations.documentation() );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -530,7 +506,8 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
         // TODO: add support for anonymous types
       }
     } else if ( name.localName() == "annotation" ) {
-      parseAnnotation( context, childElement, st );
+      Annotation::List annotations = parseAnnotation( context, childElement );
+      st.setDocumentation( annotations.documentation() );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -905,3 +882,7 @@ Types Parser::types() const
   return types;
 }
 
+Annotation::List Parser::annotations() const
+{
+  return mAnnotations;
+}

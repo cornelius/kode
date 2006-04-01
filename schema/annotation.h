@@ -1,7 +1,7 @@
 /*
     This file is part of KDE Schema Parser
 
-    Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2006 Cornelius Schumacher <schumacher@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -19,61 +19,38 @@
     Boston, MA 02110-1301, USA.
  */
 
-#include "xmlelement.h"
+#ifndef ANNOTATION_H
+#define ANNOTATION_H
+
+#include <QDomElement>
+#include <QList>
 
 namespace XSD {
 
-XmlElement::XmlElement()
+class Annotation
 {
-}
+  public:
+    class List : public QList<Annotation>
+    {
+      public:
+        QString documentation() const;
+    };
+  
+    Annotation();
+    Annotation( const QDomElement & );
 
-XmlElement::XmlElement( const QString &nameSpace )
-  : mNameSpace( nameSpace )
-{
-}
+    void setDomElement( const QDomElement & );
+    QDomElement domElement() const;
 
-XmlElement::~XmlElement()
-{
-}
+    bool isDocumentation() const;
+    bool isAppinfo() const;
 
-void XmlElement::setName( const QString &name )
-{
-  mName = name;
-}
+    QString documentation() const;
 
-QString XmlElement::name() const
-{
-  return mName;
-}
-
-void XmlElement::setNameSpace( const QString &nameSpace )
-{
-  mNameSpace = nameSpace;
-}
-
-QString XmlElement::nameSpace() const
-{
-  return mNameSpace;
-}
-
-QName XmlElement::qualifiedName() const
-{
-  return QName( mNameSpace, mName );
-}
-
-void XmlElement::addAnnotation( const Annotation &a )
-{
-  mAnnotations.append( a );
-}
-
-void XmlElement::setAnnotations( const Annotation::List &l )
-{
-  mAnnotations = l;
-}
-
-Annotation::List XmlElement::annotations() const
-{
-  return mAnnotations;
-}
+  private:
+    QDomElement mDomElement;
+};
 
 }
+
+#endif
