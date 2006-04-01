@@ -94,8 +94,8 @@ void RemoteFile::slotJobResultGet( KIO::Job *job )
     job->showErrorDialog( mParent );
     emit resultGet( false );
   } else {
-    emit resultGet( true );
     mLoaded = true;
+    emit resultGet( true );
   }
   mGetJob = 0;
 }
