@@ -37,9 +37,12 @@ class ParserXsd
     Schema::Document parse( const QString & );
 
   protected:
+    Schema::Document parse( const XSD::Parser &parser );
+
     void setType( Schema::Node &node, const XSD::SimpleType &simpleType );
 
-    Schema::Document parse( const XSD::Parser &parser );
+    void setAnnotations( Schema::Annotatable &annotatable,
+      XSD::Annotation::List annotations );
 
   private:
     Schema::Document mDocument;

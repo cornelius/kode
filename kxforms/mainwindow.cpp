@@ -282,12 +282,21 @@ void MainWindow::parseSchema()
 
   KXForms::FormCreator creator;
 
+  Hints schemaHints;
+  schemaHints.extractHints( schemaDocument );
+  
+//  schemaHints.dump();
+  
+  creator.setHints( schemaHints );
+
   if ( mHintsFile->isLoaded() ) {
     KXForms::Hints hints;
     hints.parseString( mHintsFile->data() );
-    creator.setHints( hints );
+//    hints.dump();
+    creator.mergeHints( hints );
   }
   
+  creator.hints().dump();
   QString form = creator.create( schemaDocument );
  
   parseForm( form );

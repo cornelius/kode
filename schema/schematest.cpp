@@ -64,6 +64,9 @@ int main( int argc, char **argv )
   const XSD::Element::List elements = types.elements();
   for ( int i = 0; i < elements.count(); ++i ) {
     qDebug( "Element: %s %s", qPrintable( elements[ i ].name() ), qPrintable( elements[ i ].type().qname() ) );
+    foreach( XSD::Annotation a,elements[ i ].annotations() ) {
+      qDebug() << "  Annotation:" << a.domElement().tagName();
+    }
   }
 
   const XSD::Attribute::List attributes = types.attributes();

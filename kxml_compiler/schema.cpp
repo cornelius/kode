@@ -276,6 +276,27 @@ QStringList Node::enumerationValues() const
 }
 
 
+void Annotatable::setDocumentation( const QString &str )
+{
+  mDocumentation = str;
+}
+
+QString Annotatable::documentation() const
+{
+  return mDocumentation;
+}
+
+void Annotatable::setAnnotations( const QList<QDomElement> &a )
+{
+  mAnnotations = a;
+}
+
+QList<QDomElement> Annotatable::annotations() const
+{
+  return mAnnotations;
+}
+    
+
 Element::Element()
   : mText( false )
 {

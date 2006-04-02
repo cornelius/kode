@@ -80,6 +80,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
   foreach ( XSD::Element element, types.elements() ) {
     qDebug() << "Element: " << element.name();
+//    qDebug() << "  Annotations: " << element.annotations().count();
 //    qDebug() << "  " << element.minOccurs() << ","
 //      << element.maxOccurs();
     Schema::Element e;
@@ -148,6 +149,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       mDocument.addAttribute( a );
     }
     
+    setAnnotations( e, element.annotations() );
+    
     mDocument.addElement( e );
 
     if ( mDocument.startElement().isEmpty() ) {
@@ -155,11 +158,28 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     }
   }
 
+  setAnnotations( mDocument, parser.annotations() );
+
   qDebug() << "----ParserXsd::parse() done";
 
 //  return Schema::Document();
 
   return mDocument;
+}
+
+void ParserXsd::setAnnotations( Schema::Annotatable &annotatable,
+  XSD::Annotation::List annotations )
+{
+  QString documentation;
+  QList<QDomElement> domElements;
+  foreach ( XSD::Annotation a, annotations ) {
+    if ( a.isDocumentation() ) documentation.append( a.documentation() );
+    if ( a.isAppinfo() ) {
+      domElements.append( a.domElement() );
+    }
+  }
+  annotatable.setDocumentation( documentation );
+  annotatable.setAnnotations( domElements );
 }
 
 void ParserXsd::setType( Schema::Node &node, const XSD::SimpleType &simpleType )

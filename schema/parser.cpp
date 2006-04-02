@@ -232,6 +232,7 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     } else if ( name.localName() == "annotation" ) {
       Annotation::List annotations = parseAnnotation( context, childElement );
       newType.setDocumentation( annotations.documentation() );
+      newType.setAnnotations( annotations );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -254,6 +255,7 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
     } else if ( name.localName() == "annotation" ) {
       Annotation::List annotations = parseAnnotation( context, childElement );
       ct.setDocumentation( annotations.documentation() );
+      ct.setAnnotations( annotations );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -369,6 +371,7 @@ Element Parser::parseElement( ParserContext *context,
       } else if ( childName.localName() == "annotation" ) {
         Annotation::List annotations = parseAnnotation( context, childElement );
         newElement.setDocumentation( annotations.documentation() );
+        newElement.setAnnotations( annotations );
       }
 
       childElement = childElement.nextSiblingElement();
@@ -464,6 +467,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
     } else if ( childName.localName() == "annotation" ) {
       Annotation::List annotations = parseAnnotation( context, childElement );
       newAttribute.setDocumentation( annotations.documentation() );
+      newAttribute.setAnnotations( annotations );
     }
 
     childElement = childElement.nextSiblingElement();
@@ -508,6 +512,7 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
     } else if ( name.localName() == "annotation" ) {
       Annotation::List annotations = parseAnnotation( context, childElement );
       st.setDocumentation( annotations.documentation() );
+      st.setAnnotations( annotations );
     }
 
     childElement = childElement.nextSiblingElement();

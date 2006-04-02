@@ -35,7 +35,17 @@ class FormCreator
 
     QString create( const Schema::Document & );
 
+    /**
+      Set hints. Previously set hints are removed.
+    */
     void setHints( const Hints & );
+    /**
+      Set hints. Previously set hints are kept, unless the new hints contain a
+      hint for the same reference, which overrides the old hint.
+    */
+    void mergeHints( const Hints & );
+
+    Hints hints() const;
 
   protected:
     void createForm( XmlBuilder *xml, const Schema::Element &element );

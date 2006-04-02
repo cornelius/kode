@@ -21,6 +21,8 @@
 
 #include "hints.h"
 
+#include <common/qname.h>
+
 #include <QDebug>
 #include <QDomDocument>
 #include <QDomElement>
@@ -111,23 +113,35 @@ bool Hints::parse( const QDomDocument &doc )
   return true;
 }
 
-void Hints::parseHint( const QDomElement &element )
+void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
 {
+//  qDebug() << "Hints::parseHint()" << element.tagName() << refPrefix;
+
   QString ref = element.attribute( "ref" );
+
+//  qDebug() << "  REF:" << ref;
+
+  if ( ref.isEmpty() ) ref = refPrefix;
   if ( ref.isEmpty() ) {
     qDebug() << "Error: No reference attribute in hint tag.";
     return;
   }
+  if ( !refPrefix.isEmpty() && !ref.startsWith( "/" ) ) {
+    if ( !refPrefix.endsWith( "/" ) ) ref.prepend( "/" );
+    ref.prepend( refPrefix );
+  }
+  
   Hint hint( ref );
 
-  qDebug() << "Hints::parseHint()" << ref;
+//  qDebug() << "Hints::parseHint()" << ref;
 
   QDomNode n;
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
-    if ( e.tagName() == "label" ) {
+    QName name = e.tagName();
+    if ( name.localName() == "label" ) {
       hint.setLabel( e.text() );
-    } else if ( e.tagName() == "enum" ) {
+    } else if ( name.localName() == "enum" ) {
       hint.setEnumValue( e.attribute( "value" ), e.text() );
     }
   }
@@ -150,4 +164,44 @@ Hint::List Hints::hints() const
   }
   
   return result;
+}
+
+void Hints::extractHints( const Schema::Document &schemaDocument )
+{
+  extractHints( schemaDocument.annotations() );
+  
+  foreach( Schema::Element e, schemaDocument.elements() ) {
+    extractHints( e.annotations(), e.identifier() );
+  }
+  foreach( Schema::Attribute a, schemaDocument.attributes() ) {
+    extractHints( a.annotations(), a.identifier() );
+  }
+}
+
+void Hints::extractHints( const QList<QDomElement> &annotations,
+  const QString &refPrefix )
+{
+  foreach( QDomElement element, annotations ) {
+    for( QDomElement e = element.firstChildElement(); !e.isNull();
+         e = e.nextSiblingElement() ) {
+      QName name = e.tagName();
+      if ( name.localName() == "hint" ) {
+        parseHint( e, refPrefix );
+      }
+    }
+  }
+}
+
+void Hints::insertHint( const Hint &hint )
+{
+  mHints[ hint.ref() ] = hint;
+}
+
+void Hints::dump() const
+{
+  qDebug() << "---Hints::dump()";
+  foreach( Hint h, mHints ) {
+    qDebug() << "HINT:" << h.ref();
+  }
+  qDebug() << "---Hints::dump() done";
 }

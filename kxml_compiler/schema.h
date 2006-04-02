@@ -24,6 +24,7 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QDomElement>
 
 namespace Schema {
 
@@ -63,7 +64,27 @@ class Relation
     QString mChoice;
 };
 
-class Node
+class Annotatable
+{
+  public:
+  
+    void setDocumentation( const QString & );
+    QString documentation() const;
+
+    void setAnnotations( const QList<QDomElement> & );
+    /**
+      XML annotations. The actual annotations are child elements of the elements
+      contained in this list. There should not be made any assumptions about the
+      names of the elements in this list.
+    */
+    QList<QDomElement> annotations() const;
+    
+  private:
+    QString mDocumentation;
+    QList<QDomElement> mAnnotations;
+};
+
+class Node : public Annotatable
 {
   public:
     enum Type { String, NormalizedString, Token, Enumeration, ComplexType };
@@ -86,7 +107,7 @@ class Node
 
     void setEnumerationValues( const QStringList & );
     QStringList enumerationValues() const;
-    
+
   private:
     Type mType;
     QString mIdentifier;
@@ -134,7 +155,7 @@ class Attribute : public Node
     QString ref() const;
 };
 
-class Document
+class Document : public Annotatable
 {
   public:
     Document();

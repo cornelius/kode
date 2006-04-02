@@ -196,6 +196,13 @@ void FormCreator::setHints( const Hints &hints )
   mHints = hints;
 }
 
+void FormCreator::mergeHints( const Hints &hints )
+{
+  foreach( Hint h, hints.hints() ) {
+    mHints.insertHint( h );
+  }
+}
+
 void FormCreator::createLabel( XmlBuilder *parent, const Schema::Node &node )
 {
   parent->tag( "xf:label", getLabel( node.identifier(), node.name() ) );
@@ -214,4 +221,9 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
   if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
   
   return label;
+}
+
+Hints FormCreator::hints() const
+{
+  return mHints;
 }

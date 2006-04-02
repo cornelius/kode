@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  xmlns:ugh="http://www.kde.org/standards/ugh/0.1" >
+  
+  <xs:annotation>
+    <xs:documentation>
+      This Schema describes the KDE Feature Plan document.
+    </xs:documentation>
+    <xs:appinfo>
+      <ugh:hint>
+        <ugh:label>KDE Feature Schema</ugh:label>
+      </ugh:hint>
+    </xs:appinfo>
+  </xs:annotation>
   
   <xs:element name="features">
+    <xs:annotation>
+      <xs:documentation>
+        Top-level element containing all the top-level categories.
+      </xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="category"/>
@@ -10,6 +28,13 @@
   </xs:element>
   
   <xs:element name="category">
+    <xs:annotation>
+      <xs:appinfo>
+        <ugh:hint ref="feature">
+          <ugh:label>Feature: &lt;arg ref="summary" truncate="50"/&gt;</ugh:label>
+        </ugh:hint>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="feature"/>

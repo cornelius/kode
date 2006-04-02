@@ -21,6 +21,8 @@
 #ifndef HINTS_H
 #define HINTS_H
 
+#include <kxml_compiler/schema.h>
+
 #include <QList>
 #include <QString>
 #include <QFile>
@@ -63,13 +65,22 @@ class Hints
     bool parseFile( QFile & );
     bool parseString( const QString & );
 
+    void insertHint( const Hint & );
+    
     Hint hint( const QString &ref ) const;
 
     Hint::List hints() const;
 
+    void extractHints( const Schema::Document & );
+
+    void dump() const;
+
   protected:
     bool parse( const QDomDocument &doc );
-    void parseHint( const QDomElement & );
+    void parseHint( const QDomElement &, const QString &refPrefix = QString() );
+
+    void extractHints( const QList<QDomElement> &annotations,
+      const QString &refPrefix = QString() );
 
   private:
     QMap<QString,Hint> mHints;
