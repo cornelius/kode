@@ -6,6 +6,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}
 ########### next target ###############
 
 set(schema_LIB_SRCS 
+   annotation.cpp
    attribute.cpp 
    complextype.cpp 
    element.cpp 

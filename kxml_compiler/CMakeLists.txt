@@ -17,7 +17,7 @@ kde4_automoc(${kxml_compiler_SRCS})
 
 kde4_add_executable(kxml_compiler ${kxml_compiler_SRCS})
 
-target_link_libraries(kxml_compiler  ${KDE4_KDECORE_LIBS} kode )
+target_link_libraries(kxml_compiler  ${KDE4_KDECORE_LIBS} kode kschema )
 
 install_targets(/bin kxml_compiler )
 
