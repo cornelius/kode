@@ -1,6 +1,6 @@
 kde4_header()
 
-include_directories( ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDE_DIR} )
+include_directories( ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kode ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDE_DIR} )
 ########### next target ###############
 
 set(kxforms_SRCS 
@@ -8,22 +8,31 @@ set(kxforms_SRCS
    mainwindow.cpp 
    manager.cpp 
    form.cpp 
+   formcreator.cpp
+   hints.cpp
    list.cpp 
+   listmodel.cpp
    input.cpp 
    formgui.cpp 
+   remotefile.cpp
    xformscommon.cpp 
+   xmlbuilder.cpp
    guielement.cpp 
    kresult.cpp 
    guihandler.cpp 
+   guihandlerflat.cpp
+   guihandlerdialogs.cpp
    reference.cpp 
    textarea.cpp 
    select1.cpp )
 
 kde4_automoc(${kxforms_SRCS})
 
+kde4_add_kcfg_files(kxforms_SRCS prefs.kcfgc )
+
 kde4_add_executable(kxforms ${kxforms_SRCS})
 
-target_link_libraries(kxforms  ${KDE4_KIO_LIBS} )
+target_link_libraries(kxforms  ${KDE4_KIO_LIBS} kschema )
 
 install_targets(/bin kxforms )
 
@@ -45,6 +54,8 @@ endif(KDE4_BUILD_TESTS)
 ########### install files ###############
 
 install_files( ${DATA_INSTALL_DIR}/kxforms FILES  kxformsui.rc )
+
+install_files( ${KCFG_INSTALL_DIR} FILES kxforms.kcfg )
 
 kde4_footer()
 
