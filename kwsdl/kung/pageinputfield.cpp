@@ -31,12 +31,12 @@ PageInputField::PageInputField( const QString &name, const KWSDL::Message &messa
  : InputField( name ),
    mMessage( message )
 {
-  KWSDL::Message::Part::List parts = message.parts();
-  KWSDL::Message::Part::List::ConstIterator it;
+  KWSDL::Part::List parts = message.parts();
+  KWSDL::Part::List::ConstIterator it;
   for ( it = parts.begin(); it != parts.end(); ++it ) {
-    InputField *field = InputFieldFactory::self()->createField( (*it).name(), (*it).type() );
+    InputField *field = InputFieldFactory::self()->createField( (*it).name(), (*it).type().qname() );
     if ( !field ) {
-      qDebug( "PageInputField: Unable to create input field for %s (%s)", (*it).name().toLatin1(), (*it).type().toLatin1() );
+      qDebug( "PageInputField: Unable to create input field for %s (%s)", qPrintable( (*it).name() ), qPrintable( (*it).type().qname() ) );
     } else {
       appendChild( field );
     }
@@ -46,7 +46,7 @@ PageInputField::PageInputField( const QString &name, const KWSDL::Message &messa
 void PageInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "PageInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "PageInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 
@@ -56,7 +56,7 @@ void PageInputField::setXMLData( const QDomElement &element )
     if ( !child.isNull() ) {
       InputField *field = childField( child.tagName() );
       if ( !field ) {
-        qDebug( "PageInputField: Child field %s does not exists", child.tagName().toLatin1() );
+        qDebug( "PageInputField: Child field %s does not exists", qPrintable( child.tagName() ) );
       } else {
         field->setXMLData( child );
       }

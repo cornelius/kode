@@ -35,7 +35,7 @@ DoubleInputField::DoubleInputField( const QString &name, const QString &typeName
 void DoubleInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "DoubleInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "DoubleInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 
@@ -68,13 +68,13 @@ QWidget *DoubleInputField::createWidget( QWidget *parent )
 
   if ( mType ) {
     if ( mType->facetType() & XSD::SimpleType::MININC )
-      mInputWidget->setMinValue( mType->facetMinimumInclusive() );
+      mInputWidget->setMinimum( mType->facetMinimumInclusive() );
     if ( mType->facetType() & XSD::SimpleType::MINEX )
-      mInputWidget->setMinValue( mType->facetMinimumExclusive() + 1 );
+      mInputWidget->setMinimum( mType->facetMinimumExclusive() + 1 );
     if ( mType->facetType() & XSD::SimpleType::MAXINC )
-      mInputWidget->setMaxValue( mType->facetMaximumInclusive() );
+      mInputWidget->setMaximum( mType->facetMaximumInclusive() );
     if ( mType->facetType() & XSD::SimpleType::MAXEX )
-      mInputWidget->setMaxValue( mType->facetMaximumExclusive() - 1 );
+      mInputWidget->setMaximum( mType->facetMaximumExclusive() - 1 );
   }
 
   mInputWidget->setValue( mValue );

@@ -36,7 +36,7 @@ StringInputField::StringInputField( const QString &name, const QString &typeName
 void StringInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "StringInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "StringInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 

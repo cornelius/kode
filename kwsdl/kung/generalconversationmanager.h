@@ -22,7 +22,7 @@
 #ifndef GENERAL_CONVERSATIONMANAGER_H
 #define GENERAL_CONVERSATIONMANAGER_H
 
-#include <kwsdl/wsdl.h>
+#include <wsdl/wsdl.h>
 
 #include "conversationmanager.h"
 

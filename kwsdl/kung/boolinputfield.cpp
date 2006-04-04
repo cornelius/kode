@@ -35,7 +35,7 @@ BoolInputField::BoolInputField( const QString &name, const XSD::SimpleType *type
 void BoolInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "BoolInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "BoolInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 

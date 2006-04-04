@@ -38,9 +38,10 @@
 #include "dispatcher.h"
 
 Dispatcher::Dispatcher()
-  : QObject( 0, "Dispatcher" ),
+  : QObject( 0 ),
     mConversationManager( 0 )
 {
+  setObjectName( "Dispatcher" );
 }
 
 Dispatcher::~Dispatcher()
@@ -53,11 +54,14 @@ void Dispatcher::setWSDL( const KWSDL::WSDL &wsdl )
 {
   mWSDL = wsdl;
 
-  InputFieldFactory::self()->setTypes( mWSDL.types() );
+  InputFieldFactory::self()->setTypes( mWSDL.definitions().type().types() );
 
   mConversationManager = new GeneralConversationManager( mWSDL );
 
-  mTransport = new Transport( mWSDL.service().ports().first().mLocation );
+  // KUNGPORT
+  //QString location = mWSDL.definitions().service().ports().first().mLocation;
+  QString location = "";
+  mTransport = new Transport( location );
   connect( mTransport, SIGNAL( result( const QString& ) ),
            this, SLOT( result( const QString& ) ) );
   connect( mTransport, SIGNAL( error( const QString& ) ),
@@ -110,13 +114,24 @@ void Dispatcher::nextMessage()
     field->xmlData( doc, body );
 
     QDomElement method = body.firstChild().toElement();
-    QString nameSpace = mWSDL.findBindingOperation( "", message.name() ).input().nameSpace();
+    KWSDL::Binding binding;
+// KUNGPORT
+//    //QString nameSpace = mWSDL.findBindingOperation( binding, message.name() ).input().nameSpace();
+//    SoapBinding sbinding = binding.soapBinding();
+//    Operation::Map op = sbinding.operations();
+//    Operation::Map::Iterator it = op.begin();
+//    Body b = (*it).input();
+//    QString nameSpace = b.nameSpace();
+//
+//    //Address a = sbinding.address();
+//    Q_UNUSED(nameSpace);
+ 
     method.setAttribute( "xmlns:ns1", "urn:GoogleSearch" );
     method.setAttribute( "SOAP-ENV:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/" );
     body.appendChild( method );
 
     if ( mTransport ) {
-      qDebug( "%s", doc.toString( 2 ).toLatin1() );
+      qDebug( "%s", qPrintable( doc.toString( 2 ) ) );
       mTransport->query( doc.toString( 2 ) );
     }
   } else
@@ -125,9 +140,9 @@ void Dispatcher::nextMessage()
 
 void Dispatcher::result( const QString &xml )
 {
-  qDebug( "Got data %s", xml.toLatin1() );
+  qDebug( "Got data %s", qPrintable( xml ) );
 
-  KWSDL::Message message = mWSDL.findOutputMessage( mCurrentMessage );
+  KWSDL::Message message = mWSDL.findMessage( mCurrentMessage );
   InputField *field = new PageInputField( message.name(), message );
 
   QDomDocument doc;

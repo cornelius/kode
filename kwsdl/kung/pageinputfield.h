@@ -24,7 +24,7 @@
 
 #include <qobject.h>
 
-#include <kwsdl/message.h>
+#include <wsdl/message.h>
 
 #include "inputfield.h"
 

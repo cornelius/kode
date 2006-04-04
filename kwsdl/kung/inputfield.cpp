@@ -25,9 +25,10 @@
 #include "inputfield.h"
 
 InputField::InputField( const QString &name )
-  : QObject( 0, QString( "InputField( %1 )" ).arg( name ).toLatin1() ),
+  : QObject( 0 ),
     mName( name )
 {
+  setObjectName( QString( "InputField( %1 )" ).arg( name ).toLatin1() );
 }
 
 InputField::~InputField()

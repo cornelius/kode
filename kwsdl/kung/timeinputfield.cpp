@@ -20,7 +20,8 @@
 */
 
 #include <QtXml/QDomElement>
-#include <ktimewidget.h>
+#include <QtGui/QWidget>
+//#include <ktimewidget.h>
 
 #include "timeinputfield.h"
 
@@ -33,7 +34,7 @@ TimeInputField::TimeInputField( const QString &name, const XSD::SimpleType *type
 void TimeInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "TimeInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "TimeInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 
@@ -62,9 +63,10 @@ QString TimeInputField::data() const
 
 QWidget *TimeInputField::createWidget( QWidget *parent )
 {
-  mInputWidget = new KTimeWidget( parent );
-
-  mInputWidget->setTime( mValue );
+  // KUNG PORT
+  //mInputWidget = new KTimeWidget( parent );
+  //mInputWidget->setTime( mValue );
+  mInputWidget = new QWidget(parent);
 
   connect( mInputWidget, SIGNAL( valueChanged( const QTime& ) ),
            this, SLOT( inputChanged( const QTime& ) ) );

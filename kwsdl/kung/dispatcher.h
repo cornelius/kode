@@ -24,7 +24,7 @@
 
 #include <qobject.h>
 
-#include <kwsdl/wsdl.h>
+#include <wsdl/wsdl.h>
 
 class ConversationManager;
 class Transport;

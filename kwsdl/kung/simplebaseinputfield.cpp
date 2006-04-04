@@ -30,9 +30,9 @@ SimpleBaseInputField::SimpleBaseInputField( const QString &name, const XSD::Simp
   : SimpleInputField( name, type )
 {
   if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
-    InputField *field = InputFieldFactory::self()->createBasicField( name, type->baseTypeName(), type );
+    InputField *field = InputFieldFactory::self()->createBasicField( name, type->baseTypeName().qname(), type );
     if ( !field ) {
-      qDebug( "SimpleBaseInputField: Unable to create field of type %s", type->baseTypeName().toLatin1() );
+      qDebug( "SimpleBaseInputField: Unable to create field of type %s", qPrintable (type->baseTypeName().qname() ) );
     } else {
       appendChild( field );
     }
@@ -44,14 +44,14 @@ SimpleBaseInputField::SimpleBaseInputField( const QString &name, const XSD::Simp
 void SimpleBaseInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "SimpleBaseInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "SimpleBaseInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 
   if ( mType->subType() == XSD::SimpleType::TypeRestriction ) {
     InputField *field = childField( element.tagName() );
     if ( !field ) {
-      qDebug( "SimpleBaseInputField: Child field %s does not exists", element.tagName().toLatin1() );
+      qDebug( "SimpleBaseInputField: Child field %s does not exists", qPrintable( element.tagName() ) );
     } else {
       field->setXMLData( element );
     }

@@ -48,7 +48,7 @@ BinaryInputField::BinaryInputField( const QString &name, const QString &typeName
 void BinaryInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "BinaryInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "BinaryInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 
@@ -95,9 +95,11 @@ void BinaryInputField::valueChanged( const QByteArray &value )
 
 
 BinaryWidget::BinaryWidget( QWidget *parent )
-  : QWidget( parent, "BinaryWidget" ),
+  : QWidget( parent ),
     mMainWidget( 0 )
 {
+  setObjectName( "BinaryWidget" );
+
   mLayout = new QGridLayout( this, 3, 2, 11, 6 );
 
   mLoadButton = new QPushButton( i18n( "Load..." ), this );

@@ -24,17 +24,19 @@
 GeneralConversationManager::GeneralConversationManager( const KWSDL::WSDL &wsdl )
   : mWSDL( wsdl )
 {
-  const KWSDL::Service::Port::List servicePorts = mWSDL.service().ports();
-  KWSDL::Service::Port::List::ConstIterator it;
+  const KWSDL::Port::List servicePorts = mWSDL.definitions().service().ports();
+  KWSDL::Port::List::ConstIterator it;
   for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
-    KWSDL::Binding binding = mWSDL.findBinding( (*it).mBinding );
+    KWSDL::Binding binding = mWSDL.findBinding( (*it).bindingName() );
 
-    KWSDL::Port port = mWSDL.findPort( binding.type() );
-    const KWSDL::Port::Operation::List operations = port.operations();
-    KWSDL::Port::Operation::List::ConstIterator opIt;
+    // KUNGPORT
+    //KWSDL::Port port = mWSDL.findPort( binding.type() );
+    //const KWSDL::Operation::List operations = port.operations();
+    const KWSDL::Operation::List operations;
+    KWSDL::Operation::List::ConstIterator opIt;
     for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
-      mInputMessages.append( mWSDL.findMessage( (*opIt).input() ) );
-      mOutputMessages.append( mWSDL.findMessage( (*opIt).output() ) );
+      mInputMessages.append( mWSDL.findMessage( (*opIt).input().message() ) );
+      mOutputMessages.append( mWSDL.findMessage( (*opIt).output().message() ) );
     }
   }
 }

@@ -22,7 +22,11 @@
 #ifndef LOADER_H
 #define LOADER_H
 
-#include <kwsdl/parser.h>
+// KUNGPORT
+//#include <kwsdl/parser.h>
+
+//#include <qdomelement.h>
+#include <QDomElement>
 
 class Dispatcher;
 
@@ -46,7 +50,7 @@ class Loader : public QObject
   private:
     QString mWSDLUrl;
 
-    KWSDL::Parser mParser;
+    //KWSDL::Parser mParser;
     QString mWSDLBaseUrl;
 
     Dispatcher *mDispatcher;

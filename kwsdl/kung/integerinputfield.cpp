@@ -37,7 +37,7 @@ IntegerInputField::IntegerInputField( const QString &name, const QString &typeNa
 void IntegerInputField::setXMLData( const QDomElement &element )
 {
   if ( mName != element.tagName() ) {
-    qDebug( "IntegerInputField: Wrong dom element passed: expected %s, got %s", mName.toLatin1(), element.tagName().toLatin1() );
+    qDebug( "IntegerInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
     return;
   }
 
@@ -70,49 +70,49 @@ QWidget *IntegerInputField::createWidget( QWidget *parent )
 
   // basic restrictions
   if ( mTypeName == "byte" ) {
-    mInputWidget->setMinValue( CHAR_MIN );
-    mInputWidget->setMaxValue( CHAR_MAX );
+    mInputWidget->setMinimum( CHAR_MIN );
+    mInputWidget->setMaximum( CHAR_MAX );
   } else if ( mTypeName == "unsignedByte" ) {
-    mInputWidget->setMinValue( 0 );
-    mInputWidget->setMaxValue( UCHAR_MAX );
+    mInputWidget->setMinimum( 0 );
+    mInputWidget->setMaximum( UCHAR_MAX );
   } else if ( mTypeName == "integer" || mTypeName == "int" ) {
-    mInputWidget->setMinValue( INT_MIN );
-    mInputWidget->setMaxValue( INT_MAX );
+    mInputWidget->setMinimum( INT_MIN );
+    mInputWidget->setMaximum( INT_MAX );
   } else if ( mTypeName == "positiveInteger" ) {
-    mInputWidget->setMinValue( 1 );
-    mInputWidget->setMaxValue( UINT_MAX );
+    mInputWidget->setMinimum( 1 );
+    mInputWidget->setMaximum( UINT_MAX );
   } else if ( mTypeName == "negativeInteger" ) {
-    mInputWidget->setMinValue( INT_MIN );
-    mInputWidget->setMaxValue( -1 );
+    mInputWidget->setMinimum( INT_MIN );
+    mInputWidget->setMaximum( -1 );
   } else if ( mTypeName == "nonNegativeInteger" || mTypeName == "unsignedInt" ) {
-    mInputWidget->setMinValue( 0 );
-    mInputWidget->setMaxValue( UINT_MAX );
+    mInputWidget->setMinimum( 0 );
+    mInputWidget->setMaximum( UINT_MAX );
   } else if ( mTypeName == "nonPositiveInteger" ) {
-    mInputWidget->setMinValue( INT_MIN );
-    mInputWidget->setMaxValue( 0 );
+    mInputWidget->setMinimum( INT_MIN );
+    mInputWidget->setMaximum( 0 );
   } else if ( mTypeName == "long" ) {
-    mInputWidget->setMinValue( LONG_MIN );
-    mInputWidget->setMaxValue( LONG_MAX );
+    mInputWidget->setMinimum( LONG_MIN );
+    mInputWidget->setMaximum( LONG_MAX );
   } else if ( mTypeName == "unsignedlong" ) {
-    mInputWidget->setMinValue( 0 );
-    mInputWidget->setMaxValue( ULONG_MAX );
+    mInputWidget->setMinimum( 0 );
+    mInputWidget->setMaximum( ULONG_MAX );
   } else if ( mTypeName == "short" ) {
-    mInputWidget->setMinValue( SHRT_MIN );
-    mInputWidget->setMaxValue( SHRT_MAX );
+    mInputWidget->setMinimum( SHRT_MIN );
+    mInputWidget->setMaximum( SHRT_MAX );
   } else if ( mTypeName == "unsignedShort" ) {
-    mInputWidget->setMinValue( 0 );
-    mInputWidget->setMaxValue( USHRT_MAX );
+    mInputWidget->setMinimum( 0 );
+    mInputWidget->setMaximum( USHRT_MAX );
   }
 
   if ( mType ) {
     if ( mType->facetType() & XSD::SimpleType::MININC )
-      mInputWidget->setMinValue( mType->facetMinimumInclusive() );
+      mInputWidget->setMinimum( mType->facetMinimumInclusive() );
     if ( mType->facetType() & XSD::SimpleType::MINEX )
-      mInputWidget->setMinValue( mType->facetMinimumExclusive() + 1 );
+      mInputWidget->setMinimum( mType->facetMinimumExclusive() + 1 );
     if ( mType->facetType() & XSD::SimpleType::MAXINC )
-      mInputWidget->setMaxValue( mType->facetMaximumInclusive() );
+      mInputWidget->setMaximum( mType->facetMaximumInclusive() );
     if ( mType->facetType() & XSD::SimpleType::MAXEX )
-      mInputWidget->setMaxValue( mType->facetMaximumExclusive() - 1 );
+      mInputWidget->setMaximum( mType->facetMaximumExclusive() - 1 );
   }
 
   mInputWidget->setValue( mValue );

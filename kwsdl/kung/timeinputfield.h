@@ -27,7 +27,8 @@
 
 #include "inputfield.h"
 
-class KTimeWidget;
+//class KTimeWidget;
+class QWidget;
 
 class TimeInputField : public SimpleInputField
 {
@@ -48,7 +49,8 @@ class TimeInputField : public SimpleInputField
     void inputChanged( const QTime& );
 
   private:
-    KTimeWidget *mInputWidget;
+    //KTimeWidget *mInputWidget;
+    QWidget *mInputWidget;
     QTime mValue;
 };
 

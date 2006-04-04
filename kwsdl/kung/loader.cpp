@@ -21,15 +21,16 @@
 
 #include <qfile.h>
 
-#include <schema/fileprovider.h>
+#include <common/fileprovider.h>
 
 #include "dispatcher.h"
 
 #include "loader.h"
 
 Loader::Loader()
-  : QObject( 0, "KWSDL::Loader" )
+  : QObject( 0 )
 {
+  setObjectName( "KWSDL::Loader" );
 }
 
 void Loader::setWSDLUrl( const QString &wsdlUrl )
@@ -37,7 +38,7 @@ void Loader::setWSDLUrl( const QString &wsdlUrl )
   mWSDLUrl = wsdlUrl;
   mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.lastIndexOf( '/' ) );
 
-  mParser.setSchemaBaseUrl( mWSDLBaseUrl );
+  //mParser.setSchemaBaseUrl( mWSDLBaseUrl );
 }
 
 void Loader::run()
@@ -47,13 +48,13 @@ void Loader::run()
 
 void Loader::download()
 {
-  XSD::FileProvider provider;
+  FileProvider provider;
 
   QString fileName;
   if ( provider.get( mWSDLUrl, fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-      qDebug( "Unable to download wsdl file %s", mWSDLUrl.toLatin1() );
+      qDebug( "Unable to download wsdl file %s", qPrintable( mWSDLUrl ) );
       provider.cleanUp();
       return;
     }
@@ -62,7 +63,7 @@ void Loader::download()
     int errorLine, errorCol;
     QDomDocument doc;
     if ( !doc.setContent( &file, true, &errorMsg, &errorLine, &errorCol ) ) {
-      qDebug( "%s at (%d,%d)", errorMsg.toLatin1(), errorLine, errorCol );
+      qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
       return;
     }
 
@@ -74,14 +75,14 @@ void Loader::download()
 
 void Loader::parse( const QDomElement &element )
 {
-  mParser.parse( element );
+  //mParser.parse( element );
   execute();
 }
 
 void Loader::execute()
 {
   mDispatcher = new Dispatcher;
-  mDispatcher->setWSDL( mParser.wsdl() );
+  //mDispatcher->setWSDL( mParser.wsdl() );
 
   mDispatcher->run();
 }
