@@ -22,6 +22,8 @@
 #include <qfile.h>
 
 #include <common/fileprovider.h>
+#include <common/parsercontext.h>
+#include <wsdl/definitions.h>
 
 #include "dispatcher.h"
 
@@ -31,6 +33,8 @@ Loader::Loader()
   : QObject( 0 )
 {
   setObjectName( "KWSDL::Loader" );
+  
+  mContext = new ParserContext();
 }
 
 void Loader::setWSDLUrl( const QString &wsdlUrl )
@@ -38,7 +42,7 @@ void Loader::setWSDLUrl( const QString &wsdlUrl )
   mWSDLUrl = wsdlUrl;
   mWSDLBaseUrl = mWSDLUrl.left( mWSDLUrl.lastIndexOf( '/' ) );
 
-  //mParser.setSchemaBaseUrl( mWSDLBaseUrl );
+  mContext->setDocumentBaseUrl( mWSDLBaseUrl );
 }
 
 void Loader::run()
@@ -75,14 +79,20 @@ void Loader::download()
 
 void Loader::parse( const QDomElement &element )
 {
-  //mParser.parse( element );
-  execute();
+  KWSDL::Definitions def;
+  KWSDL::WSDL kwsdl;
+
+  def.loadXML( mContext, element );
+
+  kwsdl.setDefinitions(def);
+
+  execute(kwsdl);
 }
 
-void Loader::execute()
+void Loader::execute(const KWSDL::WSDL &wsdl)
 {
   mDispatcher = new Dispatcher;
-  //mDispatcher->setWSDL( mParser.wsdl() );
+  mDispatcher->setWSDL( wsdl );
 
   mDispatcher->run();
 }

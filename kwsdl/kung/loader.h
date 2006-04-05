@@ -22,13 +22,14 @@
 #ifndef LOADER_H
 #define LOADER_H
 
-// KUNGPORT
-//#include <kwsdl/parser.h>
-
-//#include <qdomelement.h>
 #include <QDomElement>
 
 class Dispatcher;
+class ParserContext;
+
+namespace KWSDL {
+class WSDL;
+};
 
 class Loader : public QObject
 {
@@ -45,15 +46,14 @@ class Loader : public QObject
   private slots:
     void download();
     void parse( const QDomElement& );
-    void execute();
+    void execute( const KWSDL::WSDL& );
 
   private:
     QString mWSDLUrl;
-
-    //KWSDL::Parser mParser;
     QString mWSDLBaseUrl;
 
     Dispatcher *mDispatcher;
+    ParserContext *mContext;
 };
 
 #endif
