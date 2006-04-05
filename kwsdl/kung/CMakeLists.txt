@@ -2,30 +2,44 @@ kde4_header()
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kwsdl ${CMAKE_SOURCE_DIR}/libkdepim ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
 
-
 ########### next target ###############
 
-set(kung_SRCS 
+set(kschemawidgets_LIB_SRCS 
    binaryinputfield.cpp 
    boolinputfield.cpp 
    complexbaseinputfield.cpp 
    dateinputfield.cpp 
-   dispatcher.cpp 
    doubleinputfield.cpp 
    enuminputfield.cpp 
-   generalconversationmanager.cpp 
    inputdialog.cpp 
    inputfield.cpp 
    inputfieldfactory.cpp 
    integerinputfield.cpp 
    listinputfield.cpp 
-   loader.cpp 
-   main.cpp 
-   outputdialog.cpp 
    pageinputfield.cpp 
+   outputdialog.cpp 
    simplebaseinputfield.cpp 
    stringinputfield.cpp 
-   timeinputfield.cpp 
+   timeinputfield.cpp )
+
+kde4_automoc(${kschemawidgets_LIB_SRCS})
+
+kde4_add_library(kschemawidgets SHARED ${kschemawidgets_LIB_SRCS})
+
+# FIXME: kwsdl only needed for pageinputfield!
+target_link_libraries(kschemawidgets  ${KDE4_KDECORE_LIBS} schema wsdl kparts )
+
+# FIXME: Versioning like libtool?
+set_target_properties(kschemawidgets PROPERTIES VERSION 1.0.0 SOVERSION 1 )
+install_targets(${LIB_INSTALL_DIR} kschemawidgets )
+
+########### next target ###############
+
+set(kung_SRCS 
+   dispatcher.cpp 
+   generalconversationmanager.cpp 
+   loader.cpp 
+   main.cpp 
    transport.cpp 
    wsclconversationmanager.cpp )
 
@@ -33,7 +47,7 @@ kde4_automoc(${kung_SRCS})
 
 kde4_add_executable(kung ${kung_SRCS})
 
-target_link_libraries(kung  ${KDE4_KDECORE_LIBS} schema wscl wsdl kparts )
+target_link_libraries(kung  ${KDE4_KDECORE_LIBS} kschemawidgets wscl wsdl )
 
 install_targets(/bin kung )
 
