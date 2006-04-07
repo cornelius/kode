@@ -82,6 +82,8 @@ class Hints
     void extractHints( const QList<QDomElement> &annotations,
       const QString &refPrefix = QString() );
 
+    QString contentAsString( const QDomElement &e );
+
   private:
     QMap<QString,Hint> mHints;
 };

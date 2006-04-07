@@ -1,6 +1,6 @@
 <ugh>
   <hint ref="project/person">
-    <label>&lt;arg ref="@userid"/&gt; (Role: &lt;arg ref="@role"/&gt;)</label>
+    <label><arg ref="@userid"/> (Role: <arg ref="@role"/>)</label>
   </hint>
   <hint ref="repository[arch]">
     <label>Architecture</label>

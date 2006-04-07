@@ -1,9 +1,9 @@
 <ugh>
   <hint ref="category/feature">
-    <label>Feature: &lt;arg ref="summary" truncate="50"/&gt;</label>
+    <label>Feature: <arg ref="summary" truncate="50"/></label>
   </hint>
   <hint ref="feature/responsible">
-    <label>&lt;arg ref="@name"/&gt; &amp;lt;&lt;arg ref="@email"/&gt;&amp;gt;</label>
+    <label><arg ref="@name"/> &lt;<arg ref="@email"/>&gt;</label>
   </hint>
   <hint ref="arch">
     <label>Architecture</label>

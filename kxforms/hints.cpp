@@ -140,13 +140,29 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
     QDomElement e = n.toElement();
     QName name = e.tagName();
     if ( name.localName() == "label" ) {
-      hint.setLabel( e.text() );
+      hint.setLabel( contentAsString( e ) );
     } else if ( name.localName() == "enum" ) {
-      hint.setEnumValue( e.attribute( "value" ), e.text() );
+      hint.setEnumValue( e.attribute( "value" ), contentAsString( e ) );
     }
   }
 
   mHints[ ref ] = hint;
+}
+
+// TODO: Share with snippet from TextArea::loadData()
+QString Hints::contentAsString( const QDomElement &element )
+{
+  QString txt;
+  QTextStream ts( &txt, QIODevice::WriteOnly );
+
+  QDomNode n;
+  for( n = element.firstChild(); ! n.isNull(); n = n.nextSibling() ) {
+    n.save( ts, 0 );
+  }
+
+  if ( txt.endsWith( "\n" ) ) txt = txt.left( txt.length() - 1 );
+
+  return txt;
 }
 
 Hint Hints::hint( const QString &ref ) const

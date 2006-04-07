@@ -104,8 +104,12 @@ int main(int argc, char **argv)
   ParserXsd parser;
   Schema::Document schemaDocument = parser.parse( schemaFile );
 
+  KXForms::Hints schemaHints;
+  schemaHints.extractHints( schemaDocument );
+
   KXForms::FormCreator creator;
-  creator.setHints( hints );
+  creator.setHints( schemaHints );
+  creator.mergeHints( hints );
   
   QString form = creator.create( schemaDocument );
 

@@ -31,7 +31,7 @@
     <xs:annotation>
       <xs:appinfo>
         <ugh:hint ref="feature">
-          <ugh:label>Feature: &lt;arg ref="summary" truncate="50"/&gt;</ugh:label>
+          <ugh:label>Feature: <arg ref="summary" truncate="50"/></ugh:label>
         </ugh:hint>
       </xs:appinfo>
     </xs:annotation>
