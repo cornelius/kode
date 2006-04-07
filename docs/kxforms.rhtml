@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">   
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />    
+  <title>Kode</title>   
+  <link rel="stylesheet" href="kode.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="header">
+  <h1>KXForms</h1>
+
+  <div id="navigation">
+      <ul id="navMain">
+        <li class="first-child"><a href="index.html">Home</a></li>
+        <li><a href="schemaparser.html">Schema Parser</a></li>
+        <li><a href="xmlcompiler.html">XML Compiler</a></li>
+        <li class="current-page">KXForms</li>
+        <li><a href="webservices.html">Web Services</a></li>
+      </ul>
+  </div>
+</div>
+
+<div id="container">
+
+  <div class="sidebar" id="content">
+    <h2>Content</h2>
+    <ul>
+      <li><a href="#concept">Concept</a></li>
+        <ul>
+          <li><a href="#concept_traditional">Traditional</a></li>
+          <li><a href="#concept_forms">Forms</a></li>
+          <li><a href="#concept_generation">GUI Generation</a></li>
+        </ul>
+      <li><a href="#kxforms">KXForms</a>
+        <ul>
+          <li><a href="#kxforms_format">Format</a></li>
+          <li><a href="#kxforms_example">Example</a></li>
+          <li><a href="#kxforms_application">Application</a></li>
+        </ul>
+      </li>
+      <li><a href="#gui_generation">User Interface Generation</a>
+        <ul>
+          <li><a href="#ugh">Hints</a></li>
+          <li><a href="#ugh_example">Example</a></li>
+        </uk>
+      </li>
+    </ul>
+  </div>
+
+  <div class="content">
+<!--
+    <div class="update"> 
+      <p>Latest code is in KDE SVN.</p>
+    </div>
+-->
+    <div class="introduction">
+      <p>KXForms is a format to describe user interfaces for editing XML data in
+      an abstract way. It comes with an application that creates
+      functional graphical user interfaces from KXForms descriptions. The format
+      is suitable to be generated automatically based on available schema
+      information.</p>
+    </div>
+    
+    <a name="concept"/>
+    <h2 id="concept">Concept</h2>
+
+      <p>Creating user interfaces for editing data which is available in an XML
+      format is a recurring task for application developers. This task often is
+      boring and results in repetitious code, because it mainly means
+      writing standard procedures like parsing and writing XML, creation of lots
+      of user interface elements and other tedious activities.</p>
+      
+      <p>One particular problem is that the information how the data looks like
+      which is to be edited is often duplicated, it's in the code of the editing
+      GUI, but it's also in the XML file itself and possibly in a schema.
+      Changes in the schema require adapting the code, which can be anything
+      from annoying to impossible.</p>
+
+      <p>KXForms is the attempt to explore alternative solutions to the
+      traditional way of hand-coding GUIs for editing XML data. Read on to learn
+      about the concepts and the results of a first implementation.</p>
+    
+    <a name="concept_traditional"/>  
+    <h3>Traditional Solution</h3>
+      
+      <a href="gui_traditional.png">
+        <img class="floatingFigure" id="gui_traditional"
+          src="gui_traditional_small.png"/>
+      </a>
+
+      <p>The traditional solution is to write a dedicated native user interface
+      for editing a specific type of XML data using a standard user interface
+      toolkit. Depending on the complexity of the
+      schema of the data this can be easy or hard. In any case the resulting
+      user interface can only be used for the type of data is has been writen
+      for. On one hand this is a drawback, on the other hand it allows to
+      optimize the user interface specifically for the one use case it is
+      designed for.</p>
+
+      <p>While it potentially results in the highest quality solution the
+      traditional way of writing user interfaces also requires the highest
+      effort and is least reusable.</p>
+
+    <a name="concept_forms"/>  
+    <h3>Abstract user interface description</h3>
+
+      <a href="gui_forms.png">
+        <img class="floatingFigure" id="gui_forms" src="gui_forms_small.png"/>
+      </a>
+
+      <p>A more flexible and possibly quicker way to create a user interface for
+      editing XML data is the abstract description of the user interface using a
+      higher-level and more abstract description. Especially if the connection
+      between user interface and reading and writing the data doesn't require to
+      write cusom code, this is an efficient way to create a GUI. One approach
+      for this abstract description is XForms. The GUI is then created from the
+      abstract description by an appropriate tool, in case of XForms this is the
+      web browser.</p>
+
+  </div>
+ 
+  <div class="sidebar">
+    <h2>XForms</h2>
+    <p><a href="http://www.w3.org/TR/2006/REC-xforms-20060314/">XForms</a> is a
+    W3C Recommendation for the next-generation web forms. It's completely
+    XML-based and meant to replace the traditional HTML forms.</p>
+  </div>
+
+  <div class="content">
+
+      <p>KXForms is an extension of XForms which adds some input elements, but
+      isn't designed to be used as part of HTML pages or rendered by a web
+      browser. There is a special tool <tt>kxforms</tt> which reads KXForms,
+      creates the corresponding user interface and allows to edit XML data with
+      that which fits to the specific KXForms.</p>
+
+      <p>While creating an KXForms description is less work than creating a GUI
+      with a programming language, it still is a non-neglectable effort which is
+      required for each different schema of data.</p>
+ 
+    <a name="concept_generation"/>  
+    <h3>Automatic user interface generation</h3>
+
+  </div>
+      
+  <div class="sidebar">
+    <h2>Schemas for XML data</h2>
+    <p>A schema is a formal way to describe a specific XML format. It specifies
+    structure and types of the data and how they are represented in XML. There
+    are various schema languages available. The two most common ones are
+    <a href="">W3C XML Schema</a> and <a href="">RelaxNG</a>.</p>
+  </div>
+
+  <div class="content">
+      <p>In many cases there exist formal specifications of the schema of XML
+      data as XML Schema or using another schema language like RelaxNG or the
+      old DTDs. These schema specifications contain most of the information
+      needed for creating user interfaces like the structure and the types of
+      the data elements and all information about how to read and write the
+      data. So it's possible to automatically create an editor user interface
+      for XML data from the existing schema.</p>
+
+      <a href="gui_generation.png">
+        <img class="floatingFigure" id="gui_generation"
+          src="gui_generation_small.png"/>
+      </a>
+
+      <p>This solution is very powerful, because in the best case it doesn't
+      require any additional work to create a GUI for editing the data. The
+      drawback is that in terms of usability completely automatic generated
+      interfaces often fall behind GUIs dedicatedly developed for a specific
+      schema.</p>
+      
+      <p>To overcome this problem kxforms allows to guide the creation of the
+      interface by User Interface Generation Hints. These hints specify
+      additional information which is used to create the GUI, for example
+      specific user-visible labels or arrangements of GUI elements which can't
+      be deduced from the schema.</p>
+      
+      <p>The UI Generation Hints can be specified externally or can be embedded
+      in the schema. If they are embedded in the schema and the XML data
+      specifies a location where its schema can be retrieved, it's possible to
+      create the GUI for editing the data without specifying any external
+      information.</p>
+
+    <a name="kxforms"/>
+    <h2>KXForms</h2>
+    
+      <p>KXForms is an XForms-based XML format describing user interfaces
+      associated with XML data. The user interfaces are specified as one or more
+      forms each containing a number of user interface elements. The forms and
+      elements are associated with XML data by XPath-like references.</p>
+      
+      <p>There are several different user interface elements available,
+      currently kxforms supports single and multi line text input fields,
+      homogenous and heterogenous lists and selections from a pre-defined number
+      of items.</p>
+
+      <p>All user interface elements have labels which are meant to be displayed
+      to the user. The labels can contain arguments which are substituted by
+      data from the XML data.</p>
+      
+    <a name="kxforms_example"/>  
+    <h3>Example</h3>
+
+      <p>This is an example how a GUI for a specific set of XML data is created
+      from a corresponding KXForms description.</p>
+
+      <h4>XML Data</h4>
+    
+      <p>The data is a simplified (and outdated ;-) version of KDE feature list
+      data.</p>
+  </div>
+
+  <div class="sidebar">
+    <h2>KDE Feature Plan</h2>
+    <p>The KDE project collects planned features for the different KDE releases
+    in a the <a href="http://developer.kde.org/development-versions/">KDE
+    feature plan</a>. This is based on an XML file which is
+    maintained in the KDE Subversion repository and updated by the developers.
+    Different HTML views are generated from the XML data.</p>
+  </div>
+
+  <div class="content">
+      <p class="code">
+<pre>
+<%= `highlight <example.xml -S xml --fragment` %>
+</pre>
+      </p>
+    
+      <a name="kxforms_format"/>  
+      <h4>KXForms Description</h4>
+
+      <p>The KXForms form description contains three forms which show the usage
+      of the different available elements.</p>
+    
+      <p class="code">
+<pre>
+<%= `highlight <example.kxform -S xml --fragment` %>
+</pre>
+      </p>
+ 
+      <a name="kxforms_application"/>  
+      <h4>Generated User Interface</h4>
+
+      <p>The following screenshots show the generated user interface for the
+      three forms.</p>
+  </div>
+ 
+  <div class="sidebar">
+    <h2>The Application kxforms</h2>
+    <p>kxforms is a stand-alone application which creates user interfaces for
+    given KXForms descriptions. It then can be used to load, edit and save XML
+    files which are corresponding to the KXForm.</p>
+  </div>
+
+  <div class="content">
+      <p><a href="kxforms1.png"><img width="550" height="389"
+      src="kxforms1_small.png"/></a></p>
+  </div>
+
+  <div class="sidebar">
+    <h2>GUI Modes</h2>
+    <p>The GUI can be run in different modes. The screenshots show the main
+    window based mode where the forms are always embedded in the main window.
+    There is a dialog based GUI mode available as well.</p>
+  </div>
+
+  <div class="content">
+      <p><a href="kxforms3.png"><img width="550" height="389"
+      src="kxforms3_small.png"/></a></p>
+  </div>
+
+  <div class="sidebar">
+    <h2>Bread Crumb Navigation</h2>
+    <p>In main window mode the GUI provides a bread crumb navigation line which
+    is used to show where the currently edited data is located in the hierarchy
+    of the XML data and which is also used to navigate through the hierarchy.
+    </p>
+  </div>
+
+  <div class="content">
+      <p><a href="kxforms4.png"><img width="550" height="389"
+      src="kxforms4_small.png"/></a></p>
+
+
+    <a name="gui_generation"/>
+    <h2>Automatic UI generation from schemas</h2>
+    
+    <p>The KXForms project includes a converter which is able to generate
+    KXForms descriptions from a schema for the XML data. It supports XML Schema
+    and RelaxNG as schema languages. The converter can either be used as command
+    line tool <tt>schema2kxforms</tt> or as part of the KXForms rendering in the
+    kxforms application. If the application is given or can look up a schema it
+    automatically uses this to create the corresponding user interface. In the
+    best case it simpley works and the graphical XML data editor is created
+    without any additional work.</p>
+    
+    <p>kxforms applies some heuristics to guess how user-friendly control
+    elements can be generated. For example it upper-cases the first letter of
+    all lower-case tag names or it creates a title for a list by using a
+    pluralized version of the tag name or it takes the content of an attribute
+    called name as the label for items in a list.</p>
+    
+    <p>But often the information contained in a schema is not enough to create
+    really user-friendly interfaces. For example the schema usually
+    doesn't contain friendly human-readable labels for data fields or the order
+    of data in the schema is not the best for showing the data in the editor
+    GUI and guessing from the schema doesn't work.</p>
+    
+    <p>To overcome this problem kxforms offers to use additional GUI Generation
+    Hints. These can be provided by an external file or be embedded in the
+    schema file. The hints give additional information how the GUI should be
+    created. They are specified in a separate XML format.</p>
+
+    <a name="ugh"/>
+    <h3>UI Generation Hints Format</h3>
+    
+    <p>The following section shows an example of a UI Generation Hints (UGH)
+    file for
+    the feature list example from above. It contains a hint how to create the
+    label for the feature list and a hint what to display to the user for a
+    specific entry of an enumeration. The hints are associated to specific
+    components of the created forms by using an XPath-like reference.</p>
+
+    <a name="ugh_example"/>
+    <h4>UGH Example</h4>
+      <p class="code">
+<pre>
+<%= `highlight <example.ugh -S xml --fragment` %>
+</pre>
+      </p>
+
+    <h4>Example for embedding UGH in a schema</h4>
+
+      <p>This extract from the XML Schema for the feature plan shows how UI
+      Generation Hints can be embedded in a schema.</p>
+
+      <p class="code">
+<pre>
+<%= `highlight <example.xsd+ugh -S xml --fragment` %>
+</pre>
+      </p>
+    
+  </div>
+
+</div>
+
+<div id="footer">
+  <a href="kxforms.html">Go back to top</a>
+</div>
+
+</body>
+</html>

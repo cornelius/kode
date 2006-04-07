@@ -1,0 +1,51 @@
+<kxforms>
+
+  <form ref="features">
+    <xf:label>Features</xf:label>
+    <list>
+      <xf:label>Categories</xf:label>
+      <itemclass ref="category">
+        <itemlabel><arg ref="@name"/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+
+  <form ref="category">
+    <xf:label>Category</xf:label>
+    <xf:input ref="@name">
+      <xf:label>Name</xf:label>
+    </xf:input>
+    <list>
+      <xf:label>Item</xf:label>
+      <itemclass ref="category">
+        <itemlabel>Category: <arg ref="@name"/></itemlabel>
+      </itemclass>
+      <itemclass ref="feature">
+        <itemlabel>Feature: <arg ref="summary" truncate="50"/></itemlabel>
+      </itemclass>
+    </list>
+  </form>
+
+  <form ref="feature">
+    <xf:label>Feature</xf:label>
+    <xf:textarea ref="summary">
+      <xf:label>Summary</xf:label>
+    </xf:textarea>
+    <xf:select1 ref="@status">
+      <xf:label>Status</xf:label>
+      <xf:item>
+        <xf:label>Todo</xf:label>
+        <xf:value>todo</xf:value>
+      </xf:item>
+      <xf:item>
+        <xf:label>In Progress</xf:label>
+        <xf:value>inprogress</xf:value>
+      </xf:item>
+      <xf:item>
+        <xf:label>Done</xf:label>
+        <xf:value>done</xf:value>
+      </xf:item>
+    </xf:select1>
+  </form>
+
+</kxform>

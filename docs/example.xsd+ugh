@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  xmlns:ugh="http://www.kde.org/standards/ugh/0.1" >
+    
+  <xs:element name="category">
+    <xs:annotation>
+      <xs:appinfo>
+        <ugh:hint ref="feature">
+          <ugh:label>Feature: <arg ref="summary" truncate="50"/></ugh:label>
+        </ugh:hint>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="feature"/>
+        <xs:element ref="category"/>
+      </xs:choice>
+      <xs:attributeGroup ref="attlist.category"/>
+    </xs:complexType>
+  </xs:element>
+
+  (...)  
+
+</xs:schema>

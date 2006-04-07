@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<features xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.kde.org/standards/features/1.0"
+  xsi:schemaLocation="http://www.kde.org/standards/features/1.0
+                      http://www.kde.org/standards/features/1.0/features.xsd" >
+  <category name="KDE PIM (Personal Information Management)" >
+    <category name="Kontact" >
+      <feature status="done">
+        <summary>Merged configuration view.</summary>
+      </feature>
+      <feature status="todo">
+        <summary>Add alternative tab-based viewmode.</summary>
+      </feature>
+    </category>
+    <category name="KOrganizer" >
+      <category name="Merge of KO/Pi code" >
+        <feature status="inprogress">
+          <summary>DateNavigator</summary>
+        </feature>
+        <feature status="todo">
+          <summary>Printing: layout bug-fixing and more.</summary>
+        </feature>
+        <feature status="todo">
+          <summary>Printing of what's next view.</summary>
+        </feature>
+      </category>
+      <feature status="done">
+        <summary>Moving / detaching recurring events in the agenda
+        view</summary>
+      </feature>
+      <feature status="todo">
+        <summary>tighter integration with KNotes - ability to pin a note to a
+        contact</summary>
+      </feature>
+    </category>
+  </category>
+</features>

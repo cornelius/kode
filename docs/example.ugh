@@ -1,0 +1,8 @@
+<ugh>
+  <hint ref="category/feature">
+    <label>Feature: <arg ref="summary" truncate="50"/></label>
+  </hint>
+  <hint ref="feature/@status">
+    <enum value="inprogress">In Progress</enum>
+  </hint>
+</ugh>
