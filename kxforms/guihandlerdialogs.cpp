@@ -106,19 +106,19 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
   Form *f = manager()->form( r );
 
   if ( !f ) {
-    KMessageBox::sorry( parent, i18n("Form '%1' not found.").arg( ref.toString() ) );
+    KMessageBox::sorry( parent, i18n("Form '%1' not found.", ref.toString() ) );
     return;
   }
 
-  FormDialog dlg( parent, i18n("Edit %1").arg( ref.toString() ), manager() );
+  FormDialog dlg( parent, i18n("Edit %1", ref.toString() ), manager() );
 
   FormGui *gui = createGui( f, dlg.mainWidget() );
   gui->setRef( ref );
   gui->parseElement( f->element() );
 
   if ( !gui ) {
-    KMessageBox::sorry( parent, i18n("Unable to create GUI for '%1'.")
-      .arg( ref.toString() ) );
+    KMessageBox::sorry( parent, i18n("Unable to create GUI for '%1'.",
+        ref.toString() ) );
     return;
   }
 

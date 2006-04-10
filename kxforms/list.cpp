@@ -138,7 +138,7 @@ void List::deleteItem()
   ListModel::Item *item = mModel->item( index );
 
   int result = KMessageBox::warningContinueCancel( this,
-    i18n("Delete item '%1'?").arg( item->label ) );
+    i18n("Delete item '%1'?", item->label ) );
   if ( result == KMessageBox::Continue ) {
     QDomElement element = mManager->applyReference( item->ref );
     element.parentNode().removeChild( element );

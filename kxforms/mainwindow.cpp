@@ -114,8 +114,8 @@ void MainWindow::setVersion( const QString &version )
 bool MainWindow::load(const KUrl& url)
 {
   if ( !url.isValid() ) {
-    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
-      .arg( url.prettyURL() ) );    
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
+        url.prettyURL() ) );    
     return false;
   }
 
@@ -127,8 +127,8 @@ bool MainWindow::load(const KUrl& url)
 bool MainWindow::save( const KUrl & url )
 {
   if ( !url.isValid() ) {
-    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
-      .arg( url.prettyURL() ) );    
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
+        url.prettyURL() ) );    
     return false;
   }
   
@@ -256,8 +256,8 @@ void MainWindow::loadSchema( const KUrl &url )
   kDebug() << "MainWindow::loadSchema() " << url << endl;
 
   if ( !url.isValid() ) {
-    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
-      .arg( url.prettyURL() ) );    
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
+        url.prettyURL() ) );    
     return;
   }
 
@@ -307,8 +307,8 @@ void MainWindow::loadHints( const KUrl &url )
   kDebug() << "MainWindow::loadHints() " << url << endl;
 
   if ( !url.isValid() ) {
-    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
-      .arg( url.prettyURL() ) );    
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
+        url.prettyURL() ) );    
     return;
   }
 
@@ -329,8 +329,8 @@ void MainWindow::slotGetHintsResult( bool ok )
 void MainWindow::loadForm( const KUrl &url )
 {
   if ( !url.isValid() ) {
-    KMessageBox::sorry( this, i18n("Invalid URL '%1'.")
-      .arg( url.prettyURL() ) );    
+    KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
+        url.prettyURL() ) );    
     return;
   }
 
@@ -349,8 +349,8 @@ void MainWindow::slotGetFormResult( bool ok )
 void MainWindow::parseForm( const QString &data )
 {
   if ( !mFormsManager.parseForms( data ) ) {
-    KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.")
-      .arg( mFormFile->url().prettyURL() ) );
+    KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.",
+        mFormFile->url().prettyURL() ) );
   } else {
     delete mLabel;
     mLabel = 0;

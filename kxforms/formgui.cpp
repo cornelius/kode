@@ -74,7 +74,7 @@ void FormGui::setRef( const Reference &ref )
 
 void FormGui::setRefLabel( const Reference &ref )
 {
-  mRefLabel->setText( i18n("Reference: %1").arg( ref.toString() ) );
+  mRefLabel->setText( i18n("Reference: %1", ref.toString() ) );
 }
 
 Reference FormGui::ref() const

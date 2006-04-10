@@ -133,7 +133,7 @@ void BinaryWidget::setData( const QByteArray &data )
       part->openURL( KUrl( file.name() ) );
       mMainWidget = part->widget();
     } else {
-      mMainWidget = new QLabel( i18n( "No part found for visualization of mimetype %1" ).arg( mimetype ), this );
+      mMainWidget = new QLabel( i18n( "No part found for visualization of mimetype %1", mimetype ), this );
     }
 
     mData = data;
@@ -156,7 +156,7 @@ void BinaryWidget::load()
   if ( KIO::NetAccess::download( url, tempFile, this ) ) {
     QFile file( tempFile );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-      KMessageBox::error( this, i18n( "Unable to open file %1" ).arg( url.url() ) );
+      KMessageBox::error( this, i18n( "Unable to open file %1", url.url() ) );
       return;
     }
 

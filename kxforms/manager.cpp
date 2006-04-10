@@ -129,8 +129,7 @@ KResult Manager::loadData( const QString &xml )
   int errorLine;
   int errorCol;
   if ( !mData.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
-    QString msg = i18n("%1 (line %2, column %3)").arg( errorMsg,
-      QString::number( errorLine ), QString::number( errorCol ) );
+    QString msg = i18n("%1 (line %2, column %3)", errorMsg, errorLine, errorCol );
     return KResultError( KResult::ParseError, msg );
   }
 
@@ -147,8 +146,7 @@ KResult Manager::loadData( const QString &xml )
 
 #if 1
   if ( !mData.setContent( xml, &errorMsg, &errorLine, &errorCol ) ) {
-    QString msg = i18n("%1 (line %2, column %3)").arg( errorMsg,
-      QString::number( errorLine ), QString::number( errorCol ) );
+    QString msg = i18n("%1 (line %2, column %3)", errorMsg, errorLine, errorCol );
     return KResultError( KResult::ParseError, msg );
   }
 #endif
