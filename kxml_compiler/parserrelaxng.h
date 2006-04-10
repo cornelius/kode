@@ -23,28 +23,7 @@
 
 #include "schema.h"
 
-#include <libkode/code.h>
-#include <libkode/printer.h>
-#include <libkode/typedef.h>
-
-#include <kaboutdata.h>
-#include <kapplication.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kcmdlineargs.h>
-#include <kglobal.h>
-#include <kconfig.h>
-#include <ksimpleconfig.h>
-#include <kstandarddirs.h>
-
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qdom.h>
-#include <qregexp.h>
-#include <qmap.h>
-#include <QList>
-#include <QStringList>
-#include <QString>
+#include <QMap>
 
 #include <iostream>
 

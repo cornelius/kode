@@ -28,7 +28,6 @@
 #include <common/parsercontext.h>
 
 #include <kdebug.h>
-#include <klocale.h>
 
 #include <QDebug>
 
