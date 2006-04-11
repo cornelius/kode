@@ -24,7 +24,6 @@
 #include "manager.h"
 
 #include <kdebug.h>
-#include <kdialogbase.h>
 #include <kmessagebox.h>
 #include <klocale.h>
 

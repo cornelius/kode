@@ -29,26 +29,12 @@
 #include <kxml_compiler/schema.h>
 #include <kxml_compiler/parserxsd.h>
 
-#include <kprinter.h>
-#include <kdeversion.h>
-#include <kglobal.h>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <kmenubar.h>
-#include <kstatusbar.h>
-#include <kaccel.h>
-#include <kio/netaccess.h>
-#include <kfiledialog.h>
-#include <kconfig.h>
-#include <kurl.h>
-#include <kurlrequesterdlg.h>
-#include <kedittoolbar.h>
-#include <kstdaccel.h>
-#include <kaction.h>
-#include <kstdaction.h>
-#include <kdebug.h>
 #include <kmessagebox.h>
+#include <klocale.h>
+#include <kstdaction.h>
 #include <kfiledialog.h>
+#include <kstatusbar.h>
+#include <kdebug.h>
 
 #include <QFile>
 #include <QTextStream>
@@ -57,8 +43,7 @@
 using namespace KXForms;
 
 MainWindow::MainWindow()
-    : KMainWindow( 0, "MainWindow" ),
-      m_printer(0)
+    : KMainWindow()
 {
   mLabel = new QLabel( i18n("Welcome!"), this );
 
@@ -98,7 +83,6 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-  delete m_printer;
 }
 
 KXForms::Manager *MainWindow::formsManager()
@@ -157,7 +141,7 @@ void MainWindow::setupActions()
   KStdAction::open(this, SLOT(fileOpen()), actionCollection());
   KStdAction::save(this, SLOT(save()), actionCollection());
   KStdAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
-  KStdAction::quit(kapp, SLOT(quit()), actionCollection());
+  KStdAction::quit(this, SLOT(close()), actionCollection());
 
   KStdAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
@@ -169,25 +153,6 @@ void MainWindow::setupActions()
                                 actionCollection(), "custom_action");
   Q_UNUSED( custom );
 #endif
-}
-
-void MainWindow::saveProperties(KConfig *config)
-{
-  // the 'config' object points to the session managed
-  // config file.  anything you write here will be available
-  // later when this app is restored
-
-  Q_UNUSED( config );
-}
-
-void MainWindow::readProperties(KConfig *config)
-{
-  // the 'config' object points to the session managed
-  // config file.  this function is automatically called whenever
-  // the app is being restored.  read in here whatever you wrote
-  // in 'saveProperties'
-
-  Q_UNUSED( config );
 }
 
 void MainWindow::fileNew()
@@ -218,23 +183,6 @@ void MainWindow::fileSaveAs()
   }
 }
 
-void MainWindow::optionsConfigureToolbars()
-{
-  // use the standard toolbar editor
-  saveMainWindowSettings( KGlobal::config(), autoSaveGroup() );
-  KEditToolbar dlg(actionCollection());
-  connect(&dlg, SIGNAL(newToolbarConfig()), this, SLOT(newToolbarConfig()));
-  dlg.exec();
-}
-
-void MainWindow::newToolbarConfig()
-{
-  // this slot is called when user clicks "Ok" or "Apply" in the toolbar editor.
-  // recreate our GUI, and re-apply the settings (e.g. "text under icons", etc.)
-  createGUI();
-  applyMainWindowSettings( KGlobal::config(), autoSaveGroup() );
-}
-
 void MainWindow::optionsPreferences()
 {
 }
@@ -253,7 +201,7 @@ void MainWindow::changeCaption(const QString& text)
 
 void MainWindow::loadSchema( const KUrl &url )
 {
-  kDebug() << "MainWindow::loadSchema() " << url << endl;
+  kDebug() << "MainWindow::loadSchema() " << url.prettyURL() << endl;
 
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
@@ -304,7 +252,7 @@ void MainWindow::parseSchema()
 
 void MainWindow::loadHints( const KUrl &url )
 {
-  kDebug() << "MainWindow::loadHints() " << url << endl;
+  kDebug() << "MainWindow::loadHints() " << url.prettyURL() << endl;
 
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",

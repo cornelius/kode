@@ -27,7 +27,6 @@
 #include "prefs.h"
 
 #include <kapplication.h>
-#include <dcopclient.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
@@ -82,7 +81,11 @@ int main(int argc, char **argv)
   about.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
   KCmdLineArgs::init(argc, argv, &about);
   KCmdLineArgs::addCmdLineOptions(options);
+#if 1
   KApplication app;
+#else
+  QApplication app( argc, argv );
+#endif
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 

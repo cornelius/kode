@@ -56,7 +56,7 @@ void TextArea::loadData()
     n.save( ts, 0 );
   }
 
-  mEdit->setText( txt );
+  mEdit->setPlainText( txt );
 }
 
 void TextArea::saveData()
@@ -76,7 +76,7 @@ void TextArea::saveData()
     e.removeChild( e.firstChild() );
   }
 
-  QString xml = "<" + tag + ">" + mEdit->text() + "</" + tag + ">";
+  QString xml = "<" + tag + ">" + mEdit->toPlainText() + "</" + tag + ">";
 
   kDebug() << "XML: " << xml << endl;
 

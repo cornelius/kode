@@ -1,7 +1,7 @@
 /*
-    This file is part of KXForms.
+    This file is part of KDE
 
-    Copyright (c) 2005,2006 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -15,35 +15,20 @@
 
     You should have received a copy of the GNU Library General Public License
     along with this library; see the file COPYING.LIB.  If not, write to
-    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-    Boston, MA 02111-1307, USA.
-*/
+    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+    Boston, MA 02110-1301, USA.
+ */
 
-#include "guihandler.h"
+#ifndef FILEPROVIDER_H
+#define FILEPROVIDER_H
 
-#include "manager.h"
-
-#include <kdebug.h>
-#include <kmessagebox.h>
-#include <klocale.h>
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QFrame>
-
-using namespace KXForms;
-
-GuiHandler::GuiHandler( Manager *m )
-  : mManager( m )
+class FileProvider
 {
-  mManager->setGuiHandler( this );
-}
+  public:
+    FileProvider() {}
 
-GuiHandler::~GuiHandler()
-{
-}
+    bool get( const QString &, QString & ) { return false; }
+    void cleanUp() {}
+};
 
-Manager *GuiHandler::manager() const
-{
-  return mManager;
-}
+#endif

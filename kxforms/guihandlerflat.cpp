@@ -189,7 +189,8 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
 
   mStackWidget->addWidget( gui );
 
-  QBoxLayout *buttonLayout = new QHBoxLayout( topLayout );
+  QBoxLayout *buttonLayout = new QHBoxLayout();
+  topLayout->addLayout( buttonLayout );
   buttonLayout->setMargin( KDialog::marginHint() );
   
   buttonLayout->addStretch( 1 );

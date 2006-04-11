@@ -60,10 +60,11 @@ List::List( Manager *m, const QString &label, QWidget *parent )
 
   QBoxLayout *buttonLayout;
   if ( Prefs::verticalListButtons() ) {
-    buttonLayout = new QVBoxLayout( topLayout );
+    buttonLayout = new QVBoxLayout();
   } else {
-    buttonLayout = new QHBoxLayout( topLayout );
+    buttonLayout = new QHBoxLayout();
   }
+  topLayout->addLayout( buttonLayout );
 
   if ( Prefs::verticalListButtons() ) {
     buttonLayout->addStretch( 1 );
@@ -216,7 +217,7 @@ void List::loadData()
     if ( ic.isValid() ) {
       int count = 1;
       QMap<QString, int>::Iterator it = counts.find( ic.refName() );
-      if ( it != counts.end() ) count = it.data();
+      if ( it != counts.end() ) count = it.value();
       Reference::Segment s( ic.refName(), count );
       Reference r = ref() + s;
 

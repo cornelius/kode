@@ -219,7 +219,7 @@ void Manager::registerGui( FormGui *gui )
 
 void Manager::unregisterGui( FormGui *gui )
 {
-  mGuis.remove( gui );
+  mGuis.removeAll( gui );
 }
 
 bool Manager::hasData() const

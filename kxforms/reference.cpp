@@ -58,8 +58,8 @@ void Reference::Segment::setName( const QString &name )
 
 void Reference::Segment::fromString( const QString &str )
 {
-  int pos1 = str.find( "[" );
-  int pos2 = str.find( "]" );
+  int pos1 = str.indexOf( "[" );
+  int pos2 = str.indexOf( "]" );
 
   int startPos;
   if ( str.startsWith( "@" ) ) {
@@ -183,7 +183,7 @@ void Reference::fromString( const QString &str )
 {
   mAbsolute = str.startsWith( "/" );
 
-  QStringList s = QStringList::split( "/", str );
+  QStringList s = str.split( "/" );
   QStringList::ConstIterator it;
   for( it = s.begin(); it != s.end(); ++it ) {
     mSegments.append( Segment( *it ) );
@@ -270,7 +270,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
       QDomElement e = n.toElement();
       int count = 1;
       QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
-      if ( itCount != counts.end() ) count = itCount.data();
+      if ( itCount != counts.end() ) count = itCount.value();
       if ( e.tagName() == segment.name() && count == segment.count() ) {
         result = e;
         break;
@@ -312,7 +312,7 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
       
       int count = 1;
       QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
-      if ( itCount != counts.end() ) count = itCount.data();
+      if ( itCount != counts.end() ) count = itCount.value();
       
       kDebug() << "  COUNT: " << count << endl;
 

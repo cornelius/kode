@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <QStack>
+#include <QUrl>
 
 class QWidget;
 class QBoxLayout;

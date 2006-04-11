@@ -1,7 +1,6 @@
 SUBDIRS = libkode common schema kxml_compiler kxforms .
 
 INCLUDES = -I$(top_srcdir) -I$(srcdir)/libkode $(all_includes)
-KDE_CXXFLAGS = -UQT3_SUPPORT
 
 bin_PROGRAMS = kode
 

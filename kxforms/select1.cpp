@@ -59,7 +59,7 @@ void Select1::parseElement( const QDomElement &formElement )
         }
       }
       if ( !label.isEmpty() && !value.isEmpty() ) {
-        mComboBox->insertItem( label );
+        mComboBox->addItem( label );
         mValues.append( value );
       }
     }
@@ -81,7 +81,7 @@ void Select1::loadData()
     if ( *it == txt ) break;
   }
   if ( it != mValues.end() ) {
-    mComboBox->setCurrentItem( count );
+    mComboBox->setCurrentIndex( count );
   } else {
     kWarning() << "Select1::loadData() unknown value: " << txt << endl;
   }
@@ -93,7 +93,7 @@ void Select1::saveData()
 
   Reference::Segment s = ref().segments().last();
 
-  QString txt = mValues[ mComboBox->currentItem() ];
+  QString txt = mValues[ mComboBox->currentIndex() ];
   if ( s.isAttribute() ) {
     context().setAttribute( s.name(), txt );
   } else {

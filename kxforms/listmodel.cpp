@@ -119,7 +119,7 @@ void ListModel::recalculateSegmentCounts()
     int count = 1;
     Reference::Segment segment = item->ref.segments().last();
     QMap<QString, int>::ConstIterator it = counts.find( segment.name() );
-    if ( it != counts.end() ) count = it.data();
+    if ( it != counts.end() ) count = it.value();
     
     if ( count != segment.count() ) {
       item->ref.lastSegment().setCount( count );

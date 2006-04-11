@@ -23,11 +23,9 @@
 
 #include "manager.h"
 
-#include <kapplication.h>
 #include <kmainwindow.h>
 #include <kurl.h>
 
-class KPrinter;
 class QLabel;
 class KUpdate;
 class RemoteFile;
@@ -59,19 +57,6 @@ class MainWindow : public KMainWindow
     KXForms::Manager *formsManager();
 
   protected:
-    /**
-     * This function is called when it is time for the app to save its
-     * properties for session management purposes.
-     */
-    void saveProperties(KConfig *);
-
-    /**
-     * This function is called when this app is restored.  The KConfig
-     * object points to the session management config file that was saved
-     * with @ref saveProperties
-     */
-    void readProperties(KConfig *);
-
     void parseSchema();
     void parseForm( const QString &data );
 
@@ -88,9 +73,7 @@ class MainWindow : public KMainWindow
     void fileNew();
     void fileOpen();
     void fileSaveAs();
-    void optionsConfigureToolbars();
     void optionsPreferences();
-    void newToolbarConfig();
 
     void changeStatusbar(const QString& text);
     void changeCaption(const QString& text);
@@ -100,8 +83,6 @@ class MainWindow : public KMainWindow
     void setupActions();
 
   private:
-    KPrinter   *m_printer;
-
     QLabel *mLabel;
 
     KXForms::Manager mFormsManager;

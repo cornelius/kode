@@ -100,7 +100,7 @@ QString XmlBuilder::print( int indentation, bool newLine ) const
   
   QMap<QString,QString>::ConstIterator it;
   for( it = mAttributes.begin(); it != mAttributes.end(); ++it ) {
-    out += " " + it.key() + "=\"" + it.data() + "\"";
+    out += " " + it.key() + "=\"" + it.value() + "\"";
   }
 
   if ( isEmpty() ) {
