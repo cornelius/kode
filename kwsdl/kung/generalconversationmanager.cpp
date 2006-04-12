@@ -24,15 +24,11 @@
 GeneralConversationManager::GeneralConversationManager( const KWSDL::WSDL &wsdl )
   : mWSDL( wsdl )
 {
-  const KWSDL::Port::List servicePorts = mWSDL.definitions().service().ports();
-  KWSDL::Port::List::ConstIterator it;
-  for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
-    KWSDL::Binding binding = mWSDL.findBinding( (*it).bindingName() );
-
-    // KUNGPORT
-    //KWSDL::Port port = mWSDL.findPort( binding.type() );
-    //const KWSDL::Operation::List operations = port.operations();
-    const KWSDL::Operation::List operations;
+  KWSDL::PortType::List porttypes = mWSDL.definitions().portTypes();
+  KWSDL::PortType::List::ConstIterator it;
+  for ( it = porttypes.begin(); it != porttypes.end(); ++it ) {
+    KWSDL::PortType porttype = (*it);
+    const KWSDL::Operation::List operations = porttype.operations();
     KWSDL::Operation::List::ConstIterator opIt;
     for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
       mInputMessages.append( mWSDL.findMessage( (*opIt).input().message() ) );

@@ -58,9 +58,8 @@ void Dispatcher::setWSDL( const KWSDL::WSDL &wsdl )
 
   mConversationManager = new GeneralConversationManager( mWSDL );
 
-  // KUNGPORT
-  //QString location = mWSDL.definitions().service().ports().first().mLocation;
-  QString location = "";
+  QUrl locationurl = mWSDL.definitions().bindings().first().soapBinding().address().location();
+  QString location = locationurl.toEncoded();
   mTransport = new Transport( location );
   connect( mTransport, SIGNAL( result( const QString& ) ),
            this, SLOT( result( const QString& ) ) );

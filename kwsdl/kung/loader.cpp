@@ -23,6 +23,7 @@
 
 #include <common/fileprovider.h>
 #include <common/parsercontext.h>
+#include <common/messagehandler.h>
 #include <wsdl/definitions.h>
 
 #include "dispatcher.h"
@@ -81,6 +82,11 @@ void Loader::parse( const QDomElement &element )
 {
   KWSDL::Definitions def;
   KWSDL::WSDL kwsdl;
+
+  NSManager namespaceManager;
+  MessageHandler messageHandler;
+  mContext->setNamespaceManager(&namespaceManager);
+  mContext->setMessageHandler(&messageHandler);
 
   def.loadXML( mContext, element );
 
