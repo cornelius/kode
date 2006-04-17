@@ -1,24 +1,35 @@
 kde4_header()
 
+if(KDE4_BUILD_TESTS)
+
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
 
 
 ########### next target ###############
 
-set(testfeatures_SRCS testfeatures.cpp kde-features.cpp kde-features_parser.cpp )
+set(testfeatures_SRCS testfeatures.cpp)
+kode_add_xml_parser(testfeatures_SRCS kde-features.rng)
 
 kde4_automoc(${testfeatures_SRCS})
-
-if(KDE4_BUILD_TESTS)
 
 kde4_add_executable(testfeatures ${testfeatures_SRCS})
 
 target_link_libraries(testfeatures  ${KDE4_KDECORE_LIBS} )
 
-endif(KDE4_BUILD_TESTS)
+########### next target ###############
+
+set(testholidays_SRCS testholidays.cpp)
+kode_add_xml_parser(testholidays_SRCS kde-holidays.rng)
+
+kde4_automoc(${testholidays_SRCS})
+
+kde4_add_executable(testholidays ${testholidays_SRCS})
+
+target_link_libraries(testholidays  ${KDE4_KDECORE_LIBS} )
 
 ########### install files ###############
 
+endif(KDE4_BUILD_TESTS)
 
 kde4_footer()
 

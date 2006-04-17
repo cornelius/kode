@@ -1,6 +1,6 @@
 kde4_header()
 
-#add_subdirectory( tests ) 
+add_subdirectory( tests ) 
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
 
