@@ -2,7 +2,7 @@ kde4_header()
 
 add_subdirectory( tests ) 
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
+include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDES} )
 
 
 ########### next target ###############
@@ -15,7 +15,7 @@ set(kxml_compiler_SRCS
 
 kde4_automoc(${kxml_compiler_SRCS})
 
-kde4_add_executable(kxml_compiler ${kxml_compiler_SRCS})
+kde4_add_executable(kxml_compiler NOGUI ${kxml_compiler_SRCS})
 
 target_link_libraries(kxml_compiler  ${KDE4_KDECORE_LIBS} kode kschema )
 
