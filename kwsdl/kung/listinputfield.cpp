@@ -95,7 +95,7 @@ ListWidget::ListWidget( InputField *parentField, const QString &name, const QStr
   QGridLayout *layout = new QGridLayout( this, 4, 2, 11, 6 );
 
   mView = new QListWidget( this );
-  layout->addMultiCellWidget( mView, 0, 3, 0, 0 );
+  layout->addWidget( mView, 0, 0, 4, 1);
 
   mAddButton = new QPushButton( i18n( "Add" ), this );
   layout->addWidget( mAddButton, 0, 1 );

@@ -142,7 +142,7 @@ void BinaryWidget::setData( const QByteArray &data )
     mMainWidget = new QLabel( i18n( "Got data of unknown mimetype" ), this );
   }
 
-  mLayout->addMultiCellWidget( mMainWidget, 0, 2, 0, 0 );
+  mLayout->addWidget( mMainWidget, 0, 0, 3, 1);
   mMainWidget->show();
 }
 
