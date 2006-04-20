@@ -190,7 +190,7 @@ void MainWindow::optionsPreferences()
 void MainWindow::changeStatusbar(const QString& text)
 {
   // display the text on the statusbar
-  statusBar()->message(text);
+  statusBar()->showMessage(text);
 }
 
 void MainWindow::changeCaption(const QString& text)
