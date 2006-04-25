@@ -144,7 +144,8 @@ QWidget *ComplexBaseInputField::createWidget( QWidget *parent )
   QGroupBox *inputWidget = new QGroupBox( mName, parent );
 #warning Is this needed?
   //inputWidget->setColumnLayout( 0, Qt::Horizontal );
-  QGridLayout *layout = new QGridLayout( inputWidget->layout(), 2, 2, 6 );
+  QGridLayout *layout = new QGridLayout( inputWidget->layout() );
+  layout->setSpacing( 6 );
 
   InputField::List::Iterator it;
   int row = 0;

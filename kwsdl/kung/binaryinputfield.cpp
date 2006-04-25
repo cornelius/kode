@@ -100,7 +100,9 @@ BinaryWidget::BinaryWidget( QWidget *parent )
 {
   setObjectName( "BinaryWidget" );
 
-  mLayout = new QGridLayout( this, 3, 2, 11, 6 );
+  mLayout = new QGridLayout( this );
+  mLayout->setSpacing( 6 );
+  mLayout->setMargin( 11 );
 
   mLoadButton = new QPushButton( i18n( "Load..." ), this );
   mSaveButton = new QPushButton( i18n( "Save..." ), this );

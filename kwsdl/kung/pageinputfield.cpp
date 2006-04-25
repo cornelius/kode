@@ -89,7 +89,9 @@ QString PageInputField::data() const
 QWidget *PageInputField::createWidget( QWidget *parent )
 {
   QWidget *mInputWidget = new QWidget( parent, "PageInputWidget" );
-  QGridLayout *layout = new QGridLayout( mInputWidget, 2, 2, 11, 6 );
+  QGridLayout *layout = new QGridLayout( mInputWidget );
+  layout->setSpacing( 6 );
+  layout->setMargin( 11 );
 
   InputField::List::Iterator it;
   int row = 0;

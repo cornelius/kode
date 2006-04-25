@@ -92,7 +92,9 @@ ListWidget::ListWidget( InputField *parentField, const QString &name, const QStr
   : QWidget( parent ),
     mParentField( parentField ), mName( name ), mType( type )
 {
-  QGridLayout *layout = new QGridLayout( this, 4, 2, 11, 6 );
+  QGridLayout *layout = new QGridLayout( this );
+  layout->setSpacing( 6 );
+  layout->setMargin( 11 );
 
   mView = new QListWidget( this );
   layout->addWidget( mView, 0, 0, 4, 1);
