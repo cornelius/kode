@@ -74,7 +74,7 @@ void Converter::createKDETransport()
   queryCode += "}";
   queryCode.newLine();
   queryCode += "connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ), this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );";
-  queryCode += "connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotResult( KIO::Job* ) ) );";
+  queryCode += "connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotResult( KJob* ) ) );";
 
   query.setBody( queryCode );
 
@@ -107,7 +107,7 @@ void Converter::createKDETransport()
 
   // result slot
   KODE::Function slotResult( "slotResult", "void", KODE::Function::Private | KODE::Function::Slot );
-  slotResult.addArgument( "KIO::Job* job" );
+  slotResult.addArgument( "KJob* job" );
 
   KODE::Code slotResultCode;
   slotResultCode += "if ( job->error() != 0 ) {";

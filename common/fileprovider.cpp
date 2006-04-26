@@ -53,8 +53,8 @@ bool FileProvider::get( const QString &url, QString &target )
   KIO::TransferJob* job = KIO::get( KUrl::fromPathOrURL( url ), false, false );
   connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
            this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );
-  connect( job, SIGNAL( result( KIO::Job* ) ),
-           this, SLOT( slotResult( KIO::Job* ) ) );
+  connect( job, SIGNAL( result( KJob* ) ),
+           this, SLOT( slotResult( KJob* ) ) );
 
   mBlocked = true;
   while ( mBlocked ) {
@@ -78,7 +78,7 @@ void FileProvider::slotData( KIO::Job*, const QByteArray &data )
   memcpy( mData.data() + oldSize, data.data(), data.size() );
 }
 
-void FileProvider::slotResult( KIO::Job *job )
+void FileProvider::slotResult( KJob *job )
 {
   if ( job->error() ) {
     qDebug( "%s", qPrintable( job->errorText() ) );

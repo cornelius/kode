@@ -45,7 +45,7 @@ void Transport::query( const QString &xml )
   job->addMetaData( "content-type", "Content-Type: text/xml; charset=utf-8" );
   
   connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ), this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );
-  connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotResult( KIO::Job* ) ) );
+  connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotResult( KJob* ) ) );
 }
 
 void Transport::slotData( KIO::Job*, const QByteArray &data )
@@ -55,7 +55,7 @@ void Transport::slotData( KIO::Job*, const QByteArray &data )
   memcpy( mData.data() + oldSize, data.data(), data.size() );
 }
 
-void Transport::slotResult( KIO::Job* job )
+void Transport::slotResult( KJob* job )
 {
   if ( job->error() != 0 )
     emit error( job->errorText() );

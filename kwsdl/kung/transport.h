@@ -37,7 +37,7 @@ class Transport : public QObject
   
   private slots:
     void slotData( KIO::Job*, const QByteArray &data );
-    void slotResult( KIO::Job* job );
+    void slotResult( KJob* job );
   
   private:
     QString mUrl;

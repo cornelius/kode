@@ -27,7 +27,7 @@
 namespace KIO {
 class Job;
 }
-
+class KJob;
 class FileProvider : QObject
 {
   Q_OBJECT
@@ -40,7 +40,7 @@ class FileProvider : QObject
 
   private slots:
     void slotData( KIO::Job*, const QByteArray& );
-    void slotResult( KIO::Job* );
+    void slotResult( KJob* );
 
   private:
     QString mFileName;

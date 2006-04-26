@@ -29,7 +29,7 @@
 namespace KIO {
 class Job;
 }
-
+class KJob;
 class QWidget;
 
 class RemoteFile : public QObject
@@ -59,12 +59,12 @@ class RemoteFile : public QObject
     void resultPut( bool ok );
 
   protected slots:
-    void slotJobResultGet( KIO::Job *job );
+    void slotJobResultGet( KJob *job );
     void slotJobDataGet( KIO::Job *job, const QByteArray &data );
 
     void slotDataReq( KIO::Job *, QByteArray &data );
     void slotJobDataPut( KIO::Job *, const QByteArray &data );
-    void slotJobResultPut( KIO::Job *job );
+    void slotJobResultPut( KJob *job );
 
   private:
     QWidget *mParent;

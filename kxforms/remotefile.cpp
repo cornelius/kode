@@ -38,8 +38,8 @@ void RemoteFile::get( const KUrl &url )
 
   mGetJob = KIO::get( mUrl, false, false );
 
-  connect( mGetJob, SIGNAL( result( KIO::Job * ) ),
-           SLOT( slotJobResultGet( KIO::Job * ) ) );
+  connect( mGetJob, SIGNAL( result( KJob * ) ),
+           SLOT( slotJobResultGet( KJob * ) ) );
   connect( mGetJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
            SLOT( slotJobDataGet( KIO::Job *, const QByteArray & ) ) );
 }
@@ -55,8 +55,8 @@ void RemoteFile::put( const KUrl &url, const QString &data )
   mPutJob = KIO::put( mUrl, -1, true, false, true );
   connect( mPutJob, SIGNAL( dataReq( KIO::Job *, QByteArray & ) ),
     SLOT( slotDataReq( KIO::Job *, QByteArray & ) ) );
-  connect( mPutJob, SIGNAL( result( KIO::Job * ) ),
-    SLOT( slotJobResultPut( KIO::Job * ) ) );
+  connect( mPutJob, SIGNAL( result( KJob * ) ),
+    SLOT( slotJobResultPut( KJob * ) ) );
   connect( mPutJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
     SLOT( slotJobDataPut( KIO::Job *, const QByteArray & ) ) );
 }
@@ -86,12 +86,12 @@ KUrl RemoteFile::url() const
   return mUrl;
 }
 
-void RemoteFile::slotJobResultGet( KIO::Job *job )
+void RemoteFile::slotJobResultGet( KJob *job )
 {
   kDebug() << "RemoteFile::slotJobResultGet()" << endl;
 
   if ( job->error() ) {
-    job->showErrorDialog( mParent );
+    static_cast<KIO::Job*>(job)->showErrorDialog( mParent );
     emit resultGet( false );
   } else {
     mLoaded = true;
@@ -121,12 +121,12 @@ void RemoteFile::slotJobDataPut( KIO::Job *, const QByteArray &data )
     QByteArray( data.data(), data.size() + 1 ) ) );
 }
 
-void RemoteFile::slotJobResultPut( KIO::Job *job )
+void RemoteFile::slotJobResultPut( KJob *job )
 {
   kDebug() << "RemoteFile::slotJobResultPut()" << endl;
 
   if ( job->error() ) {
-    job->showErrorDialog( mParent );
+    static_cast<KIO::Job*>(job)->showErrorDialog( mParent );
     emit resultPut( false );
   } else {
     emit resultPut( true );
