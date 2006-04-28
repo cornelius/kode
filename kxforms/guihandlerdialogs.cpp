@@ -112,14 +112,14 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
   FormDialog dlg( parent, i18n("Edit %1", ref.toString() ), manager() );
 
   FormGui *gui = createGui( f, dlg.mainWidget() );
-  gui->setRef( ref );
-  gui->parseElement( f->element() );
-
   if ( !gui ) {
     KMessageBox::sorry( parent, i18n("Unable to create GUI for '%1'.",
         ref.toString() ) );
     return;
   }
+
+  gui->setRef( ref );
+  gui->parseElement( f->element() );
 
   dlg.setGui( gui );
 
