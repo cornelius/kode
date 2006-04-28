@@ -133,12 +133,12 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
 
 FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
 {
-  kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
-
   if ( !form ) {
     kError() << "KXForms::Manager::createGui(): form is null." << endl;
     return 0;
   }
+
+  kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
 
   FormGui *gui = new FormGui( form->label(), manager(), parent );
   if ( gui ) manager()->registerGui( gui );
