@@ -109,7 +109,7 @@ void RemoteFile::slotJobDataGet( KIO::Job *, const QByteArray &data )
 void RemoteFile::slotDataReq( KIO::Job *, QByteArray &data )
 {
   if ( !mPutData.isEmpty() ) {
-    data = mPutData.utf8();
+    data = mPutData.toUtf8();
     data.resize( data.size() - 1 );
     mPutData.clear();
   }
