@@ -123,7 +123,7 @@ void BreadCrumbNavigator::updateLabel()
       text.append( "<a href=\"" + QString::number( i ) + "\">" + label + "</a>" );
     }
   }
-  mLabel->setText( "<qt>" + text + "</qt>" );
+  mLabel->setHtml( "<qt>" + text + "</qt>" );
 }
 
 void BreadCrumbNavigator::slotCrumbClicked( int index )
