@@ -30,8 +30,6 @@ testreferences_SOURCES = testreferences.cpp reference.cpp
 
 METASOURCES = AUTO
 
-messages: rc.cpp
-	$(XGETTEXT) *.cpp -o $(podir)/kxforms.pot
 
 xdg_apps_data = kxforms.desktop
 
