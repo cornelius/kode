@@ -33,7 +33,7 @@ void Transport::query( const QString &xml )
   
   QByteArray postData;
   QDataStream stream( &postData, QIODevice::WriteOnly );
-  stream.writeRawBytes( xml.toUtf8(), xml.toUtf8().length() );
+  stream.writeRawData( xml.toUtf8(), xml.toUtf8().length() );
   
   KIO::TransferJob* job = KIO::http_post( KUrl( mUrl ), postData, false );
   if ( !job ) {
