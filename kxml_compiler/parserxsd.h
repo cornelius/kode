@@ -25,10 +25,11 @@
 
 #include <schema/simpletype.h>
 #include <schema/parser.h>
+#include <kdepim_export.h>
 
 #include <qfile.h>
 
-class ParserXsd
+class KSCHEMA_EXPORT ParserXsd
 {
   public:
     ParserXsd();

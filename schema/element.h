@@ -28,10 +28,11 @@
 
 #include "xmlelement.h"
 #include "compositor.h"
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class Element : public XmlElement
+class KODE_SCHEMA_EXPORT Element : public XmlElement
 {
   public:
     typedef QList<Element> List;

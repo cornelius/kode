@@ -23,6 +23,7 @@
 #define PARSERCONTEXT_H
 
 #include <qstring.h>
+#include <kdepim_export.h>
 
 class NSManager;
 class MessageHandler;
@@ -31,7 +32,7 @@ class MessageHandler;
   A container class which is passed to XML parsing
   methods to provide additional contextual information.
  */
-class ParserContext
+class KXMLCOMMON_EXPORT ParserContext
 {
   public:
     /**

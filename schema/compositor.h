@@ -24,10 +24,11 @@
 
 #include <QString>
 #include <common/qname.h>
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class Compositor
+class KODE_SCHEMA_EXPORT Compositor
 {
   public:
     typedef QList<Compositor> List;

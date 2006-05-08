@@ -25,10 +25,11 @@
 #include "complextype.h"
 #include "element.h"
 #include "simpletype.h"
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class Types
+class KODE_SCHEMA_EXPORT Types
 {
   public:
     void setSimpleTypes( const SimpleType::List &simpleTypes );

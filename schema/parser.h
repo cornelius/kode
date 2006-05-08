@@ -30,12 +30,13 @@
 #include "types.h"
 #include "typestable.h"
 #include "annotation.h"
+#include <kdepim_export.h>
 
 class ParserContext;
 
 namespace XSD {
 
-class Parser
+class KODE_SCHEMA_EXPORT Parser
 {
   public:
     enum { UNBOUNDED = 100000 };

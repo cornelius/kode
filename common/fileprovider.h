@@ -24,11 +24,13 @@
 
 #include <QObject>
 
+#include <kdepim_export.h>
+
 namespace KIO {
 class Job;
 }
 class KJob;
-class FileProvider : QObject
+class KXMLCOMMON_EXPORT FileProvider : QObject
 {
   Q_OBJECT
 

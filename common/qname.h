@@ -26,7 +26,9 @@
 #include <QString>
 #include <QList>
 
-class QName
+#include <kdepim_export.h>
+
+class KXMLCOMMON_EXPORT QName
 {
   public:
     typedef QList<QName> List;

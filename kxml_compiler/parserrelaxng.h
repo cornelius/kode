@@ -26,10 +26,11 @@
 #include <QMap>
 
 #include <iostream>
+#include <kdepim_export.h>
 
 namespace RNG {
 
-class Pattern
+class KSCHEMA_EXPORT Pattern
 {
   public:
     Pattern();
@@ -46,7 +47,7 @@ class Pattern
     bool choice;
 };
 
-class Reference
+class KSCHEMA_EXPORT Reference
 {
   public:
     typedef QList<Reference *> List;
@@ -59,7 +60,7 @@ class Reference
     bool substituted;
 };
 
-class Attribute
+class KSCHEMA_EXPORT Attribute
 {
   public:
     typedef QList<Attribute *> List;
@@ -70,7 +71,7 @@ class Attribute
     Pattern pattern;
 };
 
-class Element
+class KSCHEMA_EXPORT Element
 {
   public:
     typedef QList<Element *> List;
@@ -86,7 +87,7 @@ class Element
     bool isEmpty;
 };
 
-class ParserRelaxng
+class KSCHEMA_EXPORT ParserRelaxng
 {
   public:
     ParserRelaxng();

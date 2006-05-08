@@ -23,6 +23,7 @@
 #define MESSAGEHANDLER_H
 
 #include <QString>
+#include <kdepim_export.h>
 
 /**
   This class is an interface for the xml parsing classes
@@ -31,7 +32,7 @@
   When you want to use a custom MessageHandler, just derivate
   and pass it to the ParserContext of the parsing classes.
  */
-class MessageHandler
+class KXMLCOMMON_EXPORT MessageHandler
 {
   public:
     /**

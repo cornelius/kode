@@ -24,10 +24,11 @@
 
 #include <QDomElement>
 #include <QList>
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class Annotation
+class KODE_SCHEMA_EXPORT Annotation
 {
   public:
     class List : public QList<Annotation>

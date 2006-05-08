@@ -27,10 +27,11 @@
 #include <QList>
 
 #include "xmlelement.h"
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class Attribute : public XmlElement
+class KODE_SCHEMA_EXPORT Attribute : public XmlElement
 {
   public:
     typedef QList<Attribute> List;

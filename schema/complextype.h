@@ -31,10 +31,11 @@
 #include <schema/xsdtype.h>
 
 #include <common/qname.h>
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class ComplexType : public XSDType
+class KODE_SCHEMA_EXPORT ComplexType : public XSDType
 {
   public:
     typedef QList<ComplexType> List;

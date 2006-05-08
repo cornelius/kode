@@ -27,10 +27,11 @@
 
 #include <common/qname.h>
 #include "xsdtype.h"
+#include <kdepim_export.h>
 
 namespace XSD {
 
-class SimpleType : public XSDType
+class KODE_SCHEMA_EXPORT SimpleType : public XSDType
 {
   public:
     typedef QList<SimpleType> List;

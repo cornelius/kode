@@ -28,12 +28,13 @@
 #include <QString>
 
 #include <common/qname.h>
+#include <kdepim_export.h>
 
 #include "xmlelement.h"
 
 namespace XSD {
 
-class XSDType : public XmlElement
+class KODE_SCHEMA_EXPORT XSDType : public XmlElement
 {
   public:
     typedef QList<const XSDType*> List;

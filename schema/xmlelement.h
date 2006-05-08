@@ -25,12 +25,13 @@
 #include "annotation.h"
 
 #include <common/qname.h>
+#include <kdepim_export.h>
 
 #include <qstring.h>
 
 namespace XSD {
 
-class XmlElement
+class KODE_SCHEMA_EXPORT XmlElement
 {
   public:
     XmlElement();
