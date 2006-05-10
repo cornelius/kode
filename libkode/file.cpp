@@ -23,7 +23,7 @@
 
 #include <kdebug.h>
 
-#include <qfile.h>
+#include <QFile>
 #include <qtextstream.h>
 
 using namespace KODE;

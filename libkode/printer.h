@@ -28,7 +28,7 @@
 
 #include <kdepimmacros.h>
 
-#include <qstring.h>
+#include <QString>
 #include <qstringlist.h>
 
 namespace KODE {

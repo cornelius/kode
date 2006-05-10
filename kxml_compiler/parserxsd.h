@@ -27,7 +27,7 @@
 #include <schema/parser.h>
 #include <kdepim_export.h>
 
-#include <qfile.h>
+#include <QFile>
 
 class KSCHEMA_EXPORT ParserXsd
 {

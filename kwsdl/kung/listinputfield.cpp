@@ -22,7 +22,7 @@
 #include <QLayout>
 #include <QtXml/QDomNode>
 #include <QListWidget>
-#include <qpushbutton.h>
+#include <QPushButton>
 
 #include <klocale.h>
 

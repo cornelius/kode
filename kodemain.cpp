@@ -39,10 +39,10 @@
 #include <ksavefile.h>
 #include <kprocess.h>
 
-#include <qfile.h>
+#include <QFile>
 #include <qtextstream.h>
 #include <qfileinfo.h>
-#include <qregexp.h>
+#include <QRegExp>
 
 #include <iostream>
 

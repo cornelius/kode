@@ -22,7 +22,7 @@
 #ifndef BINARY_INPUTFIELD_H
 #define BINARY_INPUTFIELD_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 #include "inputfield.h"
 

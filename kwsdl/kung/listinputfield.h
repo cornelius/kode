@@ -22,7 +22,7 @@
 #ifndef LIST_INPUTFIELD_H
 #define LIST_INPUTFIELD_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 #include "inputfield.h"
 

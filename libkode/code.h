@@ -24,7 +24,7 @@
 #include "license.h"
 
 
-#include <qstring.h>
+#include <QString>
 #include <qstringlist.h>
 #include <kdepimmacros.h>
 namespace KODE {

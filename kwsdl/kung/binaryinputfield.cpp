@@ -29,11 +29,11 @@
 #include <kparts/componentfactory.h>
 #include <ktempfile.h>
 
-#include <qfile.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qwidget.h>
+#include <QFile>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
+#include <QWidget>
 
 #include <schema/simpletype.h>
 

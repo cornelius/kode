@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qfile.h>
+#include <QFile>
 
 #include <common/fileprovider.h>
 #include <common/parsercontext.h>

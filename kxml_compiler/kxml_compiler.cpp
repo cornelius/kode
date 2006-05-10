@@ -39,11 +39,11 @@
 #include <kstandarddirs.h>
 #include <kurl.h>
 
-#include <qfile.h>
+#include <QFile>
 #include <qtextstream.h>
 #include <qdom.h>
-#include <qregexp.h>
-#include <qmap.h>
+#include <QRegExp>
+#include <QMap>
 #include <QList>
 #include <QFileInfo>
 

@@ -23,8 +23,8 @@
 
 #include "code.h"
 
-#include <qstring.h>
-#include <qmap.h>
+#include <QString>
+#include <QMap>
 #include <kdepimmacros.h>
 
 namespace KODE {

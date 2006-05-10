@@ -22,7 +22,7 @@
 #ifndef PARSERCONTEXT_H
 #define PARSERCONTEXT_H
 
-#include <qstring.h>
+#include <QString>
 #include <kdepim_export.h>
 
 class NSManager;

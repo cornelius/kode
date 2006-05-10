@@ -26,7 +26,7 @@
 #include "class.h"
 #include "membervariable.h"
 
-#include <qstring.h>
+#include <QString>
 #include <qstringlist.h>
 #include <kdepimmacros.h>
 

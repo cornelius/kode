@@ -21,7 +21,7 @@
 #ifndef KODE_LICENSE_H
 #define KODE_LICENSE_H
 
-#include <qstring.h>
+#include <QString>
 #include <kdepimmacros.h>
 
 namespace KODE {

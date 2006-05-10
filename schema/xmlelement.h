@@ -27,7 +27,7 @@
 #include <common/qname.h>
 #include <kdepim_export.h>
 
-#include <qstring.h>
+#include <QString>
 
 namespace XSD {
 
