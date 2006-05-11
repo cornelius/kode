@@ -2,7 +2,7 @@ kde4_header()
 
 add_subdirectory( tests ) 
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDES} )
+include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode  )
 
 
 ########### next target ###############

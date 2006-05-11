@@ -1,6 +1,6 @@
 kde4_header()
 
-include_directories( ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kode ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDE_DIR} )
+include_directories( ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDE_DIR} )
 ########### next target ###############
 
 set(kxforms_SRCS 
