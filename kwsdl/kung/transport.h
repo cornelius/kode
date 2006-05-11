@@ -20,7 +20,7 @@
 #ifndef TRANSPORT_H
 #define TRANSPORT_H
 
-#include <qobject.h>
+#include <QObject>
 #include <kio/job.h>
 
 class Transport : public QObject
