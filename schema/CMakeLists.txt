@@ -1,4 +1,3 @@
-kde4_header()
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode  )
 
@@ -44,7 +43,6 @@ install_targets(/bin schematest )
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

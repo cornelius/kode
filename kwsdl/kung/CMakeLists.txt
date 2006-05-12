@@ -1,4 +1,3 @@
-kde4_header()
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kwsdl ${CMAKE_SOURCE_DIR}/libkdepim  )
 
@@ -55,7 +54,6 @@ install_targets(/bin kung )
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

@@ -1,4 +1,3 @@
-kde4_header()
 
 
 
@@ -33,7 +32,6 @@ install_targets(${LIB_INSTALL_DIR} kode )
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

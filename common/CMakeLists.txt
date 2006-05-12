@@ -1,4 +1,3 @@
-kde4_header()
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode  )
 
@@ -25,7 +24,6 @@ install_targets(${LIB_INSTALL_DIR} kxmlcommon )
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

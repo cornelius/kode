@@ -1,4 +1,3 @@
-kde4_header()
 
 add_subdirectory( doc ) 
 add_subdirectory( wsdl ) 
@@ -40,7 +39,6 @@ install_targets(/bin kwsdl_compiler )
 
 install_files( ${XDG_APPS_DIR} FILES kwsdl_compiler.desktop )
 
-kde4_footer()
 
 
 

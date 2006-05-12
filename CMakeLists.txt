@@ -1,4 +1,3 @@
-kde4_header()
 
 add_subdirectory( libkode ) 
 add_subdirectory( common ) 
@@ -25,7 +24,6 @@ install_targets(/bin kode_bin )
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

@@ -1,4 +1,3 @@
-kde4_header()
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kwsdl  )
 
@@ -36,7 +35,6 @@ install_targets(${LIB_INSTALL_DIR} wsdl )
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

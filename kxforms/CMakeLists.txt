@@ -1,4 +1,3 @@
-kde4_header()
 
 include_directories( ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDE_DIR} )
 ########### next target ###############
@@ -57,7 +56,6 @@ install_files( ${DATA_INSTALL_DIR}/kxforms FILES  kxformsui.rc )
 
 install_files( ${KCFG_INSTALL_DIR} FILES kxforms.kcfg )
 
-kde4_footer()
 
 
 
