@@ -28,7 +28,7 @@
 #include <kdebug.h>
 
 #include <QFile>
-#include <qtextstream.h>
+#include <QTextStream>
 
 #include <iostream>
 

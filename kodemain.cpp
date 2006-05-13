@@ -40,8 +40,8 @@
 #include <kprocess.h>
 
 #include <QFile>
-#include <qtextstream.h>
-#include <qfileinfo.h>
+#include <QTextStream>
+#include <QFileInfo>
 #include <QRegExp>
 
 #include <iostream>

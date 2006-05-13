@@ -29,7 +29,7 @@
 #include <kdepimmacros.h>
 
 #include <QString>
-#include <qstringlist.h>
+#include <QStringList>
 
 namespace KODE {
 

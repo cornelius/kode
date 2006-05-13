@@ -37,7 +37,7 @@
 #include <kstandarddirs.h>
 
 #include <QFile>
-#include <qtextstream.h>
+#include <QTextStream>
 #include <qdom.h>
 #include <QRegExp>
 #include <QMap>

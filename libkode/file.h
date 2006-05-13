@@ -27,7 +27,7 @@
 #include "membervariable.h"
 
 #include <QString>
-#include <qstringlist.h>
+#include <QStringList>
 #include <kdepimmacros.h>
 
 namespace KODE {
