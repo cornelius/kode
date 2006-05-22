@@ -29,10 +29,10 @@ class KUrl : public QUrl
     KUrl();
     KUrl( const QString &str );
   
-    static bool isRelativeURL( const QString & );
+    static bool isRelativeUrl( const QString & );
     void cleanPath();
 
-    QString prettyURL() const;
+    QString prettyUrl() const;
 };
 
 #endif

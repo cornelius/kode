@@ -9,7 +9,7 @@ KUrl::KUrl( const QString &str )
 {
 }
 
-bool KUrl::isRelativeURL( const QString & )
+bool KUrl::isRelativeUrl( const QString & )
 {
   return false;
 }
@@ -18,7 +18,7 @@ void KUrl::cleanPath()
 {
 }
 
-QString KUrl::prettyURL() const
+QString KUrl::prettyUrl() const
 {
   return QString();
 }

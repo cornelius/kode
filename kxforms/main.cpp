@@ -62,7 +62,7 @@ KUrl makeURL( const QString &arg )
       return result; // Absolute path.
    }
 
-   if ( !KUrl::isRelativeURL( arg ) )
+   if ( !KUrl::isRelativeUrl( arg ) )
      return KUrl( arg ); // Argument is a URL
 
   KUrl result;

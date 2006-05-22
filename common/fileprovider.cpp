@@ -50,7 +50,7 @@ bool FileProvider::get( const QString &url, QString &target )
 
   qDebug( "Downloading external schema '%s'", qPrintable( url ) );
 
-  KIO::TransferJob* job = KIO::get( KUrl::fromPathOrURL( url ), false, false );
+  KIO::TransferJob* job = KIO::get( KUrl::fromPathOrUrl( url ), false, false );
   connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
            this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );
   connect( job, SIGNAL( result( KJob* ) ),
