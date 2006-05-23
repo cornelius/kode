@@ -41,19 +41,19 @@ static const KCmdLineOptions options[] =
 
 void displayFeature( const Feature &f )
 {
-  std::cout << "FEATURE: " << f.summary().local8Bit().data() << std::endl;
+  std::cout << "FEATURE: " << f.summary().toLocal8Bit().data() << std::endl;
   foreach( Responsible r, f.responsibleList() ) {
-    std::cout << "  RESPONSIBLE: " << r.name().local8Bit().data() << " ("
-              << r.email().local8Bit().data() << ")" << std::endl;
+    std::cout << "  RESPONSIBLE: " << r.name().toLocal8Bit().data() << " ("
+              << r.email().toLocal8Bit().data() << ")" << std::endl;
   }
-  std::cout << "  TARGET: " << f.target().local8Bit().data() << std::endl;
-  std::cout << "  STATUS: " << f.status().local8Bit().data() << std::endl;
+  std::cout << "  TARGET: " << f.target().toLocal8Bit().data() << std::endl;
+  std::cout << "  STATUS: " << f.status().toLocal8Bit().data() << std::endl;
 }
 
 void displayCategory( Category::List categories )
 {
   foreach( Category c, categories ) {
-    std::cout << "CATEGORY: " << c.name().local8Bit().data() << std::endl;
+    std::cout << "CATEGORY: " << c.name().toLocal8Bit().data() << std::endl;
     
     Feature::List features = c.featureList();
     foreach( Feature f, features ) {
