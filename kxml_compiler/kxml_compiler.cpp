@@ -64,7 +64,8 @@ static const KCmdLineOptions options[] =
 
 int main( int argc, char **argv )
 {
-  KApplication::disableAutoDcopRegistration();
+#warning port me!
+//  KApplication::disableAutoDcopRegistration();
   KAboutData aboutData( "kxml_compiler", I18N_NOOP("KDE xml compiler"), "0.1",
   	I18N_NOOP("KDE XML Compiler") , KAboutData::License_LGPL );
   aboutData.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
