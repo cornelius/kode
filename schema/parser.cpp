@@ -524,7 +524,7 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
 void Parser::parseRestriction( ParserContext*, const QDomElement &element, SimpleType &st )
 {
   if ( st.baseTypeName().isEmpty() )
-    qDebug( "<restriction>:unkown BaseType" );
+    qDebug( "<restriction>:unknown BaseType" );
 
   QDomElement childElement = element.firstChildElement();
 

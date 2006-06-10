@@ -28,7 +28,7 @@
   return value of functions for returning status and especially error
   information.
 
-  There are three main types of result: Ok (operation successfull completed),
+  There are three main types of result: Ok (operation successfully completed),
   InProgress (operation still in progress) and Error (operation failed).
   InProgress is used by asynchronous operations. Functions which start an
   operation and return before the operation is finished should return the
