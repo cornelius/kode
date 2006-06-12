@@ -24,7 +24,6 @@
 #include "reference.h"
 
 #include <kapplication.h>
-#include <dcopclient.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
@@ -58,7 +57,7 @@ void checkReference( const QString &str )
 
 int main(int argc, char **argv)
 {
-  KApplication::disableAutoDcopRegistration();
+  // KApplication::disableAutoDcopRegistration();
 
   KAboutData about("testreferences", I18N_NOOP("TestReferences"), "0.1",
     description,

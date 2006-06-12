@@ -41,7 +41,7 @@ static const KCmdLineOptions options[] =
 
 int main( int argc, char **argv )
 {
-  KApplication::disableAutoDcopRegistration();
+  // KApplication::disableAutoDcopRegistration();
   KAboutData aboutData( "testholidays", "Dump holidays to stdout",
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );

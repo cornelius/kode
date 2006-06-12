@@ -66,7 +66,7 @@ void displayCategory( Category::List categories )
 
 int main( int argc, char **argv )
 {
-  KApplication::disableAutoDcopRegistration();
+  // KApplication::disableAutoDcopRegistration();
   KAboutData aboutData( "testfeatures", "Dump XML feature list to stdout",
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );
