@@ -34,13 +34,15 @@
 using namespace KXForms;
 
 FormDialog::FormDialog( QWidget *parent, const QString &title, Manager *m )
-  : KDialog( parent, title, Ok ),
+  : KDialog( parent ),
     mFormGui( 0 ), mManager( m )
 {
   QFrame *topFrame = new QFrame( this );
   setMainWidget( topFrame );
   mTopLayout = new QVBoxLayout( topFrame );
 
+  setCaption( title );
+  setButtons( Ok );
   connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
 }
 
@@ -55,9 +57,9 @@ void FormDialog::slotOk()
   kDebug() << "FormDialog::slotOk()" << endl;
 
   mFormGui->saveData();
-  
+
   mManager->unregisterGui( mFormGui );
-  
+
   accept();
 }
 
