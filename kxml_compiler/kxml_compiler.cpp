@@ -29,7 +29,6 @@
 #include <libkode/typedef.h>
 
 #include <kaboutdata.h>
-#include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kcmdlineargs.h>
@@ -64,16 +63,12 @@ static const KCmdLineOptions options[] =
 
 int main( int argc, char **argv )
 {
-#warning port me!
-//  KApplication::disableAutoDcopRegistration();
   KAboutData aboutData( "kxml_compiler", I18N_NOOP("KDE xml compiler"), "0.1",
   	I18N_NOOP("KDE XML Compiler") , KAboutData::License_LGPL );
   aboutData.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
 
   KCmdLineArgs::init( argc, argv, &aboutData, KCmdLineArgs::CmdLineArgNone );
   KCmdLineArgs::addCmdLineOptions( options );
-
-  KApplication app( false );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
@@ -109,7 +104,7 @@ int main( int argc, char **argv )
   QFileInfo fi( schemaFile );
   if ( args->isSet( "xsd" ) || fi.suffix() == "xsd" ) {
     ParserXsd p;
-    
+
     schemaDocument = p.parse( schemaFile );
 
     if ( schemaDocument.isEmpty() ) {
