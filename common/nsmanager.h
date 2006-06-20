@@ -26,7 +26,7 @@
 #include <QStringList>
 
 #include <common/qname.h>
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 class KXMLCOMMON_EXPORT NSManager
 {

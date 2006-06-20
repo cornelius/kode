@@ -25,11 +25,11 @@
 
 #include <QString>
 #include <QMap>
-#include <kdepimmacros.h>
+#include <kode_export.h>
 
 namespace KODE {
 
-class KDE_EXPORT StateMachine
+class LIBKODE_EXPORT StateMachine
 {
   public:
     StateMachine();

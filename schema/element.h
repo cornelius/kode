@@ -28,7 +28,7 @@
 
 #include "xmlelement.h"
 #include "compositor.h"
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 namespace XSD {
 

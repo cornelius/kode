@@ -26,11 +26,11 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
-#include <kdepimmacros.h>
+#include <kode_export.h>
 
 namespace KODE {
 
-class KDE_EXPORT Function
+class LIBKODE_EXPORT Function
 {
   public:
     typedef QList<Function> List;

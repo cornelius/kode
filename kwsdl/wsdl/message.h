@@ -28,11 +28,13 @@
 #include <wsdl/element.h>
 #include <wsdl/part.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
-class Message : public Element
+class KWSDL_EXPORT Message : public Element
 {
   public:
     typedef QList<Message> List;

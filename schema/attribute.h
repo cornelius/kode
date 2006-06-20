@@ -27,7 +27,7 @@
 #include <QList>
 
 #include "xmlelement.h"
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 namespace XSD {
 

@@ -30,11 +30,13 @@
 #include <wsdl/element.h>
 #include <wsdl/soapbinding.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
-class Binding : public Element
+class KWSDL_EXPORT Binding : public Element
 {
   public:
     typedef QList<Binding> List;

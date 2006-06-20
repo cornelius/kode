@@ -19,23 +19,3 @@ target_link_libraries(kxmlcommon  ${KDE4_KIO_LIBS} )
 
 set_target_properties(kxmlcommon PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} kxmlcommon )
-
-
-########### install files ###############
-
-
-
-
-
-#original Makefile.am contents follow:
-
-#INCLUDES = -I$(top_srcdir)/kode $(all_includes)
-#
-#lib_LTLIBRARIES = libkxmlcommon.la
-#KDE_CXXFLAGS = -UQT3_SUPPORT
-#
-#libkxmlcommon_la_SOURCES = fileprovider.cpp messagehandler.cpp nsmanager.cpp parsercontext.cpp qname.cpp
-#libkxmlcommon_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -no-undefined
-#libkxmlcommon_la_LIBADD = $(LIB_QTCORE) -lkdecore -lkio
-#
-#METASOURCES = AUTO

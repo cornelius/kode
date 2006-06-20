@@ -26,7 +26,7 @@
 #include <QString>
 #include <QList>
 
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 class KXMLCOMMON_EXPORT QName
 {

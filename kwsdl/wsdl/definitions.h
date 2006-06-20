@@ -33,11 +33,13 @@
 #include <wsdl/service.h>
 #include <wsdl/type.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
-class Definitions
+class KWSDL_EXPORT Definitions
 {
   public:
     Definitions();

@@ -26,7 +26,7 @@
 #include <QMap>
 
 #include <iostream>
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 namespace RNG {
 

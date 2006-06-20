@@ -24,11 +24,11 @@
 
 #include <common/nsmanager.h>
 #include <wsdl/definitions.h>
-#include <kdepimmacros.h>
+#include <kode_export.h>
 
 namespace KWSDL {
 
-class KDE_EXPORT WSDL
+class KWSDL_EXPORT WSDL
 {
   public:
     WSDL();

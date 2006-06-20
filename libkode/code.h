@@ -26,10 +26,11 @@
 
 #include <QString>
 #include <QStringList>
-#include <kdepimmacros.h>
+#include <kode_export.h>
+
 namespace KODE {
 
-class KDE_EXPORT Code
+class LIBKODE_EXPORT Code
 {
   public:
     Code();

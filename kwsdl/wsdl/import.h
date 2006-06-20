@@ -28,11 +28,13 @@
 
 #include <wsdl/element.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
-class Import : public Element
+class KWSDL_EXPORT Import : public Element
 {
   public:
     typedef QList<Import> List;

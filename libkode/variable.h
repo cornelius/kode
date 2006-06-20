@@ -24,11 +24,11 @@
 #include <QList>
 #include <QString>
 
-#include <kdepimmacros.h>
+#include <kode_export.h>
 
 namespace KODE {
 
-class KDE_EXPORT Variable
+class LIBKODE_EXPORT Variable
 {
   public:
     typedef QList<Variable> List;

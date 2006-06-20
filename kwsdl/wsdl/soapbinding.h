@@ -29,9 +29,11 @@
 #include <common/qname.h>
 #include <wsdl/abstractbinding.h>
 
+#include <kode_export.h>
+
 namespace KWSDL {
 
-class SoapBinding : public AbstractBinding
+class KWSDL_EXPORT SoapBinding : public AbstractBinding
 {
   public:
     enum Style
@@ -51,7 +53,7 @@ class SoapBinding : public AbstractBinding
       HTTPTransport
     };
 
-    class Binding
+    class KWSDL_EXPORT Binding
     {
       public:
         Binding();
@@ -72,7 +74,7 @@ class SoapBinding : public AbstractBinding
     };
 
 
-    class Body
+    class KWSDL_EXPORT Body
     {
       public:
         Body();
@@ -100,7 +102,7 @@ class SoapBinding : public AbstractBinding
         QString mNameSpace;
     };
 
-    class Fault
+    class KWSDL_EXPORT Fault
     {
       public:
         Fault();
@@ -124,7 +126,7 @@ class SoapBinding : public AbstractBinding
         QString mNameSpace;
     };
 
-    class HeaderFault
+    class KWSDL_EXPORT HeaderFault
     {
       public:
         HeaderFault();
@@ -156,7 +158,7 @@ class SoapBinding : public AbstractBinding
         QString mNameSpace;
     };
 
-    class Header
+    class KWSDL_EXPORT Header
     {
       public:
         Header();
@@ -192,7 +194,7 @@ class SoapBinding : public AbstractBinding
         QString mNameSpace;
     };
 
-    class Operation
+    class KWSDL_EXPORT Operation
     {
       public:
         typedef QList<Operation> List;
@@ -240,7 +242,7 @@ class SoapBinding : public AbstractBinding
         Fault mFault;
     };
 
-    class Address
+    class KWSDL_EXPORT Address
     {
       public:
         Address();

@@ -25,7 +25,7 @@
 #include "complextype.h"
 #include "element.h"
 #include "simpletype.h"
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 namespace XSD {
 

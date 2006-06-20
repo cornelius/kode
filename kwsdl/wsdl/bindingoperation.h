@@ -28,13 +28,15 @@
 #include <common/qname.h>
 #include <wsdl/element.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
 class AbstractBinding;
 
-class BindingOperation : public Element
+class KWSDL_EXPORT BindingOperation : public Element
 {
   public:
     typedef QList<BindingOperation> List;

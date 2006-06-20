@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 namespace KIO {
 class Job;

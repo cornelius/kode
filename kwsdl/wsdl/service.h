@@ -29,11 +29,13 @@
 #include <wsdl/element.h>
 #include <wsdl/port.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
-class Service : public Element
+class KWSDL_EXPORT Service : public Element
 {
   public:
     typedef QList<Service> List;

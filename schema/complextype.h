@@ -31,7 +31,7 @@
 #include <schema/xsdtype.h>
 
 #include <common/qname.h>
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 namespace XSD {
 

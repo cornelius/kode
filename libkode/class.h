@@ -26,14 +26,15 @@
 #include "membervariable.h"
 #include "typedef.h"
 
-#include <kdepimmacros.h>
+#include <kode_export.h>
+
 #include <QList>
 #include <QString>
 #include <QStringList>
 
 namespace KODE {
 
-class KDE_EXPORT Class
+class LIBKODE_EXPORT Class
 {
   public:
     typedef QList<Class> List;

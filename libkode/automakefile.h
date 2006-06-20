@@ -25,14 +25,14 @@
 #include <QMap>
 #include <QStringList>
 
-#include <kdepimmacros.h>
+#include <kode_export.h>
 
 namespace KODE {
 
-class KDE_EXPORT AutoMakefile
+class LIBKODE_EXPORT AutoMakefile
 {
   public:
-    class KDE_EXPORT Target
+    class LIBKODE_EXPORT Target
     {
       public:
         typedef QList<Target> List;

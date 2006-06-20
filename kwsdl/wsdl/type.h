@@ -27,11 +27,13 @@
 #include <schema/types.h>
 #include <wsdl/element.h>
 
+#include <kode_export.h>
+
 class ParserContext;
 
 namespace KWSDL {
 
-class Type : public Element
+class KWSDL_EXPORT Type : public Element
 {
   public:
     Type();

@@ -25,7 +25,7 @@
 
 #include <schema/simpletype.h>
 #include <schema/parser.h>
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 #include <QFile>
 

@@ -1,7 +1,7 @@
 /*
     This file is part of KDE.
 
-    Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2006 Michaël Larouche <michael.larouche@kdemail.net>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -17,31 +17,17 @@
     along with this library; see the file COPYING.LIB.  If not, write to
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
-*/
-#ifndef KODE_TYPEDEF_H
-#define KODE_TYPEDEF_H
+ */
+#ifndef KODE_EXPORT_H
+#define KODE_EXPORT_H
 
-#include <QList>
-#include <QString>
-#include <kode_export.h>
+#include <kdemacros.h>
 
-namespace KODE {
-
-class LIBKODE_EXPORT Typedef
-{
-  public:
-    typedef QList<Typedef> List;
-
-    Typedef();
-    Typedef( const QString &type, const QString &alias );
-
-    QString declaration() const;
-
-  private:
-    QString mType;
-    QString mAlias;
-};
-
-}
+#define KODE_EXPORT KDE_EXPORT
+#define KXMLCOMMON_EXPORT KDE_EXPORT
+#define LIBKODE_EXPORT KDE_EXPORT
+#define KODE_SCHEMA_EXPORT KDE_EXPORT
+#define KSCHEMA_EXPORT KDE_EXPORT
+#define KWSDL_EXPORT KDE_EXPORT
 
 #endif

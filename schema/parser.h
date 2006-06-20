@@ -30,7 +30,7 @@
 #include "types.h"
 #include "typestable.h"
 #include "annotation.h"
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 class ParserContext;
 

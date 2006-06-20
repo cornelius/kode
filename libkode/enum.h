@@ -24,11 +24,11 @@
 #include <QString>
 #include <QStringList>
 #include <QList>
-#include <kdepimmacros.h>
+#include <kode_export.h>
 
 namespace KODE {
 
-class KDE_EXPORT Enum
+class LIBKODE_EXPORT Enum
 {
   public:
     typedef QList<Enum> List;

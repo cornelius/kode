@@ -23,7 +23,7 @@
 #define PARSERCONTEXT_H
 
 #include <QString>
-#include <kdepim_export.h>
+#include <kode_export.h>
 
 class NSManager;
 class MessageHandler;
