@@ -24,7 +24,11 @@
 #include "outputdialog.h"
 
 OutputDialog::OutputDialog( QWidget *page, QWidget *parent )
-  : KDialogBase( Swallow, "", Ok, Ok, parent, "", true, true )
+  : KDialog( parent)
 {
+  setButtons(Ok);
+  setDefaultButton(Ok);
+  setModal(true);
+  enableButtonSeparator(true);
   setMainWidget( page );
 }

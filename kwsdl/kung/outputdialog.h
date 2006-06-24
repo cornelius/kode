@@ -22,9 +22,9 @@
 #ifndef OUTPUTDIALOG_H
 #define OUTPUTDIALOG_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
-class OutputDialog : public KDialogBase
+class OutputDialog : public KDialog
 {
   public:
     OutputDialog( QWidget *page, QWidget *parent );

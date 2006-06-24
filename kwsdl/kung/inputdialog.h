@@ -22,9 +22,9 @@
 #ifndef INPUTDIALOG_H
 #define INPUTDIALOG_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
-class InputDialog : public KDialogBase
+class InputDialog : public KDialog
 {
   public:
     InputDialog( QWidget *page, QWidget *parent );
