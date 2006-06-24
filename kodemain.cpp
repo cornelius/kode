@@ -435,8 +435,8 @@ int create( KCmdLineArgs *args )
   KODE::Class c( className );
 
   if ( args->isSet( "create-dialog" ) ) {
-    c.addBaseClass( KODE::Class( "KDialogBase" ) );
-    c.addInclude( "kdialogbase.h" );
+    c.addBaseClass( KODE::Class( "KDialog" ) );
+    c.addInclude( "kdialog.h" );
   } else if ( createKioslave ) {
     c.setDocs( "This class implements a kioslave for ..." );
 
