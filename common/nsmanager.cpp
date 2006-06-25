@@ -66,7 +66,7 @@ QString NSManager::fullName( const QString &nameSpace, const QString &localname 
   if ( prefix( nameSpace ).isEmpty() )
     return localname;
   else
-    return prefix( nameSpace ) + ":" + localname;
+    return prefix( nameSpace ) + ':' + localname;
 }
 
 QString NSManager::fullName( const QName &name ) const

@@ -46,7 +46,7 @@ QString Pattern::asString()
   if ( zeroOrMore ) str += "zeroOrMore ";
   if ( oneOrMore ) str += "oneOrMore ";
   if ( choice ) str += "choice ";
-  str += ")";
+  str += ')';
   return str;
 }
 
@@ -287,9 +287,9 @@ Schema::Document ParserRelaxng::convertToSchema( Element *start )
   Element::List elements = start->elements;
   if ( !elements.isEmpty() ) {
     Schema::Element element = convertToSchemaElement( elements.first() );
-    mDocument.setStartElement( element );    
+    mDocument.setStartElement( element );
   }
-  
+
   return mDocument;
 }
 
@@ -309,9 +309,9 @@ Schema::Element ParserRelaxng::convertToSchemaElement( Element *e )
     Schema::Relation relation = convertToRelation( element->pattern, id );
     schemaElement.addElementRelation( relation );
   }
-  
+
   foreach( Attribute *attribute, e->attributes ) {
-    QString id = schemaElement.identifier() + "/" + attribute->name;
+    QString id = schemaElement.identifier() + '/' + attribute->name;
     if ( !mDocument.attribute( id ).isValid() ) {
       Schema::Attribute relatedAttribute = convertToSchemaAttribute(
         schemaElement.identifier(), attribute );
@@ -326,7 +326,7 @@ Schema::Element ParserRelaxng::convertToSchemaElement( Element *e )
     schemaElement.addElementRelation( relation );
   }
 
-  mDocument.addElement( schemaElement );  
+  mDocument.addElement( schemaElement );
 
   return schemaElement;
 }
@@ -354,7 +354,7 @@ Schema::Attribute ParserRelaxng::convertToSchemaAttribute( const QString &path,
 {
   Schema::Attribute schemaAttribute;
   schemaAttribute.setName( a->name );
-  schemaAttribute.setIdentifier( path + "/" + a->name );
+  schemaAttribute.setIdentifier( path + '/' + a->name );
 
   mDocument.addAttribute( schemaAttribute );
 

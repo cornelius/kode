@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -301,7 +301,7 @@ void Parser::parseCompositor( ParserContext *context,
 
       childElement = childElement.nextSiblingElement();
     }
-    
+
     foreach( Element e, newElements ) {
       e.setCompositor( compositor );
       ct.addElement( e );
@@ -717,7 +717,7 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
 
   group.setName( element.attribute( "name" ) );
   group.setAttributes( attributes );
-  
+
   return group;
 }
 
@@ -736,7 +736,7 @@ void Parser::importSchema( ParserContext *context, const QString &location )
   QDir dir( location );
 
   if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
-    schemaLocation = context->documentBaseUrl() + "/" + location;
+    schemaLocation = context->documentBaseUrl() + '/' + location;
 
   qDebug( "loading schema at %s", qPrintable( schemaLocation ) );
 
@@ -855,7 +855,7 @@ void Parser::resolveForwardDeclarations()
         attributes[ j ] = refAttribute;
       }
     }
-    
+
     AttributeGroup::List attributeGroups =
       mComplexTypes[ i ].attributeGroups();
     foreach( AttributeGroup group, attributeGroups ) {

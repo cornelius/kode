@@ -76,7 +76,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   stateCode += "  entityStart = -1;";
   stateCode += "} else if ( entityStart < 0 ) {";
   stateCode += "  result += c;";
-  stateCode += "}";
+  stateCode += '}';
 
   sm.setState( "TEXT", stateCode );
 
@@ -85,7 +85,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   stateCode += "  state = ENDTAG;";
   stateCode += "} else {";
   stateCode += "  state = STARTTAG;";
-  stateCode += "}";
+  stateCode += '}';
 
   sm.setState( "TAG", stateCode );
 
@@ -93,7 +93,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   stateCode += "if ( c == '>' ) {";
   stateCode += "  state = TEXT;";
   stateCode += "  result += mBuffer.mid( tagStart, mRunning - tagStart + 1 );";
-  stateCode += "}";
+  stateCode += '}';
 
   sm.setState( "STARTTAG", stateCode );
 
@@ -104,7 +104,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   stateCode += "} else if ( foundText" + creator()->upperFirst( e.name() ) +
     "() ) {";
   stateCode += "  return result;";
-  stateCode += "}";
+  stateCode += '}';
 
   sm.setState( "ENDTAG", stateCode );
 
@@ -121,7 +121,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   code.addBlock( sm.transitionLogic() );
   code += "++mRunning;";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   code += "return result;";
 
@@ -154,7 +154,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
     stateCode += "  state = ENDTAG;";
     stateCode += "} else {";
     stateCode += "  state = STARTTAG;";
-    stateCode += "}";
+    stateCode += '}';
 
     sm.setState( "TAG", stateCode );
 
@@ -166,7 +166,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
     }
     stateCode += "if ( c == '>' ) {";
     stateCode += "  state = WHITESPACE;";
-    
+
     foreach( Schema::Relation r, e.elementRelations() ) {
       Schema::Element element = creator()->document().element( r );
       createFoundTextFunction( element.name() );
@@ -180,7 +180,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
       stateCode += line;
       stateCode += "  state = WHITESPACE;";
     }
-    stateCode += "}";
+    stateCode += '}';
 
     sm.setState( "STARTTAG", stateCode );
 
@@ -189,7 +189,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
     stateCode += "  state = WHITESPACE;";
     stateCode += "} else if ( foundText" + c.name() + "() ) {";
     stateCode += "  return result;";
-    stateCode += "}";
+    stateCode += '}';
 
     sm.setState( "ENDTAG", stateCode );
 
@@ -198,7 +198,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
       stateCode.clear();
       stateCode += "if ( c == '>' ) {";
       stateCode += "  state = WHITESPACE;";
-      stateCode += "}";
+      stateCode += '}';
 
       Schema::Relation::List::ConstIterator it2;
       for( it2 = attributeRelations.begin(); it2 != attributeRelations.end();
@@ -209,7 +209,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
       }
       stateCode += "} else if ( c =='/' ) {";
       stateCode += "  return result;";
-      stateCode += "}";
+      stateCode += '}';
 
       sm.setState( "ATTRIBUTES", stateCode );
 
@@ -239,7 +239,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
   if ( e.isEmpty() ) {
     code += "if ( c == '>' ) {";
     code += "  return result;";
-    code += "}";
+    code += '}';
 
     Schema::Relation::List attributeRelations = e.attributeRelations();
     if ( !attributeRelations.isEmpty() ) {
@@ -250,7 +250,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
         code.addBlock( createAttributeScanner( a,
           it2 == attributeRelations.begin() ) );
       }
-      code += "}";
+      code += '}';
     }
   } else {
     code.addBlock( sm.transitionLogic() );
@@ -258,7 +258,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
 
   code += "++mRunning;";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   code += "return result;";
 
@@ -319,7 +319,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
   code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return " + className + "();";
-  code += "}";
+  code += '}';
   code += "";
   code += "QTextStream ts( &file );";
   code += "mBuffer = ts.read();";
@@ -342,7 +342,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
   stateCode += "} else if ( foundText" + className + "() ) {";
   stateCode += "  " + element.name() + " = parseElement" + className + "();";
   stateCode += "  state = WHITESPACE;";
-  stateCode += "}";
+  stateCode += '}';
 
   createFoundTextFunction( element.name() );
 
@@ -351,7 +351,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
   code.addBlock( sm.stateDefinition() );
   code.newLine();
 
-  code += className + " " + element.name() + ";";
+  code += className + ' ' + element.name() + ';';
   code.newLine();
 
   code += "while ( mRunning < mBuffer.length() ) {";
@@ -360,10 +360,10 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
   code.addBlock( sm.transitionLogic() );
   code += "++mRunning;";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
 
-  code += "return " + element.name() + ";";
+  code += "return " + element.name() + ';';
 
   parser.setBody( code );
 

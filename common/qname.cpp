@@ -56,7 +56,7 @@ QString QName::qname() const
   if ( mPrefix.isEmpty() )
     return mLocalName;
   else
-    return mPrefix + ":" + mLocalName;
+    return mPrefix + ':' + mLocalName;
 }
 
 void QName::setNameSpace( const QString &nameSpace )

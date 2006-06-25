@@ -7,12 +7,12 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with this library; see the file COPYING.LIB.  If not, write to
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -209,13 +209,13 @@ QString Relation::choice() const
 QString Relation::asString( const QString &type ) const
 {
   QString out = "  R " + type + ": " + target() + " (" +
-    QString::number( minOccurs() ) + ",";
+    QString::number( minOccurs() ) + ',';
   if ( maxOccurs() == Relation::Unbounded ) {
     out += "UNBOUNDED";
   } else {
     out += QString::number( maxOccurs() );
   }
-  out += ")";
+  out += ')';
 
   return out;
 }
@@ -295,7 +295,7 @@ QList<QDomElement> Annotatable::annotations() const
 {
   return mAnnotations;
 }
-    
+
 
 Element::Element()
   : mText( false )
@@ -353,5 +353,5 @@ Attribute::Attribute()
 
 QString Attribute::ref() const
 {
-  return "@" + name();
+  return '@' + name();
 }

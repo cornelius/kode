@@ -96,7 +96,7 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
 
   KODE::Function accessor( name, type );
   accessor.setConst( true );
-  accessor.addBodyLine( "return " + v.name() + ";" );
+  accessor.addBodyLine( "return " + v.name() + ';' );
   c.addFunction( accessor );
 }
 
@@ -141,7 +141,7 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     adder.addArgument( "const " + className + " &v" );
 
     KODE::Code code;
-    code += "m" + upperFirst( name ) + ".append( v );";
+    code += 'm' + upperFirst( name ) + ".append( v );";
 
     adder.setBody( code );
 
@@ -188,7 +188,7 @@ void Creator::createElementWriter( KODE::Class &c,
 
   code += "QString xml;";
 
-  QString tag = "<" + element.name();
+  QString tag = '<' + element.name();
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
@@ -197,7 +197,7 @@ void Creator::createElementWriter( KODE::Class &c,
   }
 
   if ( element.isEmpty() ) {
-    tag += "/";
+    tag += '/';
   }
 
   tag += ">\\n";
@@ -214,7 +214,7 @@ void Creator::createElementWriter( KODE::Class &c,
         code.indent();
         code += "xml += e.writeElement();";
         code.unindent();
-        code += "}";
+        code += '}';
       } else {
         Schema::Element e = mDocument.element( r );
         if ( e.text() ) {
@@ -268,7 +268,7 @@ void Creator::createListTypedefs()
   for( it = mListTypedefs.begin(); it != mListTypedefs.end(); ++it ) {
     KODE::Class c = mFile.findClass( *it );
     if ( !c.isValid() ) continue;
-    c.addTypedef( KODE::Typedef( "QList<" + *it + ">", "List" ) );
+    c.addTypedef( KODE::Typedef( "QList<" + *it + '>', "List" ) );
     mFile.insertClass( c );
   }
 }
@@ -322,7 +322,7 @@ void Creator::createFileWriter( const Schema::Element &element )
   code += "if ( !file.open( QIODevice::WriteOnly ) ) {";
   code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  return false;";
-  code += "}";
+  code += '}';
   code += "";
   code += "QTextStream ts( &file );";
 

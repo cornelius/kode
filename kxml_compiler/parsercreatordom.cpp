@@ -73,7 +73,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   code += "if ( ok ) *ok = false;";
   code += "return " + c.name() + "();";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
 
   code += c.name() + " result = " + c.name() + "();";
@@ -117,11 +117,11 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
     }
 
     code.unindent();
-    code += "}";
+    code += '}';
   }
 
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
@@ -175,7 +175,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
-  code += "}";
+  code += '}';
   code += "";
   code += "QString errorMsg;";
   code += "int errorLine, errorCol;";
@@ -184,7 +184,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol << endl;";
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
-  code += "}";
+  code += '}';
   code += "";
   code += "kDebug() << \"CONTENT:\" << doc.toString() << endl;";
 
@@ -198,7 +198,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 
   code += "if ( ok ) {";
   code += "  *ok = documentOk;";
-  code += "}";
+  code += '}';
   code += "return c;";
 
   parser.setBody( code );

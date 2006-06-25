@@ -118,7 +118,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       if ( compositor.type() == XSD::Compositor::Choice ) {
         QString choice;
         foreach( QName qname, compositor.children() ) {
-          if ( !choice.isEmpty() ) choice += "+";
+          if ( !choice.isEmpty() ) choice += '+';
           choice += qname.qname();
         }
         eRelation.setChoice( choice );
@@ -128,7 +128,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
     foreach( XSD::Attribute attribute, complexType.attributes() ) {
       qDebug() << "  Attribute: " << attribute.name();
-      
+
       Schema::Relation aRelation( attribute.name() );
       e.addAttributeRelation( aRelation );
 
@@ -147,9 +147,9 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
       mDocument.addAttribute( a );
     }
-    
+
     setAnnotations( e, element.annotations() );
-    
+
     mDocument.addElement( e );
 
     if ( mDocument.startElement().isEmpty() ) {
@@ -194,7 +194,7 @@ void ParserXsd::setType( Schema::Node &node, const XSD::SimpleType &simpleType )
         << " not supported.";
     }
   } else {
-    qDebug() << "SimpleType::subType: " << simpleType.subType() 
+    qDebug() << "SimpleType::subType: " << simpleType.subType()
       << " not supported.";
   }
 }

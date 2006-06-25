@@ -92,17 +92,17 @@ void addPropertyFunctions( QString &out, const QString &type,
   code += "  Set .";
   code += "*/";
   code += "void set" + upper + "( " + argument + "v )";
-  code += "{";
+  code += '{';
   code += "  m" + upper + " = v;";
-  code += "}";
+  code += '}';
 
   code += "/**";
   code += "  Get " + name + ". See set" + upper + "().";
   code += "*/";
   code += type + ( isReference ? "" : " " ) + name + "() const";
-  code += "{";
-  code += "  return m" + upper + ";";
-  code += "}";
+  code += '{';
+  code += "  return m" + upper + ';';
+  code += '}';
 
   out += code.text();
 }
@@ -115,7 +115,7 @@ void addPropertyVariable( QString &out, const QString &type,
 
   KODE::Code code;
   code.setIndent( 4 );
-  code += type + ( isReference ? "" : " " ) + "m" + upper + ";";
+  code += type + ( isReference ? "" : " " ) + 'm' + upper + ';';
 
   out += code.text();
 }
@@ -162,7 +162,7 @@ int addProperty( KCmdLineArgs *args )
   while ( !( line = in.readLine() ).isNull() ) {
     kDebug() << state << " LINE: " << line << endl;
     QString readAheadPrevious = readAhead;
-    readAhead += line + "\n";
+    readAhead += line + '\n';
     switch( state ) {
       case FindClass:
         if ( line.indexOf( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
@@ -185,7 +185,7 @@ int addProperty( KCmdLineArgs *args )
             QString function = re.cap( 1 ).toLower();
             if ( !function.isEmpty() ) {
               kDebug() << "Function: " << function << endl;
-              if ( function == className || function == "~" + className ) {
+              if ( function == className || function == '~' + className ) {
                 out += readAhead;
                 readAhead.clear();
               } else {
@@ -202,8 +202,8 @@ int addProperty( KCmdLineArgs *args )
                     kDebug() << "CREATE PROPERTY" << endl;
                     out += readAheadPrevious;
                     addPropertyFunctions( out, type, name );
-                    out += "\n";
-                    readAhead = line + "\n";
+                    out += '\n';
+                    readAhead = line + '\n';
                     state = FindPrivate;
                   }
                 }
@@ -222,8 +222,8 @@ int addProperty( KCmdLineArgs *args )
               if ( accessor == mutator ) {
                 out += readAheadPrevious;
                 addPropertyFunctions( out, type, name );
-                out += "\n";
-                out += line + "\n";
+                out += '\n';
+                out += line + '\n';
                 readAhead.clear();
               }
               state = FindVariables;
@@ -245,7 +245,7 @@ int addProperty( KCmdLineArgs *args )
         break;
       case FindVariables:
         {
-          if ( line.indexOf( "m" + accessor.toLower(), 0, Qt::CaseInsensitive ) >= 0 ) {
+          if ( line.indexOf( 'm' + accessor.toLower(), 0, Qt::CaseInsensitive ) >= 0 ) {
             out += readAhead;
             readAhead.clear();
             addPropertyVariable( out, type, name );
@@ -401,7 +401,7 @@ int create( KCmdLineArgs *args )
 
     KODE::Code code;
     code += "static const KCmdLineOptions options[] =";
-    code += "{";
+    code += '{';
     code += "  { \"verbose\", \"Verbose output\", 0 },";
     code += "  KCmdLineLastOption";
     code += "};";
@@ -496,7 +496,7 @@ int create( KCmdLineArgs *args )
     code += "fprintf( stderr, \"Usage: kio_" + protocol + " protocol domain-socket1 domain-socket2\\n\");";
     code += "exit( -1 );";
     code.unindent();
-    code += "}";
+    code += '}';
     code += "";
     code += className + " slave( argv[2], argv[3] );";
     code += "slave.dispatchLoop();";
@@ -521,7 +521,7 @@ int create( KCmdLineArgs *args )
     KODE::Code code;
     code += "if ( !mSelf ) {";
     code += "  selfDeleter.setObject( mSelf, new " + className + "() );";
-    code += "}";
+    code += '}';
     code += "return mSelf;";
 
     self.setBody( code );
@@ -534,7 +534,7 @@ int create( KCmdLineArgs *args )
     c.addMemberVariable( selfVar );
 
     KODE::Variable staticDeleter( "selfDeleter",
-                                  "KStaticDeleter<" + className + ">",
+                                  "KStaticDeleter<" + className + '>',
                                   true );
     file.addFileVariable( staticDeleter );
     file.addInclude( "kstaticdeleter.h" );
