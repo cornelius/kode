@@ -61,7 +61,7 @@ QString License::text()
 "along with this program; if not, write to the Free Software\n"
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,\n" "USA.\n";
       if ( mQtException ) {
-        txt += "\n";
+        txt += '\n';
         txt +=
 "As a special exception, permission is given to link this program\n"
 "with any edition of Qt, and distribute the resulting executable,\n"

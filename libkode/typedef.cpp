@@ -34,5 +34,5 @@ Typedef::Typedef( const QString &type, const QString &alias )
 
 QString Typedef::declaration() const
 {
-  return "typedef " + mType + " " + mAlias + ";";
+  return "typedef " + mType + ' ' + mAlias + ';';
 }

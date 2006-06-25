@@ -63,8 +63,8 @@ void File::setProject( const QString &project )
 
 void File::addCopyright( int year, const QString &name, const QString &email )
 {
-  QString str = "Copyright (c) " + QString::number( year ) + " " + name + " <" +
-                email + ">";
+  QString str = "Copyright (c) " + QString::number( year ) + ' ' + name + " <"
+                + email + '>';
   mCopyrightStrings.append( str );
 }
 

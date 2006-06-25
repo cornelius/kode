@@ -46,7 +46,7 @@ QString Enum::declaration() const
         retval += QString( ", %1 = %2" ).arg( *it ).arg( 1 << value );
     } else {
       if ( it == mEnums.begin() )
-        retval += " " + *it;
+        retval += ' ' + *it;
       else
         retval += ", " + *it;
     }

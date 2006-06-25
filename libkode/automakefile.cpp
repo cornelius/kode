@@ -52,7 +52,7 @@ void AutoMakefile::addEntry( const QString &variable, const QString &value )
     if ( it == mValues.end() ) {
       mValues.insert( variable, value );
     } else {
-      mValues[ variable ].append( " " + value );
+      mValues[ variable ].append( ' ' + value );
     }
   }
 }
@@ -87,7 +87,7 @@ QString AutoMakefile::text() const
       Target t = *it2;
       if ( t.type() != targetType ) continue;
 
-      out += " " + t.name();
+      out += ' ' + t.name();
     }
     out += "\n\n";
 

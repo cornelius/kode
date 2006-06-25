@@ -51,7 +51,7 @@ Code StateMachine::stateDefinition()
   }
 
   code += "enum State { " + states.join( ", " ) + " };";
-  code += "State state = " + mInitialState + ";";
+  code += "State state = " + mInitialState + ';';
 
   return code;
 }
@@ -65,7 +65,7 @@ Code StateMachine::transitionLogic()
 
   QMap<QString,Code>::ConstIterator it;
   for ( it = mStateMap.begin(); it != mStateMap.end(); ++it ) {
-    code += "case " + it.key() + ":";
+    code += "case " + it.key() + ':';
     code.indent();
     code.addBlock( it.value() );
     code += "break;";
@@ -78,7 +78,7 @@ Code StateMachine::transitionLogic()
   code.unindent();
 
   code.unindent();
-  code += "}";
+  code += '}';
 
   return code;
 }

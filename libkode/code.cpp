@@ -147,10 +147,10 @@ void Code::addFormattedText( const QString &text )
       line = line.trimmed();
       addLine( line );
 
-      line = (*it).mid( pos + 1 ) + " ";
+      line = (*it).mid( pos + 1 ) + ' ';
       lineLength = (*it).length() - pos;
     } else {
-      line += *it + " ";
+      line += *it + ' ';
       lineLength += (*it).length() + 1;
     }
   }

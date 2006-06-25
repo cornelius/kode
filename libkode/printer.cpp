@@ -73,7 +73,7 @@ QString Printer::functionSignature( const Function &f,
   if ( !ret.isEmpty() ) {
     s += ret;
     if ( ret.right( 1 ) != "*" && ret.right( 1 ) != "&" ) {
-      s += " ";
+      s += ' ';
     }
   }
   if ( includeClassQualifier ) {
@@ -85,11 +85,11 @@ QString Printer::functionSignature( const Function &f,
   } else {
     s += f.name();
   }
-  s += "(";
+  s += '(';
   if ( !f.arguments().isEmpty() ) {
-    s += " " + f.arguments().join( ", " ) + " ";
+    s += ' ' + f.arguments().join( ", " ) + ' ';
   }
-  s += ")";
+  s += ')';
   if ( f.isConst() ) s += " const";
 
   return s;
@@ -115,7 +115,7 @@ QString Printer::licenseHeader( const File &file )
   code += "/*";
   code.setIndent( 4 );
 
-  code += "This file is part of " + file.project() + ".";
+  code += "This file is part of " + file.project() + '.';
   code.newLine();
 
   QStringList copyrights = file.copyrightStrings();
@@ -146,7 +146,7 @@ Code Printer::functionHeaders( const Function::List &functions,
     Function f = *it;
     if ( f.access() == access ) {
       if ( !hasAccess ) {
-        code += f.accessAsString() + ":";
+        code += f.accessAsString() + ':';
         hasAccess = true;
       }
       code.indent();
@@ -157,7 +157,7 @@ Code Printer::functionHeaders( const Function::List &functions,
         code.unindent();
         code += " */";
       }
-      code += functionSignature( *it, className ) + ";";
+      code += functionSignature( *it, className ) + ';';
       code.unindent();
       needNewLine = true;
     }
@@ -196,7 +196,7 @@ QString Printer::classHeader( const Class &c, bool publicMembers )
   }
   code += txt;
 
-  code += "{";
+  code += '{';
   code.indent();
 
   if ( c.isQObject() ) {
@@ -234,9 +234,9 @@ QString Printer::classHeader( const Class &c, bool publicMembers )
 
   if ( c.useDPointer() && !c.memberVariables().isEmpty() ) {
     Function cc( c.name() );
-    cc.addArgument( "const " + c.name() + "&" );
+    cc.addArgument( "const " + c.name() + '&' );
     Function op( "operator=", c.name() + "& " );
-    op.addArgument( "const " + c.name() + "&" );
+    op.addArgument( "const " + c.name() + '&' );
     Function::List list;
     list << cc << op;
     code.addBlock( functionHeaders( list, c.name(), Function::Public ) );
@@ -275,9 +275,9 @@ QString Printer::classHeader( const Class &c, bool publicMembers )
         if ( v.isStatic() ) decl += "static ";
         decl += v.type();
         if ( v.type().right( 1 ) != "*" && v.type().right( 1 ) != "&" ) {
-          decl += " ";
+          decl += ' ';
         }
-        decl += v.name() + ";";
+        decl += v.name() + ';';
 
         code += decl;
       }
@@ -311,7 +311,7 @@ QString Printer::classImplementation( const Class &c )
     MemberVariable v = *itV;
     if ( !v.isStatic() ) continue;
     code += v.type() + c.name() + "::" + v.name() + " = " + v.initializer() +
-            ";";
+            ';';
     needNewLine = true;
   }
   if ( needNewLine ) code.newLine();
@@ -331,7 +331,7 @@ QString Printer::classImplementation( const Class &c )
       code += ": " + f.initializers().join( ", " );
     }
 
-    code += "{";
+    code += '{';
     if ( c.useDPointer() && !c.memberVariables().isEmpty() && f.name() == c.name() && f.arguments().isEmpty() ) {
       code.indent();
       code += "d = new PrivateDPtr;";
@@ -341,14 +341,14 @@ QString Printer::classImplementation( const Class &c )
 
     code.addBlock( f.body(), 2 );
 
-    if ( c.useDPointer() && !c.memberVariables().isEmpty() && f.name() == "~" + c.name() ) {
+    if ( c.useDPointer() && !c.memberVariables().isEmpty() && f.name() == '~' + c.name() ) {
       code.newLine();
       code.indent();
       code += "delete d;";
       code += "d = 0;";
       code.unindent();
     }
-    code += "}";
+    code += '}';
     code.newLine();
   }
 
@@ -377,9 +377,9 @@ QString Printer::classImplementation( const Class &c )
       code.unindent();
     }
 
-    code += "{";
+    code += '{';
     code.addBlock( cc.body(), 2 );
-    code += "}";
+    code += '}';
     code.newLine();
 
     // print assignment operator
@@ -398,9 +398,9 @@ QString Printer::classImplementation( const Class &c )
     op.setBody( body );
 
     code += functionSignature( op, c.name(), true );
-    code += "{";
+    code += '{';
     code.addBlock( op.body(), 2 );
-    code += "}";
+    code += '}';
     code.newLine();
   }
 
@@ -420,7 +420,7 @@ void Printer::printHeader( const File &f )
   className.replace( "-", "_" );
 
   QString includeGuard;
-  if ( !f.nameSpace().isEmpty() ) includeGuard += f.nameSpace().toUpper() + "_";
+  if ( !f.nameSpace().isEmpty() ) includeGuard += f.nameSpace().toUpper() + '_';
   includeGuard += className.toUpper() + "_H";
 
   out += "#ifndef " + includeGuard;
@@ -438,7 +438,7 @@ void Printer::printHeader( const File &f )
     QStringList::ConstIterator it2;
     for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
-        out += "#include <" + *it2 + ">";
+        out += "#include <" + *it2 + '>';
         processed.append( *it2 );
       }
     }
@@ -460,7 +460,7 @@ void Printer::printHeader( const File &f )
     QStringList::ConstIterator it2;
     for( it2 = decls.begin(); it2 != decls.end(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
-        out += "class " + *it2 + ";";
+        out += "class " + *it2 + ';';
         processed.append( *it2 );
       }
     }
@@ -480,7 +480,7 @@ void Printer::printHeader( const File &f )
   }
 
   if ( !f.nameSpace().isEmpty() ) {
-    out += "}";
+    out += '}';
     out.newLine();
   }
 
@@ -491,7 +491,7 @@ void Printer::printHeader( const File &f )
   // Print to file
   QString filename = f.filename() + ".h";
 
-  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
+  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + '/' );
 
   KSaveFile::simpleBackupFile( filename, QString::null, ".backup" );
 
@@ -527,7 +527,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
   QStringList includes = f.includes();
   QStringList::ConstIterator it2;
   for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
-    out += "#include <" + *it2 + ">";
+    out += "#include <" + *it2 + '>';
   }
   if ( !includes.isEmpty() ) out.newLine();
 
@@ -540,7 +540,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
     QStringList::ConstIterator it2;
     for( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
-        out += "#include <" + *it2 + ">";
+        out += "#include <" + *it2 + '>';
         processed.append( *it2 );
       }
     }
@@ -548,7 +548,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
   if ( !processed.isEmpty() ) out.newLine();
 
   if ( !f.nameSpace().isEmpty() ) {
-    out += "using namespace " + f.nameSpace() + ";";
+    out += "using namespace " + f.nameSpace() + ';';
     out.newLine();
   }
 
@@ -559,9 +559,9 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
     QStringList::ConstIterator it;
     for( it = externCDeclarations.begin(); it != externCDeclarations.end();
          ++it ) {
-      out += *it + ";";
+      out += *it + ';';
     }
-    out += "}";
+    out += '}';
     out.newLine();
   }
 
@@ -572,7 +572,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
     Variable v = *itV;
     QString str;
     if ( v.isStatic() ) str += "static ";
-    str += v.type() + " " + v.name() + ";";
+    str += v.type() + ' ' + v.name() + ';';
     out += str;
   }
   if ( !vars.isEmpty() ) out.newLine();
@@ -589,9 +589,9 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
   for( itF = funcs.begin(); itF != funcs.end(); ++itF ) {
     Function f = *itF;
     out += functionSignature( f );
-    out += "{";
+    out += '{';
     out.addBlock( f.body(), 2 );
-    out += "}";
+    out += '}';
     out.newLine();
   }
 
@@ -613,7 +613,7 @@ void Printer::printImplementation( const File &f, bool createHeaderInclude )
   // Print to file
   QString filename = f.filename() + ".cpp";
 
-  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
+  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + '/' );
 
   KSaveFile::simpleBackupFile( filename, QString::null, ".backup" );
 
@@ -634,7 +634,7 @@ void Printer::printAutoMakefile( const AutoMakefile &am )
 {
   QString filename = "Makefile.am";
 
-  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + "/" );
+  if ( !mOutputDirectory.isEmpty() ) filename.prepend( mOutputDirectory + '/' );
 
   KSaveFile::simpleBackupFile( filename, QString::null, ".backup" );
 
