@@ -68,7 +68,7 @@ KUrl makeURL( const QString &arg )
   KUrl result;
   char cwd[ PATH_MAX + 1 ];
   getcwd( cwd, PATH_MAX );
-  result.setPath( QFile::decodeName( QByteArray( cwd ) ) + "/" + arg );
+  result.setPath( QFile::decodeName( QByteArray( cwd ) ) + '/' + arg );
   result.cleanPath();
   return result;  // Relative path
 }

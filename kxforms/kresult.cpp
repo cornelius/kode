@@ -154,6 +154,6 @@ QString KResult::fullMessage() const
 QString KResult::chainedMessage() const
 {
   QString msg = fullMessage();
-  if ( hasChainedResult() ) msg += "\n" + chainedResult().chainedMessage();
+  if ( hasChainedResult() ) msg += '\n' + chainedResult().chainedMessage();
   return msg;
 }

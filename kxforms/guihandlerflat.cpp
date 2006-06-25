@@ -41,7 +41,7 @@ BreadCrumbLabel::BreadCrumbLabel( QWidget *parent )
   : KActiveLabel( parent )
 {
 }
-    
+
 void BreadCrumbLabel::openLink( const QUrl &link )
 {
   emit crumbClicked( link.toString().toInt() );
@@ -87,7 +87,7 @@ FormGui *BreadCrumbNavigator::pop()
   updateLabel();
 
   result->saveData();
-  
+
   return result;
 }
 
@@ -138,7 +138,7 @@ void BreadCrumbNavigator::slotCrumbClicked( int index )
   }
 
   updateLabel();
-  
+
   emit guiSelected( last() );
 }
 
@@ -153,7 +153,7 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   kDebug() << "GuiHandlerFlat::createRootGui()" << endl;
 
   mMainWidget = new QWidget( parent );
-  
+
   QBoxLayout *topLayout = new QVBoxLayout( mMainWidget );
   topLayout->setMargin( 0 );
 
@@ -179,7 +179,7 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
 
   FormGui *gui = createGui( f, mStackWidget );
 
-  gui->setRef( "/" + f->ref() );
+  gui->setRef( '/' + f->ref() );
   gui->parseElement( f->element() );
 
   if ( manager()->hasData() ) {
@@ -192,9 +192,9 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   QBoxLayout *buttonLayout = new QHBoxLayout();
   topLayout->addLayout( buttonLayout );
   buttonLayout->setMargin( KDialog::marginHint() );
-  
+
   buttonLayout->addStretch( 1 );
-  
+
   mBackButton = new QPushButton( i18n("Back"), mMainWidget );
   buttonLayout->addWidget( mBackButton );
   connect( mBackButton, SIGNAL( clicked() ), SLOT( goBack() ) );
@@ -277,7 +277,7 @@ void GuiHandlerFlat::showGui( FormGui *gui )
     mStackWidget->setCurrentWidget( gui );
     manager()->loadData( gui );
   }
-  
+
   if ( mBreadCrumbNavigator->count() == 1 ) {
     mBackButton->setEnabled( false );
   }

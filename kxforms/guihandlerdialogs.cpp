@@ -82,7 +82,7 @@ QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
 
   FormGui *gui = createGui( f, parent );
 
-  gui->setRef( "/" + f->ref() );
+  gui->setRef( '/' + f->ref() );
   gui->parseElement( f->element() );
 
   if ( manager()->hasData() ) {

@@ -71,12 +71,12 @@ void TextArea::saveData()
   }
 
   QString tag = e.tagName();
-    
+
   while( !e.firstChild().isNull() ) {
     e.removeChild( e.firstChild() );
   }
 
-  QString xml = "<" + tag + ">" + mEdit->toPlainText() + "</" + tag + ">";
+  QString xml = '<' + tag + '>' + mEdit->toPlainText() + "</" + tag + '>';
 
   kDebug() << "XML: " << xml << endl;
 

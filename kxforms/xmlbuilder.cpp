@@ -80,7 +80,7 @@ XmlBuilder *XmlBuilder::tag( const QString &tagName, const QString &text )
 XmlBuilder *XmlBuilder::attribute( const QString &name, const QString &value )
 {
   mAttributes[ name ] = value;
-  
+
   return this;
 }
 
@@ -88,16 +88,16 @@ XmlBuilder *XmlBuilder::text( const QString &text )
 {
   if ( !text.isEmpty() ) {
     mChildren.append( Node( text ) );
-    mHasText = true; 
+    mHasText = true;
   }
-   
+
   return this;
 }
 
 QString XmlBuilder::print( int indentation, bool newLine ) const
 {
-  QString out = indent( indentation ) + "<" + mTagName;
-  
+  QString out = indent( indentation ) + '<' + mTagName;
+
   QMap<QString,QString>::ConstIterator it;
   for( it = mAttributes.begin(); it != mAttributes.end(); ++it ) {
     out += " " + it.key() + "=\"" + it.value() + "\"";
@@ -106,9 +106,9 @@ QString XmlBuilder::print( int indentation, bool newLine ) const
   if ( isEmpty() ) {
     out += "/>\n";
   } else {
-    out += ">";
-    if ( !hasText() ) out += "\n";
-  
+    out += '>';
+    if ( !hasText() ) out += '\n';
+
     foreach( Node child, mChildren ) {
       if ( child.isText() ) {
         out += child.text();
@@ -120,10 +120,10 @@ QString XmlBuilder::print( int indentation, bool newLine ) const
         }
       }
     }
-    
+
     if ( !hasText() ) out += indent( indentation );
-    out += "</" + mTagName + ">";
-    if ( newLine ) out += "\n";
+    out += "</" + mTagName + '>';
+    if ( newLine ) out += '\n';
   }
 
   return out;
@@ -133,7 +133,7 @@ QString XmlBuilder::indent( int indent ) const
 {
   QString txt;
   for( int i = 0; i < indent; ++i ) {
-    txt += " ";
+    txt += ' ';
   }
   return txt;
 }

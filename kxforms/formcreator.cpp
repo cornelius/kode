@@ -58,7 +58,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 {
   if ( mCollapsedForms.contains( element.name() ) ) return;
 
-  qDebug() << "ELEMENT" << element.name(); 
+  qDebug() << "ELEMENT" << element.name();
   XmlBuilder *form = xml->tag( "form" )->attribute( "ref", element.name() );
 
   form->tag( "xf:label", humanizeString( element.name() ) );
@@ -79,11 +79,11 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
       foreach( QString value, a.enumerationValues() ) {
         XmlBuilder *item = select1->tag( "xf:item" );
         QString itemLabel;
-        Hint hint = mHints.hint( element.identifier() + "/" + a.ref() );
+        Hint hint = mHints.hint( element.identifier() + '/' + a.ref() );
         if ( hint.isValid() ) itemLabel = hint.enumValue( value );
         if ( itemLabel.isEmpty() ) itemLabel = humanizeString( value );
         item->tag( "xf:label", itemLabel );
-        item->tag( "xf:value", value );  
+        item->tag( "xf:value", value );
       }
     } else {
       qDebug() << "Unsupported type: " << a.type();
@@ -117,7 +117,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
           if ( isMixedList ) {
             label = "Item";
           } else {
-            label = getLabel( element.identifier() + "[" + r.target() + "]" );
+            label = getLabel( element.identifier() + '[' + r.target() + ']' );
             if ( label.isEmpty() ) {
               label = humanizeString( r.target(), true );
             }
@@ -129,7 +129,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
         QString itemLabel;
 
-        itemLabel = getLabel( element.identifier() + "/" + r.target() );
+        itemLabel = getLabel( element.identifier() + '/' + r.target() );
 
         Schema::Element itemElement = mDocument.element( r );
 
@@ -169,7 +169,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
         }
         textInput->attribute( "ref", textElement.name() );
         createLabel( textInput, textElement );
-      
+
         mCollapsedForms.append( r.target() );
       }
     }
@@ -184,7 +184,7 @@ QString FormCreator::humanizeString( const QString &str, bool pluralize )
     if ( result.endsWith( "y" ) ) {
       result = result.left( str.length() - 1 ) + "ies";
     } else {
-      result += "s";
+      result += 's';
     }
   }
 
@@ -217,9 +217,9 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
 
   Hint hint = mHints.hint( ref );
   if ( hint.isValid() ) label = hint.label();
-  
+
   if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
-  
+
   return label;
 }
 

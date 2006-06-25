@@ -86,9 +86,9 @@ void Reference::Segment::fromString( const QString &str )
 QString Reference::Segment::toString() const
 {
   QString str;
-  if ( mIsAttribute ) str += "@";
+  if ( mIsAttribute ) str += '@';
   str += mName;
-  if ( mCount > 0 ) str += "[" + QString::number( mCount ) + "]";
+  if ( mCount > 0 ) str += '[' + QString::number( mCount ) + ']';
 
   return str;
 }
@@ -131,7 +131,7 @@ Reference &Reference::append( const Reference::Segment &segment )
 
   return *this;
 }
- 
+
 Reference &Reference::append( const Reference &ref )
 {
   Segment::List segments = ref.segments();
@@ -139,7 +139,7 @@ Reference &Reference::append( const Reference &ref )
   for( it = segments.begin(); it != segments.end(); ++it ) {
     mSegments.append( *it );
   }
-  
+
   return *this;
 }
 
@@ -195,7 +195,7 @@ QString Reference::toString() const
   QString str;
   Segment::List::ConstIterator it;
   for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
-    if ( !str.isEmpty() ) str += "/";
+    if ( !str.isEmpty() ) str += '/';
     str += (*it).toString();
   }
   if ( mAbsolute ) str.prepend( "/" );
@@ -283,7 +283,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
       return QDomElement();
     }
   }
-  
+
   return result;
 }
 
@@ -307,13 +307,13 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
     QDomNode n;
     for( n = result.firstChild(); !n.isNull(); n = n.nextSibling() ) {
       QDomElement e = n.toElement();
-      
+
       kDebug() << "  E: " << e.tagName() << endl;
-      
+
       int count = 1;
       QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
       if ( itCount != counts.end() ) count = itCount.value();
-      
+
       kDebug() << "  COUNT: " << count << endl;
 
       if ( e.tagName() == segment.name() && count == segment.count() ) {
@@ -328,7 +328,7 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
       return QDomElement();
     }
   }
-  
+
   return result;
 }
 
