@@ -111,7 +111,7 @@ void Settings::setWsdlUrl( const QString &wsdlUrl )
   mWsdlUrl = wsdlUrl;
 
   if ( QDir::isRelativePath( mWsdlUrl ) )
-    mWsdlUrl = QDir::current().path() + "/" + mWsdlUrl;
+    mWsdlUrl = QDir::current().path() + '/' + mWsdlUrl;
 }
 
 QString Settings::wsdlUrl() const

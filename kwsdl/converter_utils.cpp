@@ -61,7 +61,7 @@ void Converter::createUtils()
     KODE::Function marshal, demarshal;
     KODE::Code code;
 
-    TypeEntry entry = types[ i ]; 
+    TypeEntry entry = types[ i ];
 
     marshal = KODE::Function( "marshalValue", "QString" );
     marshal.setStatic( true );
@@ -73,7 +73,7 @@ void Converter::createUtils()
     code += "return QString();";
     code.unindent();
     code.newLine();
-    code += "return " + entry.marshalCode + ";";
+    code += "return " + entry.marshalCode + ';';
     marshal.setBody( code );
 
     mSerializer.addFunction( marshal );
@@ -89,7 +89,7 @@ void Converter::createUtils()
     code += "return;";
     code.unindent();
     code.newLine();
-    code += "*value = " + entry.demarshalCode + ";";
+    code += "*value = " + entry.demarshalCode + ';';
     demarshal.setBody( code );
 
     mSerializer.addFunction( demarshal );
@@ -120,7 +120,7 @@ void Converter::createUtils()
     code.indent();
     code += "parentElement = parent;";
     code.unindent();
-    code += "}";
+    code += '}';
     code.newLine();
     code += "parentElement.appendChild( doc.createTextNode( Serializer::marshalValue( value ) ) );";
     marshal.setBody( code );
@@ -210,22 +210,22 @@ void Converter::createSoapUtils()
   // getter methods
   KODE::Function getCode( "code", "QString" );
   getCode.setConst( true );
-  getCode.setBody( "return " + codeVar.name() + ";" );
+  getCode.setBody( "return " + codeVar.name() + ';' );
   getCode.setDocs( "Returns the code of this fault object." );
 
   KODE::Function getDescription( "description", "QString" );
   getDescription.setConst( true );
-  getDescription.setBody( "return " + descriptionVar.name() + ";" );
+  getDescription.setBody( "return " + descriptionVar.name() + ';' );
   getDescription.setDocs( "Returns the description of this fault object." );
 
   KODE::Function getActor( "actor", "QString" );
   getActor.setConst( true );
-  getActor.setBody( "return " + actorVar.name() + ";" );
+  getActor.setBody( "return " + actorVar.name() + ';' );
   getActor.setDocs( "Returns the actor of this fault object." );
 
   KODE::Function getDetail( "detail", "QString" );
   getDetail.setConst( true );
-  getDetail.setBody( "return " + detailVar.name() + ";" );
+  getDetail.setBody( "return " + detailVar.name() + ';' );
   getDetail.setDocs( "Returns additional details of this fault object." );
 
   soapFault.addFunction( getCode );
@@ -259,7 +259,7 @@ void Converter::createSoapUtils()
   code += "element.appendChild( doc.createTextNode( value->code() ) );";
   code += "fault.appendChild( element );";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   code += "if ( !value->description().isEmpty() ) {";
   code.indent();
@@ -267,7 +267,7 @@ void Converter::createSoapUtils()
   code += "element.appendChild( doc.createTextNode( value->description() ) );";
   code += "fault.appendChild( element );";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   code += "if ( !value->actor().isEmpty() ) {";
   code.indent();
@@ -275,7 +275,7 @@ void Converter::createSoapUtils()
   code += "element.appendChild( doc.createTextNode( value->actor() ) );";
   code += "fault.appendChild( element );";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   code += "if ( !value->detail().isEmpty() ) {";
   code.indent();
@@ -283,7 +283,7 @@ void Converter::createSoapUtils()
   code += "element.appendChild( doc.createTextNode( value->detail() ) );";
   code += "fault.appendChild( element );";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   marshal.setBody( code );
 
@@ -326,10 +326,10 @@ void Converter::createSoapUtils()
   code.unindent();
   code.newLine();
   code.unindent();
-  code += "}";
+  code += '}';
   code += "node = node.nextSibling();";
   code.unindent();
-  code += "}";
+  code += '}';
   demarshal.setBody( code );
 
   mSerializer.addFunction( demarshal );

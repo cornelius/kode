@@ -37,7 +37,7 @@ void Converter::convertElement( const XSD::Element *element )
     KODE::Code dtorCode;
 
     // member variables
-    KODE::MemberVariable variable( "value", typeName + "*" );
+    KODE::MemberVariable variable( "value", typeName + '*' );
     newClass.addMemberVariable( variable );
 
     ctorCode += variable.name() + " = 0;";
@@ -51,8 +51,8 @@ void Converter::convertElement( const XSD::Element *element )
     setter.setBody( setterBody );
 
     // getter method
-    KODE::Function getter( "value", typeName + "*" );
-    getter.setBody( "return " + variable.name() + ";" );
+    KODE::Function getter( "value", typeName + '*' );
+    getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
     // convenience constructor
@@ -73,13 +73,13 @@ void Converter::convertElement( const XSD::Element *element )
     }
 
     // type operator
-    KODE::Function op( "operator const " + typeName + "*" );
-    op.setBody( "return " + variable.name() + ";" );
+    KODE::Function op( "operator const " + typeName + '*' );
+    op.setBody( "return " + variable.name() + ';' );
     op.setConst( true );
 
     KODE::Function ctor( className );
     ctor.setBody( ctorCode );
-    KODE::Function dtor( "~" + className );
+    KODE::Function dtor( '~' + className );
     dtor.setBody( dtorCode );
 
     newClass.addFunction( ctor );
@@ -152,7 +152,7 @@ void Converter::createElementSerializer( const XSD::Element *element )
     demarshalCode += "Serializer::demarshalValue( text, data );";
     demarshalCode += "value->setValue( data );";
     demarshalCode.unindent();
-    demarshalCode += "}";
+    demarshalCode += '}';
   } else {
     marshalCode += "QDomElement element = doc.createElement( name );";
     marshalCode += "parent.appendChild( element );";

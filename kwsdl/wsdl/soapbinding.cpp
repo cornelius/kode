@@ -37,7 +37,7 @@ static QString soapPrefix( ParserContext *context )
 {
   QString prefix = context->namespaceManager()->prefix( soapStandardNamespace );
   if ( !prefix.isEmpty() )
-    return prefix + ":";
+    return prefix + ':';
   else
     return QString();
 }

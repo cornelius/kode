@@ -47,7 +47,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
 
       // member variables
-      KODE::MemberVariable variable( "value", typeName + "*" );
+      KODE::MemberVariable variable( "value", typeName + '*' );
       newClass.addMemberVariable( variable );
 
       ctorBody += variable.name() + " = 0;";
@@ -59,8 +59,8 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       setter.setBody( variable.name() + " = value;" );
 
       // getter method
-      KODE::Function getter( "value", typeName + "*" );
-      getter.setBody( "return " + variable.name() + ";" );
+      KODE::Function getter( "value", typeName + '*' );
+      getter.setBody( "return " + variable.name() + ';' );
       getter.setConst( true );
 
       // convenience constructor
@@ -77,8 +77,8 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       }
 
       // type operator
-      KODE::Function op( "operator const " + typeName + "*" );
-      op.setBody( "return " + variable.name() + ";" );
+      KODE::Function op( "operator const " + typeName + '*' );
+      op.setBody( "return " + variable.name() + ';' );
       op.setConst( true );
 
       newClass.addFunction( conctor );
@@ -108,7 +108,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       typeName = "QList<" + typeName + "*>";
 
     // member variables
-    KODE::MemberVariable variable( (*elemIt).name(), typeName + "*" );
+    KODE::MemberVariable variable( (*elemIt).name(), typeName + '*' );
     newClass.addMemberVariable( variable );
 
     ctorBody += variable.name() + " = 0;";
@@ -124,11 +124,11 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
     setter.addArgument( typeName + " *" + mNameMapper.escape( lowerName ) );
-    setter.setBody( variable.name() + " = " + mNameMapper.escape( lowerName ) + ";" );
+    setter.setBody( variable.name() + " = " + mNameMapper.escape( lowerName ) + ';' );
 
     // getter method
-    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
-    getter.setBody( "return " + variable.name() + ";" );
+    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + '*' );
+    getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
     newClass.addFunction( setter );
@@ -153,7 +153,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       typeName = mTypeMap.localType( (*attrIt).type() );
 
     // member variables
-    KODE::MemberVariable variable( (*attrIt).name(), typeName + "*" );
+    KODE::MemberVariable variable( (*attrIt).name(), typeName + '*' );
     newClass.addMemberVariable( variable );
 
     ctorBody += variable.name() + " = 0;";
@@ -169,11 +169,11 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
     setter.addArgument( typeName + " *" + mNameMapper.escape( lowerName ) );
-    setter.setBody( variable.name() + " = " + mNameMapper.escape( lowerName ) + ";" );
+    setter.setBody( variable.name() + " = " + mNameMapper.escape( lowerName ) + ';' );
 
     // getter method
-    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
-    getter.setBody( "return " + variable.name() + ";" );
+    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + '*' );
+    getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
     newClass.addFunction( setter );
@@ -191,7 +191,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   ctor.setBody( ctorBody );
   newClass.addFunction( ctor );
 
-  KODE::Function dtor( "~" + upperlize( newClass.name() ) );
+  KODE::Function dtor( '~' + upperlize( newClass.name() ) );
   dtor.setBody( dtorBody );
   newClass.addFunction( dtor );
 
@@ -248,7 +248,7 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
   marshalCode.indent();
   marshalCode += "parentElement = parent;";
   marshalCode.unindent();
-  marshalCode += "}";
+  marshalCode += '}';
   marshalCode.newLine();
 
   // handle marshalling of base types
@@ -281,12 +281,12 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
     QString lowerName = lowerlize( (*elemIt).name() );
 
     KODE::Function setter( "set" + upperName, "void" );
-    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + "*" );
+    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + '*' );
 
     if ( (*elemIt).maxOccurs() > 1 ) {
       const QString typePrefix = mNSManager.prefix( (*elemIt).type().nameSpace() );
 
-      marshalCode += "{";
+      marshalCode += '{';
       marshalCode.indent();
       marshalCode += "const QList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
       marshalCode.newLine();
@@ -295,9 +295,9 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
       marshalCode.indent();
       marshalCode += "Serializer::marshal( doc, parentElement, \"" + typePrefix + ":" + (*elemIt).name() + "\", *it, false );";
       marshalCode.unindent();
-      marshalCode += "}";
+      marshalCode += '}';
       marshalCode.unindent();
-      marshalCode += "}";
+      marshalCode += '}';
 
       const QString listName = mNameMapper.escape( lowerName ) + "List";
 
@@ -309,7 +309,7 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
       demarshalCode += "Serializer::demarshal( element, item );";
       demarshalCode += listName + "->append( item );";
       demarshalCode.unindent();
-      demarshalCode += "}";
+      demarshalCode += '}';
 
       demarshalFinalCode += "value->" + setter.name() + "( " + listName + " );";
     } else {
@@ -321,7 +321,7 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
       demarshalCode += "Serializer::demarshal( element, item );";
       demarshalCode += "value->" + setter.name() + "( item );";
       demarshalCode.unindent();
-      demarshalCode += "}";
+      demarshalCode += '}';
     }
   }
 
@@ -339,7 +339,7 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
       const QString typeName = mTypeMap.localType( (*attrIt).arrayType() );
       const QString typePrefix = mNSManager.prefix( (*attrIt).arrayType().nameSpace() );
 
-      marshalCode += "{";
+      marshalCode += '{';
       marshalCode.indent();
       marshalCode += "const QList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
       marshalCode.newLine();
@@ -356,9 +356,9 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
       marshalCode.indent();
       marshalCode += "Serializer::marshal( doc, element, \"item\", *it, false );";
       marshalCode.unindent();
-      marshalCode += "}";
+      marshalCode += '}';
       marshalCode.unindent();
-      marshalCode += "}";
+      marshalCode += '}';
 
       const QString listName = mNameMapper.escape( lowerName ) + "List";
       // TODO: prepend the code somehow
@@ -385,15 +385,15 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
       demarshalCode += "Serializer::demarshalValue( element.attribute( \"" + (*attrIt).name() + "\" ), item );";
       demarshalCode += "value->" + setter.name() + "( item );";
       demarshalCode.unindent();
-      demarshalCode += "}";
+      demarshalCode += '}';
     }
   }
 
   demarshalCode.unindent();
-  demarshalCode += "}";
+  demarshalCode += '}';
   demarshalCode += "node = node.nextSibling();";
   demarshalCode.unindent();
-  demarshalCode += "}";
+  demarshalCode += '}';
   demarshalCode.newLine();
 
   demarshalCode += demarshalFinalCode;

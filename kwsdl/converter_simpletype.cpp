@@ -66,7 +66,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // getter method
       KODE::Function getter( "type", upperlize( newClass.name() ) + "::Type" );
-      getter.setBody( "return " + variable.name() + ";" );
+      getter.setBody( "return " + variable.name() + ';' );
       getter.setConst( true );
 
       // convenience constructor
@@ -78,7 +78,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // type operator
       KODE::Function op( "operator const " + upperlize( newClass.name() ) + "::Type" );
-      op.setBody( "return " + variable.name() + ";" );
+      op.setBody( "return " + variable.name() + ';' );
       op.setConst( true );
 
       newClass.addFunction( conctor );
@@ -105,7 +105,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
 
       // member variables
-      KODE::MemberVariable variable( "value", typeName + "*" );
+      KODE::MemberVariable variable( "value", typeName + '*' );
       newClass.addMemberVariable( variable );
 
       ctorBody += variable.name() + " = 0;";
@@ -126,8 +126,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       setter.setBody( setterBody );
 
       // getter method
-      KODE::Function getter( "value", typeName + "*" );
-      getter.setBody( "return " + variable.name() + ";" );
+      KODE::Function getter( "value", typeName + '*' );
+      getter.setBody( "return " + variable.name() + ';' );
       getter.setConst( true );
 
       // convenience constructor
@@ -163,8 +163,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       }
 
       // type operator
-      KODE::Function op( "operator const " + typeName + "*" );
-      op.setBody( "return " + variable.name() + ";" );
+      KODE::Function op( "operator const " + typeName + '*' );
+      op.setBody( "return " + variable.name() + ';' );
       op.setConst( true );
 
       newClass.addFunction( conctor );
@@ -198,7 +198,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
     // getter method
     KODE::Function getter( "entries", "QList<" + typeName + "*>*" );
-    getter.setBody( "return " + variable.name() + ";" );
+    getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
     newClass.addFunction( setter );
@@ -216,7 +216,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
   ctor.setBody( ctorBody );
   newClass.addFunction( ctor );
 
-  KODE::Function dtor( "~" + upperlize( newClass.name() ) );
+  KODE::Function dtor( '~' + upperlize( newClass.name() ) );
   dtor.setBody( dtorBody );
   newClass.addFunction( dtor );
 
@@ -278,7 +278,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
       code += "switch ( value->type() ) {";
       code.indent();
       for ( int i = 0; i < enums.count(); ++i ) {
-        code += "case " + typeName + "::" + escapedEnums[ i ] + ":";
+        code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
         code.indent();
         code += "return \"" + enums[ i ] + "\";";
         code += "break;";
@@ -290,7 +290,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
       code += "break;";
       code.unindent();
       code.unindent();
-      code += "}";
+      code += '}';
       code.newLine();
       code += "return QString();";
       marshalValue.setBody( code );
@@ -302,7 +302,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
       const QString typePrefix = mNSManager.prefix( type->qualifiedName().nameSpace() );
       marshalCode += "QDomElement root = doc.createElement( noNamespace ? name : \"" + typePrefix + ":\" + name );";
       marshalCode += "root.setAttribute( \"" + mNSManager.schemaInstancePrefix() + ":type\", \"" +
-                     typePrefix + ":" + type->name() + "\" );";
+                     typePrefix + ':' + type->name() + "\" );";
       marshalCode += "parent.appendChild( root );";
       marshalCode += "parentElement = root;";
       marshalCode.unindent();
@@ -310,7 +310,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
       marshalCode.indent();
       marshalCode += "parentElement = parent;";
       marshalCode.unindent();
-      marshalCode += "}";
+      marshalCode += '}';
 
       marshalCode += "parentElement.appendChild( doc.createTextNode( Serializer::marshalValue( value ) ) );";
 
@@ -350,7 +350,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
       demarshalCode += "Serializer::demarshal( parent, value );";
       demarshalCode += "value->setValue( data );";
       demarshalCode.unindent();
-      demarshalCode += "}";
+      demarshalCode += '}';
 
       KODE::Function marshalValue( "marshalValue", "QString" );
       marshalValue.setStatic( true );
@@ -384,7 +384,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
     marshalCode += "list.append( Serializer::marshalValue( *it ) );";
     marshalCode += "++it;";
     marshalCode.unindent();
-    marshalCode += "}";
+    marshalCode += '}';
     marshalCode.newLine();
     marshalCode += "QDomElement parentElement;";
     marshalCode += "if ( !name.isEmpty() ) {";
@@ -397,7 +397,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
     marshalCode.indent();
     marshalCode += "parentElement = parent;";
     marshalCode.unindent();
-    marshalCode += "}";
+    marshalCode += '}';
     marshalCode += "parentElement.appendChild( doc.createTextNode( list.join( \" \" ) ) );";
 
     demarshalCode += "const QStringList list = parent.text().split( \" \", QString::SkipEmptyParts );";
@@ -411,11 +411,11 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
     demarshalCode += "Serializer::demarshalValue( *it, entry );";
     demarshalCode += "entries->append( entry );";
     demarshalCode.unindent();
-    demarshalCode += "}";
+    demarshalCode += '}';
     demarshalCode.newLine();
     demarshalCode += "value->setEntries( entries );";
     demarshalCode.unindent();
-    demarshalCode += "}";
+    demarshalCode += '}';
   }
 
   marshal.setBody( marshalCode );

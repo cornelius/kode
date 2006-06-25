@@ -33,7 +33,7 @@ void Converter::convertClientService()
   newClass.addHeaderInclude( "QString" );
 
   KODE::Function ctor( service.name() );
-  KODE::Function dtor( "~" + service.name() );
+  KODE::Function dtor( '~' + service.name() );
   KODE::Code ctorCode, dtorCode;
 
   const Port::List servicePorts = service.ports();
@@ -84,7 +84,7 @@ void Converter::convertClientService()
       ctorCode.unindent();
 
 
-      dtorCode += "delete " + transport.name() + ";";
+      dtorCode += "delete " + transport.name() + ';';
       dtorCode += transport.name() + " = 0;";
     }
   }
@@ -209,7 +209,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
 
     code += "Serializer::marshal( doc, " + parentNode + ", \"" + name + "\", " + mNameMapper.escape( lowerName ) +
             ", " + noNamespace + " );";
-    code += "delete " + mNameMapper.escape( lowerName ) + ";";
+    code += "delete " + mNameMapper.escape( lowerName ) + ';';
   }
 
   QString header = "QString()";
@@ -294,7 +294,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", qPrintable( errorMsg ), row, column );";
   code += "return;";
   code.unindent();
-  code += "}";
+  code += '}';
   code.newLine();
   code += "QDomElement envelope = doc.documentElement();";
   code += "QDomElement body = envelope.firstChild().toElement();";
@@ -335,18 +335,18 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
       code += lowerName + " = new " + partType + "();";
       code += "Serializer::demarshal( method.firstChild().toElement(), " + lowerName + " );";
       code.unindent();
-      code += "}";
+      code += '}';
     }
     code.unindent();
-    code += "}";
+    code += '}';
     code.newLine();
     code += "node = node.nextSibling();";
     code.unindent();
-    code += "}";
+    code += '}';
     code.newLine();
     code += "emit " + respSignal.name() + "( " + partNames.join( "," ) + " );";
     code.unindent();
-    code += "}";
+    code += '}';
   } else { // soapStyle == SoapBinding::DocumentStyle
     code += "QDomElement method = body.firstChild().toElement();";
     code += "if ( method.tagName() == \"Fault\" ) {";
@@ -371,7 +371,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
     code += "emit " + errorSignal.name() + "( fault );";
     code += "return;";
     code.unindent();
-    code += "}";
+    code += '}';
 
     QStringList partNames;
     for ( int i = 0; i < parts.count(); ++i ) {
@@ -392,18 +392,18 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
       code += lowerName + " = new " + partType + "();";
       code += "Serializer::demarshal( method.firstChild().toElement(), " + lowerName + " );";
       code.unindent();
-      code += "}";
+      code += '}';
     }
     code.unindent();
-    code += "}";
+    code += '}';
     code.newLine();
     code += "node = node.nextSibling();";
     code.unindent();
-    code += "}";
+    code += '}';
     code.newLine();
     code += "emit " + respSignal.name() + "( " + partNames.join( "," ) + " );";
     code.unindent();
-    code += "}";
+    code += '}';
   }
 
   respSlot.setBody( code );

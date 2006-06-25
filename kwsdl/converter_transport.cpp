@@ -63,7 +63,7 @@ void Converter::createKDETransport()
   queryCode += "kWarning() << \"Unable to create KIO job for \" << " + url.name() + " << endl;";
   queryCode += "return;";
   queryCode.unindent();
-  queryCode += "}";
+  queryCode += '}';
   queryCode.newLine();
   queryCode += "job->addMetaData( \"UserAgent\", \"KWSDL\" );";
   queryCode += "job->addMetaData( \"content-type\", \"Content-Type: text/xml; charset=utf-8\" );";
@@ -71,7 +71,7 @@ void Converter::createKDETransport()
   queryCode.indent();
   queryCode += "job->addMetaData( \"customHTTPHeader\", \"SOAPAction:\" + header );";
   queryCode.unindent();
-  queryCode += "}";
+  queryCode += '}';
   queryCode.newLine();
   queryCode += "connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ), this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );";
   queryCode += "connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotResult( KJob* ) ) );";
@@ -115,7 +115,7 @@ void Converter::createKDETransport()
   slotResultCode += "emit error( job->errorText() );";
   slotResultCode += "return;";
   slotResultCode.unindent();
-  slotResultCode += "}";
+  slotResultCode += '}';
   slotResultCode.newLine();
 
   slotResultCode += "emit result( QString::fromUtf8( " + slotDataVar.name() + ".data(), " + slotDataVar.name() + ".size() ) );";
