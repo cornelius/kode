@@ -47,6 +47,7 @@ class LIBKODE_EXPORT Code
     QString text() const { return mText; }
 
     void addLine( const QString & );
+    void addLine( const char );
     void addBlock( const Code & );
     void addBlock( const QString & );
     void addBlock( const QString &, int indent );
@@ -58,6 +59,7 @@ class LIBKODE_EXPORT Code
 
     Code &operator+=( const QString & );
     Code &operator+=( const char * );
+    Code &operator+=( const char );
     Code &operator+=( const Code & );
 
     static QString spaces( int count );

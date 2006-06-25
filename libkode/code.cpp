@@ -72,6 +72,13 @@ void Code::addLine( const QString &line )
   mText += '\n';
 }
 
+void Code::addLine( const char c )
+{
+  mText += spaces( mIndent );
+  mText += c;
+  mText += '\n';
+}
+
 void Code::newLine()
 {
   mText += '\n';
@@ -162,13 +169,18 @@ void Code::addFormattedText( const QString &text )
 Code &Code::operator+=( const QString &str )
 {
   addLine( str );
-
   return *this;
 }
 
 Code &Code::operator+=( const char *str )
 {
   addLine( QString::fromLocal8Bit( str ) );
+  return *this;
+}
+
+Code &Code::operator+=( const char c )
+{
+  addLine( c );
   return *this;
 }
 
