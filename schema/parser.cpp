@@ -1,7 +1,9 @@
+// kate: space-indent on; indent-width 2; encoding utf-8; replace-tabs on;
 /*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2006 Michaël Larouche <michael.larouche@kdemail.net>
                        based on wsdlpull parser by Vivek Krishna
 
     This library is free software; you can redistribute it and/or
@@ -24,7 +26,8 @@
 #include <QFile>
 #include <QUrl>
 #include <QXmlSimpleReader>
-#include <QDebug>
+#include <QtDebug>
+#include <QtCore/QLatin1String>
 
 #include <common/fileprovider.h>
 #include <common/messagehandler.h>
@@ -75,9 +78,9 @@ bool Parser::parseString( ParserContext *context, const QString &data )
 bool Parser::parse( ParserContext *context, QXmlInputSource *source )
 {
   QXmlSimpleReader reader;
-  reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
+  reader.setFeature( QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true );
 
-  QDomDocument document( "KWSDL" );
+  QDomDocument document( QLatin1String("KWSDL") );
 
   QString errorMsg;
   int errorLine, errorCol;
@@ -88,7 +91,7 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
   }
 
   QDomElement element = doc.documentElement();
-  if ( element.tagName() != "xs:schema" ) {
+  if ( element.tagName() != QLatin1String("xs:schema") ) {
     qDebug( "document element is '%s'", qPrintable( element.tagName() ) );
     return false;
   }
@@ -99,7 +102,7 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
 bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 {
   QName name = root.tagName();
-  if ( name.localName() != "schema" )
+  if ( name.localName() != QLatin1String("schema") )
     return false;
 
   NSManager *parentManager = context->namespaceManager();
@@ -114,38 +117,38 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   QDomNamedNodeMap attributes = root.attributes();
   for ( int i = 0; i < attributes.count(); ++i ) {
     QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().startsWith( "xmlns:" ) ) {
+    if ( attribute.name().startsWith( QLatin1String("xmlns:") ) ) {
       QString prefix = attribute.name().mid( 6 );
       context->namespaceManager()->setPrefix( prefix, attribute.value() );
     }
   }
 
-  if ( root.hasAttribute( "targetNamespace" ) )
-    mNameSpace = root.attribute( "targetNamespace" );
+  if ( root.hasAttribute( QLatin1String("targetNamespace") ) )
+    mNameSpace = root.attribute( QLatin1String("targetNamespace") );
 
  // mTypesTable.setTargetNamespace( mNameSpace );
 
   QDomElement element = root.firstChildElement();
   while ( !element.isNull() ) {
     QName name = element.tagName();
-    if ( name.localName() == "import" ) {
+    if ( name.localName() == QLatin1String("import") ) {
       parseImport( context, element );
-    } else if ( name.localName() == "element" ) {
+    } else if ( name.localName() == QLatin1String("element") ) {
       addGlobalElement( parseElement( context, element, mNameSpace, element ) );
-    } else if ( name.localName() == "complexType" ) {
+    } else if ( name.localName() == QLatin1String("complexType") ) {
       ComplexType ct = parseComplexType( context, element );
       mComplexTypes.append( ct );
-    } else if ( name.localName() == "simpleType" ) {
+    } else if ( name.localName() == QLatin1String("simpleType") ) {
       SimpleType st = parseSimpleType( context, element );
       mSimpleTypes.append( st );
-    } else if ( name.localName() == "attribute" ) {
+    } else if ( name.localName() == QLatin1String("attribute") ) {
       addGlobalAttribute( parseAttribute( context, element ) );
-    } else if ( name.localName() == "attributeGroup" ) {
+    } else if ( name.localName() == QLatin1String("attributeGroup") ) {
       mAttributeGroups.append( parseAttributeGroup( context, element ) );
-    } else if ( name.localName() == "annotation" ) {
+    } else if ( name.localName() == QLatin1String("annotation") ) {
       mAnnotations = parseAnnotation( context, element );
-    } else if ( name.localName() == "include" ) {
-      // TODO
+    } else if ( name.localName() == QLatin1String("include") ) {
+      parseInclude( context, element );
     }
 
     element = element.nextSiblingElement();
@@ -175,6 +178,24 @@ void Parser::parseImport( ParserContext *context, const QDomElement &element )
       mImportedSchemas.append( location );
 
     importSchema( context, location );
+  }
+}
+
+void Parser::parseInclude( ParserContext *context, const QDomElement &element )
+{
+  QString location = element.attribute( "schemaLocation" );
+
+  if( !location.isEmpty() ) {
+    // don't include a schema twice
+    if ( mIncludedSchemas.contains( location ) )
+      return;
+    else
+      mIncludedSchemas.append( location );
+
+    includeSchema( context, location );
+  }
+  else {
+    context->messageHandler()->warning( QString("include tag found at (%1, %2) contains no schemaLocation tag.").arg( element.lineNumber(), element.columnNumber() ) );
   }
 }
 
@@ -738,7 +759,7 @@ void Parser::importSchema( ParserContext *context, const QString &location )
   if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
     schemaLocation = context->documentBaseUrl() + '/' + location;
 
-  qDebug( "loading schema at %s", qPrintable( schemaLocation ) );
+  qDebug( "importing schema at %s", qPrintable( schemaLocation ) );
 
   if ( provider.get( schemaLocation, fileName ) ) {
     QFile file( fileName );
@@ -769,7 +790,70 @@ void Parser::importSchema( ParserContext *context, const QString &location )
     if ( tagName.localName() == "schema" ) {
       parseSchemaTag( context, node );
     } else {
-      qDebug( "No schema tag found in schema file" );
+      qDebug( "No schema tag found in schema file %s", qPrintable(schemaLocation) );
+    }
+
+    mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );
+    context->setNamespaceManager( parentManager );
+
+    file.close();
+
+    provider.cleanUp();
+  }
+}
+
+// TODO: Try to merge import and include schema
+void Parser::includeSchema( ParserContext *context, const QString &location )
+{
+  FileProvider provider;
+  QString fileName;
+  QString schemaLocation( location );
+
+  QUrl url( location );
+  QDir dir( location );
+
+  if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
+    schemaLocation = context->documentBaseUrl() + "/" + location;
+
+  qDebug( "including schema at %s", qPrintable( schemaLocation ) );
+
+  if ( provider.get( schemaLocation, fileName ) ) {
+    QFile file( fileName );
+    if ( !file.open( QIODevice::ReadOnly ) ) {
+      qDebug( "Unable to open file %s", qPrintable( file.fileName() ) );
+      return;
+    }
+
+    QXmlInputSource source( &file );
+    QXmlSimpleReader reader;
+    reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
+
+    QDomDocument doc( "kwsdl" );
+    QString errorMsg;
+    int errorLine, errorColumn;
+    bool ok = doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorColumn );
+    if ( !ok ) {
+      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, qPrintable( errorMsg ) );
+      return;
+    }
+
+    NSManager *parentManager = context->namespaceManager();
+    NSManager namespaceManager;
+    context->setNamespaceManager( &namespaceManager );
+
+    QDomElement node = doc.documentElement();
+    QName tagName = node.tagName();
+    if ( tagName.localName() == "schema" ) {
+      // For include, targetNamespace must be the same as the current document.
+      if ( node.hasAttribute( QLatin1String("targetNamespace") ) ) {
+        if( node.attribute( QLatin1String("targetNamespace") ) != mNameSpace ) {
+          context->messageHandler()->error( QLatin1String("Included schema must be in the same namespace of the resulting schema.") );
+          return;
+        }
+      }
+      parseSchemaTag( context, node );
+    } else {
+      qDebug( "No schema tag found in schema file %s", qPrintable( schemaLocation ) );
     }
 
     mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );

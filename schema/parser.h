@@ -1,7 +1,9 @@
+// kate: space-indent on; indent-width 2; encoding utf-8; replace-tabs on;
 /*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2006 Michaël Larouche <michael.larouche@kdemail.net>
                        based on wsdlpull parser by Vivek Krishna
 
     This library is free software; you can redistribute it and/or
@@ -71,6 +73,14 @@ class KODE_SCHEMA_EXPORT Parser
 
   private:
     void parseImport( ParserContext *context, const QDomElement& );
+    /**
+     * @brief Parse include element.
+     * The <include> element must include a external schema within the same target namespace
+     * of the current document. Use <import> if you want to refer to a external namespace.
+     * @param context Current parser context.
+     * @param element DOM element to parse.
+     */
+    void parseInclude( ParserContext *context, const QDomElement& element);
     void addGlobalElement( const Element & );
     void addGlobalAttribute( const Attribute & );
     AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
@@ -99,6 +109,12 @@ class KODE_SCHEMA_EXPORT Parser
 
 
     void importSchema( ParserContext *context, const QString &location );
+    /**
+     * @brief Read and include the given schema into the current schema.
+     * @param context Current parser context.
+     * @param localtion Schema location.
+     */
+    void includeSchema( ParserContext *context, const QString &location );
     QStringList joinNamespaces( const QStringList&, const QStringList& );
 
     Element findElement( const QName &name );
@@ -116,6 +132,7 @@ class KODE_SCHEMA_EXPORT Parser
     Annotation::List mAnnotations;
 
     QStringList mImportedSchemas;
+    QStringList mIncludedSchemas;
     QStringList mNamespaces;
 };
 
