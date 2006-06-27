@@ -166,6 +166,15 @@ TypeMap::TypeMap()
     entry.basicType = true;
     entry.buildinType = true;
     entry.nameSpace = XMLSchemaURI;
+    entry.typeName = "integer";
+    entry.localType = "int";
+    mTypeMap.append( entry );
+  }
+  {
+    Entry entry;
+    entry.basicType = true;
+    entry.buildinType = true;
+    entry.nameSpace = XMLSchemaURI;
     entry.typeName = "int";
     entry.localType = "int";
     mTypeMap.append( entry );
@@ -230,6 +239,15 @@ TypeMap::TypeMap()
     entry.localType = "unsigned int";
     mTypeMap.append( entry );
   }
+  {
+    Entry entry;
+    entry.basicType = true;
+    entry.buildinType = true;
+    entry.nameSpace = XMLSchemaURI;
+    entry.typeName = "positiveInteger";
+    entry.localType = "unsigned int";
+    mTypeMap.append( entry );
+   }
 }
 
 TypeMap::~TypeMap()
