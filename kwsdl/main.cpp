@@ -56,6 +56,8 @@ int main( int argc, char **argv )
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
+  KApplication app( false );
+
   if ( args->isSet( "configfile" ) ) {
     if ( !Settings::self()->load( args->getOption( "configfile" ) ) )
       return 1;
@@ -70,8 +72,6 @@ int main( int argc, char **argv )
 
   if ( args->count() == 1 )
     Settings::self()->setWsdlUrl( args->url( 0 ).path() );
-
-  KApplication app( false );
 
   KWSDL::Compiler compiler;
 
