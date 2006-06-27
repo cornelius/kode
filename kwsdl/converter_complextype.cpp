@@ -101,7 +101,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   // elements
   XSD::Element::List elements = type->elements();
   XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     QString typeName = mTypeMap.localType( (*elemIt).type() );
 
     if ( (*elemIt).maxOccurs() > 1 )
