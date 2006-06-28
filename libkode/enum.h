@@ -35,14 +35,39 @@ class LIBKODE_EXPORT Enum
   public:
     typedef QList<Enum> List;
 
+    /**
+     * Creates a new enum.
+     */
     Enum();
+
+    /**
+     * Creates a new enum from @param other.
+     */
     Enum( const Enum &other );
+
+    /**
+     * Creates a new enum with the given name and enum values.
+     *
+     * @param name The name of the enum.
+     * @param enums The values of the enum.
+     * @param combinable If true the integer associations will be a power of two,
+     *                   so the enum flags will be combinable.
+     */
     Enum( const QString &name, const QStringList &enums, bool combinable = false );
 
+    /**
+     * Destroys the enum.
+     */
     ~Enum();
 
+    /**
+     * Assignment operator.
+     */
     Enum& operator=( const Enum &other );
 
+    /**
+     * Returns the textual presentation of the enum.
+     */
     QString declaration() const;
 
   private:

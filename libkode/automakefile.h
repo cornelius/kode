@@ -28,6 +28,10 @@
 
 namespace KODE {
 
+/**
+ * This class abstracts an AutoMake file (Makefile.am)
+ * which is used by the autotools to create Makefiles.
+ */
 class LIBKODE_EXPORT AutoMakefile
 {
   public:
@@ -36,30 +40,89 @@ class LIBKODE_EXPORT AutoMakefile
       public:
         typedef QList<Target> List;
 
+        /**
+         * Creates a new target.
+         */
         Target();
+
+        /**
+         * Creates a new target from @other.
+         */
         Target( const Target &other );
+
+        /**
+         * Creates a new target with a given @type and @name.
+         */
         Target( const QString &type, const QString &name );
 
+        /**
+         * Destroys the target.
+         */
         ~Target();
 
+        /**
+         * Assignment operator.
+         */
         Target& operator=( const Target &other );
 
+        /**
+         * Sets the @param type of the target.
+         */
         void setType( const QString &type );
+
+        /**
+         * Returns the type of the target.
+         */
         QString type() const;
 
+        /**
+         * Sets the @param name of the target.
+         */
         void setName( const QString &name );
+
+        /**
+         * Returns the name of the target.
+         */
         QString name() const;
 
+        /**
+         * Sets the @param sources of the target.
+         */
         void setSources( const QString &sources );
+
+        /**
+         * Returns the sources of the target.
+         */
         QString sources() const;
 
+        /**
+         * Sets the LIBADD of the target to @param libAdd.
+         */
         void setLibAdd( const QString &libAdd );
+
+        /**
+         * Returns the LIBADD of the target.
+         */
         QString libAdd() const;
 
+        /**
+         * Sets the LDADD of the target to @param ldAdd.
+         */
         void setLdAdd( const QString &ldAdd );
+
+        /**
+         * Returns the LDADD of the target.
+         */
         QString ldAdd() const;
 
+        /**
+         * Sets the LDFLAGS of the target to @param ldFlags.
+         */
         void setLdFlags( const QString &ldFlags );
+
+        /**
+         * Returns the LDFLAGS of the target.
+         */
         QString ldFlags() const;
 
       private:
@@ -67,21 +130,54 @@ class LIBKODE_EXPORT AutoMakefile
         Private* d;
     };
 
+
+    /**
+     * Creates a new automake file.
+     */
     AutoMakefile();
+
+    /**
+     * Creates a new automake file from @param other.
+     */
     AutoMakefile( const AutoMakefile &other );
 
+    /**
+     * Destroys the automake file.
+     */
     ~AutoMakefile();
 
+    /**
+     * Assignment operator.
+     */
     AutoMakefile& operator=( const AutoMakefile &other );
 
+    /**
+     * Add @param target to the automake file.
+     */
     void addTarget( const Target &target );
+
+    /**
+     * Returns the list of targets of the automake file.
+     */
     Target::List targets() const;
 
+    /**
+     * Adds a custom entry to the automake file.
+     *
+     * @param variable The variable name.
+     * @param value The value of the variable.
+     */
     void addEntry( const QString &variable,
                    const QString &value = QString() );
 
+    /**
+     * Adds an empty line to the automake file.
+     */
     void newLine();
 
+    /**
+     * Returns the textual presentation of the automake file.
+     */
     QString text() const;
 
   private:

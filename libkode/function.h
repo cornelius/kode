@@ -32,51 +32,163 @@ class QStringList;
 
 namespace KODE {
 
+/**
+ * This class represents a function.
+ */
 class LIBKODE_EXPORT Function
 {
   public:
     typedef QList<Function> List;
 
+    /**
+     * The different access specifiers.
+     *
+     * @li Public     - Public access
+     * @li Protected  - Protected access
+     * @li Private    - Private access
+     * @li Signal     - Qt Signal
+     * @li Slot       - Qt Slot
+     */
     enum AccessSpecifier { Public = 1, Protected = 2, Private = 4, Signal = 8, Slot = 16 };
 
+    /**
+     * Creates a new function.
+     */
     Function();
+
+    /**
+     * Creates a new function from @param other.
+     */
     Function( const Function &other );
+
+    /**
+     * Creates a new function with the given @param name.
+     *
+     * @param returnType The return type.
+     * @param access The access type (@see AccessSpecifier).
+     * @param isStatic If true, the function is marked as static.
+     */
     Function( const QString &name, const QString &returnType = QString(),
               int access = Public, bool isStatic = false );
 
+    /**
+     * Destroys the function.
+     */
     ~Function();
 
+    /**
+     * Assignment operator.
+     */
     Function& operator=( const Function &other );
 
-    void setConst( bool isConst );
-    bool isConst() const;
-
-    void setStatic( bool isStatic );
-    bool isStatic() const;
-
-    void addArgument( const QString &argument );
-    void setArgumentString( const QString &argumentString );
-    QStringList arguments() const;
-
-    void addInitializer( const QString &initializer );
-    QStringList initializers() const;
-
-    void setBody( const QString &body );
-    void setBody( const Code &code );
-    void addBodyLine( const QString &bodyLine );
-    QString body() const;
-
-    void setAccess( int access );
-    int access() const;
-    QString accessAsString() const;
-
-    void setReturnType( const QString &returnType );
-    QString returnType() const;
-
+    /**
+     * Sets the @param name of the function.
+     */
     void setName( const QString &name );
+
+    /**
+     * Returns the name of the function.
+     */
     QString name() const;
 
-    void setDocs( const QString &docs );
+    /**
+     * Sets the return type of the function.
+     */
+    void setReturnType( const QString &returnType );
+
+    /**
+     * Returns the return type of the function.
+     */
+    QString returnType() const;
+
+    /**
+     * Sets whether the function is marked as const.
+     */
+    void setConst( bool isConst );
+
+    /**
+     * Returns whether the function is marked as const.
+     */
+    bool isConst() const;
+
+    /**
+     * Sets whether the function is marked as static.
+     */
+    void setStatic( bool isStatic );
+
+    /**
+     * Returns whether the function is marked as static.
+     */
+    bool isStatic() const;
+
+    /**
+     * Adds an @param argument to the function.
+     */
+    void addArgument( const QString &argument );
+
+    /**
+     * Sets the complete argument string of the function.
+     */
+    void setArgumentString( const QString &argumentString );
+
+    /**
+     * Returns the list of all arguments.
+     */
+    QStringList arguments() const;
+
+    /**
+     * Adds an initializer to the function.
+     */
+    void addInitializer( const QString &initializer );
+
+    /**
+     * Returns the list of all initializers.
+     */
+    QStringList initializers() const;
+
+    /**
+     * Sets the @param body code of the function.
+     */
+    void setBody( const QString &body );
+
+    /**
+     * Sets the @param body code of the function.
+     */
+    void setBody( const Code &body );
+
+    /**
+     * Adds a @param line to the body code of the function.
+     */
+    void addBodyLine( const QString &line );
+
+    /**
+     * Returns the body code of the function.
+     */
+    QString body() const;
+
+    /**
+     * Sets the access @param specifier of the function.
+     */
+    void setAccess( int specifier );
+
+    /**
+     * Returns the access specifier of the function.
+     */
+    int access() const;
+
+    /**
+     * Returns access specifier of the function as string.
+     */
+    QString accessAsString() const;
+
+    /**
+     * Sets the @param documentation of the function.
+     */
+    void setDocs( const QString &documentation );
+
+    /**
+     * Returns the documentation of the function.
+     */
     QString docs() const;
 
   private:

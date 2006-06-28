@@ -29,22 +29,55 @@ class QString;
 
 namespace KODE {
 
+/**
+ * This class represents a state machine.
+ *
+ * It can be used to create complex state machines
+ * in an easy way.
+ */
 class LIBKODE_EXPORT StateMachine
 {
   public:
+    /**
+     * Creates a new state machine.
+     */
     StateMachine();
+
+    /**
+     * Creates a new state machine from @param other.
+     */
     StateMachine( const StateMachine &other );
 
+    /**
+     * Destroys the state machine.
+     */
     ~StateMachine();
 
+    /**
+     * Assignment operator.
+     */
     StateMachine& operator=( const StateMachine &other );
 
+    /**
+     * Sets the @param code for a special @param state.
+     */
     void setState( const QString &state, const Code &code );
 
+    /**
+     * Sets the initial @param state, which is used when the
+     * machine is started.
+     */
     void setInitialState( const QString &state );
 
-    Code stateDefinition();
-    Code transitionLogic();
+    /**
+     * Returns the code for the state definitions.
+     */
+    Code stateDefinition() const;
+
+    /**
+     * Returns the code for the transition logic.
+     */
+    Code transitionLogic() const;
 
   private:
     class Private;

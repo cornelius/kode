@@ -29,19 +29,43 @@ class QString;
 
 namespace KODE {
 
+/**
+ * This is an abstract class for typedefs.
+ */
 class LIBKODE_EXPORT Typedef
 {
   public:
     typedef QList<Typedef> List;
 
+    /**
+     * Creates a new typedef.
+     */
     Typedef();
+
+    /**
+     * Creates a new typedef from @param other.
+     */
     Typedef( const Typedef &other );
+
+    /**
+     * Creates a new typedef with the given @param type and
+     * @param alias.
+     */
     Typedef( const QString &type, const QString &alias );
 
+    /**
+     * Destroys the typedef.
+     */
     ~Typedef();
 
+    /**
+     * Assignment operator.
+     */
     Typedef& operator=( const Typedef &other );
 
+    /**
+     * Returns the textual presentation of the typedef.
+     */
     QString declaration() const;
 
   private:

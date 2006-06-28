@@ -32,38 +32,109 @@ class QString;
 
 namespace KODE {
 
+/**
+ * This class prints the abstract class definitions
+ * as C++ code to a file.
+ */
 class LIBKODE_EXPORT Printer
 {
   public:
+    /**
+     * Creates a new printer.
+     */
     Printer();
+
+    /**
+     * Creates a new printer from @param other.
+     */
     Printer( const Printer &other );
+
+    /**
+     * Creates a new printer, which uses the given @param style
+     * to format the C++ code.
+     */
     Printer( const Style &style );
 
-    ~Printer();
+    /**
+     * Destroys the printer.
+     */
+    virtual ~Printer();
 
+    /**
+     * Assignment operator.
+     */
     Printer& operator=( const Printer &other );
 
-    void setCreationWarning( bool );
+    /**
+     * Sets whether the implementation shall contain a comment
+     * which warns about changing the C++ code manually.
+     */
+    void setCreationWarning( bool value );
+
+    /**
+     * Sets the name of the @param generator which shall be
+     * included in the C++ code.
+     */
     void setGenerator( const QString &generator );
+
+    /**
+     * Sets the directory where the decleration and implementation
+     * files shall be stored. If now directory is set, the current
+     * working directory is used.
+     */
     void setOutputDirectory( const QString &outputDirectory );
+
+    /**
+     * Sets the name of the source file which is included in
+     * the generator statement.
+     */
     void setSourceFile( const QString &sourceFile );
 
+    /**
+     * Prints the header of the class definitions in @param file.
+     */
     void printHeader( const File &file );
+
+    /**
+     * Prints the implementation of the class definitions in @param file.
+     *
+     * @param createHeaderInclude If true, the header for the declaration of
+     *                            this implementation is included.
+     */
     void printImplementation( const File &file, bool createHeaderInclude = true );
+
+    /**
+     * Prints a automake file as defined by @param autoMakefile.
+     */
     void printAutoMakefile( const AutoMakefile &autoMakefile );
 
+    /**
+     * Returns the function signature for the given @param function
+     * with class name @param className.
+     *
+     * If @param includeClassQualifier is true, the class qualifier
+     * is part of the signature as well.
+     */
     QString functionSignature( const Function &function,
                                const QString &className = QString(),
                                bool includeClassQualifier = false );
 
   protected:
-    QString creationWarning();
-    QString licenseHeader( const File &file );
-    QString classHeader( const Class &classObject, bool );
-    QString classImplementation( const Class &classObject );
-    Code functionHeaders( const Function::List &functions,
-                          const QString &className,
-                          int access );
+    /**
+     * Returns the creation warning.
+     *
+     * Reimplement this method to provide a custom warning.
+     */
+    virtual QString creationWarning() const;
+
+    /**
+     * Returns the license header for the given @param file.
+     *
+     * Reimplement this method to provide a custom license
+     * header.
+     */
+    virtual QString licenseHeader( const File &file ) const;
+
 
   private:
     class Private;

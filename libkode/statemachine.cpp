@@ -72,7 +72,7 @@ void StateMachine::setInitialState( const QString &state )
   d->mInitialState = state;
 }
 
-Code StateMachine::stateDefinition()
+Code StateMachine::stateDefinition() const
 {
   Code code;
 
@@ -88,7 +88,7 @@ Code StateMachine::stateDefinition()
   return code;
 }
 
-Code StateMachine::transitionLogic()
+Code StateMachine::transitionLogic() const
 {
   Code code;
 

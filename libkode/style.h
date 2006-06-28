@@ -27,18 +27,53 @@ class QString;
 
 namespace KODE {
 
+/**
+ * This class encapsulates the style settings.
+ *
+ * You can reimplement it to give the generated code
+ * a custom style.
+ */
 class LIBKODE_EXPORT Style
 {
   public:
+    /**
+     * Creates a new style.
+     */
     Style();
+
+    /**
+     * Creates a new style from @param other.
+     */
     Style( const Style &other );
+
+    /**
+     * Destroys the style.
+     */
     virtual ~Style();
 
+    /**
+     * Assignment operator.
+     */
     Style& operator=( const Style &other );
 
+    /**
+     * Converts the class name.
+     *
+     * The default implementation upper cases the first
+     * character of the name.
+     */
     virtual QString className( const QString &str );
 
+    /**
+     * Returns a new version of @param str with the first
+     * character be uppercase.
+     */
     static QString upperFirst( const QString &str );
+
+    /**
+     * Returns a new version of @param str with the first
+     * character be lowercase.
+     */
     static QString lowerFirst( const QString &str );
 
   private:

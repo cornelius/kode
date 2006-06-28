@@ -27,43 +27,137 @@ class QString;
 
 namespace KODE {
 
+/**
+ * This class encapsulates a code block.
+ */
 class LIBKODE_EXPORT Code
 {
   public:
+    /**
+     * Creates a new code block.
+     */
     Code();
+
+    /**
+     * Creates a new code block from @param other.
+     */
     Code( const Code &other );
+
+    /**
+     * Creates a new code block with the given @param indent.
+     */
     Code( int indent );
 
+    /**
+     * Destroys the code block.
+     */
     ~Code();
 
+    /**
+     * Assignment operator.
+     */
     Code& operator=( const Code &other );
 
+    /**
+     * Clears all lines from the code block.
+     */
     void clear();
 
+    /**
+     * Returns whether the code block is empty.
+     */
     bool isEmpty() const;
 
+    /**
+     * Sets the @param indent of the code block.
+     */
     void setIndent( int indent );
+
+    /**
+     * Indents the code block by one level.
+     */
     void indent();
+
+    /**
+     * Unindents the code block by one level.
+     */
     void unindent();
 
+    /**
+     * Returns the textual presentation of the code block.
+     */
     QString text() const;
 
-    void addLine( const QString & );
-    void addLine( const char );
-    void addBlock( const Code & );
-    void addBlock( const QString & );
-    void addBlock( const QString &, int indent );
+    /**
+     * Adds the given @param line to the code block.
+     */
+    void addLine( const QString &line );
 
-    void addWrappedText( const QString & );
-    void addFormattedText( const QString & );
+    /**
+     * Adds the given @param line to the code block.
+     */
+    void addLine( const char line );
 
+    /**
+     * Adds the given @param block to the code block.
+     */
+    void addBlock( const Code &block );
+
+    /**
+     * Adds the given @param block to the code block.
+     */
+    void addBlock( const QString &block );
+
+    /**
+     * Adds the given @param block with the given indent
+     * to the code block.
+     */
+    void addBlock( const QString &block, int indent );
+
+    /**
+     * Adds the given @param text to the code block and wrapps
+     * it if it's too long.
+     */
+    void addWrappedText( const QString &text );
+
+    /**
+     * Adds the given @param text to the code block and wrapps
+     * it at word boundaries if it's too long.
+     */
+    void addFormattedText( const QString &text );
+
+    /**
+     * Adds a new line to the code block.
+     */
     void newLine();
 
-    Code &operator+=( const QString & );
-    Code &operator+=( const char * );
-    Code &operator+=( const char );
-    Code &operator+=( const Code & );
+    /**
+     * Adds the given @param line to the code block
+     * and appends a '\r\n' automatically.
+     */
+    Code &operator+=( const QString &line );
 
+    /**
+     * Adds the given @param line to the code block
+     * and appends a '\r\n' automatically.
+     */
+    Code &operator+=( const char *line );
+
+    /**
+     * Adds the given @param line to the code block
+     * and appends a '\r\n' automatically.
+     */
+    Code &operator+=( const char line );
+
+    /**
+     * Adds the given @param block to the code block.
+     */
+    Code &operator+=( const Code &block );
+
+    /**
+     * Returns a string filled up with spaces, depending on
+     * the level @param count and the indent value.
+     */
     static QString spaces( int count );
 
   private:

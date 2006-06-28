@@ -32,18 +32,44 @@ class QStringList;
 
 namespace KODE {
 
+/**
+ * This class represents a member variable.
+ *
+ * It's basically a @see Variable with a
+ * special formatted name.
+ */
 class LIBKODE_EXPORT MemberVariable : public Variable
 {
   public:
     typedef QList<MemberVariable> List;
 
+    /**
+     * Creates a new member variable.
+     */
     MemberVariable();
+
+    /**
+     * Creates a new member variable from @param other.
+     */
     MemberVariable( const MemberVariable &other );
+
+    /**
+     * Creates a new member variable of the given @param type
+     * and with the given @param name.
+     *
+     * @param isStatic If true the variable is marked as static.
+     */
     MemberVariable( const QString &name, const QString &type,
                     bool isStatic = false );
 
+    /**
+     * Destroys the member variable.
+     */
     ~MemberVariable();
 
+    /**
+     * Assignment operator.
+     */
     MemberVariable& operator=( const MemberVariable &other );
 
   private:

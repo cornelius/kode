@@ -27,21 +27,59 @@ class QString;
 
 namespace KODE {
 
+/**
+ * This class represents a license.
+ */
 class LIBKODE_EXPORT License
 {
   public:
-    enum Type { GPL, LGPL };
+    /**
+     * Possible types of licenses
+     *
+     * @li GPL  - The GNU General Public License.
+     * @li LGPL - The GNU Lesser/Library General Public License.
+     */
+    enum Type {
+      GPL,
+      LGPL
+    };
 
+    /**
+     * Creates a new license.
+     */
     License();
-    License( const License &other );
-    License( Type );
 
+    /**
+     * Creates a new license from @param other.
+     */
+    License( const License &other );
+
+    /**
+     * Creates a new licencse of the given @param type.
+     */
+    License( Type type );
+
+    /**
+     * Destroys the license.
+     */
     ~License();
 
+    /**
+     * Assignment operator.
+     */
     License& operator=( const License &other );
 
-    void setQtException( bool );
+    /**
+     * Sets whether a Qt expection should be appended to
+     * the license statement.
+     *
+     * This is only useful for Qt3 based code.
+     */
+    void setQtException( bool useQtException );
 
+    /**
+     * Returns the textual presentation of the license.
+     */
     QString text() const;
 
   private:
