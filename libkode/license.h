@@ -21,8 +21,9 @@
 #ifndef KODE_LICENSE_H
 #define KODE_LICENSE_H
 
-#include <QString>
 #include <kode_export.h>
+
+class QString;
 
 namespace KODE {
 
@@ -32,16 +33,20 @@ class LIBKODE_EXPORT License
     enum Type { GPL, LGPL };
 
     License();
+    License( const License &other );
     License( Type );
+
+    ~License();
+
+    License& operator=( const License &other );
 
     void setQtException( bool );
 
-    QString text();
+    QString text() const;
 
   private:
-    Type mType;
-
-    bool mQtException;
+    class Private;
+    Private *d;
 };
 
 }

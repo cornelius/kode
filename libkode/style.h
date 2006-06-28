@@ -21,13 +21,9 @@
 #ifndef KODE_STYLE_H
 #define KODE_STYLE_H
 
-#include "license.h"
-
-
-#include <QString>
-#include <QStringList>
-
 #include <kode_export.h>
+
+class QString;
 
 namespace KODE {
 
@@ -35,12 +31,19 @@ class LIBKODE_EXPORT Style
 {
   public:
     Style();
+    Style( const Style &other );
     virtual ~Style();
+
+    Style& operator=( const Style &other );
 
     virtual QString className( const QString &str );
 
     static QString upperFirst( const QString &str );
     static QString lowerFirst( const QString &str );
+
+  private:
+    class Private;
+    Private *d;
 };
 
 }

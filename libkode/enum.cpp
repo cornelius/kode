@@ -19,33 +19,72 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <QtCore/QStringList>
+
 #include "enum.h"
 
 using namespace KODE;
 
+class Enum::Private
+{
+  public:
+    Private()
+      : mCombinable( false )
+    {
+    }
+
+    QString mName;
+    QStringList mEnums;
+    bool mCombinable;
+};
+
 Enum::Enum()
-  : mCombinable( false )
+  : d( new Private )
 {
 }
 
-Enum::Enum( const QString &name, const QStringList &enums, bool combinable )
-  : mName( name ), mEnums( enums ), mCombinable( combinable )
+Enum::Enum( const Enum &other )
+  : d( new Private )
 {
+  *d = *other.d;
+}
+
+Enum::Enum( const QString &name, const QStringList &enums, bool combinable )
+  : d( new Private )
+{
+  d->mName = name;
+  d->mEnums = enums;
+  d->mCombinable = combinable;
+}
+
+Enum::~Enum()
+{
+  delete d;
+}
+
+Enum& Enum::operator=( const Enum &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 QString Enum::declaration() const
 {
-  QString retval( "enum " + mName + " {" );
+  QString retval( "enum " + d->mName + " {" );
   uint value = 0;
   QStringList::ConstIterator it;
-  for ( it = mEnums.begin(); it != mEnums.end(); ++it, ++value ) {
-    if ( mCombinable ) {
-      if ( it == mEnums.begin() )
+  for ( it = d->mEnums.begin(); it != d->mEnums.end(); ++it, ++value ) {
+    if ( d->mCombinable ) {
+      if ( it == d->mEnums.begin() )
         retval += QString( " %1 = %2" ).arg( *it ).arg( 1 << value );
       else
         retval += QString( ", %1 = %2" ).arg( *it ).arg( 1 << value );
     } else {
-      if ( it == mEnums.begin() )
+      if ( it == d->mEnums.begin() )
         retval += ' ' + *it;
       else
         retval += ", " + *it;

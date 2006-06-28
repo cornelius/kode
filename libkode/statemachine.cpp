@@ -19,25 +19,57 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <QtCore/QMap>
+#include <QtCore/QStringList>
+
 #include "statemachine.h"
 
 using namespace KODE;
 
+class StateMachine::Private
+{
+  public:
+    QMap<QString,Code> mStateMap;
+    QString mInitialState;
+};
+
 StateMachine::StateMachine()
+  : d( new Private )
 {
 }
 
+StateMachine::StateMachine( const StateMachine &other )
+  : d( new Private )
+{
+  *d = *other.d;
+}
+
+StateMachine::~StateMachine()
+{
+  delete d;
+}
+
+StateMachine& StateMachine::operator=( const StateMachine &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
+}
 
 void StateMachine::setState( const QString &state, const Code &code )
 {
-  mStateMap.insert( state, code );
+  d->mStateMap.insert( state, code );
 
-  if ( mInitialState.isEmpty() ) mInitialState = state;
+  if ( d->mInitialState.isEmpty() )
+    d->mInitialState = state;
 }
 
 void StateMachine::setInitialState( const QString &state )
 {
-  mInitialState = state;
+  d->mInitialState = state;
 }
 
 Code StateMachine::stateDefinition()
@@ -46,12 +78,12 @@ Code StateMachine::stateDefinition()
 
   QStringList states;
   QMap<QString,Code>::ConstIterator it;
-  for ( it = mStateMap.begin(); it != mStateMap.end(); ++it ) {
+  for ( it = d->mStateMap.begin(); it != d->mStateMap.end(); ++it ) {
     states.append( it.key() );
   }
 
   code += "enum State { " + states.join( ", " ) + " };";
-  code += "State state = " + mInitialState + ';';
+  code += "State state = " + d->mInitialState + ';';
 
   return code;
 }
@@ -64,7 +96,7 @@ Code StateMachine::transitionLogic()
   code.indent();
 
   QMap<QString,Code>::ConstIterator it;
-  for ( it = mStateMap.begin(); it != mStateMap.end(); ++it ) {
+  for ( it = d->mStateMap.begin(); it != d->mStateMap.end(); ++it ) {
     code += "case " + it.key() + ':';
     code.indent();
     code.addBlock( it.value() );

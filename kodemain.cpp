@@ -19,10 +19,10 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "code.h"
-#include "printer.h"
-#include "license.h"
 #include "automakefile.h"
+#include "code.h"
+#include "license.h"
+#include "printer.h"
 
 #include <kabc/stdaddressbook.h>
 
@@ -34,15 +34,16 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kstandarddirs.h>
-#include <ksimpleconfig.h>
 #include <ksavefile.h>
+#include <ksimpleconfig.h>
+#include <kstandarddirs.h>
 #include <kprocess.h>
 
-#include <QFile>
-#include <QTextStream>
-#include <QFileInfo>
-#include <QRegExp>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QList>
+#include <QtCore/QRegExp>
+#include <QtCore/QTextStream>
 
 #include <iostream>
 

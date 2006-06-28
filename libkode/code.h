@@ -21,12 +21,9 @@
 #ifndef KODE_CODE_H
 #define KODE_CODE_H
 
-#include "license.h"
-
-
-#include <QString>
-#include <QStringList>
 #include <kode_export.h>
+
+class QString;
 
 namespace KODE {
 
@@ -34,7 +31,12 @@ class LIBKODE_EXPORT Code
 {
   public:
     Code();
+    Code( const Code &other );
     Code( int indent );
+
+    ~Code();
+
+    Code& operator=( const Code &other );
 
     void clear();
 
@@ -44,7 +46,7 @@ class LIBKODE_EXPORT Code
     void indent();
     void unindent();
 
-    QString text() const { return mText; }
+    QString text() const;
 
     void addLine( const QString & );
     void addLine( const char );
@@ -65,8 +67,8 @@ class LIBKODE_EXPORT Code
     static QString spaces( int count );
 
   private:
-    QString mText;
-    int mIndent;
+    class Private;
+    Private *d;
 };
 
 }

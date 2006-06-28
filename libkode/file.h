@@ -21,14 +21,15 @@
 #ifndef KODE_FILE_H
 #define KODE_FILE_H
 
-#include "license.h"
-#include "code.h"
 #include "class.h"
-#include "membervariable.h"
+#include "code.h"
+#include "license.h"
+#include "variable.h"
 
-#include <QString>
-#include <QStringList>
 #include <kode_export.h>
+
+class QString;
+class QStringList;
 
 namespace KODE {
 
@@ -36,27 +37,32 @@ class LIBKODE_EXPORT File
 {
   public:
     File();
+    File( const File &other );
 
-    void setFilename( const QString & );
+    ~File();
+
+    File& operator=( const File &other );
+
+    void setFilename( const QString &filename );
     QString filename() const;
 
-    void setNameSpace( const QString & );
-    QString nameSpace() const { return mNameSpace; }
+    void setNameSpace( const QString &nameSpace );
+    QString nameSpace() const;
 
     void setProject( const QString &project );
-    QString project() const { return mProject; }
+    QString project() const;
 
     void addCopyright( int year, const QString &name, const QString &email );
-    QStringList copyrightStrings() const { return mCopyrightStrings; }
+    QStringList copyrightStrings() const;
 
-    void setLicense( const License & );
-    License license() const { return mLicense; }
+    void setLicense( const License &license );
+    License license() const;
 
     void addInclude( const QString &include );
-    QStringList includes() const { return mIncludes; }
+    QStringList includes() const;
 
-    void insertClass( const Class & );
-    Class::List classes() const { return mClasses; }
+    void insertClass( const Class &newClass );
+    Class::List classes() const;
 
     bool hasClass( const QString &className );
 
@@ -68,34 +74,24 @@ class LIBKODE_EXPORT File
 
     void clearCode();
 
-    void addFileVariable( const Variable & );
-    Variable::List fileVariables() const { return mFileVariables; }
+    void addFileVariable( const Variable &variable );
+    Variable::List fileVariables() const;
 
-    void addFileFunction( const Function & );
-    Function::List fileFunctions() const { return mFileFunctions; }
+    void addFileFunction( const Function &function );
+    Function::List fileFunctions() const;
 
-    void addFileEnum( const Enum & );
-    Enum::List fileEnums() const { return mFileEnums; }
+    void addFileEnum( const Enum &enumValue );
+    Enum::List fileEnums() const;
 
-    void addExternCDeclaration( const QString & );
-    QStringList externCDeclarations() const { return mExternCDeclarations; }
+    void addExternCDeclaration( const QString &externalCDeclaration );
+    QStringList externCDeclarations() const;
 
-    void addFileCode( const Code & );
-    Code fileCode() const { return mFileCode; }
+    void addFileCode( const Code &code );
+    Code fileCode() const;
 
   private:
-    QString mFilename;
-    QString mNameSpace;
-    QString mProject;
-    QStringList mCopyrightStrings;
-    License mLicense;
-    QStringList mIncludes;
-    Class::List mClasses;
-    Variable::List mFileVariables;
-    Function::List mFileFunctions;
-    Enum::List mFileEnums;
-    QStringList mExternCDeclarations;
-    Code mFileCode;
+    class Private;
+    Private *d;
 };
 
 }

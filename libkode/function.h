@@ -21,12 +21,14 @@
 #ifndef KODE_FUNCTION_H
 #define KODE_FUNCTION_H
 
+#include <QtCore/QList>
+
 #include "code.h"
 
-#include <QList>
-#include <QString>
-#include <QStringList>
 #include <kode_export.h>
+
+class QString;
+class QStringList;
 
 namespace KODE {
 
@@ -38,52 +40,48 @@ class LIBKODE_EXPORT Function
     enum AccessSpecifier { Public = 1, Protected = 2, Private = 4, Signal = 8, Slot = 16 };
 
     Function();
-    Function( const QString &name, const QString &returnType = QString::null,
+    Function( const Function &other );
+    Function( const QString &name, const QString &returnType = QString(),
               int access = Public, bool isStatic = false );
 
+    ~Function();
+
+    Function& operator=( const Function &other );
+
     void setConst( bool isConst );
-    bool isConst() const { return mIsConst; }
+    bool isConst() const;
 
     void setStatic( bool isStatic );
-    bool isStatic() const { return mIsStatic; }
+    bool isStatic() const;
 
     void addArgument( const QString &argument );
     void setArgumentString( const QString &argumentString );
+    QStringList arguments() const;
 
-    void addInitializer( const QString & );
-    QStringList initializers() const { return mInitializers; }
+    void addInitializer( const QString &initializer );
+    QStringList initializers() const;
 
     void setBody( const QString &body );
     void setBody( const Code &code );
     void addBodyLine( const QString &bodyLine );
+    QString body() const;
 
-    void setAccess( int );
-    int access() const { return mAccess; }
+    void setAccess( int access );
+    int access() const;
     QString accessAsString() const;
 
-    void setReturnType( const QString & );
-    QString returnType() const { return mReturnType; }
+    void setReturnType( const QString &returnType );
+    QString returnType() const;
 
-    void setName( const QString & );
-    QString name() const { return mName; }
+    void setName( const QString &name );
+    QString name() const;
 
-    QStringList arguments() const { return mArguments; }
-
-    QString body() const { return mBody; }
-
-    void setDocs( const QString & );
-    QString docs() const { return mDocs; }
+    void setDocs( const QString &docs );
+    QString docs() const;
 
   private:
-    int mAccess;
-    bool mIsConst;
-    bool mIsStatic;
-    QString mReturnType;
-    QString mName;
-    QStringList mArguments;
-    QStringList mInitializers;
-    QString mBody;
-    QString mDocs;
+    class FunctionPrivate;
+    FunctionPrivate *d;
 };
 
 }

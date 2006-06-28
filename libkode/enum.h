@@ -21,10 +21,12 @@
 #ifndef KODE_ENUM_H
 #define KODE_ENUM_H
 
-#include <QString>
-#include <QStringList>
-#include <QList>
+#include <QtCore/QList>
+
 #include <kode_export.h>
+
+class QString;
+class QStringList;
 
 namespace KODE {
 
@@ -34,14 +36,18 @@ class LIBKODE_EXPORT Enum
     typedef QList<Enum> List;
 
     Enum();
+    Enum( const Enum &other );
     Enum( const QString &name, const QStringList &enums, bool combinable = false );
+
+    ~Enum();
+
+    Enum& operator=( const Enum &other );
 
     QString declaration() const;
 
   private:
-    QString mName;
-    QStringList mEnums;
-    bool mCombinable;
+    class Private;
+    Private *d;
 };
 
 }

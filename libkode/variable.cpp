@@ -19,45 +19,101 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "membervariable.h"
+#include <QtCore/QString>
 
-#include <kdebug.h>
+#include "membervariable.h"
 
 using namespace KODE;
 
-Variable::Variable()
-  : mIsStatic( false )
+class Variable::Private
 {
+  public:
+    Private()
+      : mIsStatic( false )
+    {
+    }
+
+    QString mType;
+    QString mName;
+    bool mIsStatic;
+    QString mInitializer;
+};
+
+Variable::Variable()
+  : d( new Private )
+{
+}
+
+Variable::Variable( const Variable &other )
+  : d( new Private )
+{
+  *d = *other.d;
 }
 
 Variable::Variable( const QString &name, const QString &type, bool isStatic )
-  : mIsStatic( isStatic )
+  : d( new Private )
 {
-  mType = type;
+  d->mType = type;
+  d->mIsStatic = isStatic;
 
   if ( name.isEmpty() ) {
-    mName = "mUndefined";
+    d->mName = "mUndefined";
   } else {
-    mName = name;
+    d->mName = name;
   }
 }
 
-void Variable::setName( const QString &n )
+Variable::~Variable()
 {
-  mName = n;
+  delete d;
 }
 
-void Variable::setType( const QString &t )
+Variable& Variable::operator=( const Variable &other )
 {
-  mType = t;
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
-void Variable::setStatic( bool s )
+void Variable::setName( const QString &name )
 {
-  mIsStatic = s;
+  d->mName = name;
 }
 
-void Variable::setInitializer( const QString &i )
+QString Variable::name() const
 {
-  mInitializer = i;
+  return d->mName;
+}
+
+void Variable::setType( const QString &type )
+{
+  d->mType = type;
+}
+
+QString Variable::type() const
+{
+  return d->mType;
+}
+
+void Variable::setStatic( bool isStatic )
+{
+  d->mIsStatic = isStatic;
+}
+
+bool Variable::isStatic() const
+{
+  return d->mIsStatic;
+}
+
+void Variable::setInitializer( const QString &initializer )
+{
+  d->mInitializer = initializer;
+}
+
+QString Variable::initializer() const
+{
+  return d->mInitializer;
 }

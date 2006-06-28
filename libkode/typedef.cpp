@@ -19,20 +19,53 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <QtCore/QString>
+
 #include "typedef.h"
 
 using namespace KODE;
 
+class Typedef::Private
+{
+  public:
+    QString mType;
+    QString mAlias;
+};
+
 Typedef::Typedef()
+  : d( new Private )
 {
 }
 
-Typedef::Typedef( const QString &type, const QString &alias )
-  : mType( type ), mAlias( alias )
+Typedef::Typedef( const Typedef &other )
+  : d( new Private )
 {
+  *d = *other.d;
+}
+
+Typedef::Typedef( const QString &type, const QString &alias )
+  : d( new Private )
+{
+  d->mType = type;
+  d->mAlias = alias;
+}
+
+Typedef::~Typedef()
+{
+  delete d;
+}
+
+Typedef& Typedef::operator=( const Typedef &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 QString Typedef::declaration() const
 {
-  return "typedef " + mType + ' ' + mAlias + ';';
+  return "typedef " + d->mType + ' ' + d->mAlias + ';';
 }

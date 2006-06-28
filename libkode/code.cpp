@@ -19,77 +19,114 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <QtCore/QStringList>
+
 #include "code.h"
-
-#include <kdebug.h>
-
-#include <QFile>
-#include <QTextStream>
 
 using namespace KODE;
 
+class Code::Private
+{
+  public:
+    Private()
+      : mIndent( 0 )
+    {
+    }
+
+    QString mText;
+    int mIndent;
+};
+
 Code::Code()
-  : mIndent( 0 )
+  : d( new Private )
 {
 }
 
-Code::Code( int indent )
-  : mIndent( indent )
+Code::Code( const Code &other )
+  : d( new Private )
 {
+  *d = *other.d;
+}
+
+Code::Code( int indent )
+  : d( new Private )
+{
+  d->mIndent = indent;
+}
+
+Code::~Code()
+{
+  delete d;
+}
+
+Code& Code::operator=( const Code &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void Code::clear()
 {
-  mIndent = 0;
-  mText.clear();
+  d->mIndent = 0;
+  d->mText.clear();
 }
 
 bool Code::isEmpty() const
 {
-  return mText.isEmpty();
+  return d->mText.isEmpty();
 }
 
 void Code::setIndent( int indent )
 {
-  mIndent = indent;
+  d->mIndent = indent;
 }
 
 void Code::indent()
 {
-  mIndent += 2;
+  d->mIndent += 2;
 }
 
 void Code::unindent()
 {
-  mIndent -= 2;
-  if ( mIndent < 0 ) mIndent = 0;
+  d->mIndent -= 2;
+  if ( d->mIndent < 0 )
+    d->mIndent = 0;
+}
+
+QString Code::text() const
+{
+  return d->mText;
 }
 
 void Code::addLine( const QString &line )
 {
-  mText += spaces( mIndent );
-  mText += line;
-  mText += '\n';
+  d->mText += spaces( d->mIndent );
+  d->mText += line;
+  d->mText += '\n';
 }
 
 void Code::addLine( const char c )
 {
-  mText += spaces( mIndent );
-  mText += c;
-  mText += '\n';
+  d->mText += spaces( d->mIndent );
+  d->mText += c;
+  d->mText += '\n';
 }
 
 void Code::newLine()
 {
-  mText += '\n';
+  d->mText += '\n';
 }
 
 QString Code::spaces( int count )
 {
   QString str;
-  for( int i = 0; i < count; ++i ) {
+  for ( int i = 0; i < count; ++i )
     str += ' ';
-  }
+
   return str;
 }
 
@@ -100,19 +137,21 @@ void Code::addBlock( const QString &block )
     lines.pop_back();
   }
   QStringList::ConstIterator it;
-  for( it = lines.begin(); it != lines.end(); ++it ) {
-    if ( !(*it).isEmpty() ) mText += spaces( mIndent );
-    mText += *it;
-    mText += '\n';
+  for ( it = lines.begin(); it != lines.end(); ++it ) {
+    if ( !(*it).isEmpty() )
+      d->mText += spaces( d->mIndent );
+
+    d->mText += *it;
+    d->mText += '\n';
   }
 }
 
 void Code::addBlock( const QString &block, int indent )
 {
-  int tmp = mIndent;
-  mIndent = indent;
+  int tmp = d->mIndent;
+  d->mIndent = indent;
   addBlock( block );
-  mIndent = tmp;
+  d->mIndent = tmp;
 }
 
 void Code::addBlock( const Code &c )
@@ -122,7 +161,7 @@ void Code::addBlock( const Code &c )
 
 void Code::addWrappedText( const QString &txt )
 {
-  int maxWidth = 80 - mIndent;
+  int maxWidth = 80 - d->mIndent;
   int pos = 0;
   while ( pos < txt.length() ) {
     QString line = txt.mid( pos, maxWidth );
@@ -133,7 +172,7 @@ void Code::addWrappedText( const QString &txt )
 
 void Code::addFormattedText( const QString &text )
 {
-  int maxWidth = 80 - mIndent;
+  int maxWidth = 80 - d->mIndent;
   int lineLength = 0;
 
   QString line;
@@ -186,6 +225,6 @@ Code &Code::operator+=( const char c )
 
 Code &Code::operator+=( const Code &code )
 {
-  mText += code.mText;
+  d->mText += code.d->mText;
   return *this;
 }

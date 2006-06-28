@@ -21,9 +21,11 @@
 #ifndef KODE_TYPEDEF_H
 #define KODE_TYPEDEF_H
 
-#include <QList>
-#include <QString>
+#include <QtCore/QList>
+
 #include <kode_export.h>
+
+class QString;
 
 namespace KODE {
 
@@ -33,13 +35,18 @@ class LIBKODE_EXPORT Typedef
     typedef QList<Typedef> List;
 
     Typedef();
+    Typedef( const Typedef &other );
     Typedef( const QString &type, const QString &alias );
+
+    ~Typedef();
+
+    Typedef& operator=( const Typedef &other );
 
     QString declaration() const;
 
   private:
-    QString mType;
-    QString mAlias;
+    class Private;
+    Private *d;
 };
 
 }

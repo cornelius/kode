@@ -19,20 +19,31 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "membervariable.h"
+#include <QtCore/QStringList>
 
-#include <kdebug.h>
+#include "membervariable.h"
 
 using namespace KODE;
 
-MemberVariable::MemberVariable()
-  : Variable()
+class MemberVariable::Private
 {
+  public:
+};
+
+MemberVariable::MemberVariable()
+  : Variable(), d( 0 )
+{
+}
+
+MemberVariable::MemberVariable( const MemberVariable &other )
+  : Variable( other ), d( 0 )
+{
+  // *d = *other.d;
 }
 
 MemberVariable::MemberVariable( const QString &name, const QString &type,
                                 bool isStatic )
-  : Variable( name, type, isStatic )
+  : Variable( name, type, isStatic ), d( 0 )
 {
   QString n;
 
@@ -48,4 +59,20 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
   }
 
   setName( n );
+}
+
+MemberVariable::~MemberVariable()
+{
+  delete d;
+}
+
+MemberVariable& MemberVariable::operator=( const MemberVariable &other )
+{
+  if ( this == &other )
+    return *this;
+
+  Variable::operator=( other );
+  // *d = *other.d;
+
+  return *this;
 }

@@ -21,9 +21,8 @@
 #ifndef KODE_AUTOMAKEFILE_H
 #define KODE_AUTOMAKEFILE_H
 
-#include <QList>
-#include <QMap>
-#include <QStringList>
+#include <QtCore/QList>
+#include <QtCore/QString>
 
 #include <kode_export.h>
 
@@ -37,55 +36,57 @@ class LIBKODE_EXPORT AutoMakefile
       public:
         typedef QList<Target> List;
 
-        Target() {}
+        Target();
+        Target( const Target &other );
         Target( const QString &type, const QString &name );
 
-        void setType( const QString &type ) { mType = type; }
-        QString type() const { return mType; }
+        ~Target();
 
-        void setName( const QString &name ) { mName = name; }
-        QString name() const { return mName; }
+        Target& operator=( const Target &other );
 
-        void setSources( const QString &sources ) { mSources = sources; }
-        QString sources() const { return mSources; }
+        void setType( const QString &type );
+        QString type() const;
 
-        void setLibAdd( const QString &libAdd ) { mLibAdd = libAdd; }
-        QString libAdd() const { return mLibAdd; }
+        void setName( const QString &name );
+        QString name() const;
 
-        void setLdAdd( const QString &ldAdd ) { mLdAdd = ldAdd; }
-        QString ldAdd() const { return mLdAdd; }
+        void setSources( const QString &sources );
+        QString sources() const;
 
-        void setLdFlags( const QString &ldFlags ) { mLdFlags = ldFlags; }
-        QString ldFlags() const { return mLdFlags; }
+        void setLibAdd( const QString &libAdd );
+        QString libAdd() const;
+
+        void setLdAdd( const QString &ldAdd );
+        QString ldAdd() const;
+
+        void setLdFlags( const QString &ldFlags );
+        QString ldFlags() const;
 
       private:
-        QString mType;
-        QString mName;
-
-        QString mSources;
-        QString mLibAdd;
-        QString mLdAdd;
-        QString mLdFlags;
+        class Private;
+        Private* d;
     };
 
     AutoMakefile();
+    AutoMakefile( const AutoMakefile &other );
 
-    void addTarget( const Target &t );
-    Target::List targets() const { return mTargets; }
+    ~AutoMakefile();
+
+    AutoMakefile& operator=( const AutoMakefile &other );
+
+    void addTarget( const Target &target );
+    Target::List targets() const;
 
     void addEntry( const QString &variable,
-                   const QString &value = QString::null );
+                   const QString &value = QString() );
 
     void newLine();
 
     QString text() const;
 
   private:
-    Target::List mTargets;
-    QStringList mTargetTypes;
-
-    QStringList mEntries;
-    QMap<QString,QString> mValues;
+    class Private;
+    Private* d;
 };
 
 }

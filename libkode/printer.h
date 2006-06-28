@@ -21,15 +21,14 @@
 #ifndef KODE_PRINTER_H
 #define KODE_PRINTER_H
 
+#include "automakefile.h"
 #include "code.h"
 #include "file.h"
 #include "style.h"
-#include "automakefile.h"
 
 #include <kode_export.h>
 
-#include <QString>
-#include <QStringList>
+class QString;
 
 namespace KODE {
 
@@ -37,37 +36,38 @@ class LIBKODE_EXPORT Printer
 {
   public:
     Printer();
-    Printer( const Style & );
+    Printer( const Printer &other );
+    Printer( const Style &style );
+
+    ~Printer();
+
+    Printer& operator=( const Printer &other );
 
     void setCreationWarning( bool );
-    void setGenerator( const QString & );
-    void setOutputDirectory( const QString & );
-    void setSourceFile( const QString & );
+    void setGenerator( const QString &generator );
+    void setOutputDirectory( const QString &outputDirectory );
+    void setSourceFile( const QString &sourceFile );
 
-    void printHeader( const File & );
-    void printImplementation( const File &, bool createHeaderInclude = true );
-    void printAutoMakefile( const AutoMakefile & );
+    void printHeader( const File &file );
+    void printImplementation( const File &file, bool createHeaderInclude = true );
+    void printAutoMakefile( const AutoMakefile &autoMakefile );
 
-    QString functionSignature( const Function &f,
-      const QString &className = QString::null,
-      bool includeClassQualifier = false );
+    QString functionSignature( const Function &function,
+                               const QString &className = QString(),
+                               bool includeClassQualifier = false );
 
   protected:
     QString creationWarning();
-    QString licenseHeader( const File & );
-    QString classHeader( const Class &, bool );
-    QString classImplementation( const Class & );
+    QString licenseHeader( const File &file );
+    QString classHeader( const Class &classObject, bool );
+    QString classImplementation( const Class &classObject );
     Code functionHeaders( const Function::List &functions,
                           const QString &className,
                           int access );
 
   private:
-    Style mStyle;
-
-    bool mCreationWarning;
-    QString mGenerator;
-    QString mOutputDirectory;
-    QString mSourceFile;
+    class Private;
+    Private *d;
 };
 
 }

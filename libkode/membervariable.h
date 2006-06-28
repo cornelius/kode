@@ -21,11 +21,14 @@
 #ifndef KODE_MEMBERVARIABLE_H
 #define KODE_MEMBERVARIABLE_H
 
+#include <QtCore/QList>
+
 #include "variable.h"
 
-#include <QList>
-#include <QString>
 #include <kode_export.h>
+
+class QString;
+class QStringList;
 
 namespace KODE {
 
@@ -35,8 +38,17 @@ class LIBKODE_EXPORT MemberVariable : public Variable
     typedef QList<MemberVariable> List;
 
     MemberVariable();
+    MemberVariable( const MemberVariable &other );
     MemberVariable( const QString &name, const QString &type,
                     bool isStatic = false );
+
+    ~MemberVariable();
+
+    MemberVariable& operator=( const MemberVariable &other );
+
+  private:
+    class Private;
+    Private *d;
 };
 
 }

@@ -23,9 +23,9 @@
 
 #include "code.h"
 
-#include <QString>
-#include <QMap>
 #include <kode_export.h>
+
+class QString;
 
 namespace KODE {
 
@@ -33,6 +33,11 @@ class LIBKODE_EXPORT StateMachine
 {
   public:
     StateMachine();
+    StateMachine( const StateMachine &other );
+
+    ~StateMachine();
+
+    StateMachine& operator=( const StateMachine &other );
 
     void setState( const QString &state, const Code &code );
 
@@ -42,9 +47,8 @@ class LIBKODE_EXPORT StateMachine
     Code transitionLogic();
 
   private:
-    QMap<QString,Code> mStateMap;
-
-    QString mInitialState;
+    class Private;
+    Private *d;
 };
 
 }

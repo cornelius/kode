@@ -19,47 +19,95 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "function.h"
+#include <QtCore/QStringList>
 
-#include <kdebug.h>
+#include "function.h"
 
 using namespace KODE;
 
-Function::Function()
-  : mAccess( Public ), mIsConst( false ), mIsStatic( false )
+class Function::FunctionPrivate
 {
+  public:
+    FunctionPrivate()
+      : mAccess( Public ), mIsConst( false ), mIsStatic( false )
+    {
+    }
+
+    int mAccess;
+    bool mIsConst;
+    bool mIsStatic;
+    QString mReturnType;
+    QString mName;
+    QStringList mArguments;
+    QStringList mInitializers;
+    QString mBody;
+    QString mDocs;
+};
+
+Function::Function()
+  : d( new FunctionPrivate )
+{
+}
+
+Function::Function( const Function &other )
+  : d( new FunctionPrivate )
+{
+  *d = *other.d;
 }
 
 Function::Function( const QString &name, const QString &returnType,
                     int access, bool isStatic )
-  :  mAccess( access ), mIsConst( false ), mIsStatic( isStatic ),
-     mReturnType( returnType ), mName( name )
+  : d( new FunctionPrivate )
 {
+  d->mAccess = access;
+  d->mIsStatic = isStatic;
+  d->mReturnType = returnType;
+  d->mName = name;
+}
+
+Function::~Function()
+{
+  delete d;
+}
+
+Function& Function::operator=( const Function &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void Function::setConst( bool isConst )
 {
-  mIsConst = isConst;
+  d->mIsConst = isConst;
+}
+
+bool Function::isConst() const
+{
+  return d->mIsConst;
 }
 
 void Function::setStatic( bool isStatic )
 {
-  mIsStatic = isStatic;
+  d->mIsStatic = isStatic;
+}
+
+bool Function::isStatic() const
+{
+  return d->mIsStatic;
 }
 
 void Function::addArgument( const QString &argument )
 {
-  mArguments.append( argument );
-}
-
-void Function::addInitializer( const QString &initializer )
-{
-  mInitializers.append( initializer );
+  d->mArguments.append( argument );
 }
 
 void Function::setArgumentString( const QString &argumentString )
 {
-  mArguments.clear();
+  d->mArguments.clear();
 
   QStringList arguments = argumentString.split( "," );
   QStringList::ConstIterator it;
@@ -67,57 +115,98 @@ void Function::setArgumentString( const QString &argumentString )
     addArgument( *it );
 }
 
+QStringList Function::arguments() const
+{
+  return d->mArguments;
+}
+
+void Function::addInitializer( const QString &initializer )
+{
+  d->mInitializers.append( initializer );
+}
+
+QStringList Function::initializers() const
+{
+  return d->mInitializers;
+}
+
 void Function::setBody( const QString &body )
 {
-  mBody = body;
+  d->mBody = body;
 }
 
 void Function::setBody( const Code &body )
 {
-  mBody = body.text();
+  d->mBody = body.text();
 }
 
 void Function::addBodyLine( const QString &bodyLine )
 {
-  mBody.append( bodyLine );
-  if ( bodyLine.right( 1 ) != "\n" ) mBody.append( '\n' );
+  d->mBody.append( bodyLine );
+  if ( bodyLine.right( 1 ) != "\n" )
+    d->mBody.append( '\n' );
 }
 
-void Function::setAccess( int a )
+QString Function::body() const
 {
-  mAccess = a;
+  return d->mBody;
+}
+
+void Function::setAccess( int access )
+{
+  d->mAccess = access;
+}
+
+int Function::access() const
+{
+  return d->mAccess;
 }
 
 QString Function::accessAsString() const
 {
   QString access;
 
-  if ( mAccess & Public )
+  if ( d->mAccess & Public )
     access = "public";
-  if ( mAccess & Protected )
+  if ( d->mAccess & Protected )
     access = "protected";
-  if ( mAccess & Private )
+  if ( d->mAccess & Private )
     access = "private";
 
-  if ( mAccess & Signal )
+  if ( d->mAccess & Signal )
     access = "signals";
-  if ( mAccess & Slot )
+  if ( d->mAccess & Slot )
     access += " slots";
 
   return access;
 }
 
-void Function::setReturnType( const QString &str )
+void Function::setReturnType( const QString &returnType )
 {
-  mReturnType = str;
+  d->mReturnType = returnType;
 }
 
-void Function::setName( const QString &str )
+QString Function::returnType() const
 {
-  mName = str;
+  return d->mReturnType;
 }
 
-void Function::setDocs( const QString &str )
+void Function::setName( const QString &name )
 {
-  mDocs = str;
+  d->mName = name;
+}
+
+QString Function::name() const
+{
+  return d->mName;
+}
+
+void Function::setDocs( const QString &docs )
+{
+  d->mDocs = docs;
+}
+
+QString Function::docs() const
+{
+  return d->mDocs;
 }

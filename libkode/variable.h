@@ -21,10 +21,11 @@
 #ifndef KODE_VARIABLE_H
 #define KODE_VARIABLE_H
 
-#include <QList>
-#include <QString>
+#include <QtCore/QList>
 
 #include <kode_export.h>
+
+class QString;
 
 namespace KODE {
 
@@ -34,25 +35,28 @@ class LIBKODE_EXPORT Variable
     typedef QList<Variable> List;
 
     Variable();
+    Variable( const Variable &other );
     Variable( const QString &name, const QString &type, bool isStatic = false );
 
-    void setType( const QString & );
-    QString type() const { return mType; }
+    virtual ~Variable();
 
-    void setName( const QString & );
-    QString name() const { return mName; }
+    Variable& operator=( const Variable &other );
 
-    void setStatic( bool );
-    bool isStatic() const { return mIsStatic; }
+    void setType( const QString &type );
+    QString type() const;
 
-    void setInitializer( const QString & );
-    QString initializer() const { return mInitializer; }
+    void setName( const QString &name );
+    QString name() const;
+
+    void setStatic( bool isStatic );
+    bool isStatic() const;
+
+    void setInitializer( const QString &initializer );
+    QString initializer() const;
 
   private:
-    QString mType;
-    QString mName;
-    bool mIsStatic;
-    QString mInitializer;
+    class Private;
+    Private *d;
 };
 
 }

@@ -21,6 +21,9 @@
 #ifndef KODE_CLASS_H
 #define KODE_CLASS_H
 
+#include <QtCore/QList>
+#include <QtCore/QStringList>
+
 #include "enum.h"
 #include "function.h"
 #include "membervariable.h"
@@ -28,9 +31,7 @@
 
 #include <kode_export.h>
 
-#include <QList>
-#include <QString>
-#include <QStringList>
+class QString;
 
 namespace KODE {
 
@@ -40,57 +41,60 @@ class LIBKODE_EXPORT Class
     typedef QList<Class> List;
 
     Class();
-    Class( const QString &name, const QString &nameSpace = QString::null );
+    Class( const Class &other );
+    Class( const QString &name, const QString &nameSpace = QString() );
+
+    ~Class();
+
+    Class& operator=( const Class &other );
 
     bool isValid() const;
 
+    void setName( const QString &name );
+    QString name() const;
+
+    void setNameSpace( const QString &nameSpace );
+    QString nameSpace() const;
+
+    void setUseDPointer( const bool &useDPointer );
+    bool useDPointer() const;
+
     void addInclude( const QString &file,
-      const QString &forwardDeclaration = QString::null );
+                     const QString &forwardDeclaration = QString() );
     void addIncludes( const QStringList &files,
-      const QStringList &forwardDeclarations = QStringList() );
+                      const QStringList &forwardDeclarations = QStringList() );
+    QStringList includes() const;
+    QStringList forwardDeclarations() const;
+
     void addHeaderInclude( const QString &file );
     void addHeaderIncludes( const QStringList &files );
-    void addBaseClass( const Class & );
-    void addFunction( const Function & );
-    void addMemberVariable( const MemberVariable &v );
-    void addTypedef( const Typedef & );
-    void addEnum( const Enum & );
+    QStringList headerIncludes() const;
 
-    void setName( const QString &name );
-    QString name() const { return mName; }
-    void setNameSpace( const QString &nameSpace );
-    QString nameSpace() const { return mNameSpace; }
-    void setUseDPointer( const bool &useDPointer );
-    bool useDPointer() const { return mUseDPointer; }
-    QStringList includes() const { return mIncludes; }
-    QStringList headerIncludes() const { return mHeaderIncludes; }
-    QStringList forwardDeclarations() const { return mForwardDeclarations; }
-    Function::List functions() const { return mFunctions; }
-    MemberVariable::List memberVariables() const { return mMemberVariables; }
+    void addFunction( const Function & );
+    Function::List functions() const;
+
+    void addMemberVariable( const MemberVariable &v );
+    MemberVariable::List memberVariables() const;
+
+    void addBaseClass( const Class & );
     Class::List baseClasses() const;
-    Typedef::List typedefs() const { return mTypedefs; }
-    Enum::List enums() const { return mEnums; }
+
+    void addTypedef( const Typedef & );
+    Typedef::List typedefs() const;
+
+    void addEnum( const Enum & );
+    Enum::List enums() const;
 
     void setDocs( const QString & );
-    QString docs() const { return mDocs; }
+    QString docs() const;
 
     bool hasFunction( const QString &name ) const;
 
     bool isQObject() const;
 
   private:
-    QString mName;
-    QString mNameSpace;
-    bool mUseDPointer;
-    Function::List mFunctions;
-    MemberVariable::List mMemberVariables;
-    QStringList mIncludes;
-    QStringList mForwardDeclarations;
-    QStringList mHeaderIncludes;
-    QList<Class> mBaseClasses;
-    Typedef::List mTypedefs;
-    Enum::List mEnums;
-    QString mDocs;
+    class Private;
+    Private* d;
 };
 
 }

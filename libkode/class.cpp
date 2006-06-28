@@ -19,61 +19,131 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "class.h"
+#include <QtCore/QStringList>
 
-#include <kdebug.h>
+#include "class.h"
 
 using namespace KODE;
 
+class Class::Private
+{
+  public:
+    Private()
+      : mUseDPointer( false )
+    {
+    }
+
+    QString mName;
+    QString mNameSpace;
+    bool mUseDPointer;
+    Function::List mFunctions;
+    MemberVariable::List mMemberVariables;
+    QStringList mIncludes;
+    QStringList mForwardDeclarations;
+    QStringList mHeaderIncludes;
+    QList<Class> mBaseClasses;
+    Typedef::List mTypedefs;
+    Enum::List mEnums;
+    QString mDocs;
+};
+
 Class::Class()
-  : mUseDPointer( false )
+  : d( new Private )
 {
 }
 
-Class::Class( const QString &name, const QString &nameSpace )
-  : mName( name ), mNameSpace( nameSpace ), mUseDPointer( false )
+Class::Class( const Class &other )
+  : d( new Private )
 {
+  *d = *other.d;
+}
+
+Class::Class( const QString &name, const QString &nameSpace )
+  : d( new Private )
+{
+  d->mName = name;
+  d->mNameSpace = nameSpace;
+}
+
+Class::~Class()
+{
+  delete d;
+}
+
+Class& Class::operator=( const Class &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void Class::setName( const QString &name )
 {
-  mName = name;
+  d->mName = name;
+}
+
+QString Class::name() const
+{
+  return d->mName;
 }
 
 void Class::setNameSpace( const QString &nameSpace )
 {
-  mNameSpace = nameSpace;
+  d->mNameSpace = nameSpace;
+}
+
+QString Class::nameSpace() const
+{
+  return d->mNameSpace;
 }
 
 void Class::setUseDPointer( const bool &useDPointer )
 {
-  mUseDPointer = useDPointer;
+  d->mUseDPointer = useDPointer;
+}
+
+bool Class::useDPointer() const
+{
+  return d->mUseDPointer;
 }
 
 void Class::addInclude( const QString &include,
-  const QString &forwardDeclaration )
+                        const QString &forwardDeclaration )
 {
-  if ( !include.isEmpty() && !mIncludes.contains( include ) )
-      mIncludes.append( include );
+  if ( !include.isEmpty() && !d->mIncludes.contains( include ) )
+      d->mIncludes.append( include );
 
   if ( !forwardDeclaration.isEmpty() &&
-       !mForwardDeclarations.contains( forwardDeclaration ) )
-    mForwardDeclarations.append( forwardDeclaration );
+       !d->mForwardDeclarations.contains( forwardDeclaration ) )
+    d->mForwardDeclarations.append( forwardDeclaration );
 }
 
 void Class::addIncludes( const QStringList &files,
                          const QStringList &forwardDeclarations )
 {
   for ( int i = 0; i < files.count(); ++i ) {
-    if ( !mIncludes.contains( files[ i ] ) )
+    if ( !d->mIncludes.contains( files[ i ] ) )
       if ( !files[ i ].isEmpty() )
-        mIncludes.append( files[ i ] );
+        d->mIncludes.append( files[ i ] );
   }
 
   for ( int i = 0; i < forwardDeclarations.count(); ++i ) {
-    if ( !mForwardDeclarations.contains( forwardDeclarations[ i ] ) )
-      mForwardDeclarations.append( forwardDeclarations[ i ] );
+    if ( !d->mForwardDeclarations.contains( forwardDeclarations[ i ] ) )
+      d->mForwardDeclarations.append( forwardDeclarations[ i ] );
   }
+}
+
+QStringList Class::includes() const
+{
+  return d->mIncludes;
+}
+
+QStringList Class::forwardDeclarations() const
+{
+  return d->mForwardDeclarations;
 }
 
 void Class::addHeaderInclude( const QString &include )
@@ -81,8 +151,8 @@ void Class::addHeaderInclude( const QString &include )
   if ( include.isEmpty() )
     return;
 
-  if ( !mHeaderIncludes.contains( include ) )
-    mHeaderIncludes.append( include );
+  if ( !d->mHeaderIncludes.contains( include ) )
+    d->mHeaderIncludes.append( include );
 }
 
 void Class::addHeaderIncludes( const QStringList &includes )
@@ -92,46 +162,72 @@ void Class::addHeaderIncludes( const QStringList &includes )
     addHeaderInclude( *it );
 }
 
+QStringList Class::headerIncludes() const
+{
+  return d->mHeaderIncludes;
+}
+
 void Class::addBaseClass( const Class &c )
 {
-  mBaseClasses.append( c );
-}
-
-void Class::addFunction( const Function &function )
-{
-  mFunctions.append( function );
-}
-
-void Class::addMemberVariable( const MemberVariable &v )
-{
-  mMemberVariables.append( v );
+  d->mBaseClasses.append( c );
 }
 
 Class::List Class::baseClasses() const
 {
-  return mBaseClasses;
+  return d->mBaseClasses;
 }
 
-void Class::addTypedef( const Typedef &t )
+void Class::addFunction( const Function &function )
 {
-  mTypedefs.append( t );
+  d->mFunctions.append( function );
 }
 
-void Class::addEnum( const Enum &e )
+Function::List Class::functions() const
 {
-  mEnums.append( e );
+  return d->mFunctions;
+}
+
+void Class::addMemberVariable( const MemberVariable &v )
+{
+  d->mMemberVariables.append( v );
+}
+
+MemberVariable::List Class::memberVariables() const
+{
+  return d->mMemberVariables;
+}
+
+void Class::addTypedef( const Typedef &typeDefinition )
+{
+  d->mTypedefs.append( typeDefinition );
+}
+
+Typedef::List Class::typedefs() const
+{
+  return d->mTypedefs;
+}
+
+void Class::addEnum( const Enum &enumValue )
+{
+  d->mEnums.append( enumValue );
+}
+
+Enum::List Class::enums() const
+{
+  return d->mEnums;
 }
 
 bool Class::isValid() const
 {
-  return !mName.isEmpty();
+  return !d->mName.isEmpty();
 }
 
 bool Class::hasFunction( const QString &functionName ) const
 {
   Function::List::ConstIterator it;
-  for( it = mFunctions.begin(); it != mFunctions.end(); ++it ) {
-    if ( (*it).name() == functionName ) return true;
+  for ( it = d->mFunctions.begin(); it != d->mFunctions.end(); ++it ) {
+    if ( (*it).name() == functionName )
+      return true;
   }
 
   return false;
@@ -140,7 +236,7 @@ bool Class::hasFunction( const QString &functionName ) const
 bool Class::isQObject() const
 {
   Function::List::ConstIterator it;
-  for( it = mFunctions.begin(); it != mFunctions.end(); ++it ) {
+  for ( it = d->mFunctions.begin(); it != d->mFunctions.end(); ++it ) {
     if ( (*it).access() & Function::Signal || (*it).access() & Function::Slot )
       return true;
   }
@@ -150,5 +246,10 @@ bool Class::isQObject() const
 
 void Class::setDocs( const QString &str )
 {
-  mDocs = str;
+  d->mDocs = str;
+}
+
+QString Class::docs() const
+{
+  return d->mDocs;
 }
