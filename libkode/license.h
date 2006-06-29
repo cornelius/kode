@@ -40,21 +40,23 @@ class LIBKODE_EXPORT License
   public:
     /**
      * Possible types of licenses
+     * @li GPL  - The GNU General Public License.
+     * @li LGPL - The GNU Lesser/Library General Public License.
+     * @li BSD  - Berkeley Software Distribution
      */
     enum Type {
-       GPL, ///< GNU General Public License v2, the classic free software license.
-       LGPL, ///< GNU Library/Lesser General Public License v2, GNU license for library.
-       BSD, ///< Berkeley Software Distribution
+       GPL,
+       LGPL,
+       BSD
     };
 
     /**
-     * @brief Create a new license clause definition
+     * Creates a new license.
      */
     License();
 
     /**
-     * @brief Create a new license clause definition for the given type.
-     * @param type License Type.
+     * Create a new license of the given @param type.
      */
     License( Type type );
 
@@ -64,17 +66,17 @@ class LIBKODE_EXPORT License
     License( const License &other );
 
     /**
-     * @brief Destroys the license.
+     * Destroys the license.
      */
     ~License();
 
     /**
-     * @brief Assignment operator.
+     * Assignment operator.
      */
     License& operator=( const License &other );
 
     /**
-     * @brief Sets whether a Qt expection should be appended to
+     * Sets whether a Qt expection should be appended to
      * the license statement.
      *
      * This is only useful for Qt3 based code.
@@ -82,8 +84,7 @@ class LIBKODE_EXPORT License
     void setQtException( bool useQtException );
 
     /**
-     * @brief Get the textual presentation of the license.
-     * @return textual presentation of the license.
+     * Returns the textual presentation of the license.
      */
     QString text() const;
 
