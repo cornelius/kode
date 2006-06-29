@@ -28,10 +28,12 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kurl.h>
+#include <kinstance.h>
 
 #include <QDir>
 #include <QFile>
 #include <QTimer>
+#include <QCoreApplication>
 
 static const KCmdLineOptions options[] =
 {
@@ -51,12 +53,14 @@ int main( int argc, char **argv )
 
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
 
+  KInstance wsdlInstance(&aboutData);
+
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  KApplication app( false );
+  QCoreApplication app(argc, argv);
 
   if ( args->isSet( "configfile" ) ) {
     if ( !Settings::self()->load( args->getOption( "configfile" ) ) )
