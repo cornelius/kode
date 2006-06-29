@@ -46,6 +46,7 @@ class Settings
     void setWsdlUrl( const QString &wsdlUrl );
     QString wsdlUrl() const;
     QString wsdlBaseUrl() const;
+    QString wsdlFileName() const;
 
     void setOutputFileName( const QString &outputFileName );
     QString outputFileName() const;

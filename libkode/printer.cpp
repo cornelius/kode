@@ -480,8 +480,8 @@ void Printer::printHeader( const File &file )
 
   if ( d->mCreationWarning )
     out += creationWarning();
-
-  out.addBlock( licenseHeader( file ) );
+  else
+    out.addBlock( licenseHeader( file ) );
 
   // Create include guard
   QString className = file.filename();
@@ -588,8 +588,8 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
 
   if ( d->mCreationWarning )
     out += creationWarning();
-
-  out.addBlock( licenseHeader( file ) );
+  else
+    out.addBlock( licenseHeader( file ) );
 
   out.newLine();
 

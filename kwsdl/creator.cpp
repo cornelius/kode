@@ -79,13 +79,16 @@ void Creator::create( const KODE::Class::List &list )
   KODE::Printer printer;
   printer.setOutputDirectory( Settings::self()->outputDirectory() );
 
+  // Set generated header details.
+  printer.setCreationWarning(true);
+  printer.setGenerator( QLatin1String("kwsdl_compiler") );
+  printer.setSourceFile( Settings::self()->wsdlFileName() );
+
   KODE::Class::List classes = sortByBaseClass( list );
 
   KODE::File file;
 
   file.setFilename( Settings::self()->outputFileName() );
-  file.addCopyright( 2005, "Tobias Koenig", "tokoe@kde.org" );
-  file.setLicense( KODE::License( KODE::License::GPL ) );
 
   KODE::Class::List::ConstIterator it;
   for ( it = classes.begin(); it != classes.end(); ++it ) {
