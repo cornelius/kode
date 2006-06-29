@@ -80,8 +80,8 @@ void Creator::create( const KODE::Class::List &list )
   printer.setOutputDirectory( Settings::self()->outputDirectory() );
 
   // Set generated header details.
-  printer.setCreationWarning(true);
-  printer.setGenerator( QLatin1String("kwsdl_compiler") );
+  printer.setCreationWarning( true );
+  printer.setGenerator( QLatin1String( "kwsdl_compiler" ) );
   printer.setSourceFile( Settings::self()->wsdlFileName() );
 
   KODE::Class::List classes = sortByBaseClass( list );

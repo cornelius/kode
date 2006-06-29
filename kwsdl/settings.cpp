@@ -126,7 +126,7 @@ QString Settings::wsdlBaseUrl() const
 
 QString Settings::wsdlFileName() const
 {
-  return mWsdlUrl.mid( mWsdlUrl.lastIndexOf( '/' )+1 );
+  return mWsdlUrl.mid( mWsdlUrl.lastIndexOf( '/' ) + 1 );
 }
 
 void Settings::setOutputFileName( const QString &outputFileName )

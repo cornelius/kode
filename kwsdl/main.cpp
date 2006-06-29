@@ -53,21 +53,21 @@ int main( int argc, char **argv )
 
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
 
-  KInstance wsdlInstance(&aboutData);
+  KInstance wsdlInstance( &aboutData );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  QCoreApplication app(argc, argv);
+  QCoreApplication app( argc, argv );
 
   if ( args->isSet( "configfile" ) ) {
     if ( !Settings::self()->load( args->getOption( "configfile" ) ) )
       return 1;
   } else {
     if ( args->count() != 1 ) {
-      KCmdLineArgs::usage( i18n("Neither a config file nor a WSDL url is given.") );
+      KCmdLineArgs::usage( i18n( "Neither a config file nor a WSDL url is given." ) );
     }
   }
 
