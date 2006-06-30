@@ -21,49 +21,79 @@
 
 #include "compositor.h"
 
-using namespace XSD;
+namespace XSD {
+
+class Compositor::Private
+{
+public:
+    Private()
+     : mType( Invalid )
+    {}
+
+    Type mType;
+    QName::List mChildren;
+};
 
 Compositor::Compositor()
-  : mType( Invalid )
+  : d(new Private)
 {
 }
 
-Compositor::Compositor( Type t )
-  : mType( t )
+Compositor::Compositor( Type type )
+  : d(new Private)
 {
+  d->mType = type;
+}
+
+Compositor::Compositor( const Compositor &other )
+  : d(new Private)
+{
+  *d = *other.d;
 }
 
 Compositor::~Compositor()
 {
+  delete d;
+}
+
+Compositor &Compositor::operator=( const Compositor &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 bool Compositor::isValid() const
 {
-  return mType != Invalid;
+  return d->mType != Invalid;
 }
 
-void Compositor::setType( Type t )
+void Compositor::setType( Type type )
 {
-  mType = t;
+  d->mType = type;
 }
 
 Compositor::Type Compositor::type() const
 {
-  return mType;
+  return d->mType;
 }
 
-void Compositor::addChild( const QName &c )
+void Compositor::addChild( const QName &child )
 {
-  mChildren.append( c );
+  d->mChildren.append( child );
 }
 
-void Compositor::setChildren( const QName::List &c )
+void Compositor::setChildren( const QName::List &children )
 {
-  mChildren = c;
+  d->mChildren = children;
 }
 
 QName::List Compositor::children() const
 {
-  return mChildren;
+  return d->mChildren;
 }
 
+}

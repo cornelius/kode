@@ -81,9 +81,12 @@ class KODE_SCHEMA_EXPORT XSDType : public XmlElement
 
     XSDType();
     XSDType( const QString& );
+    XSDType( const XSDType &other );
     virtual ~XSDType();
 
-    void setContentModel( ContentModel );
+    XSDType &operator=( const XSDType &other );
+
+    void setContentModel( ContentModel contentModel);
     ContentModel contentModel() const;
 
     virtual bool isSimple() const
@@ -92,7 +95,8 @@ class KODE_SCHEMA_EXPORT XSDType : public XmlElement
     }
 
   private:
-    ContentModel mContentModel;
+    class Private;
+    Private *d;
 };
 
 }

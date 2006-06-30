@@ -38,6 +38,10 @@ class KODE_SCHEMA_EXPORT Attribute : public XmlElement
 
     Attribute();
     Attribute( const QString &nameSpace );
+    Attribute( const Attribute &other );
+    ~Attribute();
+
+    Attribute &operator=( const Attribute &other );
 
     void setType( const QName &type );
     QName type() const;
@@ -66,14 +70,8 @@ class KODE_SCHEMA_EXPORT Attribute : public XmlElement
     QName arrayType() const;
 
   private:
-    QName mType;
-    QString mDocumentation;
-    QString mDefaultValue;
-    QString mFixedValue;
-    bool mQualified;
-    bool mUse;
-    QName mReference;
-    QName mArrayType;
+    class Private;
+    Private *d;
 };
 
 }

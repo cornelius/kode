@@ -32,6 +32,12 @@ namespace XSD {
 class KODE_SCHEMA_EXPORT Types
 {
   public:
+    Types();
+    Types( const Types &other );
+    ~Types();
+
+    Types &operator=( const Types &other );
+
     void setSimpleTypes( const SimpleType::List &simpleTypes );
     SimpleType::List simpleTypes() const;
 
@@ -55,12 +61,8 @@ class KODE_SCHEMA_EXPORT Types
     SimpleType simpleType( const QName & ) const;
 
   private:
-    SimpleType::List mSimpleTypes;
-    ComplexType::List mComplexTypes;
-    Element::List mElements;
-    Attribute::List mAttributes;
-    AttributeGroup::List mAttributeGroups;
-    QStringList mNamespaces;
+    class Private;
+    Private *d;
 };
 
 }

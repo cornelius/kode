@@ -24,71 +24,115 @@
 
 const QString SchemaUri = "http://www.w3.org/2001/XMLSchema";
 
-using namespace XSD;
+namespace XSD {
+
+class TypesTables::Private
+{
+public:
+    Private()
+    {
+       mCurrentId = XSDType::ANYURI + 1;
+
+       //map of simple types
+       mBasicTypes["string"] = XSDType::STRING;
+       mBasicTypes["integer"] = XSDType::INTEGER;
+       mBasicTypes["int"] = XSDType::INT;
+       mBasicTypes["byte"] = XSDType::BYTE;
+       mBasicTypes["unsignedByte"] = XSDType::UBYTE;
+       mBasicTypes["positiveInteger"] = XSDType::POSINT;
+       mBasicTypes["unsignedInt"] = XSDType::UINT;
+       mBasicTypes["long"] = XSDType::LONG;
+       mBasicTypes["unsignedLong"] = XSDType::ULONG;
+       mBasicTypes["short"] = XSDType::SHORT;
+       mBasicTypes["unsignedShort"] = XSDType::USHORT;
+       mBasicTypes["decimal"] = XSDType::DECIMAL;
+       mBasicTypes["float"] = XSDType::FLOAT;
+       mBasicTypes["double"] = XSDType::DOUBLE;
+       mBasicTypes["boolean"] = XSDType::BOOLEAN;
+       mBasicTypes["time"] = XSDType::TIME;
+       mBasicTypes["dateTime"] = XSDType::DATETIME;
+       mBasicTypes["date"] = XSDType::DATE;
+       mBasicTypes["token"] = XSDType::TOKEN;
+       mBasicTypes["QName"] = XSDType::QNAME;
+       mBasicTypes["NCName"] = XSDType::NCNAME;
+       mBasicTypes["NMTOKEN"] = XSDType::NMTOKEN;
+       mBasicTypes["NMTOKENS"] = XSDType::NMTOKENS;
+       mBasicTypes["base64Binary"] = XSDType::BASE64BIN;
+       mBasicTypes["hexBinary"] = XSDType::HEXBIN;
+       mBasicTypes["anyType"] = XSDType::ANYTYPE;
+       mBasicTypes["any"] = XSDType::ANY;
+       mBasicTypes["anyURI"] = XSDType::ANYURI;
+    }
+
+    XSDType::List mTypes;
+
+    //maintains a map of all user defined type names and their ids
+    QMap<QString, int> mUserTypes;
+    QMap<QString, int> mBasicTypes;
+
+    int mCurrentId;
+
+    QString mNameSpace;
+
+    struct ExternRef
+    {
+      int localTypeId;
+      QName qname;
+    };
+
+    QList<struct ExternRef> mExternRefs;
+}
 
 TypesTable::TypesTable()
+  : d(new Private)
 {
-    mCurrentId = XSDType::ANYURI + 1;
+}
 
-//map of simple types
-    mBasicTypes["string"] = XSDType::STRING;
-    mBasicTypes["integer"] = XSDType::INTEGER;
-    mBasicTypes["int"] = XSDType::INT;
-    mBasicTypes["byte"] = XSDType::BYTE;
-    mBasicTypes["unsignedByte"] = XSDType::UBYTE;
-    mBasicTypes["positiveInteger"] = XSDType::POSINT;
-    mBasicTypes["unsignedInt"] = XSDType::UINT;
-    mBasicTypes["long"] = XSDType::LONG;
-    mBasicTypes["unsignedLong"] = XSDType::ULONG;
-    mBasicTypes["short"] = XSDType::SHORT;
-    mBasicTypes["unsignedShort"] = XSDType::USHORT;
-    mBasicTypes["decimal"] = XSDType::DECIMAL;
-    mBasicTypes["float"] = XSDType::FLOAT;
-    mBasicTypes["double"] = XSDType::DOUBLE;
-    mBasicTypes["boolean"] = XSDType::BOOLEAN;
-    mBasicTypes["time"] = XSDType::TIME;
-    mBasicTypes["dateTime"] = XSDType::DATETIME;
-    mBasicTypes["date"] = XSDType::DATE;
-    mBasicTypes["token"] = XSDType::TOKEN;
-    mBasicTypes["QName"] = XSDType::QNAME;
-    mBasicTypes["NCName"] = XSDType::NCNAME;
-    mBasicTypes["NMTOKEN"] = XSDType::NMTOKEN;
-    mBasicTypes["NMTOKENS"] = XSDType::NMTOKENS;
-    mBasicTypes["base64Binary"] = XSDType::BASE64BIN;
-    mBasicTypes["hexBinary"] = XSDType::HEXBIN;
-    mBasicTypes["anyType"] = XSDType::ANYTYPE;
-    mBasicTypes["any"] = XSDType::ANY;
-    mBasicTypes["anyURI"] = XSDType::ANYURI;
+TypesTable::TypesTable( const TypesTable &other )
+  : d(new Private)
+{
+  *d = *other.d;
 }
 
 TypesTable::~TypesTable()
 {
   clear();
+  delete d;
+}
+
+TypesTable &TypesTable::operator=( const TypesTable &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void TypesTable::clear()
 {
   QMap<QString, int>::Iterator it;
-  for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
+  for ( it = d->mUserTypes.begin(); it != d->mUserTypes.end(); ++it )
     delete typePtr( it.value() );
 
-  mUserTypes.clear();
-  mTypes.clear();
+  d->mUserTypes.clear();
+  d->mTypes.clear();
 }
 
 int TypesTable::numExtRefs() const
 {
-  return mExternRefs.count();
+  return d->mExternRefs.count();
 }
 
 QName TypesTable::extRefName( int index ) const
 {
-  return mExternRefs[ index ].qname;
+  return d->mExternRefs[ index ].qname;
 }
 
 int TypesTable::extRefType( int index ) const
 {
-  return mExternRefs[ index ].localTypeId;
+  return d->mExternRefs[ index ].localTypeId;
 }
 
 int TypesTable::addType( XSDType *type )
@@ -100,23 +144,23 @@ int TypesTable::addType( XSDType *type )
 
   if ( type_name.isEmpty() ) {
     // create an anonymous type name
-    type_name.sprintf( "type%d", mTypes.count() );
+    type_name.sprintf( "type%d", d->mTypes.count() );
     type->setName( type_name );
     type->setAnonymous( true );  //auto generated name
   }
 
   // add the typename and its id  to the map
-  if ( (i = mUserTypes[type_name]) != 0 ) {
+  if ( (i = d->mUserTypes[type_name]) != 0 ) {
     // this type was refernced earlier.
-    mTypes[i - (XSDType::ANYURI + 1)] = type;
+    d->mTypes[i - (XSDType::ANYURI + 1)] = type;
     type->setType( i );
     return i;
   } else {
-    mUserTypes[ type_name ] = mCurrentId;
+    d->mUserTypes[ type_name ] = mCurrentId;
     type->setType( mCurrentId );
-    mTypes.append( type );
-    mCurrentId++;
-    return mCurrentId - 1;
+    d->mTypes.append( type );
+    d->mCurrentId++;
+    return d->mCurrentId - 1;
   }
 }
 
@@ -125,11 +169,11 @@ int TypesTable::typeId( const QName &name, bool create )
   int typeId;
 
   if ( name.nameSpace() == SchemaUri ) { // this is one of the basic types
-    typeId = mBasicTypes[ name.localName() ];
+    typeId = d->mBasicTypes[ name.localName() ];
     if ( typeId == 0 ) // if this is a basic type which is not mapped, treat as string
       typeId = XSDType::STRING;
-  } else if ( name.nameSpace() == mNameSpace )
-    typeId = mUserTypes[ name.localName() ];
+  } else if ( name.nameSpace() == d->mNameSpace )
+    typeId = d->mUserTypes[ name.localName() ];
   else { // the type does not belong to this schema
     return 0;
   }
@@ -137,10 +181,10 @@ int TypesTable::typeId( const QName &name, bool create )
   if ( typeId == 0 && create ) {
     // handle forward reference
     // create an id and return its value
-    mUserTypes[name.localName()] = mCurrentId;
-    mTypes.append( 0 );
-    mCurrentId++;
-    typeId = mCurrentId - 1;
+    d->mUserTypes[name.localName()] = d->mCurrentId;
+    d->mTypes.append( 0 );
+    d->mCurrentId++;
+    typeId = d->mCurrentId - 1;
   }
 
   return typeId;
@@ -154,12 +198,12 @@ QString TypesTable::typeName( int id ) const
   QMap<QString, int>::ConstIterator it;
 
   if ( id >= 0 && id <= XSDType::ANYURI ) {
-    for ( it = mBasicTypes.begin(); it != mBasicTypes.end(); ++it )
+    for ( it = d->mBasicTypes.begin(); it != d->mBasicTypes.end(); ++it )
       if ( id == it.value() )
         return it.key();
   }
 
-  for ( it = mUserTypes.begin(); it != mUserTypes.end(); ++it )
+  for ( it = d->mUserTypes.begin(); it != d->mUserTypes.end(); ++it )
     if ( id == it.value() )
       return it.key();
 
@@ -168,17 +212,17 @@ QString TypesTable::typeName( int id ) const
 
 int TypesTable::addExternalTypeId( const QName &type, XSDType *pType )
 {
-  for ( int i = 0; i < (int)mExternRefs.count(); i++ )
-    if ( mExternRefs[i].qname == type )
-      return mExternRefs[i].localTypeId;
+  for ( int i = 0; i < (int)d->mExternRefs.count(); i++ )
+    if ( d->mExternRefs[i].qname == type )
+      return d->mExternRefs[i].localTypeId;
 
   struct ExternRef ref;
   ref.qname = (pType) ? pType->qualifiedName() : type;
-  ref.localTypeId = mCurrentId;
-  mExternRefs.append( ref );
+  ref.localTypeId = d->mCurrentId;
+  d->mExternRefs.append( ref );
 
-  mTypes.append( pType );
-  mCurrentId++;
+  d->mTypes.append( pType );
+  d->mCurrentId++;
 
   return ref.localTypeId;
 }
@@ -188,17 +232,17 @@ int TypesTable::addExternalTypeId( const QName &type, XSDType *pType )
 int TypesTable::addExtType( XSDType *type, int localId )
 {
   int index = localId - XSDType::ANYURI - 1;
-  if ( index >= (int)mTypes.count() )
+  if ( index >= (int)d->mTypes.count() )
     return 0;
 
-  mTypes[ index ] = type;
+  d->mTypes[ index ] = type;
   return localId;
 }
 
 bool TypesTable::detectUndefinedTypes()
 {
-  for ( int i = 0; i < (int)mTypes.count(); i++ )
-    if ( mTypes[i] == 0 )
+  for ( int i = 0; i < (int)d->mTypes.count(); i++ )
+    if ( d->mTypes[i] == 0 )
       return true;
 
   return false;
@@ -206,10 +250,10 @@ bool TypesTable::detectUndefinedTypes()
 
 void TypesTable::resolveForwardElementRefs( const QString &name, Element &element )
 {
-  for ( int i = 0; i < (int)mTypes.count(); i++ )
-    if ( mTypes[i] != 0 ) {
-      if ( !mTypes[i]->isSimple() ) {
-        ComplexType *ct = (ComplexType*)mTypes[i];
+  for ( int i = 0; i < (int)d->mTypes.count(); i++ )
+    if ( d->mTypes[i] != 0 ) {
+      if ( !d->mTypes[i]->isSimple() ) {
+        ComplexType *ct = (ComplexType*)d->mTypes[i];
         ct->matchElementRef( name, element );
       }
     }
@@ -217,10 +261,10 @@ void TypesTable::resolveForwardElementRefs( const QString &name, Element &elemen
 
 void TypesTable::resolveForwardAttributeRefs( const QString &name, Attribute &attribute )
 {
-  for ( int i = 0; i < (int)mTypes.count(); i++ )
-    if ( mTypes[i] != 0 ) {
-      if ( !mTypes[i]->isSimple() ) {
-        ComplexType *ct = (ComplexType*)mTypes[i];
+  for ( int i = 0; i < (int)d->mTypes.count(); i++ )
+    if ( d->mTypes[i] != 0 ) {
+      if ( !d->mTypes[i]->isSimple() ) {
+        ComplexType *ct = (ComplexType*)d->mTypes[i];
         ct->matchAttributeRef( name, attribute );
       }
     }
@@ -229,23 +273,25 @@ void TypesTable::resolveForwardAttributeRefs( const QString &name, Attribute &at
 XSDType *TypesTable::typePtr( int id ) const
 {
   // this is a basic XSD type
-  if ( id < XSDType::ANYURI + 1 || id > XSDType::ANYURI + (int)mTypes.count() )
+  if ( id < XSDType::ANYURI + 1 || id > XSDType::ANYURI + (int)d->mTypes.count() )
     return 0;
 
-  return mTypes[ id - (SimpleType::ANYURI + 1) ];
+  return d->mTypes[ id - (SimpleType::ANYURI + 1) ];
 }
 
 int TypesTable::numTypes() const
 {
-  return mTypes.count();
+  return d->mTypes.count();
 }
 
 void TypesTable::setTargetNamespace( const QString &nameSpace )
 {
-  mNameSpace = nameSpace;
+  d->mNameSpace = nameSpace;
 }
 
 QString TypesTable::targetNamespace() const
 {
-  return mNameSpace;
+  return d->mNameSpace;
+}
+
 }

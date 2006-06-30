@@ -36,7 +36,10 @@ class KODE_SCHEMA_EXPORT XmlElement
   public:
     XmlElement();
     XmlElement( const QString &nameSpace );
+    XmlElement( const XmlElement &other );
     ~XmlElement();
+
+    XmlElement &operator=( const XmlElement &other );
 
     void setName( const QString &name );
     QString name() const;
@@ -51,10 +54,8 @@ class KODE_SCHEMA_EXPORT XmlElement
     Annotation::List annotations() const;
 
   private:
-    QString mName;
-    QString mNameSpace;
-
-    Annotation::List mAnnotations;
+    class Private;
+    Private *d;
 };
 
 }

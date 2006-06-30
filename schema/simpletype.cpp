@@ -22,108 +22,161 @@
 
 #include "simpletype.h"
 
-using namespace XSD;
+namespace XSD {
+
+class SimpleType::Private
+{
+public:
+    Private()
+      : mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
+        mSubType( TypeRestriction )
+    {}
+
+    QString mDocumentation;
+    QName mBaseTypeName;
+    bool mRestriction;
+    int mFacetId;
+    bool mAnonymous;
+    QStringList mEnums;
+    SubType mSubType;
+
+    QName mListTypeName;
+
+    typedef struct
+    {
+      int length;
+      struct
+      {
+        int minlen, maxlen;
+      } lenRange;
+      WhiteSpaceType wsp;
+      struct
+      {
+        int maxinc, mininc, maxex, minex;
+      } valRange;
+      int tot;
+      int frac;
+      QString pattern;
+    } FacetValueType;
+
+    FacetValueType mFacetValue;
+};
 
 SimpleType::SimpleType()
-  : mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
-    mSubType( TypeRestriction )
+  : XSDType(), d(new Private)
 {
 }
 
 SimpleType::SimpleType( const QString &nameSpace )
-  : XSDType( nameSpace ), mRestriction( false ), mFacetId( NONE ),
-    mAnonymous( false ), mSubType( TypeRestriction )
+  : XSDType( nameSpace ), d(new Private)
 {
+}
+
+SimpleType::SimpleType( const SimpleType &other )
+  : XSDType(), d(new Private)
+{
+  *d =*other.d;
 }
 
 SimpleType::~SimpleType()
 {
+  delete d;
+}
+
+SimpleType &SimpleType::operator=( const SimpleType &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void SimpleType::setDocumentation( const QString &documentation )
 {
-  mDocumentation = documentation;
+  d->mDocumentation = documentation;
 }
 
 QString SimpleType::documentation() const
 {
-  return mDocumentation;
+  return d->mDocumentation;
 }
 
 void SimpleType::setBaseTypeName( const QName &baseTypeName )
 {
-  mBaseTypeName = baseTypeName;
-  mRestriction = true;
+  d->mBaseTypeName = baseTypeName;
+  d->mRestriction = true;
 }
 
 QName SimpleType::baseTypeName() const
 {
-  return mBaseTypeName;
+  return d->mBaseTypeName;
 }
 
 void SimpleType::setSubType( SubType subType )
 {
-  mSubType = subType;
+  d->mSubType = subType;
 }
 
 SimpleType::SubType SimpleType::subType() const
 {
-  return mSubType;
+  return d->mSubType;
 }
 
 void SimpleType::setListTypeName( const QName &name )
 {
-  mListTypeName = name;
+  d->mListTypeName = name;
 }
 
 QName SimpleType::listTypeName() const
 {
-  return mListTypeName;
+  return d->mListTypeName;
 }
 
 void SimpleType::setAnonymous( bool anonymous )
 {
-  mAnonymous = anonymous;
+  d->mAnonymous = anonymous;
 }
 
 bool SimpleType::isAnonymous() const
 {
-  return mAnonymous;
+  return d->mAnonymous;
 }
 
 bool SimpleType::isValidFacet( const QString &facet )
 {
-  if ( mBaseTypeName.isEmpty() ) {
+  if ( d->mBaseTypeName.isEmpty() ) {
     qDebug( "isValidFacet:Unknown base type" );
     return false;
   }
 
   if ( facet == "length" )
-    mFacetId |= LENGTH;
+    d->mFacetId |= LENGTH;
   else if ( facet == "minLength" )
-    mFacetId |= MINLEN;
+    d->mFacetId |= MINLEN;
   else if ( facet == "maxLength" )
-    mFacetId |= MAXLEN;
+    d->mFacetId |= MAXLEN;
   else if ( facet == "enumeration" )
-    mFacetId |= ENUM;
+    d->mFacetId |= ENUM;
   else if ( facet == "whiteSpace" )
-    mFacetId |= WSP;
+    d->mFacetId |= WSP;
   else if ( facet == "pattern" )
-    mFacetId |= PATTERN;
+    d->mFacetId |= PATTERN;
   else if ( facet == "maxInclusive" )
-    mFacetId |= MAXINC;
+    d->mFacetId |= MAXINC;
   else if ( facet == "maxExclusive" )
-    mFacetId |= MAXEX;
+    d->mFacetId |= MAXEX;
   else if ( facet == "minInclusive" )
-    mFacetId |= MININC;
+    d->mFacetId |= MININC;
   else if ( facet == "minExclusive" )
-    mFacetId |= MINEX;
+    d->mFacetId |= MINEX;
   else if ( facet == "totalDigits" )
-    mFacetId |= TOT;
+    d->mFacetId |= TOT;
   else if ( facet == "fractionDigits" )
-    mFacetId |= FRAC;
+    d->mFacetId |= FRAC;
   else {
-    mFacetId = NONE;
+    d->mFacetId = NONE;
     return false;
   }
 
@@ -134,17 +187,17 @@ void SimpleType::setFacetValue( const QString &value )
 {
   int number = -1;
 
-  if ( mFacetId & ENUM ) {
-    mEnums.append( value );
-  } else if ( mFacetId & PATTERN ) {
-    mFacetValue.pattern = value;
-  } else if ( mFacetId & WSP ) {
+  if ( d->mFacetId & ENUM ) {
+    d->mEnums.append( value );
+  } else if ( d->mFacetId & PATTERN ) {
+    d->mFacetValue.pattern = value;
+  } else if ( d->mFacetId & WSP ) {
     if ( value == "preserve" )
-      mFacetValue.wsp = PRESERVE;
+      d->mFacetValue.wsp = PRESERVE;
     else if ( value == "collapse" )
-      mFacetValue.wsp = COLLAPSE;
+      d->mFacetValue.wsp = COLLAPSE;
     else if ( value == "replace" )
-      mFacetValue.wsp = REPLACE;
+      d->mFacetValue.wsp = REPLACE;
     else {
       qDebug( "Invalid facet value for whitespace" );
       return;
@@ -153,90 +206,92 @@ void SimpleType::setFacetValue( const QString &value )
     number = value.toInt();
   }
 
-  if ( mFacetId & MAXEX ) {
-    mFacetValue.valRange.maxex = number;
-  } else if ( mFacetId & MAXINC ) {
-    mFacetValue.valRange.maxinc = number;
-  } else if ( mFacetId & MININC ) {
-    mFacetValue.valRange.mininc = number;
-  } else if ( mFacetId & MINEX ) {
-    mFacetValue.valRange.minex = number;
-  } else if ( mFacetId & MAXEX ) {
-    mFacetValue.valRange.maxex = number;
-  } else if ( mFacetId & LENGTH ) {
-    mFacetValue.length = number;
-  } else if ( mFacetId & MINLEN ) {
-    mFacetValue.lenRange.minlen = number;
-  } else if ( mFacetId & MAXLEN ) {
-    mFacetValue.lenRange.maxlen = number;
-  } else if ( mFacetId & TOT ) {
-    mFacetValue.tot = number;
-  } else if ( mFacetId & FRAC ) {
-    mFacetValue.frac = number;
+  if ( d->mFacetId & MAXEX ) {
+    d->mFacetValue.valRange.maxex = number;
+  } else if ( d->mFacetId & MAXINC ) {
+    d->mFacetValue.valRange.maxinc = number;
+  } else if ( d->mFacetId & MININC ) {
+    d->mFacetValue.valRange.mininc = number;
+  } else if ( d->mFacetId & MINEX ) {
+    d->mFacetValue.valRange.minex = number;
+  } else if ( d->mFacetId & MAXEX ) {
+    d->mFacetValue.valRange.maxex = number;
+  } else if ( d->mFacetId & LENGTH ) {
+    d->mFacetValue.length = number;
+  } else if ( d->mFacetId & MINLEN ) {
+    d->mFacetValue.lenRange.minlen = number;
+  } else if ( d->mFacetId & MAXLEN ) {
+    d->mFacetValue.lenRange.maxlen = number;
+  } else if ( d->mFacetId & TOT ) {
+    d->mFacetValue.tot = number;
+  } else if ( d->mFacetId & FRAC ) {
+    d->mFacetValue.frac = number;
   }
 }
 
 int SimpleType::facetType() const
 {
-  return mFacetId;
+  return d->mFacetId;
 }
 
 int SimpleType::facetLength() const
 {
-  return mFacetValue.length;
+  return d->mFacetValue.length;
 }
 
 int SimpleType::facetMinimumLength() const
 {
-  return mFacetValue.lenRange.minlen;
+  return d->mFacetValue.lenRange.minlen;
 }
 
 int SimpleType::facetMaximumLength() const
 {
-  return mFacetValue.lenRange.maxlen;
+  return d->mFacetValue.lenRange.maxlen;
 }
 
 QStringList SimpleType::facetEnums() const
 {
-  return mEnums;
+  return d->mEnums;
 }
 
 SimpleType::WhiteSpaceType SimpleType::facetWhiteSpace() const
 {
-  return mFacetValue.wsp;
+  return d->mFacetValue.wsp;
 }
 
 int SimpleType::facetMinimumInclusive() const
 {
-  return mFacetValue.valRange.mininc;
+  return d->mFacetValue.valRange.mininc;
 }
 
 int SimpleType::facetMaximumInclusive() const
 {
-  return mFacetValue.valRange.maxinc;
+  return d->mFacetValue.valRange.maxinc;
 }
 
 int SimpleType::facetMinimumExclusive() const
 {
-  return mFacetValue.valRange.minex;
+  return d->mFacetValue.valRange.minex;
 }
 
 int SimpleType::facetMaximumExclusive() const
 {
-  return mFacetValue.valRange.maxex;
+  return d->mFacetValue.valRange.maxex;
 }
 
 int SimpleType::facetTotalDigits() const
 {
-  return mFacetValue.tot;
+  return d->mFacetValue.tot;
 }
 
 int SimpleType::facetFractionDigits() const
 {
-  return mFacetValue.frac;
+  return d->mFacetValue.frac;
 }
 
 QString SimpleType::facetPattern() const
 {
-  return mFacetValue.pattern;
+  return d->mFacetValue.pattern;
+}
+
 }

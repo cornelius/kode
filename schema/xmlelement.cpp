@@ -23,57 +23,85 @@
 
 namespace XSD {
 
+class XmlElement::Private
+{
+public:
+    QString mName;
+    QString mNameSpace;
+
+    Annotation::List mAnnotations;
+};
+
 XmlElement::XmlElement()
+  : d(new Private)
 {
 }
 
 XmlElement::XmlElement( const QString &nameSpace )
-  : mNameSpace( nameSpace )
+  : d(new Private)
 {
+  d->mNameSpace = nameSpace;
+}
+
+XmlElement::XmlElement( const XmlElement &other )
+  : d(new Private)
+{
+  *d = *other.d;
 }
 
 XmlElement::~XmlElement()
 {
+  delete d;
+}
+
+XmlElement &XmlElement::operator=( const XmlElement &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void XmlElement::setName( const QString &name )
 {
-  mName = name;
+  d->mName = name;
 }
 
 QString XmlElement::name() const
 {
-  return mName;
+  return d->mName;
 }
 
 void XmlElement::setNameSpace( const QString &nameSpace )
 {
-  mNameSpace = nameSpace;
+  d->mNameSpace = nameSpace;
 }
 
 QString XmlElement::nameSpace() const
 {
-  return mNameSpace;
+  return d->mNameSpace;
 }
 
 QName XmlElement::qualifiedName() const
 {
-  return QName( mNameSpace, mName );
+  return QName( d->mNameSpace, d->mName );
 }
 
 void XmlElement::addAnnotation( const Annotation &a )
 {
-  mAnnotations.append( a );
+  d->mAnnotations.append( a );
 }
 
 void XmlElement::setAnnotations( const Annotation::List &l )
 {
-  mAnnotations = l;
+  d->mAnnotations = l;
 }
 
 Annotation::List XmlElement::annotations() const
 {
-  return mAnnotations;
+  return d->mAnnotations;
 }
 
 }

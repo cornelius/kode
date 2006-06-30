@@ -69,7 +69,10 @@ class KODE_SCHEMA_EXPORT SimpleType : public XSDType
 
     SimpleType();
     SimpleType( const QString &nameSpace );
+    SimpleType( const SimpleType &other );
     ~SimpleType();
+
+    SimpleType &operator=( const SimpleType &other );
 
     void setDocumentation( const QString &documentation );
     QString documentation() const;
@@ -105,35 +108,8 @@ class KODE_SCHEMA_EXPORT SimpleType : public XSDType
     QString facetPattern() const;
 
   private:
-    QString mDocumentation;
-    QName mBaseTypeName;
-    bool mRestriction;
-    int mFacetId;
-    bool mAnonymous;
-    QStringList mEnums;
-    SubType mSubType;
-
-    QName mListTypeName;
-
-    typedef struct
-    {
-      int length;
-      struct
-      {
-        int minlen, maxlen;
-      } lenRange;
-      WhiteSpaceType wsp;
-      struct
-      {
-        int maxinc, mininc, maxex, minex;
-      } valRange;
-      int tot;
-      int frac;
-      QString pattern;
-    } FacetValueType;
-
-
-    FacetValueType mFacetValue;
+    class Private;
+    Private *d;
 };
 
 }

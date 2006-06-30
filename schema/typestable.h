@@ -35,7 +35,10 @@ class TypesTable
 {
   public:
     TypesTable();
+    TypesTable( const TypesTable &other );
     ~TypesTable();
+
+    TypesTable &operator=( const TypesTable &other );
 
     void clear();
 
@@ -65,23 +68,8 @@ class TypesTable
     QString targetNamespace() const;
 
   private:
-    XSDType::List mTypes;
-
-    //maintains a map of all user defined type names and their ids
-    QMap<QString, int> mUserTypes;
-    QMap<QString, int> mBasicTypes;
-
-    int mCurrentId;
-
-    QString mNameSpace;
-
-    struct ExternRef
-    {
-      int localTypeId;
-      QName qname;
-    };
-
-    QList<struct ExternRef> mExternRefs;
+    class Private;
+    Private *d;
 };
 
 }

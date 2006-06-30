@@ -39,6 +39,10 @@ class KODE_SCHEMA_EXPORT Element : public XmlElement
 
     Element();
     Element( const QString &nameSpace );
+    Element( const Element &other );
+    ~Element();
+
+    Element &operator=( const Element &other );
 
     void setType( const QName &type );
     QName type() const;
@@ -76,17 +80,8 @@ class KODE_SCHEMA_EXPORT Element : public XmlElement
     Compositor compositor() const;
 
   private:
-    QName mType;
-    QString mDocumentation;
-    int mGroupId;
-    int mMinOccurs;
-    int mMaxOccurs;
-    bool mQualified;
-    QString mDefaultValue;
-    QString mFixedValue;
-    int mOccurrence;
-    QName mReference;
-    Compositor mCompositor;
+    class Private;
+    Private *d;
 };
 
 }

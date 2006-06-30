@@ -44,7 +44,10 @@ class KODE_SCHEMA_EXPORT Parser
     enum { UNBOUNDED = 100000 };
 
     Parser( const QString &nameSpace = QString() );
+    Parser( const Parser &other );
     ~Parser();
+
+    Parser &operator=( const Parser &other );
 
     Types types() const;
 
@@ -122,18 +125,8 @@ class KODE_SCHEMA_EXPORT Parser
     AttributeGroup findAttributeGroup( const QName &name );
     void resolveForwardDeclarations();
 
-    QString mNameSpace;
-
-    SimpleType::List mSimpleTypes;
-    ComplexType::List mComplexTypes;
-    Element::List mElements;
-    Attribute::List mAttributes;
-    AttributeGroup::List mAttributeGroups;
-    Annotation::List mAnnotations;
-
-    QStringList mImportedSchemas;
-    QStringList mIncludedSchemas;
-    QStringList mNamespaces;
+    class Private;
+    Private *d;
 };
 
 }

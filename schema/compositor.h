@@ -41,22 +41,24 @@ class KODE_SCHEMA_EXPORT Compositor
     };
 
     Compositor();
-    Compositor( Type );
+    Compositor( Type type );
+    Compositor( const Compositor &other );
     ~Compositor();
+
+    Compositor &operator=( const Compositor &other );
 
     bool isValid() const;
 
-    void setType( Type );
+    void setType( Type type );
     Type type() const;
 
-    void addChild( const QName & );
-    void setChildren( const QName::List & );
+    void addChild( const QName &childName );
+    void setChildren( const QName::List &children );
     QName::List children() const;
 
   private:
-    Type mType;
-    
-    QName::List mChildren;
+    class Private;
+    Private *d;
 };
 
 }

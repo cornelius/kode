@@ -1,4 +1,3 @@
-// kate: space-indent on; indent-width 2; encoding utf-8; replace-tabs on;
 /*
     This file is part of KDE Schema Parser
 
@@ -38,28 +37,62 @@
 static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
 static const QString WSDLSchemaURI( "http://schemas.xmlsoap.org/wsdl/" );
 
-using namespace XSD;
+namespace XSD {
 
+class Parser::Private
+{
+public:
+    QString mNameSpace;
+
+    SimpleType::List mSimpleTypes;
+    ComplexType::List mComplexTypes;
+    Element::List mElements;
+    Attribute::List mAttributes;
+    AttributeGroup::List mAttributeGroups;
+    Annotation::List mAnnotations;
+
+    QStringList mImportedSchemas;
+    QStringList mIncludedSchemas;
+    QStringList mNamespaces;
+};
 
 Parser::Parser( const QString &nameSpace )
-  : mNameSpace( nameSpace )
+  : d(new Private)
 {
+  d->mNameSpace = nameSpace;
+}
+
+Parser::Parser( const Parser &other )
+  : d(new Private)
+{
+  *d = *other.d;
 }
 
 Parser::~Parser()
 {
   clear();
+  delete d;
+}
+
+Parser &Parser::operator=( const Parser &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void Parser::clear()
 {
-  mImportedSchemas.clear();
-  mNamespaces.clear();
-  mComplexTypes.clear();
-  mSimpleTypes.clear();
-  mElements.clear();
-  mAttributes.clear();
-  mAttributeGroups.clear();
+  d->mImportedSchemas.clear();
+  d->mNamespaces.clear();
+  d->mComplexTypes.clear();
+  d->mSimpleTypes.clear();
+  d->mElements.clear();
+  d->mAttributes.clear();
+  d->mAttributeGroups.clear();
 }
 
 bool Parser::parseFile( ParserContext *context, QFile &file )
@@ -124,7 +157,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   }
 
   if ( root.hasAttribute( QLatin1String("targetNamespace") ) )
-    mNameSpace = root.attribute( QLatin1String("targetNamespace") );
+    d->mNameSpace = root.attribute( QLatin1String("targetNamespace") );
 
  // mTypesTable.setTargetNamespace( mNameSpace );
 
@@ -134,19 +167,19 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
     if ( name.localName() == QLatin1String("import") ) {
       parseImport( context, element );
     } else if ( name.localName() == QLatin1String("element") ) {
-      addGlobalElement( parseElement( context, element, mNameSpace, element ) );
+      addGlobalElement( parseElement( context, element, d->mNameSpace, element ) );
     } else if ( name.localName() == QLatin1String("complexType") ) {
       ComplexType ct = parseComplexType( context, element );
-      mComplexTypes.append( ct );
+      d->mComplexTypes.append( ct );
     } else if ( name.localName() == QLatin1String("simpleType") ) {
       SimpleType st = parseSimpleType( context, element );
-      mSimpleTypes.append( st );
+      d->mSimpleTypes.append( st );
     } else if ( name.localName() == QLatin1String("attribute") ) {
       addGlobalAttribute( parseAttribute( context, element ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
-      mAttributeGroups.append( parseAttributeGroup( context, element ) );
+      d->mAttributeGroups.append( parseAttributeGroup( context, element ) );
     } else if ( name.localName() == QLatin1String("annotation") ) {
-      mAnnotations = parseAnnotation( context, element );
+      d->mAnnotations = parseAnnotation( context, element );
     } else if ( name.localName() == QLatin1String("include") ) {
       parseInclude( context, element );
     }
@@ -155,8 +188,8 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   }
 
   context->setNamespaceManager( parentManager );
-  mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );
-  mNamespaces = joinNamespaces( mNamespaces, QStringList( mNameSpace ) );
+  d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
+  d->mNamespaces = joinNamespaces( d->mNamespaces, QStringList( d->mNameSpace ) );
 
   resolveForwardDeclarations();
 
@@ -172,10 +205,10 @@ void Parser::parseImport( ParserContext *context, const QDomElement &element )
 
   if ( !location.isEmpty() ) {
     // don't import a schema twice
-    if ( mImportedSchemas.contains( location ) )
+    if ( d->mImportedSchemas.contains( location ) )
       return;
     else
-      mImportedSchemas.append( location );
+      d->mImportedSchemas.append( location );
 
     importSchema( context, location );
   }
@@ -187,10 +220,10 @@ void Parser::parseInclude( ParserContext *context, const QDomElement &element )
 
   if( !location.isEmpty() ) {
     // don't include a schema twice
-    if ( mIncludedSchemas.contains( location ) )
+    if ( d->mIncludedSchemas.contains( location ) )
       return;
     else
-      mIncludedSchemas.append( location );
+      d->mIncludedSchemas.append( location );
 
     includeSchema( context, location );
   }
@@ -220,7 +253,7 @@ Annotation::List Parser::parseAnnotation( ParserContext *,
 
 ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement &element )
 {
-  ComplexType newType( mNameSpace );
+  ComplexType newType( d->mNameSpace );
 
   newType.setName( element.attribute( "name" ) );
 
@@ -379,14 +412,14 @@ Element Parser::parseElement( ParserContext *context,
         ComplexType ct = parseComplexType( context, childElement );
 
         ct.setName( newElement.name() + "Anonymous" );
-        mComplexTypes.append( ct );
+        d->mComplexTypes.append( ct );
 
         newElement.setType( ct.qualifiedName() );
       } else if ( childName.localName() == "simpleType" ) {
         SimpleType st = parseSimpleType( context, childElement );
 
         st.setName( newElement.name() + "Anonymous" );
-        mSimpleTypes.append( st );
+        d->mSimpleTypes.append( st );
 
         newElement.setType( st.qualifiedName() );
       } else if ( childName.localName() == "annotation" ) {
@@ -482,7 +515,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
     if ( childName.localName() == "simpleType" ) {
       SimpleType st = parseSimpleType( context, childElement );
       st.setName( newAttribute.name() );
-      mSimpleTypes.append( st );
+      d->mSimpleTypes.append( st );
 
       newAttribute.setType( st.qualifiedName() );
     } else if ( childName.localName() == "annotation" ) {
@@ -499,7 +532,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
 
 SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &element )
 {
-  SimpleType st( mNameSpace );
+  SimpleType st( d->mNameSpace );
 
   st.setName( element.attribute( "name" ) );
 
@@ -643,7 +676,7 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
   while ( !childElement.isNull() ) {
     QName name = childElement.tagName();
     if ( name.localName() == "restriction" ) {
-      SimpleType st( mNameSpace );
+      SimpleType st( d->mNameSpace );
 
       if ( childElement.hasAttribute( "base" ) ) {
         QName typeName( childElement.attribute( "base" ) );
@@ -680,15 +713,15 @@ void Parser::addGlobalElement( const Element &newElement )
 {
   // don't add elements twice
   bool found = false;
-  for ( int i = 0; i < mElements.count(); ++i ) {
-    if ( mElements[ i ].qualifiedName() == newElement.qualifiedName() ) {
+  for ( int i = 0; i < d->mElements.count(); ++i ) {
+    if ( d->mElements[ i ].qualifiedName() == newElement.qualifiedName() ) {
       found = true;
       break;
     }
   }
 
   if ( !found ) {
-    mElements.append( newElement );
+    d->mElements.append( newElement );
   }
 }
 
@@ -696,15 +729,15 @@ void Parser::addGlobalAttribute( const Attribute &newAttribute )
 {
   // don't add attributes twice
   bool found = false;
-  for ( int i = 0; i < mAttributes.count(); ++i ) {
-    if ( mAttributes[ i ].qualifiedName() == newAttribute.qualifiedName() ) {
+  for ( int i = 0; i < d->mAttributes.count(); ++i ) {
+    if ( d->mAttributes[ i ].qualifiedName() == newAttribute.qualifiedName() ) {
       found = true;
       break;
     }
   }
 
   if ( !found ) {
-    mAttributes.append( newAttribute );
+    d->mAttributes.append( newAttribute );
   }
 }
 
@@ -744,7 +777,7 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
 
 QString Parser::targetNamespace() const
 {
-  return mNameSpace;
+  return d->mNameSpace;
 }
 
 void Parser::importSchema( ParserContext *context, const QString &location )
@@ -793,7 +826,7 @@ void Parser::importSchema( ParserContext *context, const QString &location )
       qDebug( "No schema tag found in schema file %s", qPrintable(schemaLocation) );
     }
 
-    mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );
+    d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
     context->setNamespaceManager( parentManager );
 
     file.close();
@@ -846,7 +879,7 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
     if ( tagName.localName() == "schema" ) {
       // For include, targetNamespace must be the same as the current document.
       if ( node.hasAttribute( QLatin1String("targetNamespace") ) ) {
-        if( node.attribute( QLatin1String("targetNamespace") ) != mNameSpace ) {
+        if( node.attribute( QLatin1String("targetNamespace") ) != d->mNameSpace ) {
           context->messageHandler()->error( QLatin1String("Included schema must be in the same namespace of the resulting schema.") );
           return;
         }
@@ -856,7 +889,7 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
       qDebug( "No schema tag found in schema file %s", qPrintable( schemaLocation ) );
     }
 
-    mNamespaces = joinNamespaces( mNamespaces, namespaceManager.uris() );
+    d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
     context->setNamespaceManager( parentManager );
 
     file.close();
@@ -884,9 +917,9 @@ QStringList Parser::joinNamespaces( const QStringList &list, const QStringList &
 
 Element Parser::findElement( const QName &name )
 {
-  for ( int i = 0; i < mElements.count(); ++i ) {
-    if ( mElements[ i ].nameSpace() == name.nameSpace() && mElements[ i ].name() == name.localName() )
-      return mElements[ i ];
+  for ( int i = 0; i < d->mElements.count(); ++i ) {
+    if ( d->mElements[ i ].nameSpace() == name.nameSpace() && d->mElements[ i ].name() == name.localName() )
+      return d->mElements[ i ];
   }
 
   return Element();
@@ -894,9 +927,9 @@ Element Parser::findElement( const QName &name )
 
 Attribute Parser::findAttribute( const QName &name )
 {
-  for ( int i = 0; i < mAttributes.count(); ++i ) {
-    if ( mAttributes[ i ].nameSpace() == name.nameSpace() && mAttributes[ i ].name() == name.localName() )
-      return mAttributes[ i ];
+  for ( int i = 0; i < d->mAttributes.count(); ++i ) {
+    if ( d->mAttributes[ i ].nameSpace() == name.nameSpace() && d->mAttributes[ i ].name() == name.localName() )
+      return d->mAttributes[ i ];
   }
 
   return Attribute();
@@ -904,7 +937,7 @@ Attribute Parser::findAttribute( const QName &name )
 
 AttributeGroup Parser::findAttributeGroup( const QName &name )
 {
-  foreach ( AttributeGroup g, mAttributeGroups ) {
+  foreach ( AttributeGroup g, d->mAttributeGroups ) {
     if ( g.nameSpace() == name.nameSpace() && g.name() == name.localName() ) {
       return g;
     }
@@ -915,9 +948,9 @@ AttributeGroup Parser::findAttributeGroup( const QName &name )
 
 void Parser::resolveForwardDeclarations()
 {
-  for ( int i = 0; i < mComplexTypes.count(); ++i ) {
+  for ( int i = 0; i < d->mComplexTypes.count(); ++i ) {
 
-    Element::List elements = mComplexTypes[ i ].elements();
+    Element::List elements = d->mComplexTypes[ i ].elements();
     for ( int j = 0; j < elements.count(); ++j ) {
       Element element = elements[ j ];
       if ( !element.isResolved() ) {
@@ -929,9 +962,9 @@ void Parser::resolveForwardDeclarations()
         elements[ j ] = resolvedElement;
       }
     }
-    mComplexTypes[ i ].setElements( elements );
+    d->mComplexTypes[ i ].setElements( elements );
 
-    Attribute::List attributes = mComplexTypes[ i ].attributes();
+    Attribute::List attributes = d->mComplexTypes[ i ].attributes();
 
     for ( int j = 0; j < attributes.count(); ++j ) {
       if ( !attributes[ j ].isResolved() ) {
@@ -941,7 +974,7 @@ void Parser::resolveForwardDeclarations()
     }
 
     AttributeGroup::List attributeGroups =
-      mComplexTypes[ i ].attributeGroups();
+      d->mComplexTypes[ i ].attributeGroups();
     foreach( AttributeGroup group, attributeGroups ) {
       if ( !group.isResolved() ) {
         AttributeGroup refAttributeGroup =
@@ -953,7 +986,7 @@ void Parser::resolveForwardDeclarations()
       }
     }
 
-    mComplexTypes[ i ].setAttributes( attributes );
+    d->mComplexTypes[ i ].setAttributes( attributes );
   }
 }
 
@@ -961,17 +994,21 @@ Types Parser::types() const
 {
   Types types;
 
-  types.setSimpleTypes( mSimpleTypes );
-  types.setComplexTypes( mComplexTypes );
-  types.setElements( mElements );
-  types.setAttributes( mAttributes );
-  types.setAttributeGroups( mAttributeGroups );
-  types.setNamespaces( mNamespaces );
+  types.setSimpleTypes( d->mSimpleTypes );
+  types.setComplexTypes( d->mComplexTypes );
+  types.setElements( d->mElements );
+  types.setAttributes( d->mAttributes );
+  types.setAttributeGroups( d->mAttributeGroups );
+  types.setNamespaces( d->mNamespaces );
 
   return types;
 }
 
 Annotation::List Parser::annotations() const
 {
-  return mAnnotations;
+  return d->mAnnotations;
 }
+
+}
+
+// kate: space-indent on; indent-width 2; encoding utf-8; replace-tabs on;

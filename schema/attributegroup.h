@@ -24,27 +24,32 @@
 #include <schema/attribute.h>
 #include <common/qname.h>
 
+#include <kode_export.h>
+
 namespace XSD {
 
-class AttributeGroup : public XmlElement
+class KODE_SCHEMA_EXPORT AttributeGroup : public XmlElement
 {
   public:
     typedef QList<AttributeGroup> List;
-    
+
     AttributeGroup();
-    
+    AttributeGroup( const AttributeGroup &other );
+    ~AttributeGroup();
+
+    AttributeGroup &operator=( const AttributeGroup &other );
+
     void setReference( const QName &reference );
     QName reference() const;
-    
+
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;
 
     bool isResolved() const;
 
   private:
-    QName mReference;
-    
-    Attribute::List mAttributes;
+    class Private;
+    Private *d;
 };
 
 }

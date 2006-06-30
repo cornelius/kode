@@ -25,33 +25,61 @@
 
 namespace XSD {
 
+class Annotation::Private
+{
+public:
+   QDomElement mDomElement;
+};
+
 Annotation::Annotation()
+  : d(new Private)
 {
 }
 
-Annotation::Annotation( const QDomElement &e )
-  : mDomElement( e )
+Annotation::Annotation( const QDomElement &element )
+  : d(new Private)
 {
+  d->mDomElement = element;
 }
 
-void Annotation::setDomElement( const QDomElement &e )
+Annotation::Annotation( const Annotation &other )
+  : d(new Private)
 {
-  mDomElement = e;
+  *d = *other.d;
+}
+
+Annotation::~Annotation()
+{
+  delete d;
+}
+
+Annotation &Annotation::operator=( const Annotation &other )
+{
+  if( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
+}
+void Annotation::setDomElement( const QDomElement &element )
+{
+  d->mDomElement = element;
 }
 
 QDomElement Annotation::domElement() const
 {
-  return mDomElement;
+  return d->mDomElement;
 }
 
 bool Annotation::isDocumentation() const
 {
-  return QName( mDomElement.tagName() ).localName() == "documentation";
+  return QName( d->mDomElement.tagName() ).localName() == "documentation";
 }
 
 bool Annotation::isAppinfo() const
 {
-  return QName( mDomElement.tagName() ).localName() == "appinfo";
+  return QName( d->mDomElement.tagName() ).localName() == "appinfo";
 }
 
 QString Annotation::documentation() const
@@ -59,9 +87,9 @@ QString Annotation::documentation() const
   QString result;
 
   if ( isDocumentation() ) {
-    result = mDomElement.text().trimmed();
+    result = d->mDomElement.text().trimmed();
   }
-  
+
   return result;
 }
 
@@ -73,7 +101,7 @@ QString Annotation::List::documentation() const
   foreach( Annotation a, *this ) {
     result.append( a.documentation() );
   }
-  
+
   return result;
 }
 

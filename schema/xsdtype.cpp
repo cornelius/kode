@@ -22,28 +22,57 @@
 
 #include "xsdtype.h"
 
-using namespace XSD;
+namespace XSD {
+
+class XSDType::Private
+{
+public:
+    Private()
+      : mContentModel( SIMPLE )
+    {}
+
+    ContentModel mContentModel;
+};
 
 XSDType::XSDType()
-  : mContentModel( SIMPLE )
+  : XmlElement(), d(new Private)
 {
 }
 
 XSDType::XSDType( const QString &nameSpace )
-  : XmlElement( nameSpace ), mContentModel( SIMPLE )
+  : XmlElement( nameSpace ), d(new Private)
 {
+}
+
+XSDType::XSDType( const XSDType &other )
+  : XmlElement(), d(new Private)
+{
+  *d = *other.d;
 }
 
 XSDType::~XSDType()
 {
+  delete d;
+}
+
+XSDType &XSDType::operator=( const XSDType &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void XSDType::setContentModel( ContentModel contentModel )
 {
-  mContentModel = contentModel;
+  d->mContentModel = contentModel;
 }
 
 XSDType::ContentModel XSDType::contentModel() const
 {
-  return mContentModel;
+  return d->mContentModel;
+}
+
 }

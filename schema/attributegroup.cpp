@@ -20,33 +20,64 @@
 
 #include "attributegroup.h"
 
-using namespace XSD;
+namespace XSD {
+
+class AttributeGroup::Private
+{
+public:
+    QName mReference;
+    Attribute::List mAttributes;
+};
 
 AttributeGroup::AttributeGroup()
+  : XmlElement(), d(new Private)
 {
+}
+
+AttributeGroup::AttributeGroup( const AttributeGroup &other )
+  : XmlElement(), d(new Private)
+{
+  *d = *other.d;
+}
+
+AttributeGroup::~AttributeGroup()
+{
+  delete d;
+}
+
+AttributeGroup &AttributeGroup::operator=( const AttributeGroup &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void AttributeGroup::setReference( const QName &reference )
 {
-  mReference = reference;
+  d->mReference = reference;
 }
 
 QName AttributeGroup::reference() const
 {
-  return mReference;
+  return d->mReference;
 }
 
 void AttributeGroup::setAttributes( const Attribute::List &attributes )
 {
-  mAttributes = attributes;
+  d->mAttributes = attributes;
 }
 
 Attribute::List AttributeGroup::attributes() const
 {
-  return mAttributes;
+  return d->mAttributes;
 }
 
 bool AttributeGroup::isResolved() const
 {
-  return !mAttributes.isEmpty();
+  return !d->mAttributes.isEmpty();
+}
+
 }

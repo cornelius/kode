@@ -36,11 +36,15 @@ class KODE_SCHEMA_EXPORT Annotation
       public:
         QString documentation() const;
     };
-  
-    Annotation();
-    Annotation( const QDomElement & );
 
-    void setDomElement( const QDomElement & );
+    Annotation();
+    Annotation( const QDomElement &element );
+    Annotation( const Annotation &other );
+    ~Annotation();
+
+    Annotation &operator=( const Annotation &other );
+
+    void setDomElement( const QDomElement &element );
     QDomElement domElement() const;
 
     bool isDocumentation() const;
@@ -49,7 +53,8 @@ class KODE_SCHEMA_EXPORT Annotation
     QString documentation() const;
 
   private:
-    QDomElement mDomElement;
+    class Private;
+    Private *d;
 };
 
 }

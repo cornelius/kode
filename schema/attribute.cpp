@@ -22,99 +22,139 @@
 
 #include "attribute.h"
 
-using namespace XSD;
+namespace XSD {
+
+class Attribute::Private
+{
+public:
+    Private()
+     : mQualified(false), mUse(false)
+    {}
+
+    QName mType;
+    QString mDocumentation;
+    QString mDefaultValue;
+    QString mFixedValue;
+    bool mQualified;
+    bool mUse;
+    QName mReference;
+    QName mArrayType;
+};
 
 Attribute::Attribute()
-  : mQualified( false ), mUse( false )
+  : XmlElement(), d(new Private)
 {
 }
 
 Attribute::Attribute( const QString &nameSpace )
-  : XmlElement( nameSpace ), mQualified( false ), mUse( false )
+  : XmlElement( nameSpace ), d(new Private)
 {
+}
+
+Attribute::Attribute( const Attribute &other )
+ : XmlElement(), d(new Private)
+{
+  *d = *other.d;
+}
+
+Attribute::~Attribute()
+{
+  delete d;
+}
+
+Attribute &Attribute::operator=( const Attribute &other )
+{
+  if( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
 }
 
 void Attribute::setType( const QName &type )
 {
-  mType = type;
+  d->mType = type;
 }
 
 QName Attribute::type() const
 {
-  return mType;
+  return d->mType;
 }
 
 void Attribute::setDocumentation( const QString &documentation )
 {
-  mDocumentation = documentation;
+  d->mDocumentation = documentation;
 }
 
 QString Attribute::documentation() const
 {
-  return mDocumentation;
+  return d->mDocumentation;
 }
 
 void Attribute::setDefaultValue( const QString &defaultValue )
 {
-  mDefaultValue = defaultValue;
+  d->mDefaultValue = defaultValue;
 }
 
 QString Attribute::defaultValue() const
 {
-  return mDefaultValue;
+  return d->mDefaultValue;
 }
 
 void Attribute::setFixedValue( const QString &fixedValue )
 {
-  mFixedValue = fixedValue;
+  d->mFixedValue = fixedValue;
 }
 
 QString Attribute::fixedValue() const
 {
-  return mFixedValue;
+  return d->mFixedValue;
 }
 
 void Attribute::setIsQualified( bool isQualified )
 {
-  mQualified = isQualified;
+  d->mQualified = isQualified;
 }
 
 bool Attribute::isQualified() const
 {
-  return mQualified;
+  return d->mQualified;
 }
 
 void Attribute::setIsUsed( bool isUsed )
 {
-  mUse = isUsed;
+  d->mUse = isUsed;
 }
 
 bool Attribute::isUsed() const
 {
-  return mUse;
+  return d->mUse;
 }
 
 void Attribute::setReference( const QName &reference )
 {
-  mReference = reference;
+  d->mReference = reference;
 }
 
 QName Attribute::reference() const
 {
-  return mReference;
+  return d->mReference;
 }
 
 bool Attribute::isResolved() const
 {
-  return !mType.isEmpty();
+  return !d->mType.isEmpty();
 }
 
 void Attribute::setArrayType( const QName &arrayType )
 {
-  mArrayType = arrayType;
+  d->mArrayType = arrayType;
 }
 
 QName Attribute::arrayType() const
 {
-  return mArrayType;
+  return d->mArrayType;
+}
+
 }

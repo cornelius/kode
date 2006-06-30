@@ -47,7 +47,10 @@ class KODE_SCHEMA_EXPORT ComplexType : public XSDType
 
     ComplexType();
     ComplexType( const QString &nameSpace );
+    ComplexType( const ComplexType &other );
     ~ComplexType();
+
+    ComplexType &operator=( const ComplexType &other );
 
     void setDocumentation( const QString &documentation );
     QString documentation() const;
@@ -79,17 +82,8 @@ class KODE_SCHEMA_EXPORT ComplexType : public XSDType
     void addElement( const Element &element );
 
   private:
-    QString mDocumentation;
-
-    Element::List mElements;
-    Attribute::List mAttributes;
-    AttributeGroup::List mAttributeGroups;
-
-    bool mAnonymous;
-    bool mIsArray;
-
-    Derivation mBaseDerivation;
-    QName mBaseTypeName;
+    class Private;
+    Private *d;
 };
 
 }
