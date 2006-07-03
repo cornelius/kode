@@ -29,7 +29,7 @@ InputDialog::InputDialog( QWidget *page, QWidget *parent )
   setbuttons(Ok | Cancel);
   setDefaultButton(Ok);
   setModal(true);
-  enableButtonSeparator(true);
+  showButtonSeparator(true);
 
   setMainWidget( page );
 

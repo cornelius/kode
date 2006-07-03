@@ -29,6 +29,6 @@ OutputDialog::OutputDialog( QWidget *page, QWidget *parent )
   setButtons(Ok);
   setDefaultButton(Ok);
   setModal(true);
-  enableButtonSeparator(true);
+  showButtonSeparator(true);
   setMainWidget( page );
 }
