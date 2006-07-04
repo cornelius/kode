@@ -33,7 +33,7 @@ kde4_add_executable(kxforms ${kxforms_SRCS})
 
 target_link_libraries(kxforms  ${KDE4_KIO_LIBS} kschema )
 
-install_targets(/bin kxforms )
+install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
 
 
 ########### next target ###############
@@ -52,6 +52,6 @@ endif(KDE4_BUILD_TESTS)
 
 ########### install files ###############
 
-install_files( ${DATA_INSTALL_DIR}/kxforms FILES  kxformsui.rc )
+install( FILES  kxformsui.rc  DESTINATION ${DATA_INSTALL_DIR}/kxforms)
 
-install_files( ${KCFG_INSTALL_DIR} FILES kxforms.kcfg )
+install( FILES kxforms.kcfg  DESTINATION ${KCFG_INSTALL_DIR})

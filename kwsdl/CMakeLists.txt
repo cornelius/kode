@@ -32,9 +32,9 @@ kde4_add_executable(kwsdl_compiler ${kwsdl_compiler_SRCS})
 
 target_link_libraries(kwsdl_compiler  ${KDE4_KDECORE_LIBS} kode wsdl )
 
-install_targets(/bin kwsdl_compiler )
+install(TARGETS kwsdl_compiler  DESTINATION ${BIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${XDG_APPS_DIR} FILES kwsdl_compiler.desktop )
+install( FILES kwsdl_compiler.desktop  DESTINATION ${XDG_APPS_DIR})

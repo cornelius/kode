@@ -21,4 +21,4 @@ kde4_add_library(kode SHARED ${kode_LIB_SRCS})
 target_link_libraries(kode  ${KDE4_KDECORE_LIBS} )
 
 set_target_properties(kode PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install_targets(${LIB_INSTALL_DIR} kode )
+install(TARGETS kode  DESTINATION ${LIB_INSTALL_DIR})

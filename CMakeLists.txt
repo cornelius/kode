@@ -20,4 +20,4 @@ set_target_properties(kode_bin PROPERTIES OUTPUT_NAME kode)
 
 target_link_libraries(kode_bin  ${KDE4_KDECORE_LIBS} kode kabc )
 
-install_targets(/bin kode_bin )
+install(TARGETS kode_bin  DESTINATION ${BIN_INSTALL_DIR} )
