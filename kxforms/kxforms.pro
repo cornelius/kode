@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET += 
 DEPENDPATH += .
-INCLUDEPATH += ../compat . ..
+INCLUDEPATH += ../compat ../common . ..
 
 # Input
 HEADERS += form.h \
@@ -56,3 +56,8 @@ LIBS += -L../kxml_compiler -lkschema
 LIBS += -L../schema -lschema
 LIBS += -L../common -lkxmlcommon
 LIBS += -L../compat -lcompat
+
+DUMMY_MOCS = formgui.moc guihandlerdialogs.moc guihandlerflat.moc \
+  input.moc list.moc mainwindow.moc remotefile.moc
+
+system( touch $$DUMMY_MOCS )

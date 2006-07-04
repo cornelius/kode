@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET = kxmlcommon
 DEPENDPATH += .
-INCLUDEPATH += . ..
+INCLUDEPATH += . .. ../compat
 
 # Input
 HEADERS += messagehandler.h nsmanager.h parsercontext.h qname.h

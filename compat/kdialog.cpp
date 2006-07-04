@@ -20,8 +20,7 @@
 
 #include "kdialog.h"
 
-KDialog::KDialog( QWidget *parent, const QString &title,
-  ButtonCodes buttonMask )
+KDialog::KDialog( QWidget *parent )
   : QDialog( parent )
 {
 }
@@ -29,4 +28,12 @@ KDialog::KDialog( QWidget *parent, const QString &title,
 void KDialog::setMainWidget( QWidget *widget )
 {
   mMainWidget = widget;
+}
+
+void KDialog::setCaption( const QString & )
+{
+}
+
+void KDialog::setButtons( ButtonCodes )
+{
 }

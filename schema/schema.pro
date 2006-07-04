@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET += 
 DEPENDPATH += .
-INCLUDEPATH += ../compat . ..
+INCLUDEPATH += ../compat ../common . ..
 
 # Input
 HEADERS += annotation.h \

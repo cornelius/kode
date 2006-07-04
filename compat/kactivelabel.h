@@ -26,6 +26,11 @@ class KActiveLabel : public QLabel
 {
   public:
     KActiveLabel( QWidget *parent ) : QLabel( parent ) {}
+
+    void setHtml( const QString &txt )
+    {
+      setText( txt );
+    }
 };
 
 #endif

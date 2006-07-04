@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET +=
 DEPENDPATH += . tests
-INCLUDEPATH += . ../compat ..
+INCLUDEPATH += . ../compat ../common ..
 
 # Input
 HEADERS += parserrelaxng.h \

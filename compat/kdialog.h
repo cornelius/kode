@@ -46,12 +46,16 @@ class KDialog : public QDialog
     };
     Q_DECLARE_FLAGS(ButtonCodes, ButtonCode)
 
-    KDialog( QWidget *parent, const QString &title, ButtonCodes buttonMask = 0);
+    KDialog( QWidget *parent );
 
     void setMainWidget( QWidget * );
     QWidget *mainWidget() { return mMainWidget; };
 
     static int marginHint() { return 8; }
+
+    void setCaption( const QString & );
+
+    void setButtons( ButtonCodes );
 
   private:
     QWidget *mMainWidget;
