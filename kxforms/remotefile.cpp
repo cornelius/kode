@@ -23,6 +23,7 @@
 
 #include <kdebug.h>
 #include <kio/job.h>
+#include <kio/jobuidelegate.h>
 
 RemoteFile::RemoteFile( QWidget *parent )
   : mParent( parent ), mGetJob( 0 ), mPutJob( 0 ), mLoaded( false )
@@ -37,6 +38,7 @@ void RemoteFile::get( const KUrl &url )
   mLoaded = false;
 
   mGetJob = KIO::get( mUrl, false, false );
+  mGetJob->ui()->setWindow( mParent );
 
   connect( mGetJob, SIGNAL( result( KJob * ) ),
            SLOT( slotJobResultGet( KJob * ) ) );
@@ -53,6 +55,7 @@ void RemoteFile::put( const KUrl &url, const QString &data )
   mPutResult.clear();
 
   mPutJob = KIO::put( mUrl, -1, true, false, true );
+  mPutJob->ui()->setWindow( mParent );
   connect( mPutJob, SIGNAL( dataReq( KIO::Job *, QByteArray & ) ),
     SLOT( slotDataReq( KIO::Job *, QByteArray & ) ) );
   connect( mPutJob, SIGNAL( result( KJob * ) ),
@@ -91,7 +94,7 @@ void RemoteFile::slotJobResultGet( KJob *job )
   kDebug() << "RemoteFile::slotJobResultGet()" << endl;
 
   if ( job->error() ) {
-    static_cast<KIO::Job*>(job)->showErrorDialog( mParent );
+    static_cast<KIO::Job*>(job)->ui()->showErrorMessage();
     emit resultGet( false );
   } else {
     mLoaded = true;
@@ -126,7 +129,7 @@ void RemoteFile::slotJobResultPut( KJob *job )
   kDebug() << "RemoteFile::slotJobResultPut()" << endl;
 
   if ( job->error() ) {
-    static_cast<KIO::Job*>(job)->showErrorDialog( mParent );
+    static_cast<KIO::Job*>(job)->ui()->showErrorMessage();
     emit resultPut( false );
   } else {
     emit resultPut( true );
