@@ -127,7 +127,8 @@ void BinaryWidget::setData( const QByteArray &data )
     mimetype = result->mimeType();
 
   if ( !mimetype.isEmpty() ) {
-    KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString::null, this, 0, this, 0 );
+    KParts::ReadOnlyPart *part = 0;
+    //KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString::null, this, 0, this, 0 ); // FIXME: doesn't work
     if ( part ) {
       KTempFile file;
       file.file()->write( data );
@@ -150,7 +151,7 @@ void BinaryWidget::setData( const QByteArray &data )
 
 void BinaryWidget::load()
 {
-  KUrl url = KFileDialog::getOpenURL( QString(), QString(), this );
+  KUrl url = KFileDialog::getOpenUrl( QString(), QString(), this );
   if ( url.isEmpty() )
     return;
 
@@ -175,7 +176,7 @@ void BinaryWidget::load()
 
 void BinaryWidget::save()
 {
-  KUrl url = KFileDialog::getSaveURL( QString(), QString(), this );
+  KUrl url = KFileDialog::getSaveUrl( QString(), QString(), this );
   if ( url.isEmpty() )
     return;
 

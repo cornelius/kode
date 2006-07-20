@@ -52,7 +52,7 @@ void InputField::appendChild( InputField *field )
 
 void InputField::removeChild( InputField *field )
 {
-  mFields.remove( field );
+  mFields.removeAll( field );
 }
 
 InputField *InputField::childField( const QString &name ) const

@@ -26,7 +26,7 @@
 InputDialog::InputDialog( QWidget *page, QWidget *parent )
   : KDialog( parent)
 {
-  setbuttons(Ok | Cancel);
+  setButtons(Ok | Cancel);
   setDefaultButton(Ok);
   setModal(true);
   showButtonSeparator(true);

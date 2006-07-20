@@ -1,8 +1,8 @@
 
 add_subdirectory( doc ) 
 add_subdirectory( wsdl ) 
-#add_subdirectory( wscl ) 
-#add_subdirectory( kung ) 
+add_subdirectory( wscl ) 
+add_subdirectory( kung ) 
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode  )
 
