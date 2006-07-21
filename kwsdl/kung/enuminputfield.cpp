@@ -69,7 +69,7 @@ QWidget *EnumInputField::createWidget( QWidget *parent )
   mInputWidget = new KComboBox( parent );
 
   mInputWidget->addItems( mEnums );
-  mInputWidget->setCurrentItem( mEnums.indexOf( mValue ) );
+  mInputWidget->setCurrentIndex( mEnums.indexOf( mValue ) );
 
   connect( mInputWidget, SIGNAL( activated( int ) ),
            this, SLOT( inputChanged( int ) ) );
