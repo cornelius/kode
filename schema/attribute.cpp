@@ -52,7 +52,7 @@ Attribute::Attribute( const QString &nameSpace )
 }
 
 Attribute::Attribute( const Attribute &other )
- : XmlElement(), d(new Private)
+ : XmlElement( other ), d(new Private)
 {
   *d = *other.d;
 }

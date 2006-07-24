@@ -55,7 +55,7 @@ ComplexType::ComplexType()
 }
 
 ComplexType::ComplexType( const ComplexType &other )
-  : XSDType(), d(new Private)
+  : XSDType( other ), d(new Private)
 {
   *d = *other.d;
 }

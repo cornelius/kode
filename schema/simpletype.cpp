@@ -73,9 +73,9 @@ SimpleType::SimpleType( const QString &nameSpace )
 }
 
 SimpleType::SimpleType( const SimpleType &other )
-  : XSDType(), d(new Private)
+  : XSDType( other ), d(new Private)
 {
-  *d =*other.d;
+  *d = *other.d;
 }
 
 SimpleType::~SimpleType()

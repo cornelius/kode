@@ -35,7 +35,7 @@ AttributeGroup::AttributeGroup()
 }
 
 AttributeGroup::AttributeGroup( const AttributeGroup &other )
-  : XmlElement(), d(new Private)
+  : XmlElement( other ), d(new Private)
 {
   *d = *other.d;
 }

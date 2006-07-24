@@ -55,7 +55,7 @@ Element::Element( const QString &nameSpace )
 }
 
 Element::Element( const Element &other )
-  : XmlElement(), d(new Private)
+  : XmlElement( other ), d(new Private)
 {
   *d = *other.d;
 }
@@ -71,6 +71,7 @@ Element &Element::operator=( const Element &other )
     return *this;
 
   *d = *other.d;
+  XmlElement::operator=( other );
 
   return *this;
 }
