@@ -45,3 +45,13 @@ QString Element::nameSpace() const
 {
   return mNameSpace;
 }
+
+void Element::setDocumentation( const QString &documentation )
+{
+  mDocumentation = documentation;
+}
+
+QString Element::documentation() const
+{
+  return mDocumentation;
+}

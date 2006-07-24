@@ -36,8 +36,12 @@ class Element
     void setNameSpace( const QString &nameSpace );
     QString nameSpace() const;
 
+    void setDocumentation( const QString &documentation );
+    QString documentation() const;
+
   private:
     QString mNameSpace;
+    QString mDocumentation;
 };
 
 }

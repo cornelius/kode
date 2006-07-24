@@ -72,6 +72,10 @@ void Service::loadXML( ParserContext *context, Binding::List *bindings, const QD
       Port port( nameSpace() );
       port.loadXML( context, bindings, child );
       mPorts.append( port );
+    } else if ( tagName.localName() == "documentation") {
+      // FIXME: Qt should provide convenience method to get text out of <doc>xxx</doc>
+      QString text = child.firstChild().toText().data().trimmed();
+      setDocumentation(text);
     } else {
       context->messageHandler()->warning( QString( "Service: unknown tag %1" ).arg( child.tagName() ) );
     }
