@@ -53,8 +53,8 @@ SOURCES += form.cpp \
 QT += xml
 
 LIBS += -L../kxml_compiler -lkschema
-LIBS += -L../schema -lschema                  # warning qmake may crash if not present!
-LIBS += -L../common -lkxmlcommon              # warning qmake may crash if not present!
+LIBS += -L../schema -lschema
+LIBS += -L../common -lkxmlcommon
 LIBS += -L../compat -lcompat
 
 DUMMY_MOCS = formgui.moc guihandlerdialogs.moc guihandlerflat.moc \
