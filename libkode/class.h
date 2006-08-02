@@ -231,6 +231,25 @@ class LIBKODE_EXPORT Class
      */
     bool isQObject() const;
 
+    /**
+     * Adds a nested class to this class.
+     */
+    void addNestedClass( const Class &nestedClass );
+
+    /**
+     * Return the list of all nested classes.
+     */
+    Class::List nestedClasses() const;
+
+    /**
+     * Return the name of the parent class name in a nested class.
+     */
+    QString parentClassName() const;
+    /**
+     * Set the name of the parent class in a nested class.
+     */
+    void setParentClassName( const QString &name );
+
   private:
     class Private;
     Private* d;

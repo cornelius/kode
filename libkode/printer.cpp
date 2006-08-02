@@ -35,8 +35,8 @@ class Printer::Private
     {
     }
 
-    QString classHeader( const Class &classObject, bool );
-    QString classImplementation( const Class &classObject );
+    QString classHeader( const Class &classObject, bool publicMembers, bool nestedClass = false );
+    QString classImplementation( const Class &classObject, bool nestedClass = false );
     Code functionHeaders( const Function::List &functions,
                           const QString &className,
                           int access );
@@ -49,9 +49,12 @@ class Printer::Private
     QString mSourceFile;
 };
 
-QString Printer::Private::classHeader( const Class &classObject, bool publicMembers )
+QString Printer::Private::classHeader( const Class &classObject, bool publicMembers, bool nestedClass )
 {
   Code code;
+
+  if ( nestedClass )
+    code.indent();
 
   if ( !classObject.docs().isEmpty() ) {
     code += "/**";
@@ -82,8 +85,14 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   }
   code += txt;
 
-  code += '{';
-  code.indent();
+  if( nestedClass ) {
+    code.indent();
+    code += '{';
+  }
+  else {
+    code += '{';
+    code.indent();
+  }
 
   if ( classObject.isQObject() ) {
     code += "Q_OBJECT";
@@ -91,6 +100,19 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   }
 
   Function::List functions = classObject.functions();
+
+  Class::List nestedClasses = classObject.nestedClasses();
+  // Generate nestedclasses
+  if ( !classObject.nestedClasses().isEmpty() ) {
+    code += QLatin1String("public:");
+
+    Class::List::ConstIterator it, itEnd = nestedClasses.constEnd();
+    for ( it = nestedClasses.constBegin(); it != itEnd; ++it ) {
+      code += classHeader( (*it), false, true );
+    }
+
+    code.newLine();
+  }
 
   Typedef::List typedefs = classObject.typedefs();
   if ( typedefs.count() > 0 ) {
@@ -176,20 +198,26 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     }
   }
 
-  code.setIndent( 0 );
+  if( !nestedClass )
+    code.setIndent( 0 );
+  else
+    code.unindent();
+
   code += "};";
 
   return code.text();
 }
 
-QString Printer::Private::classImplementation( const Class &classObject )
+QString Printer::Private::classImplementation( const Class &classObject, bool nestedClass)
 {
   Code code;
 
   bool needNewLine = false;
 
+  QString functionClassName = nestedClass ? classObject.parentClassName() + QLatin1String("::") + classObject.name() : classObject.name();
+
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
-    Class privateClass( classObject.name() + "::PrivateDPtr" );
+    Class privateClass( functionClassName + "::PrivateDPtr" );
     MemberVariable::List vars = classObject.memberVariables();
     MemberVariable::List::ConstIterator it;
     for ( it = vars.begin(); it != vars.end(); ++it )
@@ -204,7 +232,7 @@ QString Printer::Private::classImplementation( const Class &classObject )
     if ( !v.isStatic() )
       continue;
 
-    code += v.type() + classObject.name() + "::" + v.name() + " = " + v.initializer() +
+    code += v.type() + functionClassName + "::" + v.name() + " = " + v.initializer() +
             ';';
     needNewLine = true;
   }
@@ -221,7 +249,7 @@ QString Printer::Private::classImplementation( const Class &classObject )
     if ( f.access() == Function::Signal )
       continue;
 
-    code += mParent->functionSignature( f, classObject.name(), true );
+    code += mParent->functionSignature( f, functionClassName, true );
 
     if ( !f.initializers().isEmpty() ) {
       code += ": " + f.initializers().join( ", " );
@@ -253,14 +281,14 @@ QString Printer::Private::classImplementation( const Class &classObject )
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     // print copy constructor
     Function cc( classObject.name() );
-    cc.addArgument( "const " + classObject.name() + "& other" );
+    cc.addArgument( "const " + functionClassName + "& other" );
 
     Code body;
     body += "d = new PrivateDPtr;";
     body += "*d = *other.d;";
     cc.setBody( body );
 
-    code += mParent->functionSignature( cc, classObject.name(), true );
+    code += mParent->functionSignature( cc, functionClassName, true );
 
     // call copy constructor of base classes
     Class::List baseClasses = classObject.baseClasses();
@@ -281,8 +309,8 @@ QString Printer::Private::classImplementation( const Class &classObject )
     code.newLine();
 
     // print assignment operator
-    Function op( "operator=", classObject.name() + "& " );
-    op.addArgument( "const " + classObject.name() + "& other" );
+    Function op( "operator=", functionClassName + "& " );
+    op.addArgument( "const " + functionClassName + "& other" );
 
     body.clear();
     body += "if ( this == &other )";
@@ -295,11 +323,18 @@ QString Printer::Private::classImplementation( const Class &classObject )
     body += "return *this;";
     op.setBody( body );
 
-    code += mParent->functionSignature( op, classObject.name(), true );
+    code += mParent->functionSignature( op, functionClassName, true );
     code += '{';
     code.addBlock( op.body(), 2 );
     code += '}';
     code.newLine();
+  }
+
+  // Generate nested class functions
+  if( !classObject.nestedClasses().isEmpty() ) {
+    foreach ( Class nestedClass, classObject.nestedClasses() ) {
+      code += classImplementation( nestedClass, true );
+    }
   }
 
   return code.text();

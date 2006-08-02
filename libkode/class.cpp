@@ -41,10 +41,12 @@ class Class::Private
     QStringList mIncludes;
     QStringList mForwardDeclarations;
     QStringList mHeaderIncludes;
-    QList<Class> mBaseClasses;
+    Class::List mBaseClasses;
     Typedef::List mTypedefs;
     Enum::List mEnums;
     QString mDocs;
+    Class::List mNestedClasses;
+    QString mParentClassName;
 };
 
 Class::Class()
@@ -252,4 +254,27 @@ void Class::setDocs( const QString &str )
 QString Class::docs() const
 {
   return d->mDocs;
+}
+
+void Class::addNestedClass( const Class &nestedClass )
+{
+  Class addedClass = nestedClass;
+  addedClass.setParentClassName( name() );
+
+  d->mNestedClasses.append( addedClass );
+}
+
+Class::List Class::nestedClasses() const
+{
+  return d->mNestedClasses;
+}
+
+QString Class::parentClassName() const
+{
+  return d->mParentClassName;
+}
+
+void Class::setParentClassName( const QString &parentClassName )
+{
+  d->mParentClassName = parentClassName;
 }
