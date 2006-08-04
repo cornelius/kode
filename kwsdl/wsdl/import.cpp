@@ -65,9 +65,9 @@ void Import::loadXML( ParserContext *context, const QDomElement &element )
   if ( mImportNamespace.isEmpty() )
     context->messageHandler()->warning( "Import: 'namespace' required" );
 
-  mLocation = element.attribute( "location" );
+  mLocation = element.attribute( "schemaLocation" );
   if ( !mLocation.isValid() )
-    context->messageHandler()->warning( "Import: 'location' required" );
+    context->messageHandler()->warning( "Import: 'schemaLocation' required" );
 }
 
 void Import::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
@@ -81,7 +81,7 @@ void Import::saveXML( ParserContext *context, QDomDocument &document, QDomElemen
     context->messageHandler()->warning( "Import: 'namespace' required" );
 
   if ( mLocation.isValid() )
-    element.setAttribute( "location", mLocation.toString() );
+    element.setAttribute( "schemaLocation", mLocation.toString() );
   else
-    context->messageHandler()->warning( "Import: 'location' required" );
+    context->messageHandler()->warning( "Import: 'schemaLocation' required" );
 }
