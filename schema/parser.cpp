@@ -124,7 +124,8 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
   }
 
   QDomElement element = doc.documentElement();
-  if ( element.tagName() != QLatin1String("xs:schema") ) {
+  const QName name = element.tagName();
+  if ( name.localName() != QLatin1String("schema") ) {
     qDebug( "document element is '%s'", qPrintable( element.tagName() ) );
     return false;
   }
