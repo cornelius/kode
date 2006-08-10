@@ -38,11 +38,10 @@ install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
 
 ########### next target ###############
 
+if(KDE4_BUILD_TESTS)
 set(testreferences_SRCS testreferences.cpp reference.cpp )
 
 kde4_automoc(${testreferences_SRCS})
-
-if(KDE4_BUILD_TESTS)
 
 kde4_add_executable(testreferences ${testreferences_SRCS})
 
