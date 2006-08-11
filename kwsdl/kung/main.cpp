@@ -53,7 +53,9 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  KApplication app;
+  // KApplication requires DBUS which should be made optional
+  QApplication app(argc, argv);
+  KInstance instance("kung");
 
   Loader loader;
   loader.setWSDLUrl( args->url( 0 ).path() );
