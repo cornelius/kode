@@ -28,7 +28,7 @@
 
 namespace Schema {
 class SimpleType;
-};
+}
 
 /**
   Factory class, which creates InputFields for a given type.

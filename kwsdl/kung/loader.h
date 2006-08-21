@@ -29,7 +29,7 @@ class ParserContext;
 
 namespace KWSDL {
 class WSDL;
-};
+}
 
 class Loader : public QObject
 {
