@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=KXForms
 Name[x-test]=xxKXFormsxx
-Exec=kxforms %i %m -caption "%c"
+Exec=kxforms %i -caption "%c"
 Icon=kxforms
 Type=Application
 DocPath=kxforms/kxforms.html
