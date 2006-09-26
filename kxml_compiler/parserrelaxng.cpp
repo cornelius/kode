@@ -77,8 +77,8 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
   Element *start = 0;
 
   QDomNode n1;
-  for( n1 = docElement.firstChild(); !n1.isNull(); n1 = n1.nextSibling() ) {
-    QDomElement e1 = n1.toElement();
+  QDomElement e1;
+  for( e1 = docElement.firstChildElement(); !e1.isNull(); e1 = e1.nextSiblingElement() ) {
     if ( mVerbose ) {
       kDebug() << "TOP LEVEL element " << e1.tagName() << endl;
     }
@@ -95,8 +95,10 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
     } else if ( e1.tagName() == "start" ) {
       start = new Element;
       parseElement( e1, start, Pattern() );
+    } else if ( e1.isComment()  ) {
+      // Ignore all comments for now!
     } else {
-      kDebug() << "parseGrammar: Unrecognized tag: " << e1.tagName() << endl;
+      kDebug() << "parseGrammar: Unrecognized tag:  " << e1.tagName() << endl;
     }
   }
 
@@ -126,8 +128,8 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
   }
 
   QDomNode n1;
-  for( n1 = elementElement.firstChild(); !n1.isNull(); n1 = n1.nextSibling() ) {
-    QDomElement e1 = n1.toElement();
+  QDomElement e1;
+  for( e1 = elementElement.firstChildElement(); !e1.isNull(); e1 = e1.nextSiblingElement() ) {
     if ( e1.tagName() == "element" ) {
       Element *element = new Element;
       element->name = e1.attribute( "name" );
