@@ -31,13 +31,20 @@
 
 #include <QDebug>
 
-ParserXsd::ParserXsd()
+ParserXsd::ParserXsd() : mVerbose ( false )
 {
+}
+
+void ParserXsd::setVerbose( bool verbose )
+{
+  mVerbose = verbose;
 }
 
 Schema::Document ParserXsd::parse( const QString &data )
 {
-  qDebug() << "----ParserXsd::parse() string";
+  if ( mVerbose ) {
+    qDebug() << "----ParserXsd::parse() string";
+  }
 
   NSManager namespaceManager;
   MessageHandler messageHandler;
@@ -56,7 +63,9 @@ Schema::Document ParserXsd::parse( const QString &data )
 
 Schema::Document ParserXsd::parse( QFile &file )
 {
-  qDebug() << "----ParserXsd::parse() file";
+  if ( mVerbose ) {
+    qDebug() << "----ParserXsd::parse() file";
+  }
 
   NSManager namespaceManager;
   MessageHandler messageHandler;
@@ -67,6 +76,7 @@ Schema::Document ParserXsd::parse( QFile &file )
   XSD::Parser parser;
   if ( !parser.parseFile( &context, file ) ) {
     qDebug() << "Error parsing file " << file.fileName();
+
     return Schema::Document();
   } else {
     return parse( parser );
@@ -78,16 +88,20 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
   XSD::Types types = parser.types();
 
   foreach ( XSD::Element element, types.elements() ) {
-    qDebug() << "Element: " << element.name();
-//    qDebug() << "  Annotations: " << element.annotations().count();
-//    qDebug() << "  " << element.minOccurs() << ","
-//      << element.maxOccurs();
+    if ( mVerbose ) {
+      qDebug() << "Element: " << element.name();
+//      qDebug() << "  Annotations: " << element.annotations().count();
+//      qDebug() << "  " << element.minOccurs() << ","
+//        << element.maxOccurs();
+    }
     Schema::Element e;
     e.setIdentifier( element.name() );
     e.setName( element.name() );
     XSD::ComplexType complexType = types.complexType( element );
     if ( complexType.contentModel() == XSD::XSDType::MIXED ) {
-      qDebug() << "  Mixed";
+      if ( mVerbose ) {
+        qDebug() << "  Mixed";
+      }
       e.setText( true );
     }
 
@@ -102,9 +116,11 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     }
 
     foreach( XSD::Element subElement, complexType.elements() ) {
-      qDebug() << "  Element: " << subElement.name();
-      qDebug() << "    " << subElement.minOccurs() << ","
-        << subElement.maxOccurs();
+      if ( mVerbose ) {
+        qDebug() << "  Element: " << subElement.name();
+        qDebug() << "    " << subElement.minOccurs() << ","
+          << subElement.maxOccurs();
+      }
 
       Schema::Relation eRelation( subElement.name() );
       eRelation.setMinOccurs( subElement.minOccurs() );
@@ -114,7 +130,9 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
         eRelation.setMaxOccurs( subElement.maxOccurs() );
       }
       XSD::Compositor compositor = subElement.compositor();
-      qDebug() << "  Compositor " << compositor.type();
+      if ( mVerbose ) {
+        qDebug() << "  Compositor " << compositor.type();
+      }
       if ( compositor.type() == XSD::Compositor::Choice ) {
         QString choice;
         foreach( QName qname, compositor.children() ) {
@@ -127,7 +145,9 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     }
 
     foreach( XSD::Attribute attribute, complexType.attributes() ) {
-      qDebug() << "  Attribute: " << attribute.name();
+      if ( mVerbose ) {
+        qDebug() << "  Attribute: " << attribute.name();
+      }
 
       Schema::Relation aRelation( attribute.name() );
       e.addAttributeRelation( aRelation );
@@ -159,7 +179,9 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
   setAnnotations( mDocument, parser.annotations() );
 
-  qDebug() << "----ParserXsd::parse() done";
+  if ( mVerbose ) {
+    qDebug() << "----ParserXsd::parse() done";
+  }
 
 //  return Schema::Document();
 

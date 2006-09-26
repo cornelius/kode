@@ -55,6 +55,7 @@ class Creator
 
     Creator( const Schema::Document &document, XmlParserType p = XmlParserDom,
              XmlWriterType w = XmlWriterCustom );
+    void setVerbose( bool verbose );
 
     void setExternalClassPrefix( const QString & );
 
@@ -112,6 +113,7 @@ class Creator
     QStringList mListTypedefs;
 
     QString mDtd;
+    bool mVerbose;
 };
 
 class ParserCreator

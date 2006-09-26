@@ -52,6 +52,8 @@ static const KCmdLineOptions options[] =
 {
   { "d", 0, 0 },
   { "directory <dir>", I18N_NOOP("Directory to generate files in"), "." },
+  { "v", 0, 0 },
+  { "verbose", I18N_NOOP("Generate debug output"), 0 },
   { "+schema", I18N_NOOP("Schema of XML file"), 0 },
   { "external-parser", I18N_NOOP("Generate parser in separate source file"),
     0 },
@@ -71,6 +73,7 @@ int main( int argc, char **argv )
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  bool verbose = args->isSet("verbose");
 
   if ( args->count() < 1 ) {
     kError() << "Too few arguments." << endl;
@@ -97,13 +100,16 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  kDebug() << "Begin parsing" << endl;
+  if ( verbose ) {
+    kDebug() << "Begin parsing" << endl;
+  }
 
   Schema::Document schemaDocument;
 
   QFileInfo fi( schemaFile );
   if ( args->isSet( "xsd" ) || fi.suffix() == "xsd" ) {
     ParserXsd p;
+    p.setVerbose( verbose );
 
     schemaDocument = p.parse( schemaFile );
 
@@ -121,21 +127,26 @@ int main( int argc, char **argv )
     }
 
     RNG::ParserRelaxng p;
+    p.setVerbose( verbose );
     RNG::Element *start = p.parse( doc.documentElement() );
     if ( !start ) {
       kError() << "Could not find start element" << endl;
       return 1;
     }
 
-    p.dumpDefinitionMap();
+    if ( verbose ) {
+      p.dumpDefinitionMap();
+    }
 
   //  return 0;
 
     p.substituteReferences( start );
 
   #if 1
-    std::cout << "--- TREE:" << std::endl;
-    p.dumpTree( start );
+    if ( verbose ) {
+      std::cout << "--- TREE:" << std::endl;
+      p.dumpTree( start );
+    }
   #endif
 
     schemaDocument = p.convertToSchema( start );
@@ -144,10 +155,12 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  std::cout << "--- SCHEMA:" << std::endl;
-  schemaDocument.dump();
+  if ( verbose ) {
+    std::cout << "--- SCHEMA:" << std::endl;
+    schemaDocument.dump();
 
-  kDebug() << "Begin creating code" << endl;
+    kDebug() << "Begin creating code" << endl;
+  }
 
   Creator::XmlParserType pt;
   if ( args->isSet( "custom-parser" ) ) {
@@ -160,11 +173,15 @@ int main( int argc, char **argv )
 
   Creator c( schemaDocument, pt );
 
-  kDebug() << "Create classes" << endl;
+  if ( verbose ) {
+    kDebug() << "Create classes" << endl;
+  }
   foreach( Schema::Element e, schemaDocument.usedElements() ) {
     c.createClass( e );
   }
-  kDebug() << "Create parser" << endl;
+  if ( verbose ) {
+    kDebug() << "Create parser" << endl;
+  }
   Schema::Element startElement = schemaDocument.startElement();
   c.setExternalClassPrefix( c.upperFirst( startElement.name() ) );
   c.createFileParser( startElement );
@@ -173,8 +190,9 @@ int main( int argc, char **argv )
 
   c.createListTypedefs();
 
-  kDebug() << "Begin printing code" << endl;
-
+  if ( verbose ) {
+    kDebug() << "Begin printing code" << endl;
+  }
   KODE::File &f = c.file();
 
   f.setFilename( baseName );
@@ -187,5 +205,7 @@ int main( int argc, char **argv )
 
   c.printFiles( printer );
 
-  kDebug() << "Finished." << endl;
+  if ( verbose ) {
+    kDebug() << "Finished." << endl;
+  }
 }

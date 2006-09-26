@@ -121,10 +121,13 @@ class KSCHEMA_EXPORT ParserRelaxng
     void dumpTree( Element *s );
     void dumpDefinitionMap();
 
+    void setVerbose( bool verbose = true );
+
   private:
     QMap<QString,Element::List> mDefinitionMap;
     
     Schema::Document mDocument;
+    bool mVerbose;
 };
 
 }

@@ -67,6 +67,11 @@ ParserRelaxng::ParserRelaxng()
 {
 }
 
+void ParserRelaxng::setVerbose( bool verbose )
+{
+  mVerbose = verbose; 
+}
+
 Element *ParserRelaxng::parse( const QDomElement &docElement )
 {
   Element *start = 0;
@@ -74,7 +79,9 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
   QDomNode n1;
   for( n1 = docElement.firstChild(); !n1.isNull(); n1 = n1.nextSibling() ) {
     QDomElement e1 = n1.toElement();
-    kDebug() << "TOP LEVEL element " << e1.tagName() << endl;
+    if ( mVerbose ) {
+      kDebug() << "TOP LEVEL element " << e1.tagName() << endl;
+    }
     if ( e1.tagName() == "define" ) {
       Element *d = new Element;
       d->name = e1.attribute( "name" );
@@ -114,7 +121,9 @@ bool ParserRelaxng::parseAttribute( const QDomElement &attributeElement,
 bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
                    Pattern pattern )
 {
-  kDebug() << "parseElement " << e->name << endl;
+  if ( mVerbose ) {
+    kDebug() << "parseElement " << e->name << endl;
+  }
 
   QDomNode n1;
   for( n1 = elementElement.firstChild(); !n1.isNull(); n1 = n1.nextSibling() ) {
@@ -129,8 +138,10 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
       Attribute *a = new Attribute;
       a->name = e1.attribute( "name" );
       a->pattern = pattern;
-      kDebug() << "ATTRIBUTE: " << a->name << " " << a->pattern.asString()
-                << endl;
+      if ( mVerbose ) {
+        kDebug() << "ATTRIBUTE: " << a->name << " " << a->pattern.asString()
+                 << endl;
+      }
       parseAttribute( e1, a );
       e->attributes.append( a );
     } else if ( e1.tagName() == "ref" ) {
@@ -159,17 +170,25 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
 
 void ParserRelaxng::substituteReferences( Element *s )
 {
-  kDebug() << "substituteReferences for '" << s->name << "'" << endl;
+  if ( mVerbose ) {
+    kDebug() << "substituteReferences for '" << s->name << "'" << endl;
+  }
   Reference::List::Iterator it = s->references.begin();
   while( it != s->references.end() ) {
     Reference *r = *it;
-    kDebug() << "REF " << r->name << endl;
+    if ( mVerbose ) {
+      kDebug() << "REF " << r->name << endl;
+    }
     if ( r->name == s->name ) {
-      kDebug() << "Don't resolve self reference" << endl;
+      if ( mVerbose ) {
+        kDebug() << "Don't resolve self reference" << endl;
+      }
       return;
     }
     if ( r->substituted ) {
-      kDebug() << "Already substituted." << endl;
+      if ( mVerbose ) {
+        kDebug() << "Already substituted." << endl;
+      }
       ++it;
       continue;
     } else {

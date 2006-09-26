@@ -146,7 +146,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
 void ParserCreatorDom::createFileParser( const Schema::Element &element )
 {
-  kDebug() << "Creator::createFileParserDom()" << endl;
+//   kDebug() << "Creator::createFileParserDom()" << endl;
 
   QString className = creator()->upperFirst( element.name() );
 

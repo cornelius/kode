@@ -36,6 +36,7 @@ class KSCHEMA_EXPORT ParserXsd
     
     Schema::Document parse( QFile & );
     Schema::Document parse( const QString & );
+    void setVerbose( bool verbose );
 
   protected:
     Schema::Document parse( const XSD::Parser &parser );
@@ -47,6 +48,7 @@ class KSCHEMA_EXPORT ParserXsd
 
   private:
     Schema::Document mDocument;
+    bool mVerbose;
 };
 
 #endif

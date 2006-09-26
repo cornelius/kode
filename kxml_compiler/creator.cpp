@@ -50,9 +50,14 @@
 
 Creator::Creator( const Schema::Document &document, XmlParserType p,
   XmlWriterType w )
-  : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w )
+  : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w ), mVerbose( false )
 {
   setExternalClassNames();
+}
+
+void Creator::setVerbose( bool verbose ) 
+{
+  mVerbose = verbose;
 }
 
 void Creator::setExternalClassPrefix( const QString &prefix )
@@ -104,9 +109,11 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
   const Schema::Relation &r )
 {
 #if 0
-  kDebug() << "Creator::createElementFunctions()" << endl;
-  kDebug() << "ELEMENT " << e.identifier() << endl;
-  kDebug() << "RELATION: " << r.asString() << endl;
+  if ( mVerbose ) {
+    kDebug() << "Creator::createElementFunctions()" << endl;
+    kDebug() << "ELEMENT " << e.identifier() << endl;
+    kDebug() << "RELATION: " << r.asString() << endl;
+  }
 #endif
 
   Schema::Element targetElement = mDocument.element( r );
@@ -153,7 +160,9 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
 
 void Creator::createClass( const Schema::Element &element )
 {
-  kDebug() << "Creator::createClass() " << element.identifier() << endl;
+  if ( mVerbose ) {
+    kDebug() << "Creator::createClass() " << element.identifier() << endl;
+  }
 
   QString className = upperFirst( element.name() );
 
@@ -373,15 +382,21 @@ void Creator::printFiles( KODE::Printer &printer )
     mParserClass.addHeaderInclude( file().filename() + ".h" );
     parserFile.insertClass( mParserClass );
 
-    kDebug() << "Print external parser." << endl;
+    if ( mVerbose ) {
+      kDebug() << "Print external parser." << endl;
+    }
     printer.printHeader( parserFile );
     printer.printImplementation( parserFile );
   }
 
-  kDebug() << "Print header" << endl;
+  if ( mVerbose ) {
+    kDebug() << "Print header" << endl;
+  }
   printer.printHeader( file() );
 
-  kDebug() << "Print implementation" << endl;
+  if ( mVerbose ) {
+    kDebug() << "Print implementation" << endl;
+  }
   printer.printImplementation( file() );
 
 }
