@@ -108,7 +108,7 @@ int main( int argc, char **argv )
 
   QFileInfo fi( schemaFile );
   if ( args->isSet( "xsd" ) || fi.suffix() == "xsd" ) {
-    ParserXsd p;
+    RNG::ParserXsd p;
     p.setVerbose( verbose );
 
     schemaDocument = p.parse( schemaFile );

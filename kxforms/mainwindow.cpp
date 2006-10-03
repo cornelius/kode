@@ -99,7 +99,7 @@ bool MainWindow::load(const KUrl& url)
 {
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
-        url.prettyUrl() ) );    
+        url.prettyUrl() ) );
     return false;
   }
 
@@ -112,10 +112,10 @@ bool MainWindow::save( const KUrl & url )
 {
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
-        url.prettyUrl() ) );    
+        url.prettyUrl() ) );
     return false;
   }
-  
+
   mDataFile->setUrl( url );
 
   return save();
@@ -205,7 +205,7 @@ void MainWindow::loadSchema( const KUrl &url )
 
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
-        url.prettyUrl() ) );    
+        url.prettyUrl() ) );
     return;
   }
 
@@ -225,16 +225,16 @@ void MainWindow::slotGetSchemaResult( bool ok )
 
 void MainWindow::parseSchema()
 {
-  ParserXsd parser;
+  RNG::ParserXsd parser;
   Schema::Document schemaDocument = parser.parse( mSchemaFile->data() );
 
   KXForms::FormCreator creator;
 
   Hints schemaHints;
   schemaHints.extractHints( schemaDocument );
-  
+
 //  schemaHints.dump();
-  
+
   creator.setHints( schemaHints );
 
   if ( mHintsFile->isLoaded() ) {
@@ -243,10 +243,10 @@ void MainWindow::parseSchema()
 //    hints.dump();
     creator.mergeHints( hints );
   }
-  
+
   creator.hints().dump();
   QString form = creator.create( schemaDocument );
- 
+
   parseForm( form );
 }
 
@@ -256,7 +256,7 @@ void MainWindow::loadHints( const KUrl &url )
 
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
-        url.prettyUrl() ) );    
+        url.prettyUrl() ) );
     return;
   }
 
@@ -278,7 +278,7 @@ void MainWindow::loadForm( const KUrl &url )
 {
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
-        url.prettyUrl() ) );    
+        url.prettyUrl() ) );
     return;
   }
 
@@ -317,7 +317,7 @@ void MainWindow::slotGetDataResult( bool ok )
   KResult result = mFormsManager.loadData( mDataFile->data() );
   if ( result ) {
     setCaption( mDataFile->url().prettyUrl() );
-  } else {    
+  } else {
     KMessageBox::sorry( this, result.fullMessage(),
       i18n("Error loading data") );
   }

@@ -29,11 +29,13 @@
 
 #include <QFile>
 
+namespace RNG {
+
 class KSCHEMA_EXPORT ParserXsd
 {
   public:
     ParserXsd();
-    
+
     Schema::Document parse( QFile & );
     Schema::Document parse( const QString & );
     void setVerbose( bool verbose );
@@ -50,5 +52,7 @@ class KSCHEMA_EXPORT ParserXsd
     Schema::Document mDocument;
     bool mVerbose;
 };
+
+}
 
 #endif

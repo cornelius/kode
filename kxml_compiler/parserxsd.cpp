@@ -31,6 +31,8 @@
 
 #include <QDebug>
 
+using namespace RNG;
+
 ParserXsd::ParserXsd() : mVerbose ( false )
 {
 }
