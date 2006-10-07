@@ -27,7 +27,7 @@
 #include <klocale.h>
 #include <kparts/part.h>
 #include <kparts/componentfactory.h>
-#include <ktempfile.h>
+#include <ktemporaryfile.h>
 
 #include <QFile>
 #include <QLabel>
@@ -130,10 +130,12 @@ void BinaryWidget::setData( const QByteArray &data )
     KParts::ReadOnlyPart *part = 0;
     //KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString::null, this, 0, this, 0 ); // FIXME: doesn't work
     if ( part ) {
-      KTempFile file;
-      file.file()->write( data );
-      file.close();
-      part->openUrl( KUrl( file.name() ) );
+      KTemporaryFile file;
+      file.setAutoRemove(false);
+      file.open();
+      file.write( data );
+      file.flush();
+      part->openUrl( KUrl( file.fileName() ) );
       mMainWidget = part->widget();
     } else {
       mMainWidget = new QLabel( i18n( "No part found for visualization of mimetype %1", mimetype ), this );
@@ -180,11 +182,12 @@ void BinaryWidget::save()
   if ( url.isEmpty() )
     return;
 
-  KTempFile tempFile;
-  tempFile.file()->write( mData );
-  tempFile.close();
+  KTemporaryFile tempFile;
+  tempFile.open();
+  tempFile.write( mData );
+  tempFile.flush();
 
-  if ( !KIO::NetAccess::upload( tempFile.name(), url, this ) )
+  if ( !KIO::NetAccess::upload( tempFile.fileName(), url, this ) )
     KMessageBox::error( this, KIO::NetAccess::lastErrorString() );
 }
 

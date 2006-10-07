@@ -26,7 +26,7 @@
 #include <QFile>
 
 #include <kio/job.h>
-#include <ktempfile.h>
+#include <ktemporaryfile.h>
 
 #include "fileprovider.h"
 
@@ -41,8 +41,10 @@ bool FileProvider::get( const QString &url, QString &target )
     cleanUp();
 
   if ( target.isEmpty() ) {
-    KTempFile tmpFile;
-    target = tmpFile.name();
+    KTemporaryFile tmpFile;
+    tmpFile.setAutoRemove(false);
+    tmpFile.open();
+    target = tmpFile.fileName();
     mFileName = target;
   }
 
