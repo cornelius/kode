@@ -12,7 +12,7 @@ set(kschema_LIB_SRCS
 	schema.cpp
 	)
 
-kde4_automoc(${kschema_LIB_SRCS})
+kde4_automoc(kschema ${kschema_LIB_SRCS})
 
 kde4_add_library(kschema SHARED ${kschema_LIB_SRCS})
 
@@ -29,7 +29,7 @@ set(kxml_compiler_SRCS
 	parsercreatordom.cpp 
 	parsercreatorcustom.cpp)
 
-kde4_automoc(${kxml_compiler_SRCS})
+kde4_automoc(kxml_compiler ${kxml_compiler_SRCS})
 
 kde4_add_executable(kxml_compiler NOGUI RUN_UNINSTALLED ${kxml_compiler_SRCS})
 
