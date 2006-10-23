@@ -26,7 +26,7 @@ set(kwsdl_compiler_SRCS
    settings.cpp 
    typemap.cpp )
 
-kde4_automoc(kwsdl_compiler ${kwsdl_compiler_SRCS})
+kde4_automoc(${kwsdl_compiler_SRCS})
 
 kde4_add_executable(kwsdl_compiler ${kwsdl_compiler_SRCS})
 

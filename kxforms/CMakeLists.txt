@@ -25,9 +25,9 @@ set(kxforms_SRCS
    textarea.cpp 
    select1.cpp )
 
-kde4_automoc(kxforms ${kxforms_SRCS})
+kde4_automoc(${kxforms_SRCS})
 
-kde4_add_kcfg_files(kxforms kxforms_SRCS prefs.kcfgc )
+kde4_add_kcfg_files(kxforms_SRCS prefs.kcfgc )
 
 kde4_add_executable(kxforms ${kxforms_SRCS})
 
@@ -41,7 +41,7 @@ install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
 if(KDE4_BUILD_TESTS)
 set(testreferences_SRCS testreferences.cpp reference.cpp )
 
-kde4_automoc(testreferences ${testreferences_SRCS})
+kde4_automoc(${testreferences_SRCS})
 
 kde4_add_executable(testreferences ${testreferences_SRCS})
 

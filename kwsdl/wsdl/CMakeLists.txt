@@ -22,7 +22,7 @@ set(wsdl_LIB_SRCS
    type.cpp 
    wsdl.cpp )
 
-kde4_automoc(wsdl ${wsdl_LIB_SRCS})
+kde4_automoc(${wsdl_LIB_SRCS})
 
 kde4_add_library(wsdl SHARED ${wsdl_LIB_SRCS})
 

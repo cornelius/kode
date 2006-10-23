@@ -21,7 +21,7 @@ set(kschemawidgets_LIB_SRCS
    stringinputfield.cpp 
    timeinputfield.cpp )
 
-kde4_automoc(kschemawidgets ${kschemawidgets_LIB_SRCS})
+kde4_automoc(${kschemawidgets_LIB_SRCS})
 
 kde4_add_library(kschemawidgets SHARED ${kschemawidgets_LIB_SRCS})
 
@@ -42,7 +42,7 @@ set(kung_SRCS
    transport.cpp 
    wsclconversationmanager.cpp )
 
-kde4_automoc(kung ${kung_SRCS})
+kde4_automoc(${kung_SRCS})
 
 kde4_add_executable(kung ${kung_SRCS})
 

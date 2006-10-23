@@ -11,7 +11,7 @@ set(kxmlcommon_LIB_SRCS
    parsercontext.cpp 
    qname.cpp )
 
-kde4_automoc(kxmlcommon ${kxmlcommon_LIB_SRCS})
+kde4_automoc(${kxmlcommon_LIB_SRCS})
 
 kde4_add_library(kxmlcommon SHARED ${kxmlcommon_LIB_SRCS})
 

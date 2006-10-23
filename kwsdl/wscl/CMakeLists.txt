@@ -11,7 +11,7 @@ set(wscl_LIB_SRCS
    parser.cpp 
    transition.cpp )
 
-kde4_automoc(wscl ${wscl_LIB_SRCS})
+kde4_automoc(${wscl_LIB_SRCS})
 
 kde4_add_library(wscl SHARED ${wscl_LIB_SRCS})
 
