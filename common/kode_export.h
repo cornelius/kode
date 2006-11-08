@@ -23,11 +23,80 @@
 
 #include <kdemacros.h>
 
+#ifdef Q_WS_WIN
+
+#ifndef KODE_EXPORT
+# ifdef MAKE_KODE_LIB
+#  define KODE_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define KODE_EXPORT KDE_IMPORT
+# else
+#  define KODE_EXPORT
+# endif
+#endif
+
+
+#ifndef KXMLCOMMON_EXPORT
+# ifdef MAKE_KXMLCOMMON_LIB
+#  define KXMLCOMMON_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define KXMLCOMMON_EXPORT KDE_IMPORT
+# else
+#  define KXMLCOMMON_EXPORT
+# endif
+#endif
+
+
+#ifndef LIBKODE_EXPORT
+# ifdef MAKE_LIBKODE_LIB
+#  define LIBKODE_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define LIBKODE_EXPORT KDE_IMPORT
+# else
+#  define LIBKODE_EXPORT
+# endif
+#endif
+
+
+#ifndef KODE_SCHEMA_EXPORT
+# ifdef MAKE_KODE_SCHEMA_LIB
+#  define KODE_SCHEMA_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define KODE_SCHEMA_EXPORT KDE_IMPORT
+# else
+#  define KODE_SCHEMA_EXPORT
+# endif
+#endif
+
+
+#ifndef KSCHEMA_EXPORT
+# ifdef MAKE_KSCHEMA_LIB
+#  define KSCHEMA_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define KSCHEMA_EXPORT KDE_IMPORT
+# else
+#  define KSCHEMA_EXPORT
+# endif
+#endif
+
+#ifndef KWSDL_EXPORT
+# ifdef MAKE_KWSDL_LIB
+#  define KWSDL_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define KWSDL_EXPORT KDE_IMPORT
+# else
+#  define KWSDL_EXPORT
+# endif
+#endif
+
+#else // not windows
+
 #define KODE_EXPORT KDE_EXPORT
 #define KXMLCOMMON_EXPORT KDE_EXPORT
 #define LIBKODE_EXPORT KDE_EXPORT
 #define KODE_SCHEMA_EXPORT KDE_EXPORT
 #define KSCHEMA_EXPORT KDE_EXPORT
 #define KWSDL_EXPORT KDE_EXPORT
+#endif /* not windows */
 
 #endif
