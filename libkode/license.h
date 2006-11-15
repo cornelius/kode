@@ -35,7 +35,7 @@ namespace KODE {
  *
  * @author Cornelius Schumacher <schumacher@kde.org>
  */
-class LIBKODE_EXPORT License
+class KODE_EXPORT License
 {
   public:
     /**

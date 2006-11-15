@@ -38,7 +38,7 @@ namespace KODE {
  * It's basically a @see Variable with a
  * special formatted name.
  */
-class LIBKODE_EXPORT MemberVariable : public Variable
+class KODE_EXPORT MemberVariable : public Variable
 {
   public:
     typedef QList<MemberVariable> List;

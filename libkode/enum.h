@@ -30,7 +30,7 @@ class QStringList;
 
 namespace KODE {
 
-class LIBKODE_EXPORT Enum
+class KODE_EXPORT Enum
 {
   public:
     typedef QList<Enum> List;

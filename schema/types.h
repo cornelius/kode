@@ -29,7 +29,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT Types
+class SCHEMA_EXPORT Types
 {
   public:
     Types();

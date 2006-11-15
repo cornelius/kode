@@ -28,7 +28,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT Annotation
+class SCHEMA_EXPORT Annotation
 {
   public:
     class List : public QList<Annotation>

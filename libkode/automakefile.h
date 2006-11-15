@@ -32,10 +32,10 @@ namespace KODE {
  * This class abstracts an AutoMake file (Makefile.am)
  * which is used by the autotools to create Makefiles.
  */
-class LIBKODE_EXPORT AutoMakefile
+class KODE_EXPORT AutoMakefile
 {
   public:
-    class LIBKODE_EXPORT Target
+    class KODE_EXPORT Target
     {
       public:
         typedef QList<Target> List;

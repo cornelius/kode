@@ -36,7 +36,7 @@ namespace KODE {
  * This class prints the abstract class definitions
  * as C++ code to a file.
  */
-class LIBKODE_EXPORT Printer
+class KODE_EXPORT Printer
 {
   public:
     /**

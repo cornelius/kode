@@ -38,7 +38,7 @@ class ParserContext;
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT Parser
+class SCHEMA_EXPORT Parser
 {
   public:
     enum { UNBOUNDED = 100000 };

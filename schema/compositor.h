@@ -28,7 +28,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT Compositor
+class SCHEMA_EXPORT Compositor
 {
   public:
     typedef QList<Compositor> List;

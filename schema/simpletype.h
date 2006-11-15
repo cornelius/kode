@@ -31,7 +31,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT SimpleType : public XSDType
+class SCHEMA_EXPORT SimpleType : public XSDType
 {
   public:
     typedef QList<SimpleType> List;

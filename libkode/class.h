@@ -39,7 +39,7 @@ namespace KODE {
  * This class abstracts a class object with functions,
  * member variables etc.
  */
-class LIBKODE_EXPORT Class
+class KODE_EXPORT Class
 {
   public:
     typedef QList<Class> List;

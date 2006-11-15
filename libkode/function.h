@@ -35,7 +35,7 @@ namespace KODE {
 /**
  * This class represents a function.
  */
-class LIBKODE_EXPORT Function
+class KODE_EXPORT Function
 {
   public:
     typedef QList<Function> List;

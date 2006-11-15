@@ -33,7 +33,7 @@ namespace KODE {
  * You can reimplement it to give the generated code
  * a custom style.
  */
-class LIBKODE_EXPORT Style
+class KODE_EXPORT Style
 {
   public:
     /**

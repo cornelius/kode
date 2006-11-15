@@ -32,7 +32,7 @@ namespace KODE {
 /**
  * This class represents a variable.
  */
-class LIBKODE_EXPORT Variable
+class KODE_EXPORT Variable
 {
   public:
     typedef QList<Variable> List;

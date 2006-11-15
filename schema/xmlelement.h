@@ -31,7 +31,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT XmlElement
+class SCHEMA_EXPORT XmlElement
 {
   public:
     XmlElement();

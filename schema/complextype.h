@@ -35,7 +35,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT ComplexType : public XSDType
+class SCHEMA_EXPORT ComplexType : public XSDType
 {
   public:
     typedef QList<ComplexType> List;

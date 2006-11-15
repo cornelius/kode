@@ -30,7 +30,7 @@ namespace KODE {
 /**
  * This class encapsulates a code block.
  */
-class LIBKODE_EXPORT Code
+class KODE_EXPORT Code
 {
   public:
     /**

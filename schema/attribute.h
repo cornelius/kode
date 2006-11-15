@@ -31,7 +31,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT Attribute : public XmlElement
+class SCHEMA_EXPORT Attribute : public XmlElement
 {
   public:
     typedef QList<Attribute> List;

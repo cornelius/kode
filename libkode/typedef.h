@@ -32,7 +32,7 @@ namespace KODE {
 /**
  * This is an abstract class for typedefs.
  */
-class LIBKODE_EXPORT Typedef
+class KODE_EXPORT Typedef
 {
   public:
     typedef QList<Typedef> List;

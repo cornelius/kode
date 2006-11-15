@@ -28,7 +28,7 @@
 
 namespace XSD {
 
-class KODE_SCHEMA_EXPORT AttributeGroup : public XmlElement
+class SCHEMA_EXPORT AttributeGroup : public XmlElement
 {
   public:
     typedef QList<AttributeGroup> List;

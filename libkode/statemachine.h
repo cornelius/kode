@@ -35,7 +35,7 @@ namespace KODE {
  * It can be used to create complex state machines
  * in an easy way.
  */
-class LIBKODE_EXPORT StateMachine
+class KODE_EXPORT StateMachine
 {
   public:
     /**

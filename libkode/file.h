@@ -36,7 +36,7 @@ namespace KODE {
 /**
  * This class represents a file.
  */
-class LIBKODE_EXPORT File
+class KODE_EXPORT File
 {
   public:
     /**
