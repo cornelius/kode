@@ -22,13 +22,13 @@
 #include "kde-holidays.h"
 #include "kde-holidays_parser.h"
 
-#include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <kdebug.h>
 
 #include <QFile>
 #include <QTextStream>
+#include <QCoreApplication>
 
 #include <iostream>
 
@@ -41,13 +41,12 @@ static const KCmdLineOptions options[] =
 
 int main( int argc, char **argv )
 {
-  // KApplication::disableAutoDcopRegistration();
   KAboutData aboutData( "testholidays", "Dump holidays to stdout",
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
 
-  KApplication app( false );
+  QCoreApplication app( *KCmdLineArgs::qt_argc(), *KCmdLineArgs::qt_argv() );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 

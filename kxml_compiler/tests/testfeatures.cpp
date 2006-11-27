@@ -22,12 +22,12 @@
 #include "kde-features.h"
 #include "kde-features_parser.h"
 
-#include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <kdebug.h>
 
 #include <QFile>
+#include <QCoreApplication>
 #include <QTextStream>
 
 #include <iostream>
@@ -39,7 +39,7 @@ static const KCmdLineOptions options[] =
   KCmdLineLastOption
 };
 
-void displayFeature( const Feature &f )
+static void displayFeature( const Feature &f )
 {
   std::cout << "FEATURE: " << f.summary().toLocal8Bit().data() << std::endl;
   foreach( Responsible r, f.responsibleList() ) {
@@ -50,29 +50,28 @@ void displayFeature( const Feature &f )
   std::cout << "  STATUS: " << f.status().toLocal8Bit().data() << std::endl;
 }
 
-void displayCategory( Category::List categories )
+static void displayCategory( Category::List categories )
 {
   foreach( Category c, categories ) {
     std::cout << "CATEGORY: " << c.name().toLocal8Bit().data() << std::endl;
-    
+
     Feature::List features = c.featureList();
     foreach( Feature f, features ) {
       displayFeature( f );
     }
-  
+
     displayCategory( c.categoryList() );
   }
 }
 
 int main( int argc, char **argv )
 {
-  // KApplication::disableAutoDcopRegistration();
   KAboutData aboutData( "testfeatures", "Dump XML feature list to stdout",
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
 
-  KApplication app( false );
+  QCoreApplication app( *KCmdLineArgs::qt_argc(), *KCmdLineArgs::qt_argv() );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
@@ -100,4 +99,5 @@ int main( int argc, char **argv )
       kError() << "Write error" << endl;
     }
   }
+  return 0;
 }
