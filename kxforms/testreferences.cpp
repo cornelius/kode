@@ -34,15 +34,7 @@ using namespace KXForms;
 static const char description[] =
     I18N_NOOP("References Test Program");
 
-static KCmdLineOptions options[] =
-{
-  { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
-  { "kxform <URL>", I18N_NOOP( "Form description" ), 0 },
-  { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
-  KCmdLineLastOption
-};
-
-void checkReference( const QString &str )
+static void checkReference( const QString &str )
 {
   Reference ref( str );
 
@@ -57,17 +49,13 @@ void checkReference( const QString &str )
 
 int main(int argc, char **argv)
 {
-  // KApplication::disableAutoDcopRegistration();
-
   KAboutData about("testreferences", I18N_NOOP("TestReferences"), "0.1",
     description,
     KAboutData::License_GPL, "(C) 2005 Cornelius Schumacher", 0, 0,
     "schumacher@kde.org");
   about.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
-  KCmdLineArgs::init(argc, argv, &about);
-  KCmdLineArgs::addCmdLineOptions(options);
-
-  KApplication app( false );
+  KInstance instance( &about );
+  QCoreApplication app( argc, argv );
 
   checkReference( "/one/two/three" );
   checkReference( "relative" );
