@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QString>
 #include <QList>
-
+#include <kode_export.h>
 class QWidget;
 class QDomDocument;
 class QDomElement;
@@ -38,7 +38,7 @@ class ComplexType;
 /**
   Abstract base class for all kinds of input fields.
  */
-class InputField : public QObject
+class KUNG_EXPORT InputField : public QObject
 {
   Q_OBJECT
 

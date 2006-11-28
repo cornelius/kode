@@ -23,7 +23,7 @@
 #define INPUTFIELD_FACTORY_H
 
 #include "inputfield.h"
-
+#include <kode_export.h>
 #include <schema/types.h>
 
 namespace Schema {
@@ -33,7 +33,7 @@ class SimpleType;
 /**
   Factory class, which creates InputFields for a given type.
  */
-class InputFieldFactory
+class KUNG_EXPORT InputFieldFactory
 {
   public:
     /**

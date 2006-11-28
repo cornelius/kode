@@ -24,10 +24,11 @@
 
 #include "interaction.h"
 #include "transition.h"
+#include <kode_export.h>
 
 namespace WSCL {
 
-class Conversation
+class WSCL_EXPORT Conversation
 {
   public:
     Conversation();

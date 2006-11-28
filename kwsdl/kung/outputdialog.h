@@ -23,8 +23,9 @@
 #define OUTPUTDIALOG_H
 
 #include <kdialog.h>
+#include <kode_export.h>
 
-class OutputDialog : public KDialog
+class KUNG_EXPORT OutputDialog : public KDialog
 {
   public:
     OutputDialog( QWidget *page, QWidget *parent );

@@ -23,8 +23,8 @@
 #define INPUTDIALOG_H
 
 #include <kdialog.h>
-
-class InputDialog : public KDialog
+#include <kode_export.h>
+class KUNG_EXPORT InputDialog : public KDialog
 {
   public:
     InputDialog( QWidget *page, QWidget *parent );

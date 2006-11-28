@@ -23,12 +23,12 @@
 #define PAGE_INPUTFIELD_H
 
 #include <qobject.h>
-
+#include <kode_export.h>
 #include <wsdl/message.h>
 
 #include "inputfield.h"
 
-class PageInputField : public InputField
+class KUNG_EXPORT PageInputField : public InputField
 {
   Q_OBJECT
 

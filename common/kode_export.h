@@ -79,6 +79,27 @@
 # endif
 #endif
 
+#ifndef KUNG_EXPORT
+# ifdef MAKE_KUNG_LIB
+#  define KUNG_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define KUNG_EXPORT KDE_IMPORT
+# else
+#  define KUNG_EXPORT
+# endif
+#endif
+
+#ifndef WSCL_EXPORT
+# ifdef MAKE_WSCL_LIB
+#  define WSCL_EXPORT KDE_EXPORT
+# elif KDE_MAKE_LIB
+#  define WSCL_EXPORT KDE_IMPORT
+# else
+#  define WSCL_EXPORT
+# endif
+#endif
+
+
 #else // not windows
 
 #define KODE_EXPORT KDE_EXPORT
@@ -86,6 +107,8 @@
 #define SCHEMA_EXPORT KDE_EXPORT
 #define KSCHEMA_EXPORT KDE_EXPORT
 #define KWSDL_EXPORT KDE_EXPORT
+#define KUNG_EXPORT KDE_EXPORT
+#define WSCL_EXPORT KDE_EXPORT
 #endif /* not windows */
 
 #endif

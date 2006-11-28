@@ -24,10 +24,11 @@
 
 #include <QString>
 #include <QList>
+#include <kode_export.h>
 
 namespace WSCL {
 
-class Transition
+class WSCL_EXPORT Transition
 {
   public:
     typedef QList<Transition> List;

@@ -25,10 +25,10 @@
 #include <QList>
 
 #include "documents.h"
-
+#include <kode_export.h>
 namespace WSCL {
 
-class Interaction
+class WSCL_EXPORT Interaction
 {
   public:
     typedef QList<Interaction> List;
