@@ -24,7 +24,7 @@
 #include "guihandler.h"
 #include "formgui.h"
 
-#include <kactivelabel.h>
+#include <k3activelabel.h>
 
 #include <QObject>
 #include <QStack>
@@ -41,7 +41,7 @@ class Manager;
 class Form;
 class FormGui;
 
-class BreadCrumbLabel : public KActiveLabel
+class BreadCrumbLabel : public K3ActiveLabel
 {
     Q_OBJECT
   public:

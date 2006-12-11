@@ -38,7 +38,7 @@
 using namespace KXForms;
 
 BreadCrumbLabel::BreadCrumbLabel( QWidget *parent )
-  : KActiveLabel( parent )
+  : K3ActiveLabel( parent )
 {
 }
 
