@@ -161,7 +161,7 @@ int addProperty( KCmdLineArgs *args )
 
   QString line;
   while ( !( line = in.readLine() ).isNull() ) {
-    kDebug() << (int)state << " LINE: " << line << endl;
+    kDebug() << int(state) << " LINE: " << line << endl;
     QString readAheadPrevious = readAhead;
     readAhead += line + '\n';
     switch( state ) {
