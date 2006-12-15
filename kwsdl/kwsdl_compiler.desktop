@@ -8,4 +8,4 @@ Type=Application
 DocPath=kwsdl_compiler/index.html
 Terminal=false
 NoDisplay=true
-Categories=Qt;KDE;Development
+Categories=Qt;KDE;Development;
