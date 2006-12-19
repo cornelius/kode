@@ -18,9 +18,9 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "kstdaction.h"
+#include "kstandardaction.h"
 
-namespace KStdAction
+namespace KStandardAction
 {
 
 void openNew(const QObject *recvr, const char *slot,

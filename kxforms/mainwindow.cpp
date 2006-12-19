@@ -31,7 +31,7 @@
 
 #include <kmessagebox.h>
 #include <klocale.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <kfiledialog.h>
 #include <kstatusbar.h>
 #include <kdebug.h>
@@ -137,13 +137,13 @@ bool MainWindow::save()
 
 void MainWindow::setupActions()
 {
-  KStdAction::openNew(this, SLOT(fileNew()), actionCollection());
-  KStdAction::open(this, SLOT(fileOpen()), actionCollection());
-  KStdAction::save(this, SLOT(save()), actionCollection());
-  KStdAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
-  KStdAction::quit(this, SLOT(close()), actionCollection());
+  KStandardAction::openNew(this, SLOT(fileNew()), actionCollection());
+  KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
+  KStandardAction::save(this, SLOT(save()), actionCollection());
+  KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
+  KStandardAction::quit(this, SLOT(close()), actionCollection());
 
-  KStdAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
+  KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
 #if 0
   // this doesn't do anything useful.  it's just here to illustrate
