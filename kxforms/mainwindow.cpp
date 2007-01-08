@@ -35,6 +35,7 @@
 #include <kfiledialog.h>
 #include <kstatusbar.h>
 #include <kdebug.h>
+#include <kactioncollection.h>
 
 #include <QFile>
 #include <QTextStream>
