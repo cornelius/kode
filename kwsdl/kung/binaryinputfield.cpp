@@ -23,7 +23,7 @@
 #include <kio/netaccess.h>
 #include <kcodecs.h>
 #include <kmessagebox.h>
-#include <kmimemagic.h>
+#include <kmimetype.h>
 #include <klocale.h>
 #include <kparts/part.h>
 #include <kparts/componentfactory.h>
@@ -117,18 +117,15 @@ BinaryWidget::BinaryWidget( QWidget *parent )
 
 void BinaryWidget::setData( const QByteArray &data )
 {
-  KMimeMagic magic;
-  QString mimetype;
-
   delete mMainWidget;
 
-  KMimeMagicResult *result = magic.findBufferType( data );
-  if ( result->isValid() )
-    mimetype = result->mimeType();
+  QString mimetype;
+  KMimeType::Ptr mime = KMimeType::findByContent( data );
+  if ( mime && !mime->isDefault() )
+    mimetype = mime->name();
 
   if ( !mimetype.isEmpty() ) {
-    KParts::ReadOnlyPart *part = 0;
-    //KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString::null, this, 0, this, 0 ); // FIXME: doesn't work
+    KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString(), this, this );
     if ( part ) {
       KTemporaryFile file;
       file.setAutoRemove(false);
