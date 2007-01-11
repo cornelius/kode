@@ -142,7 +142,9 @@ QString ComplexBaseInputField::data() const
 QWidget *ComplexBaseInputField::createWidget( QWidget *parent )
 {
   QGroupBox *inputWidget = new QGroupBox( mName, parent );
+#ifdef __GNUC__
 #warning Is this needed?
+#endif
   //inputWidget->setColumnLayout( 0, Qt::Horizontal );
   QGridLayout *layout = new QGridLayout( inputWidget );
   //QGridLayout *layout = new QGridLayout( inputWidget->layout() ); // FIXME: doesn't work
