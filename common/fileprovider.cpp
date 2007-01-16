@@ -20,6 +20,7 @@
  */
 
 #include <unistd.h>
+#include <kdefakes.h> // usleep
 
 #include <QCoreApplication>
 #include <QEventLoop>
