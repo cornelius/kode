@@ -28,7 +28,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kurl.h>
-#include <kinstance.h>
+#include <kcomponentdata.h>
 
 #include <QDir>
 #include <QFile>
@@ -53,7 +53,7 @@ int main( int argc, char **argv )
 
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
 
-  KInstance wsdlInstance( &aboutData );
+  KComponentData wsdlInstance( &aboutData );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );

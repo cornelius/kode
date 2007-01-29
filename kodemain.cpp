@@ -488,7 +488,7 @@ int create( KCmdLineArgs *args )
 
     code.clear();
 
-    code += "KInstance instance( \"kio_" + protocol + "\" );";
+    code += "KComponentData instance( \"kio_" + protocol + "\" );";
     code += "";
     code += "kDebug(7000) << \"Starting kio_" + protocol + "(pid:  \" << getpid() << \")\" << endl;";
     code += "";

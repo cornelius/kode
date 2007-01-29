@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     KAboutData::License_GPL, "(C) 2005 Cornelius Schumacher", 0, 0,
     "schumacher@kde.org");
   about.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
-  KInstance instance( &about );
+  KComponentData instance( &about );
   QCoreApplication app( argc, argv );
 
   checkReference( "/one/two/three" );
