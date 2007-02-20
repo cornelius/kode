@@ -35,7 +35,6 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksavefile.h>
-#include <ksimpleconfig.h>
 #include <kstandarddirs.h>
 #include <kprocess.h>
 
@@ -589,7 +588,7 @@ int create( KCmdLineArgs *args )
 
     QFile::remove( protocolFilename );
 
-    KSimpleConfig protocolFile( protocolFilename );
+    KConfig protocolFile( protocolFilename, KConfig::OnlyLocal);
 
     protocolFile.setGroup( "Protocol" );
     protocolFile.writeEntry( "exec", "kio_" + protocol );

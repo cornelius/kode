@@ -33,7 +33,7 @@
 #include <kcmdlineargs.h>
 #include <kglobal.h>
 #include <kconfig.h>
-#include <ksimpleconfig.h>
+#include <kconfig.h>
 #include <kstandarddirs.h>
 
 #include <QFile>
