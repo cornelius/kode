@@ -58,6 +58,6 @@ LIBS += -L../common -lkxmlcommon
 LIBS += -L../compat -lcompat
 
 DUMMY_MOCS = formgui.moc guihandlerdialogs.moc guihandlerflat.moc \
-  input.moc list.moc mainwindow.moc remotefile.moc
+  input.moc list.moc mainwindow.moc remotefile.moc formgui.moc
 
 system( touch $$DUMMY_MOCS )
