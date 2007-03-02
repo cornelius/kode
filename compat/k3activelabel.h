@@ -17,15 +17,15 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef KACTIVELABEL_H
-#define KACTIVELABEL_H
+#ifndef K3ACTIVELABEL_H
+#define K3ACTIVELABEL_H
 
 #include <QLabel>
 
-class KActiveLabel : public QLabel
+class K3ActiveLabel : public QLabel
 {
   public:
-    KActiveLabel( QWidget *parent ) : QLabel( parent ) {}
+    K3ActiveLabel( QWidget *parent ) : QLabel( parent ) {}
 
     void setHtml( const QString &txt )
     {

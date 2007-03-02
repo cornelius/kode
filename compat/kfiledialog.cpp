@@ -20,7 +20,7 @@
 
 #include "kfiledialog.h"
 
-KUrl KFileDialog::getOpenURL(const KUrl& startDir,
+KUrl KFileDialog::getOpenUrl(const KUrl& startDir,
 			   const QString& filter,
 			   QWidget *parent,
 			   const QString& caption )
@@ -28,7 +28,7 @@ KUrl KFileDialog::getOpenURL(const KUrl& startDir,
   return KUrl();
 }
 
-KUrl KFileDialog::getSaveURL(const KUrl& startDir,
+KUrl KFileDialog::getSaveUrl(const KUrl& startDir,
 			   const QString& filter,
 			   QWidget *parent,
 			   const QString& caption )

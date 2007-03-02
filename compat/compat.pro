@@ -9,7 +9,7 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += kaboutdata.h \
-           kactivelabel.h \
+           k3activelabel.h \
            kapplication.h \
            kcmdlineargs.h \
            kdebug.h \
@@ -21,11 +21,11 @@ HEADERS += kaboutdata.h \
            kmainwindow.h \
            kmessagebox.h \
            kstatusbar.h \
-           kstdaction.h \
+           kstandardaction.h \
            kurl.h \
            remotefile.h \
            common/fileprovider.h
-SOURCES += klocale.cpp kdebug.cpp kstdaction.cpp remotefile.cpp kurl.cpp \
+SOURCES += klocale.cpp kdebug.cpp kstandardaction.cpp remotefile.cpp kurl.cpp \
   kmessagebox.cpp kmainwindow.cpp kinputdialog.cpp kfiledialog.cpp kdialog.cpp \
   kcmdlineargs.cpp kapplication.cpp kaboutdata.cpp
 

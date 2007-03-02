@@ -16,14 +16,14 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef KSTDACTION_H
-#define KSTDACTION_H
+#ifndef KSTANDARDACTION_H
+#define KSTANDARDACTION_H
 
 class QObject;
 class KActionCollection;
 class KAction;
 
-namespace KStdAction
+namespace KStandardAction
 {
   void openNew(const QObject *recvr, const char *slot,
     KActionCollection* parent, const char *name = 0 );
