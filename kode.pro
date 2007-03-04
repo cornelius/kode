@@ -5,4 +5,4 @@
 TEMPLATE = subdirs
 
 # Directories
-SUBDIRS += compat common schema kxml_compiler/kschema.pro kxforms  
+SUBDIRS += compat common schema kxml_compiler/kschema.pro kxml_compiler/tests kxforms
