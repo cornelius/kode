@@ -152,6 +152,7 @@ QString ListModel::label() const
 
 void ListModel::clear()
 {
-  removeRows( 0, rowCount() );
+  if( rowCount() > 0 )
+    removeRows( 0, rowCount() );
 }
 
