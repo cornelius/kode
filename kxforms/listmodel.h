@@ -25,7 +25,7 @@
 
 namespace KXForms {
 
-class ListModel : public QAbstractTableModel
+class ListModel : public QAbstractListModel
 {
   public:
     ListModel( QObject *parent );

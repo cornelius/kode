@@ -23,7 +23,7 @@
 
 using namespace KXForms;
 
-ListModel::ListModel( QObject *parent ) : QAbstractTableModel( parent )
+ListModel::ListModel( QObject *parent ) : QAbstractListModel( parent )
 {
 }
 
