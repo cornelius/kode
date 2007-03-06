@@ -128,7 +128,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       choiceOnly = false;
   }
 
-  if( !topLevel && !element.mixed() && !choiceOnly ) {
+  if( !topLevel && 
+      !element.mixed() && 
+      !choiceOnly && 
+      element.elementRelations().size() > 1 ) {
     section = xml->tag( "kxf:section" );
     createLabel( section, element );
   } /*else if( !topLevel && element.type() ==  ) {
@@ -194,15 +197,12 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     } else if( !r.choice().isEmpty() ) {
       if( !choice ) {
         choice = section->tag( "xf:select1" );
-        choice->tag( "xf:label",  humanizeString( element.name() ) );
+        choice->tag( "xf:label",  getLabel( element.ref(), element.name() ) );
       }
       Schema::Element choiceElement = mDocument.element( r );
       XmlBuilder *item = choice->tag( "xf:item" );
       QString value = choiceElement.name();
-      QString itemLabel;
-      Hint hint = mHints.hint( element.identifier() + '/' + choiceElement.ref() );
-      if ( hint.isValid() ) itemLabel = hint.enumValue( value );
-      if ( itemLabel.isEmpty() ) itemLabel = humanizeString( value );
+      QString itemLabel = getLabel( choiceElement.ref(), choiceElement.name() );
 
       item->tag( "xf:label", itemLabel );
       item->tag( "xf:value", value );
@@ -222,6 +222,12 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         mCollapsedForms.append( r.target() );
       }
     }
+  }
+  if( element.elementRelations().size() == 0 ) {
+    XmlBuilder *textInput = 0;
+    textInput = section->tag( "xf:textarea" );
+    textInput->attribute( "ref", element.name() );
+    createLabel( textInput, element );
   }
 }
 
@@ -265,6 +271,7 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
   QString label;
 
   Hint hint = mHints.hint( ref );
+
   if ( hint.isValid() ) label = hint.label();
 
   if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
