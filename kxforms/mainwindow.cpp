@@ -227,6 +227,7 @@ void MainWindow::slotGetSchemaResult( bool ok )
 void MainWindow::parseSchema()
 {
   RNG::ParserXsd parser;
+  parser.setVerbose( true );
   Schema::Document schemaDocument = parser.parse( mSchemaFile->data() );
 
   KXForms::FormCreator creator;

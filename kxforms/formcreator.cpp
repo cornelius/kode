@@ -120,15 +120,15 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 {
   QString currentChoice;
 
-  XmlBuilder *list = 0;
   XmlBuilder *section;
-  if( !topLevel ) {
+  if( !topLevel && !element.mixed() ) {
     section = xml->tag( "kxf:section" );
     createLabel( section, element );
   } else {
     section = xml;
   }
 
+  XmlBuilder *list = 0;
   foreach( Schema::Relation r, element.elementRelations() ) {
     qDebug() << "  CHILD ELEMENT" << r.target();
     qDebug() << "    CHOICE" << r.choice();
@@ -182,8 +182,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       currentChoice = r.choice();
     } else {
       Schema::Element textElement = mDocument.element( r.target() );
-      if( textElement.type() == Schema::Node::ComplexType ) {
-//         textInput = xml->tag( "xf:frame" );
+      if( textElement.type() == Schema::Node::ComplexType && !textElement.mixed() ) {
         parseComplexType( textElement, section, false );
       } else {
         XmlBuilder *textInput = 0;
