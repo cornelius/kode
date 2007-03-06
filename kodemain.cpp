@@ -590,13 +590,13 @@ int create( KCmdLineArgs *args )
 
     KConfig protocolFile( protocolFilename, KConfig::OnlyLocal);
 
-    protocolFile.setGroup( "Protocol" );
-    protocolFile.writeEntry( "exec", "kio_" + protocol );
-    protocolFile.writeEntry( "protocol", protocol );
-    protocolFile.writeEntry( "input", "none" );
-    protocolFile.writeEntry( "output", "filesystem" );
-    protocolFile.writeEntry( "reading", "true" );
-    protocolFile.writeEntry( "DocPath", "kioslave/" + protocol + ".html" );
+    KConfigGroup group( &protocolFile, "Protocol" );
+    group.writeEntry( "exec", "kio_" + protocol );
+    group.writeEntry( "protocol", protocol );
+    group.writeEntry( "input", "none" );
+    group.writeEntry( "output", "filesystem" );
+    group.writeEntry( "reading", "true" );
+    group.writeEntry( "DocPath", "kioslave/" + protocol + ".html" );
 
     protocolFile.sync();
   }
