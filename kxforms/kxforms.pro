@@ -27,7 +27,8 @@ HEADERS += form.h \
            textarea.h \
            xformscommon.h \
            xmlbuilder.h \
-           prefs.h
+           prefs.h \
+           section.h
 SOURCES += form.cpp \
            formcreator.cpp \
            formgui.cpp \
@@ -48,7 +49,8 @@ SOURCES += form.cpp \
            textarea.cpp \
            xformscommon.cpp \
            xmlbuilder.cpp \
-           prefs.cpp
+           prefs.cpp \
+           section.cpp
 
 QT += xml
 

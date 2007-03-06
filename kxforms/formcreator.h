@@ -58,6 +58,11 @@ class FormCreator
     QString humanizeString( const QString &, bool pluralize = false );
 
   private:
+    void parseComplexType( const Schema::Element &r, XmlBuilder *xml, bool topLevel );
+    void parseElement( const Schema::Element &element, XmlBuilder *xml );
+    void parseAttributes( const Schema::Element &element, XmlBuilder *xml );
+
+  private:
     Schema::Document mDocument;
 
     Hints mHints;

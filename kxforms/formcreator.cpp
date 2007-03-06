@@ -63,17 +63,24 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
   form->tag( "xf:label", humanizeString( element.name() ) );
 
+  parseAttributes( element, form );
+
+  parseElement( element, form );
+}
+
+void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *xml  )
+{
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
 
     qDebug() << "  ATTRIBUTE: " << a.identifier();
 
     if ( a.type() == Schema::Attribute::String ) {
-      XmlBuilder *input = form->tag( "xf:input" );
+      XmlBuilder *input = xml->tag( "xf:input" );
       input->attribute( "ref", a.ref() );
       createLabel( input, a );
     } else if ( a.type() == Schema::Attribute::Enumeration ) {
-      XmlBuilder *select1 = form->tag( "xf:select1" );
+      XmlBuilder *select1 = xml->tag( "xf:select1" );
       select1->attribute( "ref", a.ref() );
       createLabel( select1, a );
       foreach( QString value, a.enumerationValues() ) {
@@ -89,87 +96,104 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
       qDebug() << "Unsupported type: " << a.type();
     }
   }
+}
 
-
+void FormCreator::parseElement( const Schema::Element &element, XmlBuilder *xml )
+{
   if ( element.type() == Schema::Node::String ) {
-    XmlBuilder *textArea = form->tag( "xf:textarea" );
+    XmlBuilder *textArea = xml->tag( "xf:textarea" );
     textArea->attribute( "ref", "." );
     createLabel( textArea, element );
   } else if ( element.type() == Schema::Node::NormalizedString ||
               element.type() == Schema::Node::Token ) {
-    XmlBuilder *input = form->tag( "xf:input" );
+    XmlBuilder *input = xml->tag( "xf:input" );
     input->attribute( "ref", "." );
     createLabel( input, element );
+  } else if ( element.type() == Schema::Node::ComplexType ) {
+    parseComplexType( element, xml, true );
   } else {
-    QString currentChoice;
+    qDebug() << "Unsupported type: " << element.type();
+  }
+}
 
-    XmlBuilder *list = 0;
+void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *xml, bool topLevel )
+{
+  QString currentChoice;
 
-    foreach( Schema::Relation r, element.elementRelations() ) {
-      qDebug() << "  CHILD ELEMENT" << r.target();
-      qDebug() << "    CHOICE" << r.choice();
-      if ( r.isList() ) {
-        bool isMixedList = r.choice().contains( "+" );
+  XmlBuilder *list = 0;
+  XmlBuilder *section;
+  if( !topLevel ) {
+    section = xml->tag( "kxf:section" );
+    createLabel( section, element );
+  } else {
+    section = xml;
+  }
 
-        if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
-          list = form->tag( "list" );
-          QString label;
-          if ( isMixedList ) {
-            label = "Item";
-          } else {
-            label = getLabel( element.identifier() + '[' + r.target() + ']' );
-            if ( label.isEmpty() ) {
-              label = humanizeString( r.target(), true );
+  foreach( Schema::Relation r, element.elementRelations() ) {
+    qDebug() << "  CHILD ELEMENT" << r.target();
+    qDebug() << "    CHOICE" << r.choice();
+    if ( r.isList() ) {
+      bool isMixedList = r.choice().contains( "+" );
+      if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
+        list = section->tag( "list" );
+        QString label;
+        if ( isMixedList ) {
+          label = "Item";
+        } else {
+          label = getLabel( element.identifier() + '[' + r.target() + ']' );
+          if ( label.isEmpty() ) {
+            label = humanizeString( r.target(), true );
+          }
+        }
+        list->tag( "xf:label", label );
+      }
+      XmlBuilder *item = list->tag( "itemclass" );
+      item->attribute( "ref", r.target() );
+      QString itemLabel;
+      itemLabel = getLabel( element.identifier() + '/' + r.target() );
+
+      Schema::Element itemElement = mDocument.element( r );
+
+      if ( itemLabel.isEmpty() ) {
+        // Try to guess a suitable item label.
+        foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
+          if ( r2.target() == "name" ) {
+            if ( isMixedList ) {
+              itemLabel = humanizeString( itemElement.name() ) + ": ";
             }
-          }
-          list->tag( "xf:label", label );
-        }
-        XmlBuilder *item = list->tag( "itemclass" );
-        item->attribute( "ref", r.target() );
-
-        QString itemLabel;
-
-        itemLabel = getLabel( element.identifier() + '/' + r.target() );
-
-        Schema::Element itemElement = mDocument.element( r );
-
-        if ( itemLabel.isEmpty() ) {
-          // Try to guess a suitable item label.
-          foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
-            if ( r2.target() == "name" ) {
-              if ( isMixedList ) {
-                itemLabel = humanizeString( itemElement.name() ) + ": ";
-              }
-              itemLabel += "<arg ref=\"@name\"/>";
-              break;
-            }
+            itemLabel += "<arg ref=\"@name\"/>";
+           break;
           }
         }
+      }
 
-        if ( itemLabel.isEmpty() ) {
-          if ( itemElement.type() == Schema::Node::String ) {
-            itemLabel += "<arg ref=\".\" truncate=\"40\"/>";
-          } else if ( itemElement.type() == Schema::Node::NormalizedString ||
-                      itemElement.type() == Schema::Node::Token ) {
-            itemLabel += "<arg ref=\".\"/>";
-          }
+      if ( itemLabel.isEmpty() ) {
+        if ( itemElement.type() == Schema::Node::String ) {
+          itemLabel += "<arg ref=\".\" truncate=\"40\"/>";
+      } else if ( itemElement.type() == Schema::Node::NormalizedString ||
+                 itemElement.type() == Schema::Node::Token ) {
+        itemLabel += "<arg ref=\".\"/>";
         }
+      }
 
-        if ( itemLabel.isEmpty() ) itemLabel = humanizeString( r.target() );
-        item->tag( "itemlabel", itemLabel );
+      if ( itemLabel.isEmpty() ) itemLabel = humanizeString( r.target() );
+      item->tag( "itemlabel", itemLabel );
 
-        currentChoice = r.choice();
+      currentChoice = r.choice();
+    } else {
+      Schema::Element textElement = mDocument.element( r.target() );
+      if( textElement.type() == Schema::Node::ComplexType ) {
+//         textInput = xml->tag( "xf:frame" );
+        parseComplexType( textElement, section, false );
       } else {
-        Schema::Element textElement = mDocument.element( r.target() );
         XmlBuilder *textInput = 0;
         if ( textElement.type() == Schema::Node::NormalizedString ) {
-          textInput = form->tag( "xf:input" );
+          textInput = section->tag( "xf:input" );
         } else {
-          textInput = form->tag( "xf:textarea" );
+          textInput = section->tag( "xf:textarea" );
         }
         textInput->attribute( "ref", textElement.name() );
         createLabel( textInput, textElement );
-
         mCollapsedForms.append( r.target() );
       }
     }

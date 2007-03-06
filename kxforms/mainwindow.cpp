@@ -297,6 +297,7 @@ void MainWindow::slotGetFormResult( bool ok )
 
 void MainWindow::parseForm( const QString &data )
 {
+  qDebug() << data;
   if ( !mFormsManager.parseForms( data ) ) {
     KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.",
         mFormFile->url().prettyUrl() ) );

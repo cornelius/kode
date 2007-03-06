@@ -43,7 +43,7 @@ class FormGui : public QWidget
 
     FormGui( const QString &label, Manager *, QWidget *parent );
 
-    void parseElement( const QDomElement & );
+    void parseElement( const QDomElement &, QLayout *l = 0 );
 
     void setRef( const Reference &ref );
     Reference ref() const;

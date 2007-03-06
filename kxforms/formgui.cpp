@@ -26,6 +26,7 @@
 #include "input.h"
 #include "textarea.h"
 #include "select1.h"
+#include "section.h"
 #include "prefs.h"
 
 #include <kdebug.h>
@@ -92,11 +93,12 @@ void FormGui::setLabelHidden( bool hidden )
   mLabelHidden = hidden;
 }
 
-void FormGui::parseElement( const QDomElement &element )
+void FormGui::parseElement( const QDomElement &element, QLayout *l )
 {
   kDebug() << "FormGui::parseElement()" << endl;
 
   bool hasList = false;
+  QLayout *layout = l ? l : mTopLayout;
 
   QDomNode n;
   for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
@@ -123,13 +125,20 @@ void FormGui::parseElement( const QDomElement &element )
     } else if ( tag == "xf:select1" ) {
       guiElement = new Select1( mManager, c.label(), this );
       guiElement->setRef( e.attribute( "ref" ) );
+    } else if ( tag == "xf:select1" ) {
+      guiElement = new Select1( mManager, c.label(), this );
+      guiElement->setRef( e.attribute( "ref" ) );
+    } else if ( tag == "kxf:section" ) {
+      guiElement = new Section( mManager, c.label(), this );
+      guiElement->setRef( e.attribute( "ref" ) );
+      parseElement( e, static_cast<Section *>( guiElement )->layout() );
     } else {
       kWarning() << "  Unsupported element" << endl;
     }
     
     if ( guiElement ) {
       guiElement->parseElement( e );
-      mTopLayout->addWidget( guiElement );
+      layout->addWidget( guiElement );
       mGuiElements.append( guiElement );
     }
   }

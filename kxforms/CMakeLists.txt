@@ -23,7 +23,8 @@ set(kxforms_SRCS
    guihandlerdialogs.cpp
    reference.cpp 
    textarea.cpp 
-   select1.cpp )
+   select1.cpp
+   section.cpp )
 
 kde4_automoc(${kxforms_SRCS})
 
