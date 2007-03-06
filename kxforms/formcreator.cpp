@@ -121,14 +121,25 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   QString currentChoice;
 
   XmlBuilder *section;
-  if( !topLevel && !element.mixed() ) {
+
+  bool choiceOnly = true;
+  foreach( Schema::Relation r, element.elementRelations() ) {
+    if( r.choice().isEmpty() )
+      choiceOnly = false;
+  }
+
+  if( !topLevel && !element.mixed() && !choiceOnly ) {
     section = xml->tag( "kxf:section" );
     createLabel( section, element );
-  } else {
+  } /*else if( !topLevel && element.type() ==  ) {
+    section = xml->tag( "kxf:section" );
+    createLabel( section, element );
+  } */else {
     section = xml;
   }
 
   XmlBuilder *list = 0;
+  XmlBuilder *choice = 0;
   foreach( Schema::Relation r, element.elementRelations() ) {
     qDebug() << "  CHILD ELEMENT" << r.target();
     qDebug() << "    CHOICE" << r.choice();
@@ -180,7 +191,24 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       item->tag( "itemlabel", itemLabel );
 
       currentChoice = r.choice();
-    } else {
+    } else if( !r.choice().isEmpty() ) {
+      if( !choice ) {
+        choice = section->tag( "xf:select1" );
+        choice->tag( "xf:label", element.name() );
+      }
+      Schema::Element choiceElement = mDocument.element( r );
+      XmlBuilder *item = choice->tag( "xf:item" );
+      QString value = choiceElement.name();
+      QString itemLabel;
+      Hint hint = mHints.hint( element.identifier() + '/' + choiceElement.ref() );
+      if ( hint.isValid() ) itemLabel = hint.enumValue( value );
+      if ( itemLabel.isEmpty() ) itemLabel = humanizeString( value );
+
+      item->tag( "xf:label", itemLabel );
+      item->tag( "xf:value", value );
+//       if ( choiceElement.type() == Schema::Node::Enumeration ) {
+//       } 
+    } else{
       Schema::Element textElement = mDocument.element( r.target() );
       if( textElement.type() == Schema::Node::ComplexType && !textElement.mixed() ) {
         parseComplexType( textElement, section, false );

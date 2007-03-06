@@ -125,9 +125,6 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l )
     } else if ( tag == "xf:select1" ) {
       guiElement = new Select1( mManager, c.label(), this );
       guiElement->setRef( e.attribute( "ref" ) );
-    } else if ( tag == "xf:select1" ) {
-      guiElement = new Select1( mManager, c.label(), this );
-      guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "kxf:section" ) {
       guiElement = new Section( mManager, c.label(), this );
       guiElement->setRef( e.attribute( "ref" ) );
