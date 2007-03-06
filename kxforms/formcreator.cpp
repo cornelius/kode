@@ -194,7 +194,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     } else if( !r.choice().isEmpty() ) {
       if( !choice ) {
         choice = section->tag( "xf:select1" );
-        choice->tag( "xf:label", element.name() );
+        choice->tag( "xf:label",  humanizeString( element.name() ) );
       }
       Schema::Element choiceElement = mDocument.element( r );
       XmlBuilder *item = choice->tag( "xf:item" );
@@ -206,8 +206,6 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
       item->tag( "xf:label", itemLabel );
       item->tag( "xf:value", value );
-//       if ( choiceElement.type() == Schema::Node::Enumeration ) {
-//       } 
     } else{
       Schema::Element textElement = mDocument.element( r.target() );
       if( textElement.type() == Schema::Node::ComplexType && !textElement.mixed() ) {
