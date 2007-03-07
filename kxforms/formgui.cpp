@@ -93,7 +93,7 @@ void FormGui::setLabelHidden( bool hidden )
   mLabelHidden = hidden;
 }
 
-void FormGui::parseElement( const QDomElement &element, QLayout *l )
+void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString overrideLabel )
 {
   kDebug() << "FormGui::parseElement()" << endl;
 
@@ -106,6 +106,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l )
     QString tag = e.tagName();
     kDebug() << "  Found element '" << tag << "'" << endl;
     XFormsCommon c = XFormsCommon::parseElement( e );
+    if( !overrideLabel.isEmpty() )
+      c.setLabel( overrideLabel );
     GuiElement *guiElement = 0;
     if ( tag == "xf:label" ) {
       mLabel->setText( e.text() );
@@ -129,9 +131,9 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l )
       if( e.attribute( "visible" ) != "false" ) {
         guiElement = new Section( mManager, c.label(), this );
         guiElement->setRef( e.attribute( "ref" ) );
-        parseElement( e, static_cast<Section *>( guiElement )->layout() );
+        parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ) );
       } else {
-        parseElement( e, layout );
+        parseElement( e, layout, e.attribute( "overrideLabel" ) );
       }
     } else {
       kWarning() << "  Unsupported element" << endl;

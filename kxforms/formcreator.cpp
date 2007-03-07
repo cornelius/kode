@@ -135,8 +135,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     section = xml->tag( "kxf:section" );
     path = path + Reference( element.name() );
     createLabel( section, element );
-    if(  element.elementRelations().size() <= 1 )
+    if(  element.elementRelations().size() <= 1 ) {
       section->attribute( "visible", "false" );
+      section->attribute( "overrideLabel", getLabel( element.ref(), element.name() ) );
+    }
   } else {
     section = xml;
   }
