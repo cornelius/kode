@@ -110,13 +110,13 @@ void FormCreator::parseElement( const Schema::Element &element, XmlBuilder *xml 
     input->attribute( "ref", "." );
     createLabel( input, element );
   } else if ( element.type() == Schema::Node::ComplexType ) {
-    parseComplexType( element, xml, true );
+    parseComplexType( element, xml, true, Reference() );
   } else {
     qDebug() << "Unsupported type: " << element.type();
   }
 }
 
-void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *xml, bool topLevel )
+void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *xml, bool topLevel, Reference path )
 {
   QString currentChoice;
 
@@ -127,17 +127,17 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     if( r.choice().isEmpty() )
       choiceOnly = false;
   }
-
+  qDebug() << path.segments().size();
+  qDebug() << path.toString();
   if( !topLevel && 
       !element.mixed() && 
-      !choiceOnly && 
-      element.elementRelations().size() > 1 ) {
+      !choiceOnly) {
     section = xml->tag( "kxf:section" );
+    path = path + Reference( element.name() );
     createLabel( section, element );
-  } /*else if( !topLevel && element.type() ==  ) {
-    section = xml->tag( "kxf:section" );
-    createLabel( section, element );
-  } */else {
+    if(  element.elementRelations().size() <= 1 )
+      section->attribute( "visible", "false" );
+  } else {
     section = xml;
   }
 
@@ -162,7 +162,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         list->tag( "xf:label", label );
       }
       XmlBuilder *item = list->tag( "itemclass" );
-      item->attribute( "ref", r.target() );
+      item->attribute( "ref", path.toString() + r.target() );
       QString itemLabel;
       itemLabel = getLabel( element.identifier() + '/' + r.target() );
 
@@ -198,7 +198,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       if( !choice ) {
         choice = section->tag( "xf:select1" );
         choice->tag( "xf:label",  getLabel( element.ref(), element.name() ) );
-        choice->attribute( "ref", element.ref() );
+        choice->attribute( "ref", (path + Reference( element.name() ) ).toString() );
       }
       Schema::Element choiceElement = mDocument.element( r );
       XmlBuilder *item = choice->tag( "xf:item" );
@@ -210,7 +210,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     } else{
       Schema::Element textElement = mDocument.element( r.target() );
       if( textElement.type() == Schema::Node::ComplexType && !textElement.mixed() ) {
-        parseComplexType( textElement, section, false );
+        parseComplexType( textElement, section, false, path );
       } else {
         XmlBuilder *textInput = 0;
         if ( textElement.type() == Schema::Node::NormalizedString ) {
@@ -218,7 +218,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         } else {
           textInput = section->tag( "xf:textarea" );
         }
-        textInput->attribute( "ref", textElement.name() );
+        textInput->attribute( "ref", (path + Reference( textElement.name() ) ).toString() );
         createLabel( textInput, textElement );
         mCollapsedForms.append( r.target() );
       }
@@ -227,7 +227,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   if( element.elementRelations().size() == 0 ) {
     XmlBuilder *textInput = 0;
     textInput = section->tag( "xf:textarea" );
-    textInput->attribute( "ref", element.name() );
+    textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
     createLabel( textInput, element );
   }
 }

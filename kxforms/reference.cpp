@@ -360,7 +360,16 @@ QString Reference::applyString( const QDomElement &context ) const
     QDomElement targetElement = applyAttributeContext( context );
     txt = targetElement.attribute( s.name() );
   } else {
-    txt = applyElement( context ).text();
+    QDomElement e = applyElement( context );
+    if( e.isText() )
+      txt = e.text();
+    else {
+      QDomNode child = e.firstChild();
+      if( !child.nodeValue().isEmpty() )
+        txt = child.nodeValue();
+      else
+        txt = child.nodeName();
+    }
   }
 
   return txt;

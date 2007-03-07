@@ -187,7 +187,7 @@ void List::parseElement( const QDomElement &element )
     if ( e.tagName() == "itemclass" ) {
       ItemClass c;
 
-      c.setRefName( e.attribute( "ref" ) );
+      c.setRefName( Reference( e.attribute( "ref" ) ).lastSegment().name() );
 
       QDomNode n2;
       for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {

@@ -126,9 +126,13 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l )
       guiElement = new Select1( mManager, c.label(), this );
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "kxf:section" ) {
-      guiElement = new Section( mManager, c.label(), this );
-      guiElement->setRef( e.attribute( "ref" ) );
-      parseElement( e, static_cast<Section *>( guiElement )->layout() );
+      if( e.attribute( "visible" ) != "false" ) {
+        guiElement = new Section( mManager, c.label(), this );
+        guiElement->setRef( e.attribute( "ref" ) );
+        parseElement( e, static_cast<Section *>( guiElement )->layout() );
+      } else {
+        parseElement( e, layout );
+      }
     } else {
       kWarning() << "  Unsupported element" << endl;
     }
