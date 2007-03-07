@@ -198,6 +198,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       if( !choice ) {
         choice = section->tag( "xf:select1" );
         choice->tag( "xf:label",  getLabel( element.ref(), element.name() ) );
+        choice->attribute( "ref", element.ref() );
       }
       Schema::Element choiceElement = mDocument.element( r );
       XmlBuilder *item = choice->tag( "xf:item" );
