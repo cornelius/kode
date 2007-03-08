@@ -98,7 +98,12 @@ void Select1::saveData()
     context().setAttribute( s.name(), txt );
   } else {
     QDomElement e = ref().applyElement( context() );
-    QDomText t = e.firstChild().toText();
-    t.setData( txt );
+    QDomNode n = e.firstChild();
+    if( n.isText() ) {
+      QDomText t = n.toText();
+      t.setData( txt );
+    } else {
+      n.toElement().setTagName( txt );
+    }
   }
 }
