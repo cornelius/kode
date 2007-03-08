@@ -117,7 +117,11 @@ void List::newItem()
   }
 
   QDomElement newElement = mManager->document().createElement( formRef );
-  context().appendChild( newElement );
+  QDomElement lastListElement = context().lastChildElement( formRef );
+  if( !lastListElement.isNull() )
+    context().insertAfter( newElement, lastListElement );
+  else
+    context().appendChild( newElement );
 
   Reference::Segment segment( formRef, mModel->itemCount( formRef ) + 1 );
 
