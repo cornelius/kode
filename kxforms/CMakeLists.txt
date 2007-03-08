@@ -1,4 +1,6 @@
 
+add_subdirectory( tests )
+
 include_directories( ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kode ${KDE4_INCLUDE_DIR} )
 ########### next target ###############
 
