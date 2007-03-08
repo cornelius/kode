@@ -156,3 +156,9 @@ void ListModel::clear()
     removeRows( 0, rowCount() );
 }
 
+QModelIndex ListModel::moveItem( int from, int to )
+{
+  mItems.move( from, to );
+  emit dataChanged( createIndex( from, 1 ), createIndex( to, 1 ) );
+  return createIndex( to, 1 );
+}

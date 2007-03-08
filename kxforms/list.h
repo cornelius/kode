@@ -23,7 +23,6 @@
 #include <QDomElement>
 #include <QModelIndex>
 
-class QTableView;
 class QTreeView;
 
 namespace KXForms {

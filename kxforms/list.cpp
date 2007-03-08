@@ -171,8 +171,20 @@ void List::moveUp()
 {
   QModelIndex index = selectedItem();
   if ( !index.isValid() || index.row() == 0 ) return;
-  
-  
+
+  QString ref = mModel->item( index )->ref.lastSegment().name();
+  QDomNode oldNode = context().firstChildElement( ref );
+  int cnt = 0;
+  while( cnt++ < index.row() && !oldNode.isNull() )
+    oldNode = oldNode.nextSiblingElement( ref );
+  if( !oldNode.isNull() ) {
+    QDomNode newNode = oldNode.cloneNode();
+    context().insertBefore( newNode, oldNode.previousSiblingElement( ref ) );
+    context().removeChild( oldNode );
+  }
+
+  QModelIndex newIndex = mModel->moveItem( index.row(), index.row() - 1 );
+  mView->setCurrentIndex( newIndex );
 }
 
 void List::moveDown()
@@ -180,7 +192,19 @@ void List::moveDown()
   QModelIndex index = selectedItem();
   if ( !index.isValid() || index.row() == mModel->rowCount() - 1 ) return;
 
+  QString ref = mModel->item( index )->ref.lastSegment().name();
+  QDomNode oldNode = context().firstChildElement( ref );
+  int cnt = 0;
+  while( cnt++ < index.row() && !oldNode.isNull() )
+    oldNode = oldNode.nextSiblingElement( ref );
+  if( !oldNode.isNull() ) {
+    QDomNode newNode = oldNode.cloneNode();
+    context().insertAfter( newNode, oldNode.nextSiblingElement( ref ) );
+    context().removeChild( oldNode );
+  }
 
+  QModelIndex newIndex = mModel->moveItem( index.row(), index.row() + 1 );
+  mView->setCurrentIndex( newIndex );
 }
 
 void List::parseElement( const QDomElement &element )

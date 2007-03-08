@@ -58,6 +58,8 @@ class ListModel : public QAbstractListModel
 
     void clear();
 
+    QModelIndex moveItem( int from, int to );
+
   private:
     QList<Item *> mItems;
     QString mLabel;
