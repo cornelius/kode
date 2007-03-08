@@ -42,6 +42,8 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
 
   mEdit = new QTextEdit( this );
   topLayout->addWidget( mEdit );
+
+  mEdit->setMinimumHeight( 40 );
 }
 
 void TextArea::loadData()
