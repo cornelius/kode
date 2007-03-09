@@ -148,4 +148,66 @@ FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
   return gui;
 }
 
+QLayout *GuiHandlerDialogs::getTopLayout()
+{
+  if( layoutStyle() == GuiHandler::Grid ) {
+    QGridLayout *l = new QGridLayout();
+    return l;
+  }
+  else {
+    QVBoxLayout *l = new QVBoxLayout();
+    l->addStretch( 1 );
+    return l;
+  }
+}
+
+void GuiHandlerDialogs::addWidget( QLayout *l, QWidget *w )
+{
+  if( layoutStyle() == GuiHandler::Grid ) {
+    QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
+    if( !gl )
+      return;
+
+    gl->addWidget( w, gl->rowCount(), 0, 1, 2 );
+  }
+  else {
+    QVBoxLayout *vbl = dynamic_cast< QVBoxLayout *>( l );
+    if( !vbl )
+      return;
+
+    vbl->insertWidget( l->count() - 1, w );
+  }
+}
+
+void GuiHandlerDialogs::addElement( QLayout *l, QWidget *label, QWidget *widget )
+{
+  if( layoutStyle() == GuiHandler::Grid ) {
+    QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
+    if( !gl )
+      return;
+
+    int row = gl->rowCount();
+    if( label ) {
+      gl->addWidget( label, row, 0, Qt::AlignTop );
+      gl->addWidget( widget, row, 1 );
+    }
+    else {
+      gl->addWidget( widget, row, 0, 1, 2 );
+    }
+  }
+  else {
+    QVBoxLayout *vbl = dynamic_cast< QVBoxLayout *>( l );
+    if( !vbl )
+      return;
+
+    QBoxLayout *newLayout;
+    newLayout = new QVBoxLayout();
+
+    newLayout->addWidget( label );
+    newLayout->addWidget( widget );
+
+    vbl->insertLayout( l->count() - 1, newLayout );
+  }
+}
+
 #include "guihandlerdialogs.moc"

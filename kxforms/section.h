@@ -23,8 +23,8 @@
 
 #include "guielement.h"
 
+class QLayout;
 class QGroupBox;
-class QBoxLayout;
 
 namespace KXForms {
 
@@ -39,6 +39,7 @@ class Section : public GuiElement
     void saveData() {};
 
     QLayout *layout() { return mLayout; }
+
   private:
     Manager *mManager;
 

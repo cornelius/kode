@@ -25,11 +25,11 @@
 
 #include <QList>
 #include <QDomElement>
-#include <QWidget>
+#include <QLabel>
 
 namespace KXForms {
 
-class GuiElement : public QWidget
+class GuiElement : public QObject
 {
   public:
     typedef QList<GuiElement *> List;
@@ -46,8 +46,16 @@ class GuiElement : public QWidget
 
     void loadData( const QDomElement &context );
 
+    virtual QWidget *widget() { return mWidget; }
+    virtual QWidget *labelWidget() { return mLabel; }
+
     virtual void loadData() = 0;
     virtual void saveData() = 0;
+
+  protected:
+    QWidget *mParent;
+    QLabel *mLabel;
+    QWidget *mWidget;
 
   private:
     Reference mRef;

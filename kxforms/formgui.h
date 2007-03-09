@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QList>
 
-class QBoxLayout;
+class QLayout;
 class QLabel;
 
 namespace KXForms {
@@ -70,7 +70,7 @@ class FormGui : public QWidget
 
     GuiElement::List mGuiElements;
 
-    QBoxLayout *mTopLayout;
+    QLayout *mTopLayout;
 
     QLabel *mLabel;
     QLabel *mRefLabel;

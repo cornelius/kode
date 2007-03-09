@@ -26,24 +26,21 @@
 #include <kdebug.h>
 
 #include <QLabel>
-#include <QTextEdit>
 #include <QVBoxLayout>
 #include <QTextStream>
+#include <QTextEdit>
 
 using namespace KXForms;
 
 TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-
-  QLabel *l = new QLabel( label, this );
-  topLayout->addWidget( l );
-
-  mEdit = new QTextEdit( this );
-  topLayout->addWidget( mEdit );
+  mLabel = new QLabel( label, mParent );
+  mEdit = new QTextEdit( mParent );
+  mWidget = mEdit;
 
   mEdit->setMinimumHeight( 40 );
+
 }
 
 void TextArea::loadData()

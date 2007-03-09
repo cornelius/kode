@@ -202,14 +202,14 @@ QWidget *Manager::createRootGui( QWidget *parent )
   return mGuiHandler->createRootGui( parent );
 }
 
-void Manager::createGui( const Reference &ref, QWidget *parent )
+void Manager::createGui( const Reference &ref, GuiElement *parent )
 {
   if ( !mGuiHandler ) {
     kError() << "Manager::createGui(): No GuiHandler" << endl;
     return;
   }
 
-  mGuiHandler->createGui( ref, parent );
+  mGuiHandler->createGui( ref, parent->widget() );
 }
 
 void Manager::registerGui( FormGui *gui )
@@ -245,4 +245,19 @@ QDomElement Manager::applyReference( const Reference &ref )
 QString Manager::schemaUri() const
 {
   return mSchemaUri;
+}
+
+QLayout *Manager::getTopLayout()
+{
+  return mGuiHandler->getTopLayout();
+}
+
+void Manager::addWidget( QLayout *l, QWidget *w )
+{
+  mGuiHandler->addWidget( l, w );
+}
+
+void Manager::addElement( QLayout *l, GuiElement *e )
+{
+  mGuiHandler->addElement( l, e->labelWidget(), e->widget() );
 }

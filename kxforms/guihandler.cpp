@@ -34,7 +34,7 @@
 using namespace KXForms;
 
 GuiHandler::GuiHandler( Manager *m )
-  : mManager( m )
+  : mManager( m ), mLayoutStyle( Grid )
 {
   mManager->setGuiHandler( this );
 }

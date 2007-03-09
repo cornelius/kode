@@ -22,6 +22,7 @@
 #include "mainwindow.h"
 
 #include "manager.h"
+#include "guihandler.h"
 #include "guihandlerdialogs.h"
 #include "guihandlerflat.h"
 #include "prefs.h"
@@ -50,6 +51,7 @@ static KCmdLineOptions options[] =
   { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
   { "developer", I18N_NOOP( "Use developer mode of user interface" ), 0 },
   { "vertical-list-buttons", I18N_NOOP( "Use vertical list buttons" ), 0 },
+  { "layout-style <layout-style>", I18N_NOOP( "One of grid, vertical. Arrange elements vertically or in a grid." ), 0 },
   KCmdLineLastOption
 };
 
@@ -99,11 +101,20 @@ int main(int argc, char **argv)
 #endif
 
   MainWindow *mainWindow = new MainWindow;
-
+  KXForms::GuiHandler *guiHandler;
   if ( args->isSet( "dialogs" ) ) {
-    new KXForms::GuiHandlerDialogs( mainWindow->formsManager() );
+    guiHandler = new KXForms::GuiHandlerDialogs( mainWindow->formsManager() );
   } else {
-    new KXForms::GuiHandlerFlat( mainWindow->formsManager() );
+    guiHandler = new KXForms::GuiHandlerFlat( mainWindow->formsManager() );
+  }
+
+  if ( args->isSet( "layout-style" ) ) {
+    if( args->getOption( "layout-style" ).toLower() == "grid" ) {
+      guiHandler->setLayoutStyle( KXForms::GuiHandler::Grid );
+    }
+    else {
+      guiHandler->setLayoutStyle( KXForms::GuiHandler::Vertical );
+    }
   }
 
   mainWindow->show();

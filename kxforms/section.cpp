@@ -24,17 +24,18 @@
 #include "manager.h"
 
 #include <QLabel>
+#include <QVBoxLayout>
 #include <QGroupBox>
-#include <QHBoxLayout>
 
 using namespace KXForms;
 
 Section::Section( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  QBoxLayout *topLayout = new QHBoxLayout( this );
+  mLabel = new QLabel( label );
+  mBox = new QGroupBox( mParent );
+  mWidget = mBox;
 
-  mBox = new QGroupBox( label, this );
-  topLayout->addWidget( mBox );
-  mLayout = new QVBoxLayout( mBox );
+  mLayout = mManager->getTopLayout();
+  mBox->setLayout( mLayout );
 }

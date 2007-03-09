@@ -23,6 +23,7 @@
 
 #include "reference.h"
 
+class QLayout;
 class QWidget;
 
 namespace KXForms {
@@ -32,6 +33,7 @@ class Manager;
 class GuiHandler
 {
   public:
+    enum LayoutStyle { Grid, Vertical };
     /**
       Create GuiHandler and register it with the manager. The manager takes
       ownership of the GuiHandler object.
@@ -42,10 +44,18 @@ class GuiHandler
     virtual QWidget *createRootGui( QWidget *parent ) = 0;
     virtual void createGui( const Reference &ref, QWidget *parent ) = 0;
 
+    virtual QLayout *getTopLayout() = 0;
+    virtual void addWidget( QLayout *, QWidget * ) = 0;
+    virtual void addElement( QLayout *, QWidget *label, QWidget *widget ) = 0;
+
     Manager *manager() const;
-    
+
+    void setLayoutStyle( LayoutStyle style ) { mLayoutStyle = style; }
+    LayoutStyle layoutStyle() { return mLayoutStyle; }
+
   private:
     Manager *mManager;
+    LayoutStyle mLayoutStyle;
 };
 
 }

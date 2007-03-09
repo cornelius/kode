@@ -24,7 +24,7 @@
 using namespace KXForms;
 
 GuiElement::GuiElement( QWidget *parent )
-  : QWidget( parent )
+  : mParent( parent ), mLabel( 0 ), mWidget( 0 )
 {
 }
 

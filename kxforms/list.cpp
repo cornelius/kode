@@ -35,6 +35,7 @@
 #include <QVBoxLayout>
 #include <QTreeView>
 #include <QTimer>
+#include <QHeaderView>
 
 using namespace KXForms;
 
@@ -42,19 +43,22 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
   kDebug() << "List() " << label << endl;
+  mWidget = new QWidget( mParent );
+  mLabel = new QLabel( label );
 
   QBoxLayout *topLayout;
   if ( Prefs::verticalListButtons() ) {
-    topLayout = new QHBoxLayout( this );
+    topLayout = new QHBoxLayout( mWidget );
   } else {
-    topLayout = new QVBoxLayout( this );
+    topLayout = new QVBoxLayout( mWidget );
   }
+  topLayout->setMargin( 0 );
 
-  mModel = new ListModel( this );
-  mModel->setLabel( label );
-  mView = new QTreeView( this );
+  mModel = new ListModel( mWidget );
+  mView = new QTreeView( mWidget );
   topLayout->addWidget( mView );
   mView->setModel( mModel );
+  mView->header()->hide();
   connect( mView, SIGNAL( doubleClicked( const QModelIndex & ) ),
     SLOT( editItem() ) );
 
@@ -70,23 +74,23 @@ List::List( Manager *m, const QString &label, QWidget *parent )
     buttonLayout->addStretch( 1 );
   }
 
-  QPushButton *button = new QPushButton( i18n("New Item..."), this );
+  QPushButton *button = new QPushButton( i18n("New Item..."), mWidget );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( newItem() ) );
 
-  button = new QPushButton( i18n("Delete Selected Item"), this );
+  button = new QPushButton( i18n("Delete Selected Item"), mWidget );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( deleteItem() ) );
 
-  button = new QPushButton( i18n("Edit Item..."), this );
+  button = new QPushButton( i18n("Edit Item..."), mWidget );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( editItem() ) );
 
-  button = new QPushButton( i18n("Move Item Up"), this );
+  button = new QPushButton( i18n("Move Item Up"), mWidget );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveUp() ) );
 
-  button = new QPushButton( i18n("Move Item Down"), this );
+  button = new QPushButton( i18n("Move Item Down"), mWidget );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveDown() ) );
 
@@ -98,7 +102,7 @@ List::List( Manager *m, const QString &label, QWidget *parent )
 void List::newItem()
 {
   QString formRef;
-
+// 
   if ( mItemClasses.count() == 1 ) {
     formRef = mItemClasses.first().refName();
   } else if ( mItemClasses.count() > 1 ) {
@@ -109,10 +113,10 @@ void List::newItem()
     }
     formRef = KInputDialog::getItem( i18n("Select item class"),
       i18n("Select which type of item you want to create."),
-      items, 0, false, 0, this );
+      items, 0, false, 0, mParent );
     if ( formRef.isEmpty() ) return;
   } else {
-    KMessageBox::sorry( this, i18n("No item classes.") );
+    KMessageBox::sorry( mParent, i18n("No item classes.") );
     return;
   }
 
@@ -142,7 +146,7 @@ void List::deleteItem()
 
   ListModel::Item *item = mModel->item( index );
 
-  int result = KMessageBox::warningContinueCancel( this,
+  int result = KMessageBox::warningContinueCancel( mWidget,
     i18n("Delete item '%1'?", item->label ) );
   if ( result == KMessageBox::Continue ) {
     QDomElement element = mManager->applyReference( item->ref );

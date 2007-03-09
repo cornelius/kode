@@ -23,8 +23,8 @@
 
 #include "manager.h"
 
-#include <klineedit.h>
 #include <kdebug.h>
+#include <klineedit.h>
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -34,13 +34,9 @@ using namespace KXForms;
 Input::Input( Manager *m, const QString &label, QWidget *parent )
   : GuiElement( parent ), mManager( m )
 {
-  QBoxLayout *topLayout = new QHBoxLayout( this );
-
-  QLabel *l = new QLabel( label, this );
-  topLayout->addWidget( l );
-
-  mLineEdit = new KLineEdit( this );
-  topLayout->addWidget( mLineEdit );
+  mLabel = new QLabel( label, mParent );
+  mLineEdit = new KLineEdit( mParent );
+  mWidget = mLineEdit;
 
   connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
 }

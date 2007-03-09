@@ -129,6 +129,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   }
   qDebug() << path.segments().size();
   qDebug() << path.toString();
+  qDebug() << element.name();
   if( !topLevel && 
       !element.mixed() && 
       !choiceOnly) {

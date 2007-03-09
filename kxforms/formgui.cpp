@@ -28,6 +28,7 @@
 #include "select1.h"
 #include "section.h"
 #include "prefs.h"
+#include "manager.h"
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -43,20 +44,21 @@ FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
 {
   kDebug() << "FormGui()" << endl;
 
-  mTopLayout = new QVBoxLayout( this );
+  mTopLayout = mManager->getTopLayout();
+  setLayout( mTopLayout );
 
   mLabel = new QLabel( label, this );
   QFont f = mLabel->font();
   f.setBold( true );
   mLabel->setFont( f );
-  mTopLayout->addWidget( mLabel );
   mLabel->hide();
+  mManager->addWidget( mTopLayout, mLabel );
 
   mRefLabel = new QLabel( this );
   f = mRefLabel->font();
   f.setPointSize( f.pointSize() - 2 );
   mRefLabel->setFont( f );
-  mTopLayout->addWidget( mRefLabel );
+  mManager->addWidget( mTopLayout, mRefLabel );
 
   setRefLabel( "[undefined reference]" );
 
@@ -141,12 +143,10 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     
     if ( guiElement ) {
       guiElement->parseElement( e );
-      layout->addWidget( guiElement );
+      mManager->addElement( layout, guiElement );
       mGuiElements.append( guiElement );
     }
   }
-
-  if ( !hasList ) mTopLayout->addStretch( 0 );
 
   kDebug() << "FormGui::parseElement() done" << endl;
 }

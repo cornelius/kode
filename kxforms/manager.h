@@ -54,7 +54,7 @@ class Manager
     void clearForms();
 
     QWidget *createRootGui( QWidget *parent );
-    void createGui( const Reference &ref, QWidget *parent );
+    void createGui( const Reference &ref, GuiElement *parent );
 
     void registerGui( FormGui * );
     void unregisterGui( FormGui * );
@@ -66,6 +66,9 @@ class Manager
 
     QString schemaUri() const;
 
+    QLayout *getTopLayout();
+    void addWidget( QLayout *, QWidget * );
+    void addElement( QLayout *, GuiElement * );
   protected:
     void loadData();
 
