@@ -30,7 +30,7 @@
 using namespace KXForms;
 
 Section::Section( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent ), mManager( m )
+  : GuiElement( parent, m )
 {
   mLabel = new QLabel( label );
   mBox = new QGroupBox( mParent );

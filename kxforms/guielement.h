@@ -29,12 +29,14 @@
 
 namespace KXForms {
 
+class Manager;
+
 class GuiElement : public QObject
 {
   public:
     typedef QList<GuiElement *> List;
 
-    GuiElement( QWidget *parent );
+    GuiElement( QWidget *parent, Manager *m );
     virtual ~GuiElement();
 
     virtual void parseElement( const QDomElement & ) {}
@@ -43,6 +45,8 @@ class GuiElement : public QObject
     Reference ref() const;
 
     QDomElement context() const;
+
+    QDomElement createElement( const Reference & );
 
     void loadData( const QDomElement &context );
 
@@ -56,6 +60,7 @@ class GuiElement : public QObject
     QWidget *mParent;
     QLabel *mLabel;
     QWidget *mWidget;
+    Manager *mManager;
 
   private:
     Reference mRef;

@@ -27,8 +27,6 @@ class QTextEdit;
 
 namespace KXForms {
 
-class Manager;
-
 class TextArea : public GuiElement
 {
   public:

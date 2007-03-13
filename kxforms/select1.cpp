@@ -20,6 +20,7 @@
 */
 
 #include "select1.h"
+#include "manager.h"
 
 #include <kdebug.h>
 
@@ -30,7 +31,7 @@
 using namespace KXForms;
 
 Select1::Select1( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent ), mManager( m )
+  : GuiElement( parent, m )
 {
   mLabel = new QLabel( label, parent );
   mComboBox = new QComboBox( parent );
@@ -86,7 +87,8 @@ void Select1::loadData()
 void Select1::saveData()
 {
   kDebug() << "Select1::saveData()" << endl;
-
+  kDebug() << ref().toString() << endl;
+  kDebug() << "Context: " << context().nodeName() << endl;
   Reference::Segment s = ref().segments().last();
 
   QString txt = mValues[ mComboBox->currentIndex() ];
@@ -94,12 +96,21 @@ void Select1::saveData()
     context().setAttribute( s.name(), txt );
   } else {
     QDomElement e = ref().applyElement( context() );
+    if ( e.isNull() ) {
+      e = createElement( ref() );
+    }
     QDomNode n = e.firstChild();
-    if( n.isText() ) {
-      QDomText t = n.toText();
-      t.setData( txt );
-    } else {
-      n.toElement().setTagName( txt );
+    if( n.isNull() ) {
+      n = mManager->document().createElement( txt );
+      e.appendChild( n );
+    }
+    else {
+      if( n.isText() ) {
+        QDomText t = n.toText();
+        t.setData( txt );
+      } else if( n.isElement() ){
+        n.toElement().setTagName( txt );
+      }
     }
   }
 }

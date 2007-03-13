@@ -32,7 +32,7 @@
 using namespace KXForms;
 
 Input::Input( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent ), mManager( m )
+  : GuiElement( parent, m )
 {
   mLabel = new QLabel( label, mParent );
   mLineEdit = new KLineEdit( mParent );
@@ -62,6 +62,9 @@ void Input::saveData()
     ref().applyAttributeContext( context() ).setAttribute( s.name(), txt );
   } else {
     QDomElement e = ref().applyElement( context() );
+    if ( e.isNull() ) {
+      e = createElement( ref() );
+    }
     QDomText t = e.firstChild().toText();
     if ( t.isNull() ) {
       t = mManager->document().createTextNode( txt );

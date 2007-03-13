@@ -33,7 +33,7 @@
 using namespace KXForms;
 
 TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent ), mManager( m )
+  : GuiElement( parent, m )
 {
   mLabel = new QLabel( label, mParent );
   mEdit = new QTextEdit( mParent );
@@ -65,8 +65,7 @@ void TextArea::saveData()
   QDomElement e = ref().applyElement( context() );
 
   if ( e.isNull() ) {
-    e = mManager->document().createElement( ref().lastSegment().name() );
-    context().appendChild( e );
+    e = createElement( ref() );
   }
 
   QString tag = e.tagName();

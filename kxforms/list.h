@@ -27,7 +27,6 @@ class QTreeView;
 
 namespace KXForms {
 
-class Manager;
 class ListModel;
 
 class List : public GuiElement
@@ -79,8 +78,6 @@ class List : public GuiElement
     void resizeColumns();
 
   private:
-    Manager *mManager;
-
     ItemClass::List mItemClasses;
 
     QTreeView *mView;

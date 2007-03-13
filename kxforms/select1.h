@@ -29,8 +29,6 @@ class QComboBox;
 
 namespace KXForms {
 
-class Manager;
-
 class Select1 : public GuiElement
 {
   public:
@@ -42,8 +40,6 @@ class Select1 : public GuiElement
     void parseElement( const QDomElement &formElement );
 
   private:
-    Manager *mManager;
-
     QComboBox *mComboBox;
     QStringList mValues;
 };

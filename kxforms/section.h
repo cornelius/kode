@@ -28,8 +28,6 @@ class QGroupBox;
 
 namespace KXForms {
 
-class Manager;
-
 class Section : public GuiElement
 {
   public:
@@ -41,8 +39,6 @@ class Section : public GuiElement
     QLayout *layout() { return mLayout; }
 
   private:
-    Manager *mManager;
-
     QGroupBox *mBox;
     QLayout *mLayout;
 };

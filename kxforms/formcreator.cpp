@@ -134,6 +134,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       !element.mixed() && 
       !choiceOnly) {
     section = xml->tag( "kxf:section" );
+    section->attribute( "ref", path.toString() );
     path = path + Reference( element.name() );
     createLabel( section, element );
     if(  element.elementRelations().size() <= 1 ) {
@@ -182,6 +183,17 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
            break;
           }
         }
+      }
+
+      if ( itemLabel.isEmpty() && itemElement.elementRelations().count() > 0 ) {
+        Schema::Element e2 = mDocument.element( itemElement.elementRelations().first() );
+        QString ref;
+        ref += QString("/%1").arg( e2.name() );
+        while( e2.elementRelations().count() > 0 ) {
+          ref += QString("/%1").arg( e2.elementRelations().first().target() );
+          e2 = mDocument.element( e2.elementRelations().first().target() );
+        }
+        itemLabel += QString("<arg ref=\"%1\"/>").arg( ref );
       }
 
       if ( itemLabel.isEmpty() ) {

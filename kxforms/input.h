@@ -27,8 +27,6 @@ class KLineEdit;
 
 namespace KXForms {
 
-class Manager;
-
 class Input : public GuiElement
 {
     Q_OBJECT
@@ -42,8 +40,6 @@ class Input : public GuiElement
     void returnPressed();
 
   private:
-    Manager *mManager;
-
     KLineEdit *mLineEdit;
 };
 

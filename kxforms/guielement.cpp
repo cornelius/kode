@@ -20,11 +20,12 @@
 */
 
 #include "guielement.h"
+#include "manager.h"
 
 using namespace KXForms;
 
-GuiElement::GuiElement( QWidget *parent )
-  : mParent( parent ), mLabel( 0 ), mWidget( 0 )
+GuiElement::GuiElement( QWidget *parent, Manager *manager )
+  : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mManager( manager )
 {
 }
 
@@ -45,6 +46,27 @@ Reference GuiElement::ref() const
 QDomElement GuiElement::context() const
 {
   return mContext;
+}
+
+QDomElement GuiElement::createElement( const Reference &ref )
+{
+  QDomElement e;
+  QDomElement itElement = context();
+  foreach( Reference::Segment s, ref.segments() ) {
+    if( s.isEmpty() )
+      continue;
+    e = itElement.firstChildElement( s.name() );
+    int cnt = 1;
+    while( !e.isNull() && cnt++ < s.count() ) {
+      e = e.nextSiblingElement( s.name() );
+    }
+    if( e.isNull() ) {
+      e = mManager->document().createElement( s.name() );
+      itElement.appendChild( e );
+    }
+    itElement = e;
+  }
+  return e;
 }
 
 void GuiElement::loadData( const QDomElement &element )
