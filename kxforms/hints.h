@@ -43,17 +43,16 @@ class Hint
     
     void setRef( const QString & );
     QString ref() const;
-    
-    void setLabel( const QString & );
-    QString label() const;
+
+    void setValue( const QString &, const QString & );
+    QString value( const QString & ) const;
 
     void setEnumValue( const QString &value, const QString &replacement );    
-    QString enumValue( const QString &value );
+    QString enumValue( const QString &value ) const;
 
   private:
     QString mRef;
-    
-    QString mLabel;
+    QMap<QString, QString> mValues;
     QMap<QString, QString> mEnums;
 };
 

@@ -173,6 +173,13 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       Schema::Element itemElement = mDocument.element( r );
 
       if ( itemLabel.isEmpty() ) {
+        Hint hint = mHints.hint( element.identifier() + '/' + r.target() );
+        if ( hint.isValid() ) {
+          itemLabel += QString("<arg ref=\"%1\"/>").arg( hint.value( "itemLabelRef" ) );
+        }
+      }
+
+      if ( itemLabel.isEmpty() ) {
         // Try to guess a suitable item label.
         foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
           if ( r2.target() == "name" ) {
@@ -288,7 +295,7 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
 
   Hint hint = mHints.hint( ref );
 
-  if ( hint.isValid() ) label = hint.label();
+  if ( hint.isValid() ) label = hint.value( "label" );
 
   if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
 

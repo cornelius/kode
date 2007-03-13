@@ -43,9 +43,9 @@ bool Hint::isValid() const
   return !mRef.isEmpty();
 }
 
-void Hint::setRef( const QString &r )
+void Hint::setRef( const QString &ref )
 {
-  mRef = r;
+  mRef = ref;
 }
 
 QString Hint::ref() const
@@ -53,14 +53,14 @@ QString Hint::ref() const
   return mRef;
 }
 
-void Hint::setLabel( const QString &l )
+void Hint::setValue( const QString &key, const QString &value )
 {
-  mLabel = l;
+  mValues[key] = value;
 }
 
-QString Hint::label() const
+QString Hint::value( const QString &key) const
 {
-  return mLabel;
+  return mValues[key];
 }
 
 void Hint::setEnumValue( const QString &value, const QString &replacement )
@@ -68,7 +68,7 @@ void Hint::setEnumValue( const QString &value, const QString &replacement )
   mEnums.insert( value, replacement );
 }
 
-QString Hint::enumValue( const QString &value )
+QString Hint::enumValue( const QString &value ) const
 {
   if ( mEnums.contains( value ) ) return mEnums[ value ];
   else return QString();
@@ -139,10 +139,10 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
     QName name = e.tagName();
-    if ( name.localName() == "label" ) {
-      hint.setLabel( contentAsString( e ) );
-    } else if ( name.localName() == "enum" ) {
+    if ( name.localName() == "enum" ) {
       hint.setEnumValue( e.attribute( "value" ), contentAsString( e ) );
+    } else {
+      hint.setValue( name.localName(), contentAsString( e ) );
     }
   }
 
