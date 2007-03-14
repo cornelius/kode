@@ -53,12 +53,12 @@ QString Hint::ref() const
   return mRef;
 }
 
-void Hint::setValue( const QString &key, const QString &value )
+void Hint::setValue( Type key, const QString &value )
 {
   mValues[key] = value;
 }
 
-QString Hint::value( const QString &key) const
+QString Hint::value( Type key) const
 {
   return mValues[key];
 }
@@ -141,8 +141,12 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
     QName name = e.tagName();
     if ( name.localName() == "enum" ) {
       hint.setEnumValue( e.attribute( "value" ), contentAsString( e ) );
+    } else if (name.localName() == "label" ) {
+      hint.setValue( Hint::Label, contentAsString( e ) );
+    } else if (name.localName() == "itemLabelRef" ) {
+      hint.setValue( Hint::ItemLabelRef, contentAsString( e ) );
     } else {
-      hint.setValue( name.localName(), contentAsString( e ) );
+      qDebug() << "Unknown hint type: " << name.localName();
     }
   }
 

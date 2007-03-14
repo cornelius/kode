@@ -173,9 +173,9 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       Schema::Element itemElement = mDocument.element( r );
 
       if ( itemLabel.isEmpty() ) {
-        Hint hint = mHints.hint( element.identifier() + '/' + r.target() );
+        Hint hint = mHints.hint( r.target() );
         if ( hint.isValid() ) {
-          itemLabel += QString("<arg ref=\"%1\"/>").arg( hint.value( "itemLabelRef" ) );
+          itemLabel += QString("<arg ref=\"%1\"/>").arg( hint.value( Hint::ItemLabelRef ) );
         }
       }
 
@@ -295,7 +295,7 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
 
   Hint hint = mHints.hint( ref );
 
-  if ( hint.isValid() ) label = hint.value( "label" );
+  if ( hint.isValid() ) label = hint.value( Hint::Label );
 
   if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
 

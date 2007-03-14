@@ -204,6 +204,18 @@ QString Reference::toString() const
   return str;
 }
 
+QString Reference::path() const
+{
+  QString str;
+  Segment::List::ConstIterator it;
+  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+    if ( !str.isEmpty() ) str += '/';
+    str += (*it).name();
+  }
+  if ( mAbsolute ) str.prepend( "/" );
+  return str;
+}
+
 bool Reference::isValid() const
 {
   return mValid;
