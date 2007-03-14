@@ -1,0 +1,17 @@
+<ugh>
+  <hint ref="documentationstatus">
+    <label>Status of the documentation: </label>
+  </hint>
+  <hint ref="needinfo">
+    <label>Information required </label>
+  </hint>
+  <hint ref="productcontext">
+    <itemLabelRef>/product/productid</itemLabelRef>
+  </hint>
+  <hint ref="name">
+    <label>Title</label>
+  </hint>
+  <hint ref="product">
+    <label>Produkt:</label>
+  </hint>
+</ugh>

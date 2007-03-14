@@ -1,0 +1,48 @@
+<feature>
+  <category>BlubbCategory0</category>
+  <category>BlubbCategory1</category>
+  <category>BlubbCategory2</category>
+  <title>TestTitle</title>
+  <description>
+    <richtext>That is the <a href="www.suse.de" >
+description</a>.</richtext>
+  </description>
+  <partnercontext>
+    <organization>AMD</organization>
+    <externalid>123456</externalid>
+  </partnercontext>
+  <productcontext>
+    <product>
+      <productid>openSuse 10.0</productid>
+      <name>openSuse</name>
+      <version>10.0</version>
+    </product>
+  </productcontext>
+  <productcontext>
+    <product>
+      <productid>openSuse 10.3</productid>
+      <name>openSuse</name>
+      <version>10.3</version>
+    </product>
+  </productcontext>
+  <productcontext>
+    <product>
+      <productid>openSuse 10.1</productid>
+      <name>openSuse</name>
+      <version>10.1</version>
+    </product>
+  </productcontext>
+  <productcontext>
+    <product>
+      <productid>openSuse 10.2</productid>
+      <name>openSUSE</name>
+      <version>10.2</version>
+      <documentationstatus>
+        <needinfo/>
+      </documentationstatus>
+    </product>
+  </productcontext>
+  <documentationstatus>
+    <needinfo/>
+  </documentationstatus>
+</feature>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:k="http://inttools.suse.de/sxkeeper/schema/keeper" 
+  elementFormDefault="qualified">
+  <!-- <xs:import namespace="http://inttools.suse.de/sxkeeper/schema/keeper" 
+    schemaLocation="http://keeper.suse.de:8080/sxkeeper/schema/keeper"/> -->
+
+  <xs:element name="feature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="category"/>
+        <xs:element ref="title"/>
+	<xs:element ref="description"/>
+	<xs:element ref="partnercontext"/>
+	<!-- <xs:element ref="productcontext"/> -->
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="productcontext"/>
+        <xs:element minOccurs="0" ref="documentationstatus"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="category" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        A category the feature belongs to.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="title" type="xs:string"/>
+  
+  <xs:element name="description">
+    <xs:annotation>
+      <xs:documentation>
+        Detailed description of the feature.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="richtext"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="richtext">
+	  <xs:annotation>
+		  <xs:documentation>
+			  A block of richly formatted text. A subset of HTML is allowed to mark up
+			  the text.
+		  </xs:documentation>
+	  </xs:annotation>
+	  <xs:complexType mixed="true">
+		  <xs:choice minOccurs="0" maxOccurs="unbounded">
+			  <xs:element minOccurs="0" maxOccurs="unbounded" ref="p"/>
+		  </xs:choice>
+	  </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="p">
+	    <xs:complexType mixed="true">
+		    <xs:choice minOccurs="0" maxOccurs="unbounded">
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
+		    </xs:choice>
+	    </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="a">
+	    <xs:annotation>
+		    <xs:documentation>
+			    Markup for richtext: a link
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType mixed="true">
+		    <xs:attribute name="href"/>
+	    </xs:complexType>
+    </xs:element>    
+    
+    <xs:element name="productcontext">
+	    <xs:annotation>
+		    <xs:documentation>
+			    This element collects the information about the feature which is
+			    relevant to a specific product.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType>
+		    <xs:sequence>
+			    <xs:element ref="product"/>
+			    <!--<xs:element ref="status"/>
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="priority"/>
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="actor"/>
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="architecture"/> -->
+		    </xs:sequence>
+		    <!-- <xs:attribute name="legacyinfo" type="xs:string"/>-->
+	    </xs:complexType>
+    </xs:element>
+    
+    
+    <xs:element name="product">
+	    <xs:annotation>
+		    <xs:documentation>
+			    This element identifies the product the product context refers to.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType>
+		    <xs:sequence>
+			    <xs:element ref="productid"/>
+			    <xs:element minOccurs="0" ref="name"/>
+			    <xs:element ref="version"/>
+		    </xs:sequence>
+	    </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="name" type="xs:normalizedString"/>
+    <xs:element name="version" type="xs:string"/>
+    <xs:complexType name="productid-type">
+	    <xs:simpleContent>
+		    <xs:extension base="xs:string">
+			    <xs:attribute name="legacypriotype" type="xs:string"/>
+			    <xs:attribute name="legacytype" type="xs:string"/>
+			    <xs:attribute name="legacyinfo" type="xs:string"/>
+		    </xs:extension>
+	    </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:element name="productid" type="productid-type">
+    </xs:element>
+
+    <xs:element name="documentationstatus">
+	    <xs:annotation>
+		    <xs:documentation>
+			    Status of the documentation of the feature.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType>
+		    <xs:choice>
+			    <xs:element ref="postponed"/>
+			    <xs:element ref="dropped"/>
+			    <xs:element ref="needinfo"/>
+			    <xs:element ref="done"/>
+			    <xs:element ref="implementation"/>
+		    </xs:choice>
+	    </xs:complexType>
+    </xs:element>
+    <xs:element name="postponed">
+	    <xs:annotation>
+		    <xs:documentation>
+			    Documentation is postponed to a later version of the product.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType/>
+    </xs:element>
+    <xs:element name="dropped">
+	    <xs:annotation>
+		    <xs:documentation>
+			    Documentation is dropped.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType/>
+    </xs:element>
+    <xs:element name="needinfo">
+	    <xs:annotation>
+		    <xs:documentation>
+			    Some information is required.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType/>
+    </xs:element>
+    <xs:element name="done">
+	    <xs:annotation>
+		    <xs:documentation>
+			    The feature is implemented.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType/>
+    </xs:element>
+    <xs:element name="implementation">
+	    <xs:annotation>
+		    <xs:documentation>
+			    The feature is being implemented.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType/>
+    </xs:element>
+
+    <xs:element name="partnercontext">
+	    <xs:annotation>
+		    <xs:documentation>
+			    This element collects the information relevant to or provided by the
+			    partner requesting the feature.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType>
+		    <xs:sequence>
+			    <xs:element ref="organization"/>
+			    <xs:element ref="externalid"/>
+		    </xs:sequence>
+	    </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="organization">
+	    <xs:annotation>
+		    <xs:documentation>
+			    A short string identifying the organization of the partner. This
+			    identifier is used as base for restricting access to the features for
+			    partners, so it should be unique per partner and the same string should
+			    be used for all features related to a specific partner.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType mixed="true">
+		    <xs:attribute name="legacyinfo" type="xs:string"/>
+	    </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="externalid" type="xs:string">
+	    <xs:annotation>
+		    <xs:documentation>
+			    External id for identifying the feature in the context of the system
+			    used by the partner for feature tracking.
+		    </xs:documentation>
+	    </xs:annotation>
+    </xs:element>
+    
+</xs:schema>
