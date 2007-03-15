@@ -48,6 +48,7 @@ static KCmdLineOptions options[] =
   { "kxform <URL>", I18N_NOOP( "KXForms description" ), 0 },
   { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
   { "ugh <URL>", I18N_NOOP( "UI Generation Hints" ), 0 },
+  { "xml <URL>", I18N_NOOP( "XML file" ), 0 },
   { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
   { "developer", I18N_NOOP( "Use developer mode of user interface" ), 0 },
   { "vertical-list-buttons", I18N_NOOP( "Use vertical list buttons" ), 0 },
@@ -139,6 +140,10 @@ int main(int argc, char **argv)
     }
   }
 
+  if ( args->isSet( "xml" ) ) {
+    QString xml = args->getOption( "xml" );
+    mainWindow->load( xml );
+  }
 
   if ( args->count() == 1 ) {
     mainWindow->load( args->url( 0 ) );
