@@ -77,7 +77,7 @@ void Document::findUsedElements( const Element &e ) const
 
   foreach( Relation r, e.elementRelations() ) {
     Element e2 = element( r );
-    if ( !e2.mixed() && addUsedElement( e2 ) ) {
+    if ( (!e2.mixed() || r.isList() ) && addUsedElement( e2 )  ) {
       findUsedElements( e2 );
     }
   }

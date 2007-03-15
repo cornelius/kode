@@ -53,6 +53,8 @@ class FormCreator
 
     void createLabel( XmlBuilder *parent, const Schema::Node &node );
 
+    QString createListItemLabel( const Schema::Element &element, const Schema::Relation &r, bool isMixedList );
+
     QString getLabel( const QString &ref, const QString &fallback = QString(),
       bool pluralize = false );
 
