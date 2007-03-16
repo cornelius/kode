@@ -49,6 +49,9 @@ int ListModel::columnCount( const QModelIndex &parent ) const
 
 QVariant ListModel::data( const QModelIndex & index, int role ) const
 {
+  if( index.row() > mItems.count() )
+    return QVariant();
+
   Item *item = mItems.at( index.row() );
   if( mVisibleElements.size() == 0 ) {
     if ( role == Qt::DisplayRole ) {
