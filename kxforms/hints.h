@@ -35,7 +35,7 @@ class Hint
 {
   public:
     typedef QList<Hint> List;
-    enum Type { Label, ItemLabelRef };
+    enum Type { Label, ListItemLabelRef, ListVisibleElements, ListShowHeader };
 
     Hint();
     Hint( const QString &ref );
@@ -48,6 +48,9 @@ class Hint
     void setValue( Type, const QString & );
     QString value( Type ) const;
 
+    void addElement( Type, const QDomElement );
+    QList<QDomElement> elements( Type );
+
     void setEnumValue( const QString &value, const QString &replacement );    
     QString enumValue( const QString &value ) const;
 
@@ -55,6 +58,7 @@ class Hint
     QString mRef;
     QMap<Type, QString> mValues;
     QMap<QString, QString> mEnums;
+    QMap< Type, QList<QDomElement> > mElements;
 };
 
 class Hints

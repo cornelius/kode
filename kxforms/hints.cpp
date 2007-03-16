@@ -74,6 +74,15 @@ QString Hint::enumValue( const QString &value ) const
   else return QString();
 }
 
+void Hint::addElement( Type type, const QDomElement e )
+{
+  mElements[type].append( e.cloneNode().toElement() );
+}
+
+QList<QDomElement> Hint::elements( Type type)
+{
+  return mElements[type];
+}
 
 Hints::Hints()
 {
@@ -143,8 +152,21 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
       hint.setEnumValue( e.attribute( "value" ), contentAsString( e ) );
     } else if (name.localName() == "label" ) {
       hint.setValue( Hint::Label, contentAsString( e ) );
-    } else if (name.localName() == "itemLabelRef" ) {
-      hint.setValue( Hint::ItemLabelRef, contentAsString( e ) );
+    } else if (name.localName() == "listItemLabelRef" ) {
+      hint.setValue( Hint::ListItemLabelRef, contentAsString( e ) );
+    } else if (name.localName() == "listVisibleElements" ) {
+      hint.setValue( Hint::ListVisibleElements, contentAsString( e ) );
+      QDomNode child = n.firstChild();
+      while( !child.isNull() ) {
+        if( child.nodeName() == "listVisibleElement" ) {
+          QDomElement e = child.toElement();
+          if( !e.isNull() )
+            hint.addElement( Hint::ListVisibleElements, e );
+        }
+        child = child.nextSibling();
+      }
+    } else if (name.localName() == "listShowHeader" ) {
+      hint.setValue( Hint::ListShowHeader, contentAsString( e ) );
     } else {
       qDebug() << "Unknown hint type: " << name.localName();
     }

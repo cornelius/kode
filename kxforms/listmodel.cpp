@@ -41,23 +41,38 @@ int ListModel::rowCount( const QModelIndex &parent ) const
 int ListModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return 2;
+  if( mVisibleElements.size() > 0 )
+    return mVisibleElements.size();
+  else
+    return 1;
 }
 
 QVariant ListModel::data( const QModelIndex & index, int role ) const
 {
-  if ( role == Qt::DisplayRole ) {
-    Item *item = mItems.at( index.row() );
-    if ( index.column() == 0 ) return item->label;
-    else if ( index.column() == 1 ) return item->ref.toString();
+  Item *item = mItems.at( index.row() );
+  if( mVisibleElements.size() == 0 ) {
+    if ( role == Qt::DisplayRole ) {
+      if ( index.column() == 0 ) return item->label;
+      else if ( index.column() == 1 ) return item->ref.toString();
+    }
+    return QVariant();
+  } else {
+    if ( role == Qt::DisplayRole ) {
+      Reference key = mVisibleElements[index.column()].ref;
+      QDomElement e = key.applyElement( item->element );
+      if( !e.isNull() )
+        return e.text();
+      else return QVariant();
+    }
+    return QVariant();
   }
-  return QVariant();
 }
 
 QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
   int role ) const
 {
   if ( orientation == Qt::Horizontal ) {
+    if( mVisibleElements.size() == 0 ) {
     if ( role == Qt::DisplayRole ) {
       if ( section == 0 ) {
         if ( mLabel.isEmpty() ) return i18n("Label");
@@ -66,17 +81,23 @@ QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
         return i18n("Reference");
       }
     }
+    } else {
+      if ( role == Qt::DisplayRole ) {
+          return mVisibleElements[section].label;
+      }
+    }
   }
   return QVariant();
 }
 
-void ListModel::addItem( const QString &label, const Reference &ref )
+void ListModel::addItem( const QString &label, const Reference &ref, QDomElement element )
 {
   beginInsertRows( QModelIndex(), mItems.size(), mItems.size() );
 
   Item *item = new Item;
   item->label = label;
   item->ref = ref;
+  item->element = element;
   mItems.append( item );
   
   endInsertRows();

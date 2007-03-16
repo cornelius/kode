@@ -135,7 +135,7 @@ void List::newItem()
   mManager->createGui( reference, this );
 
   QString il = itemLabel( itemClass( formRef ), newElement );
-  mModel->addItem( il, ref() + segment );
+  mModel->addItem( il, ref() + segment, newElement );
 }
 
 void List::deleteItem()
@@ -214,6 +214,8 @@ void List::moveDown()
 void List::parseElement( const QDomElement &element )
 {
   QDomNode n;
+  if( element.attribute( "showHeader" ) == "true" )
+    mView->header()->show();
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
     if ( e.tagName() == "itemclass" ) {
@@ -230,6 +232,21 @@ void List::parseElement( const QDomElement &element )
       }
 
       mItemClasses.append( c );
+    } else if( e.tagName() == "visibleElements" ) {
+      QDomNode n2;
+      QList<ListModel::visibleElement> items;
+      for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
+        QDomElement e = n2.toElement();
+        if( e.isNull() )
+          continue;
+        if( e.tagName() == "visibleElement" ) {
+          ListModel::visibleElement i;
+          i.ref.fromString( e.attribute( "ref" ) );
+          i.label = e.text();
+          items.append( i );
+        }
+      }
+      mModel->setVisibleElements( items );
     }
   }
 }
@@ -255,7 +272,7 @@ void List::loadData()
 
       QString il = itemLabel( ic, e );
 //      kDebug() << "item label: " << il << endl;
-      mModel->addItem( il, r );
+      mModel->addItem( il, r, e );
       counts.insert( ic.refName(), ++count );
     }
   }

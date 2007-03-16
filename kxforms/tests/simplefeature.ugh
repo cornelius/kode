@@ -6,7 +6,12 @@
     <label>Information required </label>
   </hint>
   <hint ref="productcontext">
-    <itemLabelRef>/product/productid</itemLabelRef>
+    <listItemLabelRef>/product/productid</listItemLabelRef>
+    <listShowHeader>true</listShowHeader>
+    <listVisibleElements>
+      <listVisibleElement label="Id">product/productid</listVisibleElement>
+      <listVisibleElement label="Version">product/version</listVisibleElement>
+    </listVisibleElements>
   </hint>
   <hint ref="name">
     <label>Title</label>

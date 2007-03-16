@@ -21,6 +21,7 @@
 #include "reference.h"
 
 #include <QList>
+#include <QDomElement>
 #include <QAbstractTableModel>
 
 namespace KXForms {
@@ -46,15 +47,23 @@ class ListModel : public QAbstractListModel
     {
       QString label;
       Reference ref;
+      QDomElement element;
+    };
+
+    struct visibleElement {
+        QString label;
+        Reference ref;
     };
     
-    void addItem( const QString &label, const Reference &ref );
+    void addItem( const QString &label, const Reference &ref, QDomElement element );
     Item *item( const QModelIndex &index );
 
     int itemCount( const QString &itemClass );
 
     void setLabel( const QString & );
     QString label() const;
+
+    void setVisibleElements( QList<visibleElement> headers ) { mVisibleElements = headers; }
 
     void clear();
 
@@ -63,6 +72,7 @@ class ListModel : public QAbstractListModel
   private:
     QList<Item *> mItems;
     QString mLabel;
+    QList<visibleElement> mVisibleElements;
 };
 
 }

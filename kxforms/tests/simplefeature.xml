@@ -13,15 +13,15 @@ description</a>.</richtext>
   </partnercontext>
   <productcontext>
     <product>
-      <productid>openSuse 10.0</productid>
-      <name>openSuse</name>
+      <productid>openSUSE 10.0</productid>
+      <name>openSUSE</name>
       <version>10.0</version>
     </product>
   </productcontext>
   <productcontext>
     <product>
-      <productid>openSuse 10.3</productid>
-      <name>openSuse</name>
+      <productid>openSUSE 10.3</productid>
+      <name>openSUSE</name>
       <version>10.3</version>
     </product>
   </productcontext>

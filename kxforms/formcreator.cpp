@@ -163,6 +163,27 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
+          Hint hint = mHints.hint( r.target() );
+          if ( hint.isValid() ) {
+            if( !hint.value( Hint::ListShowHeader ).isEmpty() )
+              list->attribute( "showHeader", hint.value( Hint::ListShowHeader ) );
+
+            QList<QDomElement> elements = hint.elements( Hint::ListVisibleElements );
+            if( !elements.isEmpty() ) {
+              XmlBuilder *items = list->tag( "visibleElements" );
+              foreach( QDomElement e, elements ) {
+                Reference r;
+                r.fromString( e.text() );
+                QString label = e.attribute( "label" );
+                if( label.isEmpty() ) {
+                  label = humanizeString( r.segments().last().name() );
+                }
+                XmlBuilder *item = items->tag( "visibleElement", label );
+                item->attribute( "ref", r.toString() );
+              }
+            }
+          }
+
           QString label;
           if ( isMixedList ) {
             label = "Item";
@@ -257,8 +278,8 @@ QString FormCreator::createListItemLabel( const Schema::Element &element, const 
 
   if ( itemLabel.isEmpty() ) {
     Hint hint = mHints.hint( r.target() );
-    if ( hint.isValid() ) {
-      itemLabel += QString("<arg ref=\"%1\"/>").arg( hint.value( Hint::ItemLabelRef ) );
+    if ( hint.isValid() && !hint.value( Hint::ListItemLabelRef ).isEmpty() ) {
+      itemLabel += QString("<arg ref=\"%1\"/>").arg( hint.value( Hint::ListItemLabelRef ) );
     }
   }
 
