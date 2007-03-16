@@ -167,6 +167,8 @@ void KXFormsTest::testHints()
 
   KXForms::Hint hint = mHints.hint( "productcontext" );
 
+  QCOMPARE( hint.value( KXForms::Hint::ListShowHeader ), QString( "true" ) );
+
   QCOMPARE( hint.value( KXForms::Hint::ListItemLabelRef ), QString( "/product/productid" ) );
 
   QCOMPARE( hint.elements( KXForms::Hint::ListVisibleElements ).size(), 2 );
