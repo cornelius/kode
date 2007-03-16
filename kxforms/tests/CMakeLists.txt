@@ -5,8 +5,8 @@ include_directories( ${CMAKE_SOURCE_DIR}/kode  )
 
 ########### next target ###############
 
-set(formcreatortest_SRCS 
-   formcreatortest.cpp 
+set(kxformstest_SRCS 
+   kxformstest.cpp 
    ../manager.cpp 
    ../form.cpp 
    ../formcreator.cpp
@@ -28,14 +28,15 @@ set(formcreatortest_SRCS
    ../select1.cpp
    ../section.cpp )
 
-kde4_add_kcfg_files(formcreatortest_SRCS ../prefs.kcfgc )
+kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 
-kde4_automoc(${formcreatortest_SRCS})
+kde4_automoc(${kxformstest_SRCS})
 
-kde4_add_executable(formcreatortest NOGUI RUN_UNINSTALLED ${formcreatortest_SRCS})
+kde4_add_executable(kxformstest NOGUI RUN_UNINSTALLED ${kxformstest_SRCS})
 
-target_link_libraries(formcreatortest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS}  )
+target_link_libraries(kxformstest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS}  )
 
 endif(KDE4_BUILD_TESTS)
+
 
 ########### install files ###############

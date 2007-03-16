@@ -1,0 +1,16 @@
+<ugh>
+  <hint ref="documentationstatus">
+    <label>Status of the documentation: </label>
+  </hint>
+  <hint ref="productcontext">
+    <listItemLabelRef>/product/productid</listItemLabelRef>
+    <listShowHeader>true</listShowHeader>
+    <listVisibleElements>
+      <listVisibleElement label="Id">product/productid</listVisibleElement>
+      <listVisibleElement>product/version</listVisibleElement>
+    </listVisibleElements>
+  </hint>
+  <hint ref="name">
+    <label>Title</label>
+  </hint>
+</ugh>

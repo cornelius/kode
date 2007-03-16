@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "formcreatortest.h"
+#include "kxformstest.h"
 
 #include "../formcreator.h"
 #include <kxml_compiler/parserxsd.h>
@@ -27,7 +27,7 @@
 #include <QFile>
 #include <QDebug>
 
-void FormCreatorTest::initTestCase()
+void KXFormsTest::initTestCase()
 {
   RNG::ParserXsd parser;
   QFile file("formcreatortest.xsd");
@@ -47,9 +47,20 @@ void FormCreatorTest::initTestCase()
     return;
   }
 
+  QFile hintsFile("hintstest.ugh");
+
+  if( !hintsFile.open( QIODevice::ReadOnly ) ) {
+    QFAIL( "The test file 'hintstest.ugh' could not be loaded" );
+    return;
+  }
+
+  if( !mHints.parseFile( hintsFile ) ) {
+    QFAIL( "The content of the test file is malformed" );
+    return;
+  }
 }
 
-void FormCreatorTest::testDocument()
+void KXFormsTest::testDocument()
 {
   QCOMPARE( mDoc.childNodes().count(), 1 );
 
@@ -61,7 +72,7 @@ void FormCreatorTest::testDocument()
 
 }
 
-void FormCreatorTest::testForm()
+void KXFormsTest::testForm()
 {
   QDomNode formNode = mDoc.firstChild().firstChild();
   QDomNode n;
@@ -146,6 +157,37 @@ void FormCreatorTest::testForm()
   QCOMPARE( n.toElement().text(), QString( "Richtext" ) );
 }
 
-QTEST_MAIN(FormCreatorTest)
+void KXFormsTest::testHints()
+{
+  QCOMPARE( mHints.hints().count(), 3 );
 
-#include "formcreatortest.moc"
+  QCOMPARE( mHints.hint( "name" ).value( KXForms::Hint::Label ), QString( "Title" ) );
+
+  QCOMPARE( mHints.hint( "documentationstatus" ).value( KXForms::Hint::Label ), QString( "Status of the documentation: " ) );
+
+  KXForms::Hint hint = mHints.hint( "productcontext" );
+
+  QCOMPARE( hint.value( KXForms::Hint::ListItemLabelRef ), QString( "/product/productid" ) );
+
+  QCOMPARE( hint.elements( KXForms::Hint::ListVisibleElements ).size(), 2 );
+
+  QDomElement e = hint.elements( KXForms::Hint::ListVisibleElements ).first().toElement();
+
+  QCOMPARE( e.tagName(), QString( "listVisibleElement" ) );
+
+  QCOMPARE( e.text(), QString( "product/productid" ) );
+
+  QCOMPARE( e.attribute("label"), QString( "Id" ) );
+
+  e = hint.elements( KXForms::Hint::ListVisibleElements ).at( 1 );
+
+  QCOMPARE( e.tagName(), QString( "listVisibleElement" ) );
+
+  QCOMPARE( e.text(), QString( "product/version" ) );
+
+  QCOMPARE( e.attribute("label").isEmpty(), true );
+}
+
+QTEST_MAIN(KXFormsTest)
+
+#include "kxformstest.moc"

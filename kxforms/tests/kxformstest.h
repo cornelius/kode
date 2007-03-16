@@ -18,24 +18,27 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
     USA.
 */
-#ifndef FORMCREATORTEST_H
-#define FORMCREATORTEST_H
+#ifndef KXFORMSTEST_H
+#define KXFORMSTEST_H
 
+#include "../hints.h"
 #include <kxml_compiler/schema.h>
 
 #include <QtTest/QtTest>
 #include <QDomDocument>
 
-class FormCreatorTest: public QObject
+class KXFormsTest: public QObject
 {
     Q_OBJECT
 private slots:
     void initTestCase();
     void testDocument();
     void testForm();
+    void testHints();
 
 private:
     QDomDocument mDoc;
+    KXForms::Hints mHints;
 };
 
 #endif
