@@ -66,7 +66,7 @@ void Converter::createKDETransport()
   queryCode += '}';
   queryCode.newLine();
   queryCode += "job->addMetaData( \"UserAgent\", \"KWSDL\" );";
-  queryCode += "job->addMetaData( \"content-type\", \"Content-Type: text/xml; charset=utf-8\" );";
+  queryCode += "job->addMetaData( \"content-type\", \"Content-Type: application/xml; charset=utf-8\" );";
   queryCode += "if ( !header.isEmpty() ) {";
   queryCode.indent();
   queryCode += "job->addMetaData( \"customHTTPHeader\", \"SOAPAction:\" + header );";
@@ -191,7 +191,7 @@ void Converter::createQtTransport()
   code += "QHttpRequestHeader header;";
   code += "header.setRequest( \"POST\", " + urlVar.name() + ".path() );";
   code += "header.addValue( \"Connection\", \"Keep-Alive\" );";
-  code += "header.addValue( \"Content-Type\", \"text/xml; charset=utf-8\" );";
+  code += "header.addValue( \"Content-Type\", \"application/xml; charset=utf-8\" );";
   code += "header.addValue( \"Host\", QUrl( " + urlVar.name() + " ).host() );";
   code.newLine();
   code += "if ( !headerStr.isEmpty() )";

@@ -42,7 +42,7 @@ void Transport::query( const QString &xml )
   }
   
   job->addMetaData( "UserAgent", "KDE Kung" );
-  job->addMetaData( "content-type", "Content-Type: text/xml; charset=utf-8" );
+  job->addMetaData( "content-type", "Content-Type: application/xml; charset=utf-8" );
   
   connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ), this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );
   connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotResult( KJob* ) ) );
