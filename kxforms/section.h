@@ -33,8 +33,8 @@ class Section : public GuiElement
   public:
     Section( Manager *, const QString &label, QWidget *parent );
 
-    void loadData() {};
-    void saveData() {};
+    void loadData() {}
+    void saveData() {}
 
     QLayout *layout() { return mLayout; }
 
