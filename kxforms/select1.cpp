@@ -28,18 +28,22 @@
 #include <QHBoxLayout>
 #include <QComboBox>
 #include <QRadioButton>
+#include <QListWidget>
 
 using namespace KXForms;
 
 Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
+    mLabel = new QLabel( label, parent );
   if( mProperties->appearance == Full ) {
     mWidget = new QWidget( parent );
     mWidget->setLayout( new QVBoxLayout( parent ) );
-    mLabel = new QLabel( label, parent );
+  } else if( mProperties->appearance == Compact ) {
+    mListWidget = new QListWidget( parent );
+    mListWidget->setSelectionMode( QAbstractItemView::SingleSelection );
+    mWidget = mListWidget;
   } else {
-    mLabel = new QLabel( label, parent );
     mComboBox = new QComboBox( parent );
     mWidget = mComboBox;
   }
@@ -70,6 +74,8 @@ void Select1::parseElement( const QDomElement &formElement )
           QRadioButton *radio = new QRadioButton( label, mWidget );
           mWidget->layout()->addWidget( radio );
           mRadioButtons.append( radio );
+        } else if( mProperties->appearance == Compact ) {
+          mListWidget->addItem( label );
         } else {
           mComboBox->addItem( label );
         }
@@ -97,6 +103,8 @@ void Select1::loadData()
       QRadioButton *radio = mRadioButtons[count];
       if( radio )
         radio->setChecked( true );
+    } else if( mProperties->appearance == Compact ) {
+      mListWidget->setCurrentRow( count );
     } else {
       mComboBox->setCurrentIndex( count );
     }
@@ -120,6 +128,8 @@ void Select1::saveData()
         break;
       }
     }
+  } else if( mProperties->appearance == Compact ) {
+    txt = mValues[ mListWidget->currentRow() ];
   } else { 
     txt = mValues[ mComboBox->currentIndex() ];
   }

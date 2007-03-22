@@ -28,6 +28,7 @@
 
 class QComboBox;
 class QRadioButton;
+class QListWidget;
 
 namespace KXForms {
 
@@ -44,6 +45,7 @@ class Select1 : public GuiElement
   private:
     QList<QRadioButton *> mRadioButtons;
     QComboBox *mComboBox;
+    QListWidget *mListWidget;
     QStringList mValues;
 };
 
