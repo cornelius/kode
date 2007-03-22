@@ -9,7 +9,7 @@
     <listItemLabelRef>/product/productid</listItemLabelRef>
     <listShowHeader>true</listShowHeader>
     <listVisibleElements>
-      <listVisibleElement label="Id">product/productid</listVisibleElement>
+      <listVisibleElement>product/name</listVisibleElement>
       <listVisibleElement label="Version">product/version</listVisibleElement>
     </listVisibleElements>
   </hint>

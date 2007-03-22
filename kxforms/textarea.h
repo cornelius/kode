@@ -30,7 +30,9 @@ namespace KXForms {
 class TextArea : public GuiElement
 {
   public:
-    TextArea( Manager *, const QString &label, QWidget *parent );
+    TextArea( Manager *, const QString &label, QWidget *parent, Properties *p );
+
+    void applyProperties();
 
     void loadData();
     void saveData();

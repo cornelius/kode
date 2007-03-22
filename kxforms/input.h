@@ -31,7 +31,7 @@ class Input : public GuiElement
 {
     Q_OBJECT
   public:
-    Input( Manager *, const QString &label, QWidget *parent );
+    Input( Manager *, const QString &label, QWidget *parent, Properties *p );
 
     void loadData();
     void saveData();

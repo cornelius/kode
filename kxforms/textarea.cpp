@@ -32,8 +32,8 @@
 
 using namespace KXForms;
 
-TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent, m )
+TextArea::TextArea( Manager *m, const QString &label, QWidget *parent, Properties *p )
+  : GuiElement( parent, m, p )
 {
   mLabel = new QLabel( label, mParent );
   mEdit = new QTextEdit( mParent );
@@ -41,6 +41,7 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent )
 
   mEdit->setMinimumHeight( 40 );
 
+  applyProperties();
 }
 
 void TextArea::loadData()
@@ -88,5 +89,15 @@ void TextArea::saveData()
   for( n = docElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     kDebug() << "TAG: " << n.toElement().tagName() << endl;
     e.appendChild( n.cloneNode() );
+  }
+}
+
+void TextArea::applyProperties()
+{
+  if( !mProperties )
+    return;
+
+  if( mEdit ) {
+    mEdit->setReadOnly( mProperties->readonly );
   }
 }

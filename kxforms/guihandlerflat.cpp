@@ -315,7 +315,7 @@ void GuiHandlerFlat::addWidget( QLayout *l, QWidget *w )
   }
 }
 
-void GuiHandlerFlat::addElement( QLayout *l, QWidget *label, QWidget *widget )
+void GuiHandlerFlat::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop )
 {
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );

@@ -9,7 +9,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="category"/>
-        <xs:element ref="title"/>
+	<xs:element ref="title"/>
 	<xs:element ref="description"/>
 	<xs:element ref="partnercontext"/>
 	<!-- <xs:element ref="productcontext"/> -->
@@ -27,7 +27,7 @@
     </xs:annotation>
   </xs:element>
   
-  <xs:element name="title" type="xs:string"/>
+  <xs:element name="title" type="xs:string"/>  
   
   <xs:element name="description">
     <xs:annotation>

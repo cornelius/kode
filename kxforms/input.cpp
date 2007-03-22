@@ -31,14 +31,16 @@
 
 using namespace KXForms;
 
-Input::Input( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent, m )
+Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
+  : GuiElement( parent, m, p )
 {
   mLabel = new QLabel( label, mParent );
   mLineEdit = new KLineEdit( mParent );
   mWidget = mLineEdit;
 
   connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
+
+  applyProperties();
 }
 
 void Input::loadData()

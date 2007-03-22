@@ -63,7 +63,7 @@ class GuiHandlerDialogs : public GuiHandler
 
     QLayout *getTopLayout();
     void addWidget( QLayout *, QWidget * );
-    void addElement( QLayout *l, QWidget *label, QWidget *widget );
+    void addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 );
 
   protected:
     FormGui *createGui( Form *form, QWidget *parent );

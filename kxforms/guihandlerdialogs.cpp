@@ -179,8 +179,9 @@ void GuiHandlerDialogs::addWidget( QLayout *l, QWidget *w )
   }
 }
 
-void GuiHandlerDialogs::addElement( QLayout *l, QWidget *label, QWidget *widget )
+void GuiHandlerDialogs::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop )
 {
+  Q_UNUSED( prop );
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )

@@ -21,16 +21,22 @@
 
 #include "guielement.h"
 #include "manager.h"
+#include "dispatcher.h"
+
+#include <kdebug.h>
 
 using namespace KXForms;
 
-GuiElement::GuiElement( QWidget *parent, Manager *manager )
-  : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mManager( manager )
+GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
+  : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mManager( manager ),
+    mProperties( p )
 {
+  mManager->dispatcher()->registerElement( this );
 }
 
 GuiElement::~GuiElement()
 {
+  delete mProperties;
 }
 
 void GuiElement::setRef( const Reference &ref )
@@ -75,3 +81,55 @@ void GuiElement::loadData( const QDomElement &element )
   
   loadData();
 }
+
+void GuiElement::applyProperties()
+{
+  if( !mProperties )
+    return;
+
+  if( widget() )
+    widget()->setEnabled( !mProperties->readonly );
+}
+
+void GuiElement::parseProperties( const QDomElement &element, Properties *properties )
+{
+  QDomNode n;
+  for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    QDomElement e = n.toElement();
+    if ( e.tagName() == "properties" ) {
+      QDomNode n2;
+      for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
+        QDomElement e2 = n2.toElement();
+        if ( e2.tagName() == "readonly" ) {
+          properties->readonly = (e2.text() == "true");
+        } else if ( e2.tagName() == "relevant" ) {
+          QString elem = e2.attribute( "ref" );
+          QString value = e2.text();
+          if( !elem.isEmpty() && !value.isEmpty() )
+            properties->relevance[elem] = value;
+        } else if ( e2.tagName() == "layout" ) {
+          QDomNode n3;
+          bool ok;
+          for( n3 = e2.firstChild(); !n3.isNull(); n3 = n3.nextSibling() ) {
+            QDomElement e3 = n3.toElement();
+            if ( e3.tagName() == "page" ) {
+              properties->page = e3.text().toInt( &ok );
+              if( !ok ) properties->page = -1;
+            } else if ( e3.tagName() == "position" ) {
+              properties->position = e3.text().toInt( &ok );
+              if( !ok ) properties->position = -1;
+            } else if ( e3.tagName() == "valign" ) {
+              properties->valign = e3.text();
+            } else if ( e3.tagName() == "halign" ) {
+              properties->halign = e3.text();
+            } else if ( e3.tagName() == "appearance" ) {
+              properties->appearance = e3.text();
+            }
+          } 
+        }
+      }
+    }
+  }
+}
+
+#include "guielement.moc"

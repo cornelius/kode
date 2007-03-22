@@ -259,5 +259,5 @@ void Manager::addWidget( QLayout *l, QWidget *w )
 
 void Manager::addElement( QLayout *l, GuiElement *e )
 {
-  mGuiHandler->addElement( l, e->labelWidget(), e->widget() );
+  mGuiHandler->addElement( l, e->labelWidget(), e->widget(), e->properties() );
 }

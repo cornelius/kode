@@ -92,7 +92,7 @@ class GuiHandlerFlat : public QObject, public GuiHandler
 
     QLayout *getTopLayout();
     void addWidget( QLayout *, QWidget * );
-    void addElement( QLayout *, QWidget *label, QWidget *widget );
+    void addElement( QLayout *, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 );
 
   protected:
     FormGui *createGui( Form *form, QWidget *parent );

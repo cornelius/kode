@@ -18,31 +18,25 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef KXFORMS_SECTION_H
-#define KXFORMS_SECTION_H
+#ifndef DISPATCHER_H
+#define DISPATCHER_H
 
-#include "guielement.h"
-
-class QLayout;
-class QGroupBox;
+#include <QObject>
 
 namespace KXForms {
 
-class Section : public GuiElement
+class Dispatcher : public QObject
 {
+  Q_OBJECT
   public:
-    Section( Manager *, const QString &label, QWidget *parent, Properties *p );
+    Dispatcher() {};
 
-    void loadData() {}
-    void saveData() {}
+    void registerElement( QObject * );
 
-    QLayout *layout() { return mLayout; }
+  signals:
+    void valueChanged( const QString &, const QString & );
 
-  private:
-    QGroupBox *mBox;
-    QLayout *mLayout;
 };
 
 }
-
 #endif

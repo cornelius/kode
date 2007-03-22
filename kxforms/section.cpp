@@ -29,8 +29,8 @@
 
 using namespace KXForms;
 
-Section::Section( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent, m )
+Section::Section( Manager *m, const QString &label, QWidget *parent, Properties *p )
+  : GuiElement( parent, m, p )
 {
   mLabel = new QLabel( label );
   mBox = new QGroupBox( mParent );
@@ -38,4 +38,6 @@ Section::Section( Manager *m, const QString &label, QWidget *parent )
 
   mLayout = mManager->getTopLayout();
   mBox->setLayout( mLayout );
+
+  applyProperties();
 }

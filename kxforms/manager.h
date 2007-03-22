@@ -25,6 +25,7 @@
 #include "formgui.h"
 #include "kresult.h"
 #include "guihandler.h"
+#include "dispatcher.h"
 
 #include <QDomElement>
 
@@ -69,6 +70,8 @@ class Manager
     QLayout *getTopLayout();
     void addWidget( QLayout *, QWidget * );
     void addElement( QLayout *, GuiElement * );
+
+    Dispatcher *dispatcher() { return &mDispatcher; }
   protected:
     void loadData();
 
@@ -83,6 +86,8 @@ class Manager
     bool mDataLoaded;
 
     QString mSchemaUri;
+
+    Dispatcher mDispatcher;
 };
 
 }

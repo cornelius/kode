@@ -30,12 +30,14 @@
 
 using namespace KXForms;
 
-Select1::Select1( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent, m )
+Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties *p )
+  : GuiElement( parent, m, p )
 {
   mLabel = new QLabel( label, parent );
   mComboBox = new QComboBox( parent );
   mWidget = mComboBox;
+
+  applyProperties();
 }
 
 void Select1::parseElement( const QDomElement &formElement )

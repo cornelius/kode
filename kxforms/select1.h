@@ -32,7 +32,7 @@ namespace KXForms {
 class Select1 : public GuiElement
 {
   public:
-    Select1( Manager *, const QString &label, QWidget *parent );
+    Select1( Manager *, const QString &label, QWidget *parent, Properties *p );
 
     void loadData();
     void saveData();

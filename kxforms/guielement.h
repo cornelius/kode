@@ -26,6 +26,7 @@
 #include <QList>
 #include <QDomElement>
 #include <QLabel>
+#include <QMap>
 
 namespace KXForms {
 
@@ -33,13 +34,29 @@ class Manager;
 
 class GuiElement : public QObject
 {
+  Q_OBJECT
   public:
+
+    struct Properties {
+        Properties() : readonly( false ), page( -1 ), position( -1 ) {}
+        QString type;
+        QString constraint;
+        bool readonly;
+        QMap<QString, QString> relevance;
+        int page;
+        int position;
+        QString halign;
+        QString valign;
+        QString appearance;
+    };
+
     typedef QList<GuiElement *> List;
 
-    GuiElement( QWidget *parent, Manager *m );
+    GuiElement( QWidget *parent, Manager *m, Properties *p );
     virtual ~GuiElement();
 
     virtual void parseElement( const QDomElement & ) {}
+    static void parseProperties( const QDomElement &, Properties * );
 
     void setRef( const Reference & );
     Reference ref() const;
@@ -56,11 +73,20 @@ class GuiElement : public QObject
     virtual void loadData() = 0;
     virtual void saveData() = 0;
 
+    Properties *properties() { return mProperties; }
+
+  signals:
+    void valueChanged( const QString &, const QString & );
+
+  protected:
+    virtual void applyProperties();
+
   protected:
     QWidget *mParent;
     QLabel *mLabel;
     QWidget *mWidget;
     Manager *mManager;
+    Properties *mProperties;
 
   private:
     Reference mRef;

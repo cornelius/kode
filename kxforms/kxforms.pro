@@ -28,7 +28,8 @@ HEADERS += form.h \
            xformscommon.h \
            xmlbuilder.h \
            prefs.h \
-           section.h
+           section.h \
+           dispatcher.h
 SOURCES += form.cpp \
            formcreator.cpp \
            formgui.cpp \
@@ -50,7 +51,8 @@ SOURCES += form.cpp \
            xformscommon.cpp \
            xmlbuilder.cpp \
            prefs.cpp \
-           section.cpp
+           section.cpp \
+           dispatcher.cpp
 
 QT += xml
 
@@ -60,6 +62,7 @@ LIBS += -L../common -lkxmlcommon
 LIBS += -L../compat -lcompat
 
 DUMMY_MOCS = formgui.moc guihandlerdialogs.moc guihandlerflat.moc \
-  input.moc list.moc mainwindow.moc remotefile.moc formgui.moc
+  input.moc list.moc mainwindow.moc remotefile.moc formgui.moc \
+  dispatcher.moc guielement.moc
 
 system( touch $$DUMMY_MOCS )

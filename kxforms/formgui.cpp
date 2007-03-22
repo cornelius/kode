@@ -110,28 +110,32 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     XFormsCommon c = XFormsCommon::parseElement( e );
     if( !overrideLabel.isEmpty() )
       c.setLabel( overrideLabel );
+
     GuiElement *guiElement = 0;
+    GuiElement::Properties *properties = new GuiElement::Properties;
+    GuiElement::parseProperties( e, properties );
+
     if ( tag == "xf:label" ) {
       mLabel->setText( e.text() );
       if ( !mLabelHidden ) mLabel->show();
     } else if ( tag == "list" ) {
-      guiElement = new KXForms::List( mManager, c.label(), this );
+      guiElement = new KXForms::List( mManager, c.label(), this, properties );
       guiElement->setRef( ref() );
       hasList = true;
     } else if ( tag == "xf:input" ) {
-      Input *input = new Input( mManager, c.label(), this );
+      Input *input = new Input( mManager, c.label(), this, properties );
       connect( input, SIGNAL( returnPressed() ), SIGNAL( editingFinished() ) );
       guiElement = input;
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "xf:textarea" ) {
-      guiElement = new TextArea( mManager, c.label(), this );
+      guiElement = new TextArea( mManager, c.label(), this, properties );
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "xf:select1" ) {
-      guiElement = new Select1( mManager, c.label(), this );
+      guiElement = new Select1( mManager, c.label(), this, properties );
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "kxf:section" ) {
       if( e.attribute( "visible" ) != "false" ) {
-        guiElement = new Section( mManager, c.label(), this );
+        guiElement = new Section( mManager, c.label(), this, properties );
         guiElement->setRef( e.attribute( "ref" ) );
         parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ) );
       } else {
@@ -139,6 +143,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       }
     } else {
       kWarning() << "  Unsupported element" << endl;
+      delete properties;
     }
     
     if ( guiElement ) {

@@ -33,7 +33,7 @@ class List : public GuiElement
 {
     Q_OBJECT
   public:
-    List( Manager *, const QString &label, QWidget *parent );
+    List( Manager *, const QString &label, QWidget *parent, Properties *p );
 
     class ItemClass
     {

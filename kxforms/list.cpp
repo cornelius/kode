@@ -39,8 +39,8 @@
 
 using namespace KXForms;
 
-List::List( Manager *m, const QString &label, QWidget *parent )
-  : GuiElement( parent, m )
+List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
+  : GuiElement( parent, m, p )
 {
   kDebug() << "List() " << label << endl;
   mWidget = new QWidget( mParent );
@@ -97,6 +97,8 @@ List::List( Manager *m, const QString &label, QWidget *parent )
   if ( !Prefs::developerMode() ) {
     mView->hideColumn( 1 );
   }
+
+  applyProperties();
 }
 
 void List::newItem()

@@ -22,6 +22,7 @@
 #define GUIHANDLER_H
 
 #include "reference.h"
+#include "guielement.h"
 
 class QLayout;
 class QWidget;
@@ -46,7 +47,7 @@ class GuiHandler
 
     virtual QLayout *getTopLayout() = 0;
     virtual void addWidget( QLayout *, QWidget * ) = 0;
-    virtual void addElement( QLayout *, QWidget *label, QWidget *widget ) = 0;
+    virtual void addElement( QLayout *, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 ) = 0;
 
     Manager *manager() const;
 

@@ -26,7 +26,8 @@ set(kxforms_SRCS
    reference.cpp 
    textarea.cpp 
    select1.cpp
-   section.cpp )
+   section.cpp 
+   dispatcher.cpp )
 
 kde4_automoc(${kxforms_SRCS})
 
