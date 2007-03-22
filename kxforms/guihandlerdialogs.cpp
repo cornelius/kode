@@ -189,11 +189,11 @@ void GuiHandlerDialogs::addElement( QLayout *l, QWidget *label, QWidget *widget,
 
     int row = gl->rowCount();
     if( label ) {
-      gl->addWidget( label, row, 0, Qt::AlignTop );
-      gl->addWidget( widget, row, 1 );
+      gl->addWidget( label, row, 0, prop->alignment() );
+      gl->addWidget( widget, row, 1, prop->alignment() );
     }
     else {
-      gl->addWidget( widget, row, 0, 1, 2 );
+      gl->addWidget( widget, row, 0, 1, 2, prop->alignment() );
     }
   }
   else {
@@ -204,8 +204,8 @@ void GuiHandlerDialogs::addElement( QLayout *l, QWidget *label, QWidget *widget,
     QBoxLayout *newLayout;
     newLayout = new QVBoxLayout();
 
-    newLayout->addWidget( label );
-    newLayout->addWidget( widget );
+    newLayout->addWidget( label, prop->alignment() );
+    newLayout->addWidget( widget, prop->alignment() );
 
     vbl->insertLayout( l->count() - 1, newLayout );
   }

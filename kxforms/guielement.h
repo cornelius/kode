@@ -39,16 +39,19 @@ class GuiElement : public QObject
 
     enum Appearance { Undefined, Minimal, Compact, Full };
     struct Properties {
-        Properties() : readonly( false ), page( -1 ), position( -1 ), appearance( Undefined ) {}
+        Properties() : readonly( false ), page( -1 ), position( -1 ),
+            halign( 0 ), valign( Qt::AlignTop ), appearance( Undefined ) {}
         QString type;
         QString constraint;
         bool readonly;
         QMap<QString, QString> relevance;
         int page;
         int position;
-        QString halign;
-        QString valign;
+        Qt::Alignment halign;
+        Qt::Alignment valign;
         Appearance appearance;
+
+        Qt::Alignment alignment() { return (halign | valign); }
     };
 
     typedef QList<GuiElement *> List;

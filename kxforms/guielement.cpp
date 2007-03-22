@@ -118,9 +118,21 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
               properties->position = e3.text().toInt( &ok );
               if( !ok ) properties->position = -1;
             } else if ( e3.tagName() == "valign" ) {
-              properties->valign = e3.text();
+              if( e3.text() == "bottom" )
+                properties->valign = Qt::AlignBottom;
+              else if( e3.text() == "center" )
+                properties->valign = Qt::AlignVCenter;
+              else
+                properties->valign = Qt::AlignTop;
             } else if ( e3.tagName() == "halign" ) {
-              properties->halign = e3.text();
+              if( e3.text() == "right" )
+                properties->valign = Qt::AlignRight;
+              else if( e3.text() == "center" )
+                properties->valign = Qt::AlignHCenter;
+              else if( e3.text() == "center" )
+                properties->valign = Qt::AlignLeft;
+              else
+                properties->valign = 0;
             } else if ( e3.tagName() == "appearance" ) {
               if( e3.text() == "minimal" )
                 properties->appearance = Minimal;
