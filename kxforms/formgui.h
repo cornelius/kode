@@ -30,6 +30,7 @@
 
 class QLayout;
 class QLabel;
+class QTabWidget;
 
 namespace KXForms {
 
@@ -63,6 +64,8 @@ class FormGui : public QWidget
 
     QDomElement findContextElement( const QDomDocument &doc );
 
+    bool hasPages( const QDomElement & );
+    void setupPages( const QDomElement &, QLayout * );
   private:
     Manager *mManager;
 
@@ -74,6 +77,8 @@ class FormGui : public QWidget
 
     QLabel *mLabel;
     QLabel *mRefLabel;
+
+    QTabWidget *mTabWidget;
     
     bool mLabelHidden;
 };

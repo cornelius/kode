@@ -36,6 +36,7 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QTabWidget>
 
 using namespace KXForms;
 
@@ -102,6 +103,9 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
   bool hasList = false;
   QLayout *layout = l ? l : mTopLayout;
 
+  if( hasPages( element ) )
+    setupPages( element, layout );
+
   QDomNode n;
   for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
@@ -114,6 +118,12 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     GuiElement *guiElement = 0;
     GuiElement::Properties *properties = new GuiElement::Properties;
     GuiElement::parseProperties( e, properties );
+    if( hasPages( element ) ) {
+      if( properties->page >= 0 && mTabWidget->widget( properties->page ) )
+        layout = mTabWidget->widget( properties->page )->layout();
+      else
+        layout = mTabWidget->widget( 0 )->layout();
+    }
 
     if ( tag == "xf:label" ) {
       mLabel->setText( e.text() );
@@ -178,6 +188,27 @@ void FormGui::saveData()
   GuiElement::List::ConstIterator itGui;
   for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
     (*itGui)->saveData();
+  }
+}
+
+bool FormGui::hasPages( const QDomElement &e )
+{
+  return !e.firstChildElement( "pages" ).isNull();
+}
+
+void FormGui::setupPages( const QDomElement &element, QLayout *l )
+{
+  mTabWidget = new QTabWidget( this );
+  l->addWidget( mTabWidget );
+  QDomElement e = element.firstChildElement( "pages" ).firstChild().toElement();
+  while( !e.isNull() ) {
+    if( e.tagName() == "page" ) {
+      QWidget *w = new QWidget( mTabWidget );
+      QLayout *l = mManager->getTopLayout();
+      w->setLayout( l );
+      mTabWidget->addTab( w, e.text() );
+    }
+    e = e.nextSibling().toElement();
   }
 }
 
