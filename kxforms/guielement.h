@@ -37,8 +37,9 @@ class GuiElement : public QObject
   Q_OBJECT
   public:
 
+    enum Appearance { Undefined, Minimal, Compact, Full };
     struct Properties {
-        Properties() : readonly( false ), page( -1 ), position( -1 ) {}
+        Properties() : readonly( false ), page( -1 ), position( -1 ), appearance( Undefined ) {}
         QString type;
         QString constraint;
         bool readonly;
@@ -47,7 +48,7 @@ class GuiElement : public QObject
         int position;
         QString halign;
         QString valign;
-        QString appearance;
+        Appearance appearance;
     };
 
     typedef QList<GuiElement *> List;

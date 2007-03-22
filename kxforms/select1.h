@@ -24,8 +24,10 @@
 #include "guielement.h"
 
 #include <QStringList>
+#include <QList>
 
 class QComboBox;
+class QRadioButton;
 
 namespace KXForms {
 
@@ -40,6 +42,7 @@ class Select1 : public GuiElement
     void parseElement( const QDomElement &formElement );
 
   private:
+    QList<QRadioButton *> mRadioButtons;
     QComboBox *mComboBox;
     QStringList mValues;
 };

@@ -27,15 +27,22 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QComboBox>
+#include <QRadioButton>
 
 using namespace KXForms;
 
 Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
-  mLabel = new QLabel( label, parent );
-  mComboBox = new QComboBox( parent );
-  mWidget = mComboBox;
+  if( mProperties->appearance == Full ) {
+    mWidget = new QWidget( parent );
+    mWidget->setLayout( new QVBoxLayout( parent ) );
+    mLabel = new QLabel( label, parent );
+  } else {
+    mLabel = new QLabel( label, parent );
+    mComboBox = new QComboBox( parent );
+    mWidget = mComboBox;
+  }
 
   applyProperties();
 }
@@ -58,8 +65,14 @@ void Select1::parseElement( const QDomElement &formElement )
         }
       }
       if ( !label.isEmpty() && !value.isEmpty() ) {
-        mComboBox->addItem( label );
         mValues.append( value );
+        if( mProperties->appearance == Full ) {
+          QRadioButton *radio = new QRadioButton( label, mWidget );
+          mWidget->layout()->addWidget( radio );
+          mRadioButtons.append( radio );
+        } else {
+          mComboBox->addItem( label );
+        }
       }
     }
   }
@@ -80,7 +93,13 @@ void Select1::loadData()
     if ( *it == txt ) break;
   }
   if ( it != mValues.end() ) {
-    mComboBox->setCurrentIndex( count );
+    if( mProperties->appearance == Full ) {
+      QRadioButton *radio = mRadioButtons[count];
+      if( radio )
+        radio->setChecked( true );
+    } else {
+      mComboBox->setCurrentIndex( count );
+    }
   } else {
     kWarning() << "Select1::loadData() unknown value: " << txt << endl;
   }
@@ -93,7 +112,18 @@ void Select1::saveData()
   kDebug() << "Context: " << context().nodeName() << endl;
   Reference::Segment s = ref().segments().last();
 
-  QString txt = mValues[ mComboBox->currentIndex() ];
+  QString txt;
+  if( mProperties->appearance == Full ) {
+    for( int i = 0; i < mRadioButtons.size(); ++i ) {
+      if( mRadioButtons[i]->isChecked() ) {
+        txt = mValues[ i ];
+        break;
+      }
+    }
+  } else { 
+    txt = mValues[ mComboBox->currentIndex() ];
+  }
+
   if ( s.isAttribute() ) {
     context().setAttribute( s.name(), txt );
   } else {

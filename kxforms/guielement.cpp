@@ -32,6 +32,8 @@ GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
     mProperties( p )
 {
   mManager->dispatcher()->registerElement( this );
+  if( !mProperties )
+    mProperties = new Properties;
 }
 
 GuiElement::~GuiElement()
@@ -84,9 +86,6 @@ void GuiElement::loadData( const QDomElement &element )
 
 void GuiElement::applyProperties()
 {
-  if( !mProperties )
-    return;
-
   if( widget() )
     widget()->setEnabled( !mProperties->readonly );
 }
@@ -123,7 +122,12 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
             } else if ( e3.tagName() == "halign" ) {
               properties->halign = e3.text();
             } else if ( e3.tagName() == "appearance" ) {
-              properties->appearance = e3.text();
+              if( e3.text() == "minimal" )
+                properties->appearance = Minimal;
+              else if( e3.text() == "compact" )
+                properties->appearance = Compact;
+              else if( e3.text() == "full" )
+                properties->appearance = Full;
             }
           } 
         }

@@ -94,9 +94,6 @@ void TextArea::saveData()
 
 void TextArea::applyProperties()
 {
-  if( !mProperties )
-    return;
-
   if( mEdit ) {
     mEdit->setReadOnly( mProperties->readonly );
   }
