@@ -111,6 +111,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     QDomElement e = n.toElement();
     QString tag = e.tagName();
     kDebug() << "  Found element '" << tag << "'" << endl;
+
     XFormsCommon c = XFormsCommon::parseElement( e );
     if( !overrideLabel.isEmpty() )
       c.setLabel( overrideLabel );

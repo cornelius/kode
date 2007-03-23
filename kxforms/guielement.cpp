@@ -151,7 +151,8 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
 void GuiElement::slotValueChanged( const QString &ref, const QString &value )
 {
   if( !mProperties->relevance[ref].isEmpty() ) {
-    setRelevant( mProperties->relevance[ref] == value );
+    QRegExp exp( mProperties->relevance[ref] );
+    setRelevant( value.indexOf( exp ) >= 0 );
   }
 }
 
