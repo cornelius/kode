@@ -119,8 +119,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     GuiElement::Properties *properties = new GuiElement::Properties;
     GuiElement::parseProperties( e, properties );
     if( hasPages( element ) ) {
-      if( properties->page >= 0 && mTabWidget->widget( properties->page ) )
-        layout = mTabWidget->widget( properties->page )->layout();
+      if( !properties->page.isEmpty() && mTabs[ properties->page ] )
+        layout = mTabs[ properties->page ]->layout();
       else
         layout = mTabWidget->widget( 0 )->layout();
     }
@@ -207,6 +207,7 @@ void FormGui::setupPages( const QDomElement &element, QLayout *l )
       QLayout *l = mManager->getTopLayout();
       w->setLayout( l );
       mTabWidget->addTab( w, e.text() );
+      mTabs[ e.attribute( "id" ) ] = w;
     }
     e = e.nextSibling().toElement();
   }

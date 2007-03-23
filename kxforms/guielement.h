@@ -45,7 +45,7 @@ class GuiElement : public QObject
         QString constraint;
         bool readonly;
         QMap<QString, QString> relevance;
-        int page;
+        QString page;
         int position;
         Qt::Alignment halign;
         Qt::Alignment valign;

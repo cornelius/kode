@@ -25,8 +25,7 @@
 
 #include <QWidget>
 #include <QDomElement>
-#include <QLabel>
-#include <QList>
+#include <QMap>
 
 class QLayout;
 class QLabel;
@@ -79,6 +78,7 @@ class FormGui : public QWidget
     QLabel *mRefLabel;
 
     QTabWidget *mTabWidget;
+    QMap< QString, QWidget *> mTabs;
     
     bool mLabelHidden;
 };

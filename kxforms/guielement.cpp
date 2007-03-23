@@ -112,8 +112,7 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
           for( n3 = e2.firstChild(); !n3.isNull(); n3 = n3.nextSibling() ) {
             QDomElement e3 = n3.toElement();
             if ( e3.tagName() == "page" ) {
-              properties->page = e3.text().toInt( &ok );
-              if( !ok ) properties->page = -1;
+              properties->page = e3.text();
             } else if ( e3.tagName() == "position" ) {
               properties->position = e3.text().toInt( &ok );
               if( !ok ) properties->position = -1;
