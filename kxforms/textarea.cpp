@@ -105,4 +105,18 @@ void TextArea::emitValueChanged()
   emit valueChanged( ref().toString(), mEdit->toPlainText() );
 }
 
+
+bool TextArea::isValid()
+{
+  if( mProperties->constraint.isEmpty() )
+    return true;
+
+  QRegExp regExp( mProperties->constraint );  
+
+  if( (mEdit->toPlainText().indexOf( regExp ) >= 0 ) ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 #include "textarea.moc"

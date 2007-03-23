@@ -35,6 +35,7 @@ class TextArea : public GuiElement
 
     void loadData();
     void saveData();
+    bool isValid();
 
   protected slots:
     void emitValueChanged();

@@ -37,6 +37,9 @@ class Input : public GuiElement
 
     void loadData();
     void saveData();
+    bool isValid();
+
+    QString value();
 
   signals:
     void returnPressed();

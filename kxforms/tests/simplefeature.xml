@@ -2,14 +2,14 @@
   <category>BlubbCategory0</category>
   <category>BlubbCategory1</category>
   <category>BlubbCategory2</category>
-  <title>TestTitle</title>
+  <title>24h</title>
   <description>
     <richtext>That is the <a href="www.suse.de" >
 description</a>.</richtext>
   </description>
-  <bool></bool>
+  <bool>0</bool>
   <partnercontext>
-    <organization>AMD</organization>
+    <organization>11a</organization>
     <externalid>123456</externalid>
   </partnercontext>
   <productcontext>
@@ -44,6 +44,6 @@ description</a>.</richtext>
     </product>
   </productcontext>
   <documentationstatus>
-    <implementation/>
+    <dropped/>
   </documentationstatus>
 </feature>

@@ -82,17 +82,8 @@ void Input::saveData()
 
   Reference::Segment s = ref().segments().last();
 
-  QString txt;
-  if( mProperties->type == "xs:integer" ) {
-    txt = QString::number( mSpinBox->value() );
-  } else if( mProperties->type == "xs:boolean" ) {
-    txt = mCheckBox->isChecked() ? "true" : false;
-  } else {
-    txt = mLineEdit->text();
-  }
-
   if ( s.isAttribute() ) {
-    ref().applyAttributeContext( context() ).setAttribute( s.name(), txt );
+    ref().applyAttributeContext( context() ).setAttribute( s.name(), value() );
   } else {
     QDomElement e = ref().applyElement( context() );
     if ( e.isNull() ) {
@@ -100,26 +91,39 @@ void Input::saveData()
     }
     QDomText t = e.firstChild().toText();
     if ( t.isNull() ) {
-      t = mManager->document().createTextNode( txt );
+      t = mManager->document().createTextNode( value() );
       e.appendChild( t ); 
     } else {
-      t.setData( txt );
+      t.setData( value() );
     }
   }
 }
 
 void Input::emitValueChanged()
 {
-  QString value;
+  emit valueChanged( ref().toString(), value() );
+}
 
+bool Input::isValid()
+{
+  kDebug() << k_funcinfo << mProperties->constraint << " : " << value() << endl;
+  if( mProperties->constraint.isEmpty() )
+    return true;
+
+  QRegExp regExp( mProperties->constraint );  
+
+  return (value().indexOf( regExp ) >= 0);
+}
+
+QString Input::value()
+{
   if( mProperties->type == "xs:integer" ) {
-    value = QString::number( mSpinBox->value() );
+    return QString::number( mSpinBox->value() );
   } else if( mProperties->type == "xs:boolean" ) {
-    value = mCheckBox->isChecked() ? "true" : "false";
+    return mCheckBox->isChecked() ? "true" : "false";
   } else {
-    value = mLineEdit->text();
+    return mLineEdit->text();
   }
-  emit valueChanged( ref().toString(), value );
 }
 
 #include "input.moc"

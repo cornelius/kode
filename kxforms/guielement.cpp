@@ -102,6 +102,8 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
           properties->readonly = (e2.text() == "true");
         } else if ( e2.tagName() == "type" ) {
           properties->type = e2.text();
+        } else if ( e2.tagName() == "constraint" ) {
+          properties->constraint = e2.text();
         } else if ( e2.tagName() == "relevant" ) {
           QString elem = Reference( e2.attribute( "ref" ) ).toString();
           QString value = e2.text();

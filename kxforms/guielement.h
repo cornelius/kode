@@ -76,6 +76,7 @@ class GuiElement : public QObject
 
     virtual void loadData() = 0;
     virtual void saveData() = 0;
+    virtual bool isValid() { return true; }
 
     Properties *properties() { return mProperties; }
 

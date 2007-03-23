@@ -33,6 +33,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kdialog.h>
+#include <kmessagebox.h>
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -187,8 +188,22 @@ void FormGui::loadData( const QDomDocument &doc )
 void FormGui::saveData()
 {
   GuiElement::List::ConstIterator itGui;
+  QString invalidElements;
+
+  bool valid = true;
   for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
-    (*itGui)->saveData();
+    if( !(*itGui)->isValid() ) {
+      valid = false;
+      invalidElements += QString( " - %1 (constraint: %2)\n" ).arg( (*itGui)->ref().path(), (*itGui)->properties()->constraint  );
+    }
+  }
+  if( valid ) {
+    for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
+      (*itGui)->saveData();
+    }
+  } else {
+    kDebug() << k_funcinfo << "Not all elements were valid" << endl;
+    KMessageBox::error( this, i18n( "There were elements not matching their constraint:\n" ) + invalidElements );
   }
 }
 
