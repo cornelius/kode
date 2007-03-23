@@ -29,17 +29,20 @@ namespace KXForms {
 
 class TextArea : public GuiElement
 {
+    Q_OBJECT
   public:
     TextArea( Manager *, const QString &label, QWidget *parent, Properties *p );
-
-    void applyProperties();
 
     void loadData();
     void saveData();
 
-  private:
-    Manager *mManager;
+  protected slots:
+    void emitValueChanged();
 
+  protected:
+    virtual void applyProperties();
+
+  private:
     QTextEdit *mEdit;
 };
 

@@ -35,6 +35,7 @@ using namespace KXForms;
 Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
+  mManager->dispatcher()->registerElement( this );
     mLabel = new QLabel( label, parent );
   if( mProperties->appearance == Full ) {
     mWidget = new QWidget( parent );

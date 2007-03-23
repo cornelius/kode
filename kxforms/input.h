@@ -24,6 +24,8 @@
 #include "guielement.h"
 
 class KLineEdit;
+class QSpinBox;
+class QCheckBox;
 
 namespace KXForms {
 
@@ -39,8 +41,13 @@ class Input : public GuiElement
   signals:
     void returnPressed();
 
+  protected slots:
+    void emitValueChanged();
+
   private:
     KLineEdit *mLineEdit;
+    QSpinBox *mSpinBox;
+    QCheckBox *mCheckBox;
 };
 
 }

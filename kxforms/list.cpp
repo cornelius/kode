@@ -42,6 +42,7 @@ using namespace KXForms;
 List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
+  mManager->dispatcher()->registerElement( this );
   kDebug() << "List() " << label << endl;
   mWidget = new QWidget( mParent );
   mLabel = new QLabel( label );

@@ -29,13 +29,15 @@ class Dispatcher : public QObject
 {
   Q_OBJECT
   public:
-    Dispatcher() {};
+    Dispatcher();
 
     void registerElement( QObject * );
 
   signals:
     void valueChanged( const QString &, const QString & );
 
+  private slots:
+    void slotValueChanged( const QString &, const QString & );
 };
 
 }

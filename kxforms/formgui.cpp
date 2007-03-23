@@ -152,7 +152,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
         parseElement( e, layout, e.attribute( "overrideLabel" ) );
       }
     } else {
-      kWarning() << "  Unsupported element" << endl;
+      kWarning() << "  Unsupported element: " << tag << endl;
       delete properties;
     }
     

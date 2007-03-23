@@ -26,8 +26,6 @@
 #include <kdebug.h>
 
 #include <QLabel>
-#include <QVBoxLayout>
-#include <QTextStream>
 #include <QTextEdit>
 
 using namespace KXForms;
@@ -35,6 +33,7 @@ using namespace KXForms;
 TextArea::TextArea( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
+  mManager->dispatcher()->registerElement( this );
   mLabel = new QLabel( label, mParent );
   mEdit = new QTextEdit( mParent );
   mWidget = mEdit;
@@ -42,6 +41,8 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent, Propertie
   mEdit->setMinimumHeight( 40 );
 
   applyProperties();
+
+  connect( mEdit, SIGNAL(textChanged()), SLOT(emitValueChanged()) );
 }
 
 void TextArea::loadData()
@@ -98,3 +99,10 @@ void TextArea::applyProperties()
     mEdit->setReadOnly( mProperties->readonly );
   }
 }
+
+void TextArea::emitValueChanged()
+{
+  emit valueChanged( ref().toString(), mEdit->toPlainText() );
+}
+
+#include "textarea.moc"

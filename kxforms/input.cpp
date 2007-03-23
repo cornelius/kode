@@ -28,17 +28,31 @@
 
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QSpinBox>
+#include <QCheckBox>
 
 using namespace KXForms;
 
 Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
+  mManager->dispatcher()->registerElement( this );
   mLabel = new QLabel( label, mParent );
-  mLineEdit = new KLineEdit( mParent );
-  mWidget = mLineEdit;
+  if( mProperties->type == "xs:integer" ) {
+    mSpinBox = new QSpinBox( mParent );
+    mWidget = mSpinBox;
+    connect( mSpinBox, SIGNAL( valueChanged(int) ), SLOT( emitValueChanged() ) );
+  } else if( mProperties->type == "xs:boolean" ) {
+    mCheckBox = new QCheckBox( mParent );
+    mWidget = mCheckBox;
+    connect( mCheckBox, SIGNAL( stateChanged(int) ), SLOT( emitValueChanged() ) );
+  } else {
+    mLineEdit = new KLineEdit( mParent );
+    mWidget = mLineEdit;
+    connect( mLineEdit, SIGNAL( textChanged(QString) ), SLOT( emitValueChanged() ) );
+    connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
+  }
 
-  connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
 
   applyProperties();
 }
@@ -47,10 +61,19 @@ void Input::loadData()
 {
   kDebug() << "Input::loadData() " << ref().toString() << "  context: "
     << context().tagName() << endl;
-
-  QString txt = ref().applyString( context() );
-
-  mLineEdit->setText( txt );
+  if( mProperties->type == "xs:integer" ) {
+    QString txt = ref().applyString( context() );
+    bool ok;
+    int value = txt.toInt( &ok );
+    if( ok )
+      mSpinBox->setValue( value );
+  } else if( mProperties->type == "xs:boolean" ) {
+    QString txt = ref().applyString( context() );
+    mCheckBox->setChecked( txt == "true" );
+  } else {
+    QString txt = ref().applyString( context() );
+    mLineEdit->setText( txt );
+  }
 }
 
 void Input::saveData()
@@ -59,7 +82,15 @@ void Input::saveData()
 
   Reference::Segment s = ref().segments().last();
 
-  QString txt = mLineEdit->text();
+  QString txt;
+  if( mProperties->type == "xs:integer" ) {
+    txt = QString::number( mSpinBox->value() );
+  } else if( mProperties->type == "xs:boolean" ) {
+    txt = mCheckBox->isChecked() ? "true" : false;
+  } else {
+    txt = mLineEdit->text();
+  }
+
   if ( s.isAttribute() ) {
     ref().applyAttributeContext( context() ).setAttribute( s.name(), txt );
   } else {
@@ -75,6 +106,20 @@ void Input::saveData()
       t.setData( txt );
     }
   }
+}
+
+void Input::emitValueChanged()
+{
+  QString value;
+
+  if( mProperties->type == "xs:integer" ) {
+    value = QString::number( mSpinBox->value() );
+  } else if( mProperties->type == "xs:boolean" ) {
+    value = mCheckBox->isChecked() ? "true" : "false";
+  } else {
+    value = mLineEdit->text();
+  }
+  emit valueChanged( ref().toString(), value );
 }
 
 #include "input.moc"

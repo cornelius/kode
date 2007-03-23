@@ -82,6 +82,10 @@ class GuiElement : public QObject
   signals:
     void valueChanged( const QString &, const QString & );
 
+  public slots:
+    void slotValueChanged( const QString &, const QString & );
+    void setRelevant( bool );
+
   protected:
     virtual void applyProperties();
 

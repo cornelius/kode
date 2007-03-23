@@ -7,6 +7,7 @@
     <richtext>That is the <a href="www.suse.de" >
 description</a>.</richtext>
   </description>
+  <bool></bool>
   <partnercontext>
     <organization>AMD</organization>
     <externalid>123456</externalid>

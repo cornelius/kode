@@ -31,7 +31,6 @@ GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
   : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mManager( manager ),
     mProperties( p )
 {
-  mManager->dispatcher()->registerElement( this );
   if( !mProperties )
     mProperties = new Properties;
 }
@@ -101,8 +100,10 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
         QDomElement e2 = n2.toElement();
         if ( e2.tagName() == "readonly" ) {
           properties->readonly = (e2.text() == "true");
+        } else if ( e2.tagName() == "type" ) {
+          properties->type = e2.text();
         } else if ( e2.tagName() == "relevant" ) {
-          QString elem = e2.attribute( "ref" );
+          QString elem = Reference( e2.attribute( "ref" ) ).toString();
           QString value = e2.text();
           if( !elem.isEmpty() && !value.isEmpty() )
             properties->relevance[elem] = value;
@@ -145,6 +146,19 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
       }
     }
   }
+}
+
+void GuiElement::slotValueChanged( const QString &ref, const QString &value )
+{
+  if( !mProperties->relevance[ref].isEmpty() ) {
+    setRelevant( mProperties->relevance[ref] == value );
+  }
+}
+
+void GuiElement::setRelevant( bool relevant )
+{
+  mLabel->setEnabled( relevant );
+  mWidget->setEnabled( relevant );
 }
 
 #include "guielement.moc"
