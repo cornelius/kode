@@ -1,0 +1,117 @@
+
+
+
+
+\pagebreak 
+\section{ KXForms Input Property Elements Descriptions}
+\label{inputpropertyelements}
+
+\subsection{ The \texttt{type} Element}
+\label{type}
+\begin{description}
+ \item Description: The \texttt{type} element defines the type of the data that is hold in the corresponding control. All XML Schema types should be supported. Depending on the type, the application can display other widgets for the control, e.g. a lineedit for \texttt{xs:string}, a spinbox for \texttt{xs:integer} and so on.
+
+Additionally, the \texttt{type} element should be used to validate the content of the control. A \texttt{xs:integer} control containing chars should be qualified as invalid, for example.
+
+ \item Possible Content: One of the datatypes defined in the XML Schema specification.
+
+ \item Default: \texttt{xs:string}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{type} Element]
+<type>xs:string</type>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{constraint} Element}
+\label{constrain}
+\begin{description}
+ \item Description: This element holds a regular expression that the content of the control has to match in order to be qualified as valid. If invalid the control should visually indicate the invalid state and circumvent the data to be stored as XML.
+
+ \item Possible Content: A regular expression.
+
+ \item Default: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{contraint} Element]
+<constraint>\w{3}\d</constraint>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+\pagebreak 
+\section{ KXForms Property Elements Descriptions}
+\label{propertyelements}
+
+\subsection{ The \texttt{readonly} Element}
+\label{readonly}
+\begin{description}
+ \item Description: This element is used to mark controls as read-only, thus preventing the user to edit the content.
+
+ \item Possible Content: \texttt{true} | \texttt{false}
+
+ \item Default: false
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{readonly} Element]
+<readonly>true</readonly>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{relevant} Element}
+\label{relevant}
+\begin{description}
+ \item Description: With the \texttt{relevant} element it is possible to activate controls depending on the state of another control. Therefor the value of the element specified by the \texttt{ref} attribute is evaluated and compared to the value of the \texttt{relevant} element. If they match the control is set to read-and-write state, if they don't it is set to read-only state.
+
+ \item Possible Content: A regular expression.
+
+ \item Default: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{relevant} Element]
+<relevant ref="id/isExternal">true</>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{layout} Element}
+\label{layout}
+\begin{description}
+ \item Description: This element is used to define the layout of the GUI more fine-grained.
+
+ \item Possible Content: Layout elements (\ref{layoutelements})
+
+ \item Default: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{layout} Element]
+<layout>
+ <page>1</page>
+ <position>-1</position>
+ <valign>center</valign>
+ <halign>right</halign>
+</layout>
+\end{lstlisting}
+\end{description}

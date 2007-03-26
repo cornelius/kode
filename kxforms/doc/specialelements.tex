@@ -1,0 +1,311 @@
+
+\pagebreak 
+\section{ KXForms Special Elements Descriptions}
+\label{specialelements}
+
+\subsection{ The \texttt{pages} Element}
+\label{pages}
+\begin{description}
+ \item Description: This element defines the pages that are available on the corresponding form. By default, all controls are placed at the same page. When there are too many controls or there is a strong logical separation between them it might be appropriate to place them on different pages. These pages can be declared using the \texttt{pages} element.
+
+The presentation of the pages is left to the application. In most cases, a tab widget might the most appropriate kind of presentation.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: \texttt{page} (\ref{pageelement})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{page} Element]
+<pages>
+ <page id="feature">Feature Data</page>
+ <page id="product">Product Data</page>
+ <page id="doc">Documentation</page>
+</pages>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+\subsection{ The \texttt{page} Element}
+\label{pageelement}
+\begin{description}
+ \item Description: This element specifies one page on the form.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: 
+
+\begin{itemize}
+ \item \textbf{\texttt{id}}
+
+This attribute specifies the id of the page. This id can then be referenced by GUI Elements in order to be placed on this page.
+\end{itemize}
+
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{page} Element]
+<page id="feature">Feature Data</page>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+\subsection{ The \texttt{visibleElements} Element}
+\label{visibleElements}
+\begin{description}
+ \item Description: This element is used to specify elements that are shown as columns in a multi-column list.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: \texttt{visibleElement} (\ref{visibleElement})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{visibleElements} Element]
+<visibleElements>
+ <visibleElement ref="product[1]/name[1]">Name</visibleElement>
+ <visibleElement ref="product[1]/version[1]">Version</visibleElement>
+</visibleElements>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The \texttt{visibleElement} Element}
+\label{visibleElement}
+\begin{description}
+ \item Description: This element defines the reference to one element and its label that is shown as a column in a list.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements:
+
+\begin{itemize}
+ \item \textbf{\texttt{truncate}} [optional]
+
+Optional attribute that defines after how many chars the label should be truncated. If the label succeeds the defined length, it will be truncated and ``...'' should be appended to indicate the truncation.
+\end{itemize}
+
+ \item Special Child Elements: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{visibleElement} Element]
+<visibleElement ref="product[1]/version[1]" 
+    truncate="20">Version</visibleElement>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{itemClass} Element}
+\label{itemClass}
+\begin{description}
+ \item Description: This element describes the element a list corresponds to.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: \texttt{itemLabel} (\ref{itemLabel})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{itemClass} Element]
+<itemclass ref="/productcontext">
+ <itemlabel>
+  <itemLabelArg ref="/product/productid" truncate="20"/>
+ </itemlabel>
+</itemclass>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{itemLabel} Element}
+\label{itemLabel}
+\begin{description}
+ \item Description: This element describes which element provides the label for a single-column list.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: \texttt{itemLabelArg} (\ref{itemLabelArg})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{itemLabel} Element]
+<itemlabel>
+ <itemLabelArg ref="/product/productid" truncate="20"/>
+</itemlabel>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{itemLabelArg} Element}
+\label{itemLabelArg}
+\begin{description}
+ \item Description: This element defines the label for the list.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes:
+
+\begin{itemize}
+ \item \textbf{\texttt{truncate}} [optional]
+
+Optional attribute that defines after how many chars the label should be truncated. If the label succeeds the defined length, it will be truncated and ``...'' should be appended to indicate the truncation.
+\end{itemize}
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{itemLabelArg} Element]
+<itemLabelArg ref="/product/productid" truncate="20"/>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{xf:item} Element}
+\label{xfitem}
+\begin{description}
+ \item Description: This element is derived from XForms. It  defines one choice in controls that allow the user to choose between several items.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements: \texttt{xf:value} (\ref{xfvalue})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{xf:item} Element]
+<xf:item>
+ <xf:label>Implementation</xf:label>
+ <xf:value>implementation</xf:value>
+</xf:item>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{xf:value} Element}
+\label{xfvalue}
+\begin{description}
+ \item Description: This element is derived from XForms. It defines a value that is returned for a selection, for example in a select1 control (\ref{xfselect1}).
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{xf:value} Element]
+<xf:value>implementation</xf:value>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The \texttt{inputproperties} Element}
+\label{inputproperties}
+\begin{description}
+ \item Description: The \texttt{inputproperties} element encapsulates further specifications of the content of input control. This can be the type or regular expressions as constrains for example.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: Input Property Elements (\ref{inputpropertyelements})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{properties} Element]
+<inputproperties>
+ <type>xs:integer</type>
+ <readonly>true</readonly>
+</inputproperties>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The \texttt{properties} Element}
+\label{properties}
+\begin{description}
+ \item Description: The \texttt{properties} element encapsulates further specifications of the parent control, such as relevance or layout information.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: Property Elements (\ref{propertyelements})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{properties} Element]
+<properties>
+ <layout>
+  <halign>right</halign>
+ </layout>
+</properties>
+\end{lstlisting}
+\end{description}

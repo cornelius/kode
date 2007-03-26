@@ -1,0 +1,243 @@
+
+\section{ KXForms GUI Elements Descriptions}
+\label{guielements}
+
+\subsection{ The \texttt{xf:input} Element}
+\begin{description}
+ \item Description: This element is derived from XForms. An input field enables free-form data entry. In contrast to the \texttt{xf:textarea} Element that is descriped below, it only allows single-line input.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements: \texttt{inputproperties} (\ref{inputproperties}), \texttt{roperties} (\ref{properties})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{xf:input} Element]
+<xf:input ref="/externalid">
+ <xf:label>Name:</xf:label>
+</xf:input>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+
+\subsection{ The \texttt{xf:textarea} Element}
+\begin{description}
+ \item Description: This element is derived from XForms. A textarea is used for free-form data and can contain arbitrary text and control sequences, e.g. linebreaks.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements: \texttt{inputproperties} (\ref{inputproperties}), \texttt{roperties} (\ref{properties})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{xf:textarea} Element]
+<xf:textarea ref="/partnercontext[1]/externalid[1]">
+ <xf:label>Externalid</xf:label>
+</xf:textarea>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+
+
+\subsection{ The \texttt{list} Element}
+\begin{description}
+ \item Description: This element enables handling of lists of elements. A list can operate in two different modes:
+\begin{itemize}
+ \item \textbf{Single-Column Mode}
+
+In single-column mode only one column is shown in the list, which is suitable for simpleType elements or complexType elements that have a descriptive element. The relevant element and the label can be specified using the \texttt{itemClass} child element.
+
+ \item \textbf{Multi-Column Mode}
+
+In multi-column mode the lists can show one or more columns. The \texttt{visibleElements} child element is used to specify the relevant elements and labels.
+\end{itemize}
+
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes:
+
+\begin{itemize}
+ \item \textbf{\texttt{showHeader}} [optional] [default=false]
+
+An optional attribute that defines whether the list should display a header describing the columns or not. It can be either ``\texttt{true}'' or ``\texttt{false}''. If it is ommitted, no header should be shown.
+
+ \item \textbf{\texttt{minOccurs}} [optional] [default=0]
+
+An optional attribute specifying the minimum number of elements the list has to contain in order to build a valid xml document. The default minimum number is 0.
+
+ \item \textbf{\texttt{maxOccurs}} [optional] [default=0]
+
+An optional attribute specifying the maximum number of elements the list may contain in order to build a valid xml document. The default maximum number is 0. A maximum of 0 means that the occurence is unbounded.
+\end{itemize}
+
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements:
+
+\begin{itemize}
+ \item \textbf{\texttt{visibleElements}} (\ref{visibleElements})
+
+Defines the elements that are shown as columns in the list. If this element exists the list will operate in multi-column mode, even if only one column is defined there. That means, that the itemClass child element does not have an effect.
+
+ \item \textbf{\texttt{itemClass}} (\ref{itemClass})
+
+Defines the element that the list corresponds to when the list operates in single-column mode.
+\end{itemize}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{list} Element]
+<list showHeader="true">
+ <visibleElements>
+  <visibleElement ref="product[1]/name[1]">Name</visibleElement>
+  <visibleElement ref="product[1]/version[1]">Version</visibleElement>
+ </visibleElements>
+ <xf:label>Productcontexts</xf:label>
+ <itemclass ref="/productcontext">
+  <itemlabel><arg ref="/product/productid"/></itemlabel>
+ </itemclass>
+</list>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+\subsection{ The \texttt{section} Element}
+\begin{description}
+ \item Description: The \texttt{section} element is used to visually encapsulate a set of elements. That is appropriate when a complexType element with several child elements is shown, for example. As a result the GUI should be less cluttered.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: Common (\ref{commonchildelements}), GUI Elements (\ref{guielements})
+
+ \item Special Child Elements: none
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{section} Element]
+<section ref="/">
+ <xf:input ref="/organisation"/>
+ <xf:input ref="/externalid"/>
+</section>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{ The \texttt{xf:select1} Element}
+\label{xfselect1}
+\begin{description}
+ \item Description: This element is derived from XForms. It allows the user to make a single selection from multiple choices.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements: \texttt{xf:item} (\ref{xfitem})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{xf:select1} Element]
+<xf:select1 ref="/documentationstatus[1]">
+ <xf:label>Status of the documentation: </xf:label>
+ <xf:item>
+  <xf:label>Postponed</xf:label>
+  <xf:value>postponed</xf:value>
+ </xf:item>
+ <xf:item>
+  <xf:label>Information required </xf:label>
+  <xf:value>needinfo</xf:value>
+ <xf:item>
+</xf:select1>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{ The \texttt{xf:select} Element}
+\label{xfselect}
+\begin{description}
+ \item Description: This element is derived from XForms. It allows the user to make one ore more selections from multiple choices.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: appearance (\ref{appearance})
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements: \texttt{xf:item} (\ref{xfitem})
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{section} Element]
+<xf:select ref="/attendees">
+ <xf:label>Attendees of the meeting: </xf:label>
+ <xf:item>
+  <xf:label>Developer</xf:label>
+  <xf:value>developer</xf:value>
+ </xf:item>
+ <xf:item>
+  <xf:label>Manager</xf:label>
+  <xf:value>manager</xf:value>
+ <xf:item>
+</xf:select>
+\end{lstlisting}
+\end{description}
+
+

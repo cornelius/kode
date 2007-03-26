@@ -1,0 +1,35 @@
+\documentclass[a4paper,12pt]{scrreprt}
+\usepackage{mathptmx}
+\usepackage[automark]{scrpage2}
+\usepackage[latin1]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{hyperref}
+\definecolor{mygray}{gray}{.75}
+\lstset{numbers=left, numberstyle=\small, numbersep=5pt, keywordstyle=\color{black}\bfseries, frame=single, backgroundcolor=\color{mygray},language=XML,basicstyle=\scriptsize\tt}
+
+
+\pagestyle{scrheadings}
+
+% Title Page
+\title{KXForms 1.0}
+\author{Andre Duffeck, SUSE Linux AG}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+KXForms is a description language which provides facilities for describing user interfaces. The language, which itself is presented in XML 1.0, is based on parts of the W3C XForms.
+\end{abstract}
+
+\renewcommand{\baselinestretch}{1.5}
+\include{introduction}
+\include{commonandcore}
+\include{guielements}
+\include{specialelements}
+\include{propertyelements}
+\include{layoutelements}
+\include{hints}
+\end{document}

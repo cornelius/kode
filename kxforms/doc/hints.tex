@@ -1,0 +1,103 @@
+
+\chapter{ Hints}
+Usually, a GUI that is generated only from the schema describing the data will not fulfill all requirements on a modern user interface. Therefor, hints can be merged into the kxforms document.
+
+\section{ Technique}
+
+
+
+
+
+
+\section{ Implemented Hints}
+
+
+
+
+\subsection{ Hints modifying the displayed data}
+The plainest and probably most common modification, a developer or GUI-designer wants to do is changing the data that is shown. The following list will describe the hints that make such changes possible.
+
+
+\begin{itemize}
+ \item \textbf{label}
+
+Usually an element is labeled with its ``name'' attribute. In some cases these attributes might be abbreviations, non-readable ids or simply not understandable enough so that it is advisable to display a different label in the GUI. That can be achieved using the label-hint.
+
+This hint simply overrides the automatic label generation mechanism and defines the label of the specified element.
+
+\begin{lstlisting}[caption=Simple label hint]
+ <hint ref="needinfo">
+  <label>Information required </label>
+ </hint>
+ \end{lstlisting}
+
+\begin{description}
+ \item[ref] defines the element of the XML-Schema this hint should be applied to
+ \item[label] specifies the label that should be applied
+ \end{description}
+
+This example would change the displayed label of the ``needinfo'' element from ``NeedInfo'' to ``Information required''.
+
+\end{itemize}
+
+
+
+\subsection{ Alignment hints}
+
+
+
+
+
+
+
+\subsection{ List hints}
+There are two different types of lists, lists of SimpleType elements and lists of ComplexType elements. SimpleType lists are straightforward, they just show the content of the elements. In the case of ComplexType elements however, there are many possibilities to modify the appearance of the lists. The following list describes those possibilities and the corresponding hints.
+
+
+\begin{itemize}
+ \item \textbf{listItemLabelRef}
+
+KXForms is capable of presenting lists of elements. Usually, the elements are simple elements which can be shown in the list directly. If the elements are complex elements, it is important to show a subelement in the list which describes or identifies the element best.
+
+If no further information is given, KXForms chooses the first simple element. This might not always be the best choice, so it can be overriden using the {\tt<}listItemLabelRef{\tt>} hint.
+
+\begin{lstlisting}[caption=listItemLabelRef hint]
+ <hint ref="productcontext">
+  <listItemLabelRef>/product/name</listItemLabelRef>
+ </hint>
+ \end{lstlisting}
+
+In this case the field of the elements which will be shown in the list is set to ``/product/name''.
+
+
+
+
+ \item \textbf{listShowHeader}
+
+By default, the headers of lists are hidden. In most cases it is not necessary to describe the data that is shown because it is either the content of the elements itself or in cases complexTypes a descriptive subelement, eventually chosen with a {\tt<}listItemLabelRef{\tt>} hint. Sometimes it still might be necessary to show the header, for example if the list has more than one column. That can be achieved using the {\tt<}listShowHeader{\tt>} hint as demonstrated below.
+
+\begin{lstlisting}[caption=listShowHeader hint]
+ <hint ref="productcontext">
+  <listShowHeader>true</listShowHeader>
+ </hint>
+ \end{lstlisting}
+
+
+ \item \textbf{listVisibleElements}
+\label{listVisibleElements}
+
+
+\begin{lstlisting}[caption=listVisibleElements hint]
+ <hint ref="productcontext">
+  <listItemLabelRef>/product/productid</listItemLabelRef>
+  <listVisibleElements>
+   <listVisibleElement label="Id">product/productid</listVisibleElement>
+   <listVisibleElement>product/version</listVisibleElement>
+  </listVisibleElements>
+ </hint>
+ \end{lstlisting}
+
+
+\end{itemize}
+
+

@@ -1,0 +1,158 @@
+
+
+
+\chapter{ KXForms}
+
+\section{ KXForms Common}
+
+\subsection{ Common Attributes}
+\label{commonattributes}
+
+\begin{description}
+ \item \textbf{ref} 
+
+The ref attribute describes a reference to the XML element which is represented through the element. This attribute is mandatory for all GUI elements.
+
+Consider the following xml document:
+
+\begin{lstlisting}[caption=Example Schema]
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:k="http://inttools.suse.de/sxkeeper/schema/keeper" 
+    elementFormDefault="qualified">
+<xs:element name="feature">
+ <xs:complexType>
+  <xs:element ref="title"/>
+  <xs:element ref="partnercontext"/>
+ </xs:complexType>
+</xs:element>
+
+<xs:element name="title" type="xs:string"/>
+
+<xs:element name="partnercontext">
+ <xs:complexType>
+  <xs:sequence>
+   <xs:element ref="organization"/>
+   <xs:element ref="externalid"/>
+  </xs:sequence>
+ </xs:complexType>
+</xs:element>
+
+<xs:element name="organization" type="xs:string"/>
+
+<xs:element name="externalid" type="xs:string"/>
+</xs:schema>
+\end{lstlisting}
+
+
+The main form would in this case relate to the ``feature'' element, thus the ref argument would be set to ``/feature''. The references are heritable, which means that the child elements of this form automatically refer to the feature element. Thus, the reference to the ``title'' relement would be ``/title[1]'' instead of ``/feature/title[1]''. 
+
+The number at the end of a reference refers to the occurence of this element, so [1] addresses the first ``title'' element, [2] the second one and so on.
+
+A possible kxform document for the example schema could look like this:
+
+
+\begin{lstlisting}[caption=Example KXForms Document]
+<form ref="/feature">
+ <xf:label>Feature</xf:label>
+ <xf:textarea ref="/title[1]">
+  <xf:label>Title</xf:label>
+ </xf:textarea>
+ <section ref="/">
+  <xf:label>Partnercontext</xf:label>
+  <xf:textarea ref="/partnercontext[1]/organization[1]">
+   <xf:label>Organization</xf:label>
+  </xf:textarea>
+  <xf:textarea ref="/partnercontext[1]/externalid[1]">
+   <xf:label>Externalid</xf:label>
+  </xf:textarea>
+ </section>
+</form>
+\end{lstlisting}
+
+\end{description}
+
+
+
+\subsection{ Common Child Elements}
+\label{commonchildelements}
+\begin{description}
+ \item \textbf{\texttt{xf:label}} 
+
+The \texttt{xf:label} child element is derived from XForms. It is used to define the label that is shown for the corresponding GUI element. If this element is ommitted, the application should try to generate an appealing label from the available information (the element name in most cases).
+
+
+ \item \textbf{\texttt{tip}} 
+
+The \texttt{tip} child element allows to provide a tooltip for controls. The presentation of the tip is left to the application but usually it will just be displayed after the mouse rested a bit over the control.
+
+\begin{lstlisting}[caption=Example KXForms Document]
+<xf:input ref="/password">
+ <xf:label>Password:</xf:label>
+ <xf:tip>Please enter your private password.</xf:tip>
+</xf:input>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+
+
+
+
+\pagebreak 
+\section{ KXForms Core}
+
+\subsection{ The kxforms Element}
+\begin{description}
+ \item Description:  This element is the root element of a kxforms document. It contains all forms that are available in the kxforms document as its child elements. In a valid kxforms document the forms have to be sufficient to display and edit all elements of a XML instance of the corresponding XML Schema.
+
+ \item Common Attributes: none
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: none
+
+ \item Special Child Elements: \texttt{form} (\ref{formelement})
+
+ \item Example:
+\begin{lstlisting}[caption=kxforms Element]
+<kxforms>
+ <form ref="category">...</form>
+ <form ref="productcontext">...</form>
+</kxforms>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The form Element}
+\label{formelement}
+\begin{description}
+ \item Description: This element encapsulates one form. A form describes a GUI for one part of the XML Schema. One form has to be available for the toplevel element and one for the elements of each list.
+
+ \item Common Attributes: Common (\ref{commonattributes})
+
+ \item Special Attributes: none
+
+ \item Common Child Elements: Common (\ref{commonchildelements})
+
+ \item Special Child Elements: \texttt{pages} (\ref{pages}), GUI Elements (\ref{guielements})
+
+ \item Example:
+\begin{lstlisting}[caption=form Element]
+<form ref="category">
+ <xf:label>Category:</xf:label>
+ ...
+</form>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\pagebreak

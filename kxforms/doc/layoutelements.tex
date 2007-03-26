@@ -1,0 +1,105 @@
+
+
+
+
+\pagebreak 
+\section{ KXForms Layout Elements Descriptions}
+\label{layoutelements}
+
+
+
+
+\subsection{ The \texttt{page} Element}
+\label{page}
+\begin{description}
+ \item Description: Per default, all controls of a form are placed on one page. If there are too many of them the resulting GUI might be cluttered or might not fit on the screen. A possible solution is to spread the controls on several pages. This can be done using the \texttt{page} element. The choice of the multi-page widget is left to the application. 
+
+A page number of -1 means that the control is put on a page after the last defined page.
+
+ \item Possible Content: Integer \texttt{\{-1, 0, 1, ...\}}
+
+ \item Default: \texttt{-1}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{page} Element]
+<page>1</page>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The \texttt{position} Element}
+\label{position}
+\begin{description}
+ \item Description: This element defines the position of the control on the page it belongs to. If the position is -1 it will just be appended at the bottom.
+
+ \item Possible Content: Integer \texttt{\{-1, 0, 1, ...\}}
+
+ \item Default: \texttt{-1}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{position} Element]
+<position>1</position>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The \texttt{valign} Element}
+\label{valign}
+\begin{description}
+ \item Description: This element defines the vertical alignment of the control.
+
+ \item Possible Content: \texttt{top} - \texttt{center} - \texttt{bottom}
+
+ \item Default: \texttt{top}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{valign} Element]
+<valign>center</valign>
+\end{lstlisting}
+\end{description}
+
+
+
+
+\subsection{ The \texttt{halign} Element}
+\label{halign}
+\begin{description}
+ \item Description: This element defines the horizontal alignment of the control. A value of 0 means that the control should fill the available space.
+
+ \item Possible Content: \texttt{0} - \texttt{left} - \texttt{center} - \texttt{right}
+
+ \item Default: \texttt{0}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{halign} Element]
+<halign>right</halign>
+\end{lstlisting}
+\end{description}
+
+
+
+
+
+\subsection{ The \texttt{appearance} Element}
+\label{appearance}
+\begin{description}
+ \item Description: This element tells the application how to render the control it is applied to. ``\texttt{full}'' indicates that all options should always be visible. ``\texttt{compact}'' means that an adequate number of options should be shown at once while ``\texttt{minimal}'' should result in a presentation that always shows just one option at once and thus takes up the minimum space.
+
+ \item Possible Content: \texttt{full} | \texttt{compact} | \texttt{minimal}
+
+ \item Default: \texttt{minimal}
+
+ \item Example: 
+
+\begin{lstlisting}[caption=\texttt{appearance} Attribute]
+<appearance>Full</appearance>
+\end{lstlisting}
+\end{description}
