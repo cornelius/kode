@@ -74,6 +74,7 @@ void Input::loadData()
     QString txt = ref().applyString( context() );
     mLineEdit->setText( txt );
   }
+  emitValueChanged();
 }
 
 void Input::saveData()
@@ -110,7 +111,7 @@ bool Input::isValid()
   if( mProperties->constraint.isEmpty() )
     return true;
 
-  QRegExp regExp( mProperties->constraint );  
+  QRegExp regExp( mProperties->constraint );
 
   return (value().indexOf( regExp ) >= 0);
 }
