@@ -80,6 +80,8 @@ class GuiElement : public QObject
 
     Properties *properties() { return mProperties; }
 
+    void setTip( const QString &tip );
+
   signals:
     void valueChanged( const QString &, const QString & );
 

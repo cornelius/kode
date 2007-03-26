@@ -36,12 +36,16 @@ class XFormsCommon
     
     void setHint( const QString &hint ) { mHint = hint; }
     QString hint() const { return mHint; }
+    
+    void setTip( const QString &tip ) { mTip = tip; }
+    QString tip() const { return mTip; }
 
     static XFormsCommon parseElement( const QDomElement & );
     
   private:
     QString mLabel;
     QString mHint;
+    QString mTip;
 };
 
 }

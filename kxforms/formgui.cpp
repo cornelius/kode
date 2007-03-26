@@ -159,6 +159,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     }
     
     if ( guiElement ) {
+      if( !c.tip().isEmpty() )
+        guiElement->setTip( c.tip() );
       guiElement->parseElement( e );
       mManager->addElement( layout, guiElement );
       mGuiElements.append( guiElement );

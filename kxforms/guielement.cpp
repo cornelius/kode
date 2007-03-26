@@ -160,8 +160,16 @@ void GuiElement::slotValueChanged( const QString &ref, const QString &value )
 
 void GuiElement::setRelevant( bool relevant )
 {
-  mLabel->setEnabled( relevant );
-  mWidget->setEnabled( relevant );
+  if( mLabel )
+    mLabel->setEnabled( relevant );
+  if( mWidget )
+    mWidget->setEnabled( relevant );
+}
+
+void GuiElement::setTip( const QString &tip )
+{
+  if( mWidget )
+    mWidget->setToolTip( tip );
 }
 
 #include "guielement.moc"

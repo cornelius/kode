@@ -39,6 +39,8 @@ XFormsCommon XFormsCommon::parseElement( const QDomElement &element )
       c.setLabel( e.text() );
     } else if ( tag == "xf:hint" ) {
       c.setHint( e.text() );
+    } else if ( tag == "tip" ) {
+      c.setTip( e.text() );
     }
   }
   
