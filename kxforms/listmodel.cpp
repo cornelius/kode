@@ -49,7 +49,7 @@ int ListModel::columnCount( const QModelIndex &parent ) const
 
 QVariant ListModel::data( const QModelIndex & index, int role ) const
 {
-  if( index.row() > mItems.count() )
+  if( !index.isValid() || index.row() > mItems.count() )
     return QVariant();
 
   Item *item = mItems.at( index.row() );
