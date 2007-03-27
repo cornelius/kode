@@ -105,7 +105,7 @@ void Input::emitValueChanged()
   emit valueChanged( ref().toString(), value() );
 }
 
-bool Input::isValid()
+bool Input::isValid() const
 {
   kDebug() << k_funcinfo << mProperties->constraint << " : " << value() << endl;
   if( mProperties->constraint.isEmpty() )
@@ -116,7 +116,7 @@ bool Input::isValid()
   return (value().indexOf( regExp ) >= 0);
 }
 
-QString Input::value()
+QString Input::value() const
 {
   if( mProperties->type == "xs:integer" ) {
     return QString::number( mSpinBox->value() );

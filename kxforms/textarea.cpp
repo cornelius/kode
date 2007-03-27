@@ -106,7 +106,7 @@ void TextArea::emitValueChanged()
 }
 
 
-bool TextArea::isValid()
+bool TextArea::isValid() const
 {
   if( mProperties->constraint.isEmpty() )
     return true;
