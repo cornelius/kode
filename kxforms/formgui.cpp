@@ -29,6 +29,7 @@
 #include "section.h"
 #include "prefs.h"
 #include "manager.h"
+#include "select.h"
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -144,6 +145,9 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "xf:select1" ) {
       guiElement = new Select1( mManager, c.label(), this, properties );
+      guiElement->setRef( e.attribute( "ref" ) );
+    } else if ( tag == "xf:select" ) {
+      guiElement = new Select( mManager, c.label(), this, properties );
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "kxf:section" ) {
       if( e.attribute( "visible" ) != "false" ) {

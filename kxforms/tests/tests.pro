@@ -30,7 +30,8 @@ HEADERS += kxformstest.h \
            ../xmlbuilder.h \
            ../prefs.h \
            ../section.h \
-           ../dispatcher.h
+           ../dispatcher.h \
+           ../select.h
 SOURCES += kxformstest.cpp \
            ../form.cpp \
            ../formcreator.cpp \
@@ -52,7 +53,8 @@ SOURCES += kxformstest.cpp \
            ../xmlbuilder.cpp \
            ../prefs.cpp \
            ../section.cpp \
-           ../dispatcher.cpp
+           ../dispatcher.cpp \
+           ../select.cpp
 
 QT += xml
 
@@ -63,6 +65,6 @@ LIBS += -L../../compat -lcompat
 
 DUMMY_MOCS = kxformstest.moc formgui.moc guihandlerdialogs.moc guihandlerflat.moc \
   input.moc list.moc mainwindow.moc remotefile.moc formgui.moc dispatcher.moc \
-  guielement.moc
+  guielement.moc textarea.moc
 
 system( touch $$DUMMY_MOCS )

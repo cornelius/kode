@@ -25,7 +25,7 @@
 #include <kdebug.h>
 
 #include <QLabel>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QComboBox>
 #include <QRadioButton>
 #include <QListWidget>

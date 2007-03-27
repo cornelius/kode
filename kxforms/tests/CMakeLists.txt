@@ -27,7 +27,8 @@ set(kxformstest_SRCS
    ../textarea.cpp 
    ../select1.cpp
    ../section.cpp 
-   ../dispatcher.cpp )
+   ../dispatcher.cpp
+   ../select.cpp )
 
 kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 
