@@ -45,14 +45,14 @@ class GuiHandler
     virtual QWidget *createRootGui( QWidget *parent ) = 0;
     virtual void createGui( const Reference &ref, QWidget *parent ) = 0;
 
-    virtual QLayout *getTopLayout() = 0;
-    virtual void addWidget( QLayout *, QWidget * ) = 0;
-    virtual void addElement( QLayout *, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 ) = 0;
+    virtual QLayout *getTopLayout() const = 0;
+    virtual void addWidget( QLayout *, QWidget * ) const = 0;
+    virtual void addElement( QLayout *, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 ) const = 0;
 
     Manager *manager() const;
 
     void setLayoutStyle( LayoutStyle style ) { mLayoutStyle = style; }
-    LayoutStyle layoutStyle() { return mLayoutStyle; }
+    LayoutStyle layoutStyle() const { return mLayoutStyle; }
 
   private:
     Manager *mManager;

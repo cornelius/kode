@@ -284,7 +284,7 @@ void GuiHandlerFlat::showGui( FormGui *gui )
   }
 }
 
-QLayout *GuiHandlerFlat::getTopLayout()
+QLayout *GuiHandlerFlat::getTopLayout() const
 {
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *l = new QGridLayout();
@@ -297,7 +297,7 @@ QLayout *GuiHandlerFlat::getTopLayout()
   }
 }
 
-void GuiHandlerFlat::addWidget( QLayout *l, QWidget *w )
+void GuiHandlerFlat::addWidget( QLayout *l, QWidget *w ) const
 {
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
@@ -315,7 +315,7 @@ void GuiHandlerFlat::addWidget( QLayout *l, QWidget *w )
   }
 }
 
-void GuiHandlerFlat::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop )
+void GuiHandlerFlat::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop ) const
 {
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );

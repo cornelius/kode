@@ -61,9 +61,9 @@ class GuiHandlerDialogs : public GuiHandler
     QWidget *createRootGui( QWidget *parent );
     void createGui( const Reference &ref, QWidget *parent );
 
-    QLayout *getTopLayout();
-    void addWidget( QLayout *, QWidget * );
-    void addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 );
+    QLayout *getTopLayout() const;
+    void addWidget( QLayout *, QWidget * ) const;
+    void addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 ) const;
 
   protected:
     FormGui *createGui( Form *form, QWidget *parent );

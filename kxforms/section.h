@@ -36,7 +36,7 @@ class Section : public GuiElement
     void loadData() {}
     void saveData() {}
 
-    QLayout *layout() { return mLayout; }
+    QLayout *layout() const { return mLayout; }
 
   private:
     QGroupBox *mBox;

@@ -247,17 +247,17 @@ QString Manager::schemaUri() const
   return mSchemaUri;
 }
 
-QLayout *Manager::getTopLayout()
+QLayout *Manager::getTopLayout() const
 {
   return mGuiHandler->getTopLayout();
 }
 
-void Manager::addWidget( QLayout *l, QWidget *w )
+void Manager::addWidget( QLayout *l, QWidget *w ) const
 {
   mGuiHandler->addWidget( l, w );
 }
 
-void Manager::addElement( QLayout *l, GuiElement *e )
+void Manager::addElement( QLayout *l, GuiElement *e ) const
 {
   mGuiHandler->addElement( l, e->labelWidget(), e->widget(), e->properties() );
 }

@@ -67,9 +67,9 @@ class Manager
 
     QString schemaUri() const;
 
-    QLayout *getTopLayout();
-    void addWidget( QLayout *, QWidget * );
-    void addElement( QLayout *, GuiElement * );
+    QLayout *getTopLayout() const;
+    void addWidget( QLayout *, QWidget * ) const;
+    void addElement( QLayout *, GuiElement * ) const;
 
     Dispatcher *dispatcher() { return &mDispatcher; }
   protected:

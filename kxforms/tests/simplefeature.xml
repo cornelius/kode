@@ -21,13 +21,6 @@ description</a>.</richtext>
   </productcontext>
   <productcontext>
     <product>
-      <productid>openSUSE 10.3</productid>
-      <name>openSUSE</name>
-      <version>10.3</version>
-    </product>
-  </productcontext>
-  <productcontext>
-    <product>
       <productid>openSUSE 10.1</productid>
       <name>openSUSE</name>
       <version>10.1</version>
@@ -41,6 +34,13 @@ description</a>.</richtext>
       <documentationstatus>
         <needinfo/>
       </documentationstatus>
+    </product>
+  </productcontext>
+  <productcontext>
+    <product>
+      <productid>openSUSE 10.3</productid>
+      <name>openSUSE</name>
+      <version>10.3</version>
     </product>
   </productcontext>
   <documentationstatus>

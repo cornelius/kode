@@ -71,14 +71,14 @@ class GuiElement : public QObject
 
     void loadData( const QDomElement &context );
 
-    virtual QWidget *widget() { return mWidget; }
-    virtual QWidget *labelWidget() { return mLabel; }
+    virtual QWidget *widget() const { return mWidget; }
+    virtual QWidget *labelWidget() const { return mLabel; }
 
     virtual void loadData() = 0;
     virtual void saveData() = 0;
     virtual bool isValid() const { return true; }
 
-    Properties *properties() { return mProperties; }
+    Properties *properties() const { return mProperties; }
 
     void setTip( const QString &tip );
 
