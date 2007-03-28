@@ -132,7 +132,7 @@
 		    </xs:documentation>
 	    </xs:annotation>
 	    <xs:complexType>
-		    <xs:choice>
+		    <xs:choice maxOccurs="unbounded">
 			    <xs:element ref="postponed"/>
 			    <xs:element ref="dropped"/>
 			    <xs:element ref="needinfo"/>

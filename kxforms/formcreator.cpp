@@ -63,6 +63,18 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
   form->tag( "xf:label", humanizeString( element.name() ) );
 
+  Hint hint = mHints.hint( element.name() );
+  if ( hint.isValid() ) {
+    QList<QDomElement> elements = hint.elements( Hint::Pages );
+    if( !elements.isEmpty() ) {
+      XmlBuilder *items = form->tag( "pages" );
+      foreach( QDomElement e, elements ) {
+        XmlBuilder *page = items->tag( "page", e.text() );
+        page->attribute( "id", e.attribute( "id") );
+      }
+    }
+  }
+
   parseAttributes( element, form );
 
   parseElement( element, form );
@@ -104,11 +116,13 @@ void FormCreator::parseElement( const Schema::Element &element, XmlBuilder *xml 
     XmlBuilder *textArea = xml->tag( "xf:textarea" );
     textArea->attribute( "ref", "." );
     createLabel( textArea, element );
+    applyCommonHints( textArea, element.name() );
   } else if ( element.type() == Schema::Node::NormalizedString ||
               element.type() == Schema::Node::Token ) {
     XmlBuilder *input = xml->tag( "xf:input" );
     input->attribute( "ref", "." );
     createLabel( input, element );
+    applyCommonHints( input, element.name() );
   } else if ( element.type() == Schema::Node::ComplexType ) {
     parseComplexType( element, xml, true, Reference() );
   } else {
@@ -137,6 +151,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     section->attribute( "ref", path.toString() );
     path = path + Reference( element.name() );
     createLabel( section, element );
+    applyCommonHints( section, element.name() );
     if(  element.elementRelations().size() <= 1 ) {
       section->attribute( "visible", "false" );
       section->attribute( "overrideLabel", getLabel( element.ref(), element.name() ) );
@@ -153,6 +168,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     textInput = section->tag( "xf:textarea" );
     textInput->attribute( "ref", "." );
     createLabel( textInput, element );
+    applyCommonHints( textInput, element.name() );
     mCollapsedForms.append( element.name() );
   }
   else {
@@ -163,6 +179,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
+          applyCommonHints( list, r.target() );
           Hint hint = mHints.hint( r.target() );
           if ( hint.isValid() ) {
             if( !hint.value( Hint::ListShowHeader ).isEmpty() )
@@ -205,6 +222,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
             choice = section->tag( "xf:select" );
           else
             choice = section->tag( "xf:select1" );
+          applyCommonHints( choice, element.ref() );
           choice->tag( "xf:label",  getLabel( element.ref(), element.name() ) );
           choice->attribute( "ref", (path + Reference( element.name() ) ).toString() );
         }
@@ -225,6 +243,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           } else {
             textInput = section->tag( "xf:textarea" );
           }
+          applyCommonHints( textInput, r.target() );
           textInput->attribute( "ref", (path + Reference( textElement.name() ) ).toString() );
           createLabel( textInput, textElement );
           mCollapsedForms.append( r.target() );
@@ -337,6 +356,21 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
   if ( label.isEmpty() ) label = humanizeString( fallback, pluralize );
 
   return label;
+}
+
+void FormCreator::applyCommonHints( XmlBuilder *xml, const QString &ref )
+{
+  Hint hint = mHints.hint( ref );
+  mHints.dump();
+  if( !hint.isValid() )
+    return;
+
+  QString page = hint.value( Hint::PageReference );
+  if( !page.isEmpty() ) {
+    XmlBuilder *prop = xml->tag( "properties" );
+    XmlBuilder *layout = prop->tag( "layout" );
+    layout->tag( "pageRef", page );
+  }
 }
 
 Hints FormCreator::hints() const

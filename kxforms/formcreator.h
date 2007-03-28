@@ -64,6 +64,7 @@ class FormCreator
     void parseComplexType( const Schema::Element &r, XmlBuilder *xml, bool topLevel, Reference path );
     void parseElement( const Schema::Element &element, XmlBuilder *xml );
     void parseAttributes( const Schema::Element &element, XmlBuilder *xml );
+    void applyCommonHints( XmlBuilder *xml, const QString &ref );
 
   private:
     Schema::Document mDocument;

@@ -154,6 +154,8 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
       hint.setValue( Hint::Label, contentAsString( e ) );
     } else if (name.localName() == "listItemLabelRef" ) {
       hint.setValue( Hint::ListItemLabelRef, contentAsString( e ) );
+    } else if (name.localName() == "pageRef" ) {
+      hint.setValue( Hint::PageReference, contentAsString( e ) );
     } else if (name.localName() == "listVisibleElements" ) {
       hint.setValue( Hint::ListVisibleElements, contentAsString( e ) );
       QDomNode child = n.firstChild();
@@ -162,6 +164,17 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
           QDomElement e = child.toElement();
           if( !e.isNull() )
             hint.addElement( Hint::ListVisibleElements, e );
+        }
+        child = child.nextSibling();
+      }
+    } else if (name.localName() == "pages" ) {
+      hint.setValue( Hint::Pages, contentAsString( e ) );
+      QDomNode child = n.firstChild();
+      while( !child.isNull() ) {
+        if( child.nodeName() == "page" ) {
+          QDomElement e = child.toElement();
+          if( !e.isNull() )
+            hint.addElement( Hint::Pages, e );
         }
         child = child.nextSibling();
       }

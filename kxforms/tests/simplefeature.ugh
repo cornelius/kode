@@ -1,11 +1,23 @@
 <ugh>
+  <hint ref="feature">
+    <pages>
+      <page id="feature">Feature</page>
+      <page id="other">Other</page>
+      <page id="documentation">Documentation</page>
+    </pages>
+  </hint>
   <hint ref="documentationstatus">
+    <pageRef>documentation</pageRef>
     <label>Status of the documentation: </label>
   </hint>
   <hint ref="needinfo">
     <label>Information required </label>
   </hint>
+  <hint ref="partnercontext">
+    <pageRef>other</pageRef>
+  </hint>
   <hint ref="productcontext">
+    <pageRef>other</pageRef>
     <listItemLabelRef>/product/productid</listItemLabelRef>
     <listShowHeader>true</listShowHeader>
     <listVisibleElements>
