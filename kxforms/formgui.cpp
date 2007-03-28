@@ -151,7 +151,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       guiElement->setRef( e.attribute( "ref" ) );
     } else if ( tag == "kxf:section" ) {
       if( e.attribute( "visible" ) != "false" ) {
-        guiElement = new Section( mManager, c.label(), this, properties );
+        bool externalLabel = (e.attribute( "externalLabel" ) == "true" );
+        guiElement = new Section( mManager, c.label(), this, properties, externalLabel );
         guiElement->setRef( e.attribute( "ref" ) );
         parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ) );
       } else {

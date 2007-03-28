@@ -31,7 +31,7 @@ namespace KXForms {
 class Section : public GuiElement
 {
   public:
-    Section( Manager *, const QString &label, QWidget *parent, Properties *p );
+    Section( Manager *, const QString &label, QWidget *parent, Properties *p, bool externalLabel = false );
 
     void loadData() {}
     void saveData() {}
