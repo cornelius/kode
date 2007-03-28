@@ -42,6 +42,9 @@ class FormDialog : public KDialog
 
     void setGui( FormGui * );
 
+  signals:
+    void aboutToClose();
+
   protected slots:
     void slotOk();
 
@@ -53,8 +56,9 @@ class FormDialog : public KDialog
     Manager *mManager;
 };
 
-class GuiHandlerDialogs : public GuiHandler
+class GuiHandlerDialogs : public QObject, public GuiHandler
 {
+  Q_OBJECT
   public:
     GuiHandlerDialogs( Manager * );
 
@@ -65,8 +69,14 @@ class GuiHandlerDialogs : public GuiHandler
     void addWidget( QLayout *, QWidget * ) const;
     void addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop = 0 ) const;
 
+  protected slots:
+    void slotDialogClosed();
+
   protected:
     FormGui *createGui( Form *form, QWidget *parent );
+
+  private:
+    FormGui *mRootGui;
 };
 
 }

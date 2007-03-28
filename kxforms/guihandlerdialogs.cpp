@@ -60,12 +60,14 @@ void FormDialog::slotOk()
 
   mManager->unregisterGui( mFormGui );
 
+  emit aboutToClose();
+
   accept();
 }
 
 
 GuiHandlerDialogs::GuiHandlerDialogs( Manager *m )
-  : GuiHandler( m )
+  : GuiHandler( m ), mRootGui( 0 )
 {
 }
 
@@ -90,6 +92,7 @@ QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
     manager()->loadData( gui );
   }
 
+  mRootGui = gui;
   return gui;
 }
 
@@ -112,6 +115,7 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
   }
 
   FormDialog dlg( parent, i18n("Edit %1", ref.toString() ), manager() );
+  connect( &dlg, SIGNAL(aboutToClose()), this, SLOT(slotDialogClosed()) );
 
   FormGui *gui = createGui( f, dlg.mainWidget() );
   if ( !gui ) {
@@ -142,10 +146,19 @@ FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
 
   kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
 
+  if( mRootGui )
+    mRootGui->saveData();
+
   FormGui *gui = new FormGui( form->label(), manager(), parent );
   if ( gui ) manager()->registerGui( gui );
 
   return gui;
+}
+
+void GuiHandlerDialogs::slotDialogClosed()
+{
+  if( mRootGui )
+    manager()->loadData( mRootGui );
 }
 
 QLayout *GuiHandlerDialogs::getTopLayout() const
