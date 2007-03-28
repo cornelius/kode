@@ -44,6 +44,7 @@ description</a>.</richtext>
     </product>
   </productcontext>
   <documentationstatus>
-    <dropped/>
+    <needinfo/>
+    <implementation/>
   </documentationstatus>
 </feature>

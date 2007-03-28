@@ -22,6 +22,8 @@
 
 #include <QTextStream>
 
+#define k_funcinfo QString()
+
 class kDebug : public QTextStream
 {
   public:

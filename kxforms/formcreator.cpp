@@ -159,7 +159,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     foreach( Schema::Relation r, element.elementRelations() ) {
       qDebug() << "  CHILD ELEMENT" << r.target();
       qDebug() << "    CHOICE" << r.choice();
-      if ( r.isList() ) {
+      if ( r.isList() && r.choice().isEmpty()) {
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
@@ -201,7 +201,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         currentChoice = r.choice();
       } else if( !r.choice().isEmpty() ) {
         if( !choice ) {
-          choice = section->tag( "xf:select1" );
+          if( r.isList() )
+            choice = section->tag( "xf:select" );
+          else
+            choice = section->tag( "xf:select1" );
           choice->tag( "xf:label",  getLabel( element.ref(), element.name() ) );
           choice->attribute( "ref", (path + Reference( element.name() ) ).toString() );
         }

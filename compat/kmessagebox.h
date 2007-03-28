@@ -40,6 +40,9 @@ class KMessageBox
     static void sorry( QWidget *parent, const QString &text,
       const QString &caption = QString() );
 
+    static void error( QWidget *parent, const QString &text,
+      const QString &caption = QString() );
+
     static int warningContinueCancel(QWidget *parent,
                          const QString &text,
                          const QString &caption = QString() );
