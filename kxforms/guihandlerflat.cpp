@@ -252,6 +252,9 @@ FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
 
   kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
 
+  if( mStackWidget->currentWidget() )
+    static_cast<FormGui *>(mStackWidget->currentWidget())->saveData();
+
   FormGui *gui = new FormGui( form->label(), manager(), parent );
 
   if ( gui ) {
