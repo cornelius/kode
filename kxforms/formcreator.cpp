@@ -365,11 +365,14 @@ void FormCreator::applyCommonHints( XmlBuilder *xml, const QString &ref )
   if( !hint.isValid() )
     return;
 
-  QString page = hint.value( Hint::PageReference );
-  if( !page.isEmpty() ) {
-    XmlBuilder *prop = xml->tag( "properties" );
-    XmlBuilder *layout = prop->tag( "layout" );
-    layout->tag( "pageRef", page );
+  if( hint.hasValue( Hint::PageReference ) ) {
+    XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
+    layout->tag( "pageRef", hint.value( Hint::PageReference ) );
+  }
+
+  if( hint.hasValue( Hint::Appearance ) ) {
+    XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
+    layout->tag( "appearance", hint.value( Hint::Appearance ) );
   }
 }
 

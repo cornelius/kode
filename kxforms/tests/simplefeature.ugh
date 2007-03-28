@@ -8,6 +8,7 @@
   </hint>
   <hint ref="documentationstatus">
     <pageRef>documentation</pageRef>
+    <appearance>full</appearance>
     <label>Status of the documentation: </label>
   </hint>
   <hint ref="needinfo">

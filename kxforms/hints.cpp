@@ -63,6 +63,11 @@ QString Hint::value( Type key) const
   return mValues[key];
 }
 
+bool Hint::hasValue( Type key) const
+{
+  return mValues.contains( key );
+}
+
 void Hint::setEnumValue( const QString &value, const QString &replacement )
 {
   mEnums.insert( value, replacement );
@@ -156,6 +161,8 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
       hint.setValue( Hint::ListItemLabelRef, contentAsString( e ) );
     } else if (name.localName() == "pageRef" ) {
       hint.setValue( Hint::PageReference, contentAsString( e ) );
+    } else if (name.localName() == "appearance" ) {
+      hint.setValue( Hint::Appearance, contentAsString( e ) );
     } else if (name.localName() == "listVisibleElements" ) {
       hint.setValue( Hint::ListVisibleElements, contentAsString( e ) );
       QDomNode child = n.firstChild();
