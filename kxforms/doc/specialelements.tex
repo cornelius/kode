@@ -159,7 +159,7 @@ Optional attribute that defines after how many chars the label should be truncat
 \begin{description}
  \item Description: This element describes which element provides the label for a single-column list.
 
- \item Common Attributes: Common (\ref{commonattributes})
+ \item Common Attributes: none
 
  \item Special Attributes: none
 
@@ -278,7 +278,7 @@ Optional attribute that defines after how many chars the label should be truncat
 \begin{lstlisting}[caption=\texttt{properties} Element]
 <inputproperties>
  <type>xs:integer</type>
- <readonly>true</readonly>
+ <constraint>\d\w*</constraint>
 </inputproperties>
 \end{lstlisting}
 \end{description}

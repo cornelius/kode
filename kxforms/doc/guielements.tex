@@ -140,7 +140,14 @@ Defines the element that the list corresponds to when the list operates in singl
 
  \item Common Attributes: Common (\ref{commonattributes})
 
- \item Special Attributes: none
+ \item Special Attributes: 
+
+\begin{itemize}
+ \item \textbf{\texttt{externalLabel}} [optional] [default=false]
+
+Most widgets that are used to group elements provide a possibility to attach a titel or label. In most cases this will look more polished and less cluttered than an external label as it is used with the other GUI elements. If desired it can still be used by setting the \texttt{externalLabel} attribtue to true.
+\end{itemize}
+
 
  \item Common Child Elements: Common (\ref{commonchildelements}), GUI Elements (\ref{guielements})
 
