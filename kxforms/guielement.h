@@ -39,7 +39,7 @@ class GuiElement : public QObject
 
     enum Appearance { Undefined, Minimal, Compact, Full };
     struct Properties {
-        Properties() : readonly( false ), page( -1 ), position( -1 ),
+        Properties() : readonly( false ), position( -1 ),
             halign( 0 ), valign( Qt::AlignTop ), appearance( Undefined ) {}
         QString type;
         QString constraint;

@@ -102,6 +102,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
 {
   kDebug() << "FormGui::parseElement()" << endl;
 
+  QMap< QLayout *, QMap< int, GuiElement *> > pendingElements;
+
   bool hasList = false;
   QLayout *layout = l ? l : mTopLayout;
 
@@ -167,8 +169,23 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       if( !c.tip().isEmpty() )
         guiElement->setTip( c.tip() );
       guiElement->parseElement( e );
-      mManager->addElement( layout, guiElement );
-      mGuiElements.append( guiElement );
+      if( guiElement->properties()->position < 0 ||
+          pendingElements[ layout ].contains( guiElement->properties()->position ) ) {
+        mManager->addElement( layout, guiElement );
+        mGuiElements.append( guiElement );
+      } else {
+        pendingElements[ layout ][guiElement->properties()->position] = guiElement;
+      }
+    }
+  }
+  QMapIterator< QLayout *, QMap< int, GuiElement *> > it( pendingElements );
+  while (it.hasNext()) {
+    it.next();
+    QMapIterator< int, GuiElement *> it2( it.value() );
+    while( it2.hasNext() ) {
+      it2.next();
+      mManager->addElement( it.key(), it2.value() );
+      mGuiElements.append( it2.value() );
     }
   }
 
