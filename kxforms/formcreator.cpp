@@ -175,7 +175,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     foreach( Schema::Relation r, element.elementRelations() ) {
       qDebug() << "  CHILD ELEMENT" << r.target();
       qDebug() << "    CHOICE" << r.choice();
-      if ( r.isList() && r.choice().isEmpty()) {
+      if ( r.isList()) {
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
