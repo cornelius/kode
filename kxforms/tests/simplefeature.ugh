@@ -32,4 +32,10 @@
   <hint ref="product">
     <label>Produkt:</label>
   </hint>
+  <hint ref="externalid">
+    <position>0</position>
+  </hint>
+  <hint ref="organization">
+    <position>1</position>
+  </hint>
 </ugh>

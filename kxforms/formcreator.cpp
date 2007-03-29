@@ -256,6 +256,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     textInput = section->tag( "xf:textarea" );
     textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
     createLabel( textInput, element );
+    applyCommonHints( textInput, element.name() );
   }
 }
 
@@ -361,7 +362,6 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
 void FormCreator::applyCommonHints( XmlBuilder *xml, const QString &ref )
 {
   Hint hint = mHints.hint( ref );
-  mHints.dump();
   if( !hint.isValid() )
     return;
 
@@ -373,6 +373,11 @@ void FormCreator::applyCommonHints( XmlBuilder *xml, const QString &ref )
   if( hint.hasValue( Hint::Appearance ) ) {
     XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
     layout->tag( "appearance", hint.value( Hint::Appearance ) );
+  }
+
+  if( hint.hasValue( Hint::Position ) ) {
+    XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
+    layout->tag( "position", hint.value( Hint::Position ) );
   }
 }
 

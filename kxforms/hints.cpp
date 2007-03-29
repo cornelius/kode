@@ -163,6 +163,8 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
       hint.setValue( Hint::PageReference, contentAsString( e ) );
     } else if (name.localName() == "appearance" ) {
       hint.setValue( Hint::Appearance, contentAsString( e ) );
+    } else if (name.localName() == "position" ) {
+      hint.setValue( Hint::Position, contentAsString( e ) );
     } else if (name.localName() == "listVisibleElements" ) {
       hint.setValue( Hint::ListVisibleElements, contentAsString( e ) );
       QDomNode child = n.firstChild();
