@@ -163,7 +163,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   XmlBuilder *list = 0;
   XmlBuilder *choice = 0;
 
-  if( element.mixed() ) {
+  if( element.text() ) {
     XmlBuilder *textInput = 0;
     textInput = section->tag( "xf:textarea" );
     textInput->attribute( "ref", "." );
@@ -250,13 +250,6 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         }
       }
     }
-  }
-  if( element.elementRelations().size() == 0 ) {
-    XmlBuilder *textInput = 0;
-    textInput = section->tag( "xf:textarea" );
-    textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
-    createLabel( textInput, element );
-    applyCommonHints( textInput, element.name() );
   }
 }
 
