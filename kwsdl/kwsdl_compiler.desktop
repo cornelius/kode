@@ -2,6 +2,7 @@
 Encoding=UTF-8
 Name=KWSDL Compiler
 Name[es]=Compilador KWSDL
+Name[kk]=KWSDL компиляторы
 Name[x-test]=xxKWSDL Compilerxx
 Exec=kdialog --sorry "kwsdl_compiler is a command-line only program.  Please read the handbook at help:/kwsdl_compiler for more info."
 Icon=gear
