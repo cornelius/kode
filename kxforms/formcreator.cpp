@@ -166,7 +166,18 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   if( element.text() ) {
     XmlBuilder *textInput = 0;
     textInput = section->tag( "xf:textarea" );
-    textInput->attribute( "ref", "." );
+    textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
+    createLabel( textInput, element );
+    applyCommonHints( textInput, element.name() );
+    mCollapsedForms.append( element.name() );
+  } else if( element.baseType() != Schema::Node::None ) {
+    XmlBuilder *textInput = 0;
+    if ( element.baseType() == Schema::Node::NormalizedString ) {
+      textInput = section->tag( "xf:input" );
+    } else {
+      textInput = section->tag( "xf:textarea" );
+    }
+    textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
     createLabel( textInput, element );
     applyCommonHints( textInput, element.name() );
     mCollapsedForms.append( element.name() );

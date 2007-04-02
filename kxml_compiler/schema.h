@@ -88,8 +88,7 @@ class KSCHEMA_EXPORT Annotatable
 class KSCHEMA_EXPORT Node : public Annotatable
 {
   public:
-    enum Type { String, NormalizedString, Token, Enumeration, ComplexType };
-  
+    enum Type { None, String, NormalizedString, Token, Enumeration, ComplexType };
     Node();
     virtual ~Node();
 
@@ -102,6 +101,9 @@ class KSCHEMA_EXPORT Node : public Annotatable
     void setName( const QString & );
     QString name() const;
 
+    void setBaseType( Type );
+    Type baseType() const;
+
     virtual QString ref() const = 0;
 
     bool isValid() const;
@@ -113,6 +115,7 @@ class KSCHEMA_EXPORT Node : public Annotatable
     Type mType;
     QString mIdentifier;
     QString mName;
+    Type mBaseType;
 
     QStringList mEnumerationValues;
 };

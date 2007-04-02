@@ -105,6 +105,15 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
         qDebug() << "  Mixed";
       }
       e.setText( true );
+    } else if ( complexType.contentModel() == XSD::XSDType::SIMPLE &&
+            !complexType.baseTypeName().isEmpty() ) {
+      if ( complexType.baseTypeName().qname() == "xs:string" ) {
+        e.setBaseType( Schema::Node::String );
+      } else if ( complexType.baseTypeName().qname() == "xs:normalizedString" ) {
+        e.setBaseType( Schema::Node::NormalizedString );
+      } else if ( complexType.baseTypeName().qname() == "xs:token" ) {
+        e.setBaseType( Schema::Node::Token );
+      }
     }
 
     if ( element.type().qname() == "xs:string" ) {

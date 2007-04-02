@@ -222,7 +222,7 @@ QString Relation::asString( const QString &type ) const
 
 
 Node::Node()
-  : mType( String )
+  : mType( String ), mBaseType( None )
 {
 }
 
@@ -258,6 +258,16 @@ void Node::setName( const QString &n )
 QString Node::name() const
 {
   return mName;
+}
+
+void Node::setBaseType( Type type )
+{
+  mBaseType = type;
+}
+
+Node::Type Node::baseType() const
+{
+  return mBaseType;
 }
 
 bool Node::isValid() const
