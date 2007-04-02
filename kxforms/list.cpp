@@ -130,15 +130,16 @@ void List::newItem()
   else
     context().appendChild( newElement );
 
-  Reference::Segment segment( formRef, mModel->itemCount( formRef ) + 1 );
+  Reference::Segment segment( formRef, mModel->itemCount( 0, formRef ) + 1 );
 
   Reference reference = ref();
   if ( segment.name() != "." ) reference.append( segment );
 
+  QString il = itemLabel( itemClass( formRef ), newElement );
+  mModel->addItem( 0, il, ref() + segment, newElement );
+
   mManager->createGui( reference, this );
 
-  QString il = itemLabel( itemClass( formRef ), newElement );
-  mModel->addItem( il, ref() + segment, newElement );
 }
 
 void List::deleteItem()
@@ -147,7 +148,7 @@ void List::deleteItem()
 
   if ( !index.isValid() ) return;
 
-  ListModel::Item *item = mModel->item( index );
+  ListItem *item = mModel->item( index );
 
   int result = KMessageBox::warningContinueCancel( mWidget,
     i18n("Delete item '%1'?", item->label ) );
@@ -190,7 +191,7 @@ void List::moveUp()
     context().removeChild( oldNode );
   }
 
-  QModelIndex newIndex = mModel->moveItem( index.row(), index.row() - 1 );
+  QModelIndex newIndex = mModel->moveItem( index, index.row() - 1 );
   mView->setCurrentIndex( newIndex );
 }
 
@@ -210,7 +211,7 @@ void List::moveDown()
     context().removeChild( oldNode );
   }
 
-  QModelIndex newIndex = mModel->moveItem( index.row(), index.row() + 1 );
+  QModelIndex newIndex = mModel->moveItem( index, index.row() + 1 );
   mView->setCurrentIndex( newIndex );
 }
 
@@ -225,7 +226,7 @@ void List::parseElement( const QDomElement &element )
       ItemClass c;
 
       c.setRefName( Reference( e.attribute( "ref" ) ).lastSegment().name() );
-
+      c.setList( e.attribute( "list" ) == "true" );
       QDomNode n2;
       for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
         QDomElement e2 = n2.toElement();
@@ -264,23 +265,41 @@ void List::loadData()
   QDomNode n;
   for( n = context().firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
-//    kDebug() << "E: " << e.tagName() << endl;
-    ItemClass ic = itemClass( e.tagName() );
-    if ( ic.isValid() ) {
-      int count = 1;
-      QMap<QString, int>::Iterator it = counts.find( ic.refName() );
-      if ( it != counts.end() ) count = it.value();
-      Reference::Segment s( ic.refName(), count );
-      Reference r = ref() + s;
 
-      QString il = itemLabel( ic, e );
-//      kDebug() << "item label: " << il << endl;
-      mModel->addItem( il, r, e );
-      counts.insert( ic.refName(), ++count );
-    }
+    loadElement( e, 0, counts );
+//    kDebug() << "E: " << e.tagName() << endl;
   }
 
   QTimer::singleShot( 0, this, SLOT( resizeColumns() ) );
+}
+
+void List::loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &counts )
+{
+  QMap<QString, int> myCounts;
+  ItemClass ic = itemClass( e.tagName() );
+  if ( ic.isValid() ) {
+    int count = 1;
+    QMap<QString, int>::Iterator it = counts.find( ic.refName() );
+    if ( it != counts.end() ) count = it.value();
+    Reference::Segment s( ic.refName(), count );
+    Reference r;
+    if( parent )
+      r = parent->ref + s;
+    else
+      r = ref() + s;
+    QString il = itemLabel( ic, e );
+//   kDebug() << "item label: " << il << endl;
+    ListItem *item = mModel->addItem( parent, il, r, e );
+
+    if( ic.isList() ) {
+      QDomNode n2;
+      for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
+        QDomElement e2 = n2.toElement();
+        loadElement( e2, item, myCounts );
+      }
+    }
+    counts.insert( ic.refName(), ++count );
+  }
 }
 
 QString List::itemLabel( const ItemClass &itemClass,

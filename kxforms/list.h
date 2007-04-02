@@ -28,6 +28,7 @@ class QTreeView;
 namespace KXForms {
 
 class ListModel;
+class ListItem;
 
 class List : public GuiElement
 {
@@ -50,9 +51,12 @@ class List : public GuiElement
         void setLabelDom( const QDomElement &e ) { mLabelDom = e; }
         QDomElement labelDom() const { return mLabelDom; } 
 
+        void setList( bool l ) { mList = l; }
+        bool isList() { return mList; }
       private:
         QString mRef;
         QDomElement mLabelDom;
+        bool mList;
     };
 
     void parseElement( const QDomElement & );
@@ -66,6 +70,7 @@ class List : public GuiElement
       const QDomElement &itemElement );
 
   protected:
+    void loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &counts );
     QModelIndex selectedItem();
 
   protected slots:

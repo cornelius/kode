@@ -23,95 +23,199 @@
 
 using namespace KXForms;
 
+ListItem::ListItem(const QList<QVariant> &data, ListItem *parent)
+{
+  parentItem = parent;
+  itemData = data;
+}
+
+ListItem::~ListItem()
+{
+  qDeleteAll(childItems);
+}
+
+void ListItem::appendChild(ListItem *item)
+{
+  childItems.append(item);
+}
+
+ListItem *ListItem::child(int row)
+{
+  return childItems.value(row);
+}
+
+void ListItem::removeChild(int row)
+{
+  delete childItems.value(row);
+  childItems.removeAt( row );
+}
+
+int ListItem::childCount() const
+{
+  return childItems.count();
+}
+
+int ListItem::row() const
+{
+  if (parentItem)
+    return parentItem->childItems.indexOf(const_cast<ListItem*>(this));
+  return 0;
+}
+
+int ListItem::columnCount() const
+{
+  return itemData.count();
+}
+
+QVariant ListItem::data(int column) const
+{
+  return itemData.value(column);
+}
+
+ListItem *ListItem::parent()
+{
+  return parentItem;
+}
+
+void ListItem::moveChild( int from, int to )
+{
+  childItems.move( from, to );
+}
+
+
+
 ListModel::ListModel( QObject *parent ) : QAbstractListModel( parent )
 {
+  QList<QVariant> rootData;
+  rootData << "Title";
+  rootItem = new ListItem(rootData);
 }
 
 ListModel::~ListModel()
 {
-  qDeleteAll( mItems );
+  delete rootItem;
+}
+
+bool ListModel::hasChildren( const QModelIndex &parent ) const
+{
+  if( parent.isValid() ) {
+    ListItem *parentItem =static_cast<ListItem*>(parent.internalPointer());
+    if( parentItem )
+      return parentItem->childCount() > 0;
+    else
+      return false;
+  } else
+    return rootItem->childCount() > 0;
 }
 
 int ListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  return mItems.size();
+     ListItem *parentItem;
+
+     if (!parent.isValid())
+         parentItem = rootItem;
+     else
+         parentItem = static_cast<ListItem*>(parent.internalPointer());
+
+     return parentItem->childCount();
 }
 
 int ListModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  if( mVisibleElements.size() > 0 )
-    return mVisibleElements.size();
-  else
-    return 1;
+     if (parent.isValid())
+         return static_cast<ListItem*>(parent.internalPointer())->columnCount();
+     else
+         return rootItem->columnCount();
 }
+
+ QModelIndex ListModel::index(int row, int column, const QModelIndex &parent) const
+ {
+     ListItem *parentItem;
+
+     if (!parent.isValid())
+         parentItem = rootItem;
+     else
+         parentItem = static_cast<ListItem*>(parent.internalPointer());
+
+     ListItem *childItem = parentItem->child(row);
+     if (childItem)
+         return createIndex(row, column, childItem);
+     else
+         return QModelIndex();
+ } 
+
+ QModelIndex ListModel::parent(const QModelIndex &index) const
+ {
+     if (!index.isValid())
+         return QModelIndex();
+
+     ListItem *childItem = static_cast<ListItem*>(index.internalPointer());
+     if( !childItem )
+         return QModelIndex();
+
+     ListItem *parentItem = childItem->parent();
+     if (parentItem == rootItem)
+         return QModelIndex();
+
+     return createIndex(parentItem->row(), 0, parentItem);
+ }
 
 QVariant ListModel::data( const QModelIndex & index, int role ) const
 {
-  if( !index.isValid() || index.row() > mItems.count() )
-    return QVariant();
+     if (!index.isValid())
+         return QVariant();
 
-  Item *item = mItems.at( index.row() );
-  if( mVisibleElements.size() == 0 ) {
-    if ( role == Qt::DisplayRole ) {
-      if ( index.column() == 0 ) return item->label;
-      else if ( index.column() == 1 ) return item->ref.toString();
-    }
-    return QVariant();
-  } else {
-    if ( role == Qt::DisplayRole ) {
-      Reference key = mVisibleElements[index.column()].ref;
-      QDomElement e = key.applyElement( item->element );
-      if( !e.isNull() )
-        return e.text();
-      else return QVariant();
-    }
-    return QVariant();
-  }
+     if (role != Qt::DisplayRole)
+         return QVariant();
+
+     ListItem *item = static_cast<ListItem*>(index.internalPointer());
+
+     return item->data(index.column());
 }
 
 QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
   int role ) const
 {
-  if ( orientation == Qt::Horizontal ) {
-    if( mVisibleElements.size() == 0 ) {
-    if ( role == Qt::DisplayRole ) {
-      if ( section == 0 ) {
-        if ( mLabel.isEmpty() ) return i18n("Label");
-        else return mLabel;
-      } else if ( section == 1 ) {
-        return i18n("Reference");
-      }
-    }
-    } else {
-      if ( role == Qt::DisplayRole ) {
-          return mVisibleElements[section].label;
-      }
-    }
-  }
-  return QVariant();
+     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+         return rootItem->data(section);
+
+     return QVariant();
 }
+ Qt::ItemFlags ListModel::flags(const QModelIndex &index) const
+ {
+     if (!index.isValid())
+         return Qt::ItemIsEnabled;
 
-void ListModel::addItem( const QString &label, const Reference &ref, QDomElement element )
+     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+ }
+
+ListItem *ListModel::addItem( ListItem *parent, const QString &label, const Reference &ref, QDomElement element )
 {
-  beginInsertRows( QModelIndex(), mItems.size(), mItems.size() );
+  ListItem *parentItem = parent ? parent : rootItem;
+  beginInsertRows( QModelIndex(), parentItem->childCount(), parentItem->childCount() );
 
-  Item *item = new Item;
+  QList<QVariant> itemData;
+  itemData << label;
+  ListItem *item = new ListItem( itemData, parentItem );
   item->label = label;
   item->ref = ref;
   item->element = element;
-  mItems.append( item );
-  
+  parentItem->appendChild( item );
+
   endInsertRows();
+
+  return item;
 }
 
-int ListModel::itemCount( const QString &itemClass )
+int ListModel::itemCount( ListItem *parent, const QString &itemClass )
 {
   int count = 0;
+  ListItem *item = parent ? parent : rootItem;
 
-  foreach( Item *item, mItems ) {
-    if ( item->ref.lastSegment().name() == itemClass ) count++;
+  for( int i = 0; i < item->childCount(); ++i ) {
+    ListItem *child = item->child( i );
+    Reference r = child->ref;
+    if( !r.isEmpty() && r.lastSegment().name() == itemClass ) count++;
   }
   
   return count;
@@ -122,9 +226,11 @@ bool ListModel::removeRows( int row, int count, const QModelIndex &parent )
   beginRemoveRows( parent, row, row + count - 1 );
   
   for( int i = 0; i < count; ++i ) {
-    Item *item = mItems.at( row );
-    mItems.removeAt( row );
-    delete item;
+    ListItem *parentItem = static_cast<ListItem*>(parent.internalPointer());
+    if( !parentItem )
+      parentItem = rootItem;
+
+    parentItem->removeChild( row );
   }
   
   endRemoveRows();
@@ -134,17 +240,23 @@ bool ListModel::removeRows( int row, int count, const QModelIndex &parent )
 
 void ListModel::recalculateSegmentCounts()
 {
+  recalculateSegmentCounts( rootItem );
+}
+
+void ListModel::recalculateSegmentCounts( ListItem *parent )
+{
   int startRow = 0;
   int endRow = 0;
 
   QMap<QString, int> counts;
 
-  foreach( Item *item, mItems ) {
+  for( int i = 0; i < parent->childCount(); ++i ) {
+    ListItem *item = parent->child( i );
     int count = 1;
     Reference::Segment segment = item->ref.segments().last();
     QMap<QString, int>::ConstIterator it = counts.find( segment.name() );
     if ( it != counts.end() ) count = it.value();
-    
+
     if ( count != segment.count() ) {
       item->ref.lastSegment().setCount( count );
     } else {
@@ -152,16 +264,21 @@ void ListModel::recalculateSegmentCounts()
     }
 
     endRow++;
-    
+
     counts.insert( segment.name(), ++count );
+
+    if( item->childCount() > 0 )
+      recalculateSegmentCounts( item );
   }
 
   emit dataChanged( createIndex( startRow, 1 ), createIndex( endRow, 1 ) );
 }
 
-ListModel::Item *ListModel::item( const QModelIndex &index )
+ListItem *ListModel::item( const QModelIndex &index )
 {
-  return mItems.at( index.row() );
+  if( index.isValid() )
+    return static_cast<ListItem*>(index.internalPointer());
+  else return 0;
 }
 
 void ListModel::setLabel( const QString &label )
@@ -180,9 +297,15 @@ void ListModel::clear()
     removeRows( 0, rowCount() );
 }
 
-QModelIndex ListModel::moveItem( int from, int to )
+QModelIndex ListModel::moveItem( QModelIndex index, int to )
 {
-  mItems.move( from, to );
-  emit dataChanged( createIndex( from, 1 ), createIndex( to, 1 ) );
+  ListItem *item = static_cast<ListItem*>(index.internalPointer());
+  ListItem *parent = item->parent();
+
+  if( !parent )
+    return index;
+
+  parent->moveChild( index.row(), to );
+  emit dataChanged( index, createIndex( to, 1 ) );
   return createIndex( to, 1 );
 }
