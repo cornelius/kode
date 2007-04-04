@@ -68,7 +68,7 @@ void KXFormsTest::testDocument()
 
   QCOMPARE( kxformsNode.nodeName(), QString( "kxforms" ) );
 
-  QCOMPARE( kxformsNode.childNodes().count(), 5 );
+  QCOMPARE( kxformsNode.childNodes().count(), 4 );
 
 }
 
@@ -83,7 +83,7 @@ void KXFormsTest::testForm()
 
   QCOMPARE( formNode.toElement().attribute( "ref" ), QString("person") );
 
-  QCOMPARE( formNode.childNodes().count(), 4 );
+  QCOMPARE( formNode.childNodes().count(), 3 );
 
   QDomNode child = formNode.firstChild();
 
