@@ -61,6 +61,8 @@ class FormGui : public QWidget
   protected:
     void setRefLabel( const Reference &ref );
 
+    void parseAttributeElements( GuiElement *parent, QDomElement &e );
+
     QDomElement findContextElement( const QDomDocument &doc );
 
     bool hasPages( const QDomElement & );

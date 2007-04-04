@@ -260,4 +260,7 @@ void Manager::addWidget( QLayout *l, QWidget *w ) const
 void Manager::addElement( QLayout *l, GuiElement *e ) const
 {
   mGuiHandler->addElement( l, e->labelWidget(), e->widget(), e->properties() );
+  foreach( GuiElement *a, e->attributeElements() ) {
+    mGuiHandler->addElement( l, a->labelWidget(), a->widget(), a->properties(), true );
+  }
 }

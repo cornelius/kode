@@ -40,18 +40,14 @@ class GuiElement : public QObject
     enum Appearance { Undefined, Minimal, Compact, Full };
     struct Properties {
         Properties() : readonly( false ), position( -1 ),
-            halign( 0 ), valign( Qt::AlignTop ), appearance( Undefined ) {}
+            appearance( Undefined ) {}
         QString type;
         QString constraint;
         bool readonly;
         QMap<QString, QString> relevance;
         QString page;
         int position;
-        Qt::Alignment halign;
-        Qt::Alignment valign;
         Appearance appearance;
-
-        Qt::Alignment alignment() { return (halign | valign); }
     };
 
     typedef QList<GuiElement *> List;
@@ -70,6 +66,7 @@ class GuiElement : public QObject
     QDomElement createElement( const Reference & );
 
     void loadData( const QDomElement &context );
+    void save();
 
     virtual QWidget *widget() const { return mWidget; }
     virtual QWidget *labelWidget() const { return mLabel; }
@@ -82,6 +79,8 @@ class GuiElement : public QObject
 
     void setTip( const QString &tip );
 
+    void addAttributeElement( GuiElement *e ) { mAttributeElements.append( e ); }
+    GuiElement::List attributeElements() { return mAttributeElements; }
   signals:
     void valueChanged( const QString &, const QString & );
 
@@ -98,6 +97,7 @@ class GuiElement : public QObject
     QWidget *mWidget;
     Manager *mManager;
     Properties *mProperties;
+    GuiElement::List mAttributeElements;
 
   private:
     Reference mRef;

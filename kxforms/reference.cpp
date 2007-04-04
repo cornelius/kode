@@ -365,6 +365,9 @@ QDomElement Reference::applyAttributeContext( const QDomElement &context ) const
 
 QString Reference::applyString( const QDomElement &context ) const
 {
+  if( isEmpty() )
+    return QString();
+
   Reference::Segment s = lastSegment();
 
   QString txt;

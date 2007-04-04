@@ -69,7 +69,7 @@ void GuiHandler::addWidget( QLayout *l, QWidget *w ) const
     if( !gl )
       return;
 
-    gl->addWidget( w, gl->rowCount(), 0, 1, 2 );
+    gl->addWidget( w, gl->rowCount(), 0, 1, 3 );
   }
   else {
     QVBoxLayout *vbl = dynamic_cast< QVBoxLayout *>( l );
@@ -80,7 +80,8 @@ void GuiHandler::addWidget( QLayout *l, QWidget *w ) const
   }
 }
 
-void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiElement::Properties *prop ) const
+void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, 
+            GuiElement::Properties *prop, bool indented ) const
 {
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
@@ -88,12 +89,19 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiEle
       return;
 
     int row = gl->rowCount();
+    gl->setColumnStretch( 2, 1 );
     if( label ) {
-      gl->addWidget( label, row, 0, prop->alignment() );
-      gl->addWidget( widget, row, 1, prop->alignment() );
+      if( indented ) {
+        gl->addWidget( label, row, 0, 1, 2, Qt::AlignRight | Qt::AlignTop );
+        gl->addWidget( widget, row, 2 );
+      }
+      else {
+        gl->addWidget( label, row, 0, Qt::AlignRight | Qt::AlignTop );
+        gl->addWidget( widget, row, 1, 1, 2 );
+      }
     }
     else {
-      gl->addWidget( widget, row, 0, 1, 2, prop->alignment() );
+      gl->addWidget( widget, row, 0, 1, 3 );
     }
   }
   else {
@@ -104,8 +112,19 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, GuiEle
     QBoxLayout *newLayout;
     newLayout = new QVBoxLayout();
 
-    newLayout->addWidget( label, prop->alignment() );
-    newLayout->addWidget( widget, prop->alignment() );
+    if( indented ) {
+      QBoxLayout *labelLayout = new QHBoxLayout();
+      labelLayout->addSpacing( 40 );
+      labelLayout->addWidget( label, Qt::AlignRight | Qt::AlignTop );
+      QBoxLayout *widgetLayout = new QHBoxLayout();
+      widgetLayout->addSpacing( 40 );
+      widgetLayout->addWidget( widget, Qt::AlignRight | Qt::AlignTop );
+      newLayout->addLayout( labelLayout );
+      newLayout->addLayout( widgetLayout );
+    } else {
+      newLayout->addWidget( label, Qt::AlignRight | Qt::AlignTop );
+      newLayout->addWidget( widget );
+    }
 
     vbl->insertLayout( l->count() - 1, newLayout );
   }

@@ -80,20 +80,24 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
   parseElement( element, form );
 }
 
-void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *xml  )
+void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *xml, Reference path  )
 {
+  if( element.attributeRelations().size() == 0 )
+    return;
+
+  XmlBuilder *attributes = xml->tag( "attributes" );
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
 
     qDebug() << "  ATTRIBUTE: " << a.identifier();
 
     if ( a.type() == Schema::Attribute::String ) {
-      XmlBuilder *input = xml->tag( "xf:input" );
-      input->attribute( "ref", a.ref() );
+      XmlBuilder *input = attributes->tag( "xf:input" );
+      input->attribute( "ref", (path + Reference( a.ref() )).toString() );
       createLabel( input, a );
     } else if ( a.type() == Schema::Attribute::Enumeration ) {
-      XmlBuilder *select1 = xml->tag( "xf:select1" );
-      select1->attribute( "ref", a.ref() );
+      XmlBuilder *select1 = attributes->tag( "xf:select1" );
+      select1->attribute( "ref", (path + Reference( a.ref() )).toString() );
       createLabel( select1, a );
       foreach( QString value, a.enumerationValues() ) {
         XmlBuilder *item = select1->tag( "xf:item" );
@@ -180,6 +184,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
     createLabel( textInput, element );
     applyCommonHints( textInput, element.name() );
+    parseAttributes( element, textInput, path + Reference( element.name() ) );
     mCollapsedForms.append( element.name() );
   }
   else {

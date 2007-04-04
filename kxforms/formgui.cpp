@@ -160,6 +160,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       } else {
         parseElement( e, layout, e.attribute( "overrideLabel" ) );
       }
+    } else if ( tag == "attributes" ) {
+      parseElement( e, layout );
     } else {
       kWarning() << "  Unsupported element: " << tag << endl;
       delete properties;
@@ -169,6 +171,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       if( !c.tip().isEmpty() )
         guiElement->setTip( c.tip() );
       guiElement->parseElement( e );
+      parseAttributeElements( guiElement, e );
       if( guiElement->properties()->position < 0 ||
           pendingElements[ layout ].contains( guiElement->properties()->position ) ) {
         mManager->addElement( layout, guiElement );
@@ -190,6 +193,50 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
   }
 
   kDebug() << "FormGui::parseElement() done" << endl;
+}
+
+
+void FormGui::parseAttributeElements( GuiElement *parent, QDomElement &e )
+{
+  QDomNode n;
+  for( n = e.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    QDomElement e = n.toElement();
+    if( e.tagName() != "attributes" )
+      continue;
+
+    QDomNode n2;
+    for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
+      QDomElement e2 = n2.toElement();
+      QString tag = e2.tagName();
+
+      XFormsCommon c = XFormsCommon::parseElement( e2 );
+      GuiElement::Properties *properties = new GuiElement::Properties;
+      GuiElement::parseProperties( e2, properties );
+      GuiElement *guiElement = 0;
+
+      kDebug() << "Got an attribute element: " << tag << " label: " << c.label() << endl;
+
+      if ( tag == "list" ) {
+        guiElement = new KXForms::List( mManager, c.label(), this, properties );
+        guiElement->setRef( ref() );
+      } else if ( tag == "xf:input" ) {
+        Input *input = new Input( mManager, c.label(), this, properties );
+        connect( input, SIGNAL( returnPressed() ), SIGNAL( editingFinished() ) );
+        guiElement = input;
+        guiElement->setRef( e2.attribute( "ref" ) );
+      }else if ( tag == "xf:select1" ) {
+        guiElement = new Select1( mManager, c.label(), this, properties );
+        guiElement->setRef( e2.attribute( "ref" ) );
+      } else {
+        kWarning() << "  Unsupported element: " << tag << endl;
+        delete properties;
+      }
+
+      if( guiElement ) {
+        parent->addAttributeElement( guiElement );
+      }
+    }
+  }
 }
 
 QDomElement FormGui::findContextElement( const QDomDocument &doc )
@@ -223,7 +270,7 @@ void FormGui::saveData()
   }
   if( valid ) {
     for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
-      (*itGui)->saveData();
+      (*itGui)->save();
     }
   } else {
     kDebug() << k_funcinfo << "Not all elements were valid" << endl;
