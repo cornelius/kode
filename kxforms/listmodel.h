@@ -43,14 +43,17 @@ namespace KXForms {
      void removeChild( int row );
      void moveChild( int from, int to );
 
-     QString label;
-     Reference ref;
-     QDomElement element;
+     void setItemData( const QList<QVariant> & );
+     QList<QVariant> itemData();
+
+     Reference ref() { return mReference; }
+     void setReference( const Reference &ref ) { mReference = ref; }
 
  private:
-     QList<ListItem*> childItems;
-     QList<QVariant> itemData;
-     ListItem *parentItem;
+     QList<ListItem*> mChildItems;
+     QList<QVariant> mItemData;
+     ListItem *mParentItem;
+     Reference mReference;
  };
 
 
@@ -74,12 +77,7 @@ class ListModel : public QAbstractListModel
     void recalculateSegmentCounts();
     void recalculateSegmentCounts( ListItem *parent );
 
-    struct visibleElement {
-        QString label;
-        Reference ref;
-    };
-    
-    ListItem *addItem( ListItem *parent, const QString &label, const Reference &ref, QDomElement element );
+    ListItem *addItem( ListItem *parent, const QStringList &label, const Reference &ref );
     ListItem *item( const QModelIndex &index );
 
     int itemCount( ListItem *parent, const QString &itemClass );
@@ -87,7 +85,7 @@ class ListModel : public QAbstractListModel
     void setLabel( const QString & );
     QString label() const;
 
-    void setVisibleElements( QList<visibleElement> headers ) { mVisibleElements = headers; }
+    void setHeaders( QStringList headers );
 
     void clear();
 
@@ -95,7 +93,6 @@ class ListModel : public QAbstractListModel
 
   private:
     QString mLabel;
-    QList<visibleElement> mVisibleElements;
     ListItem *rootItem;
 };
 

@@ -35,7 +35,7 @@ class Hint
 {
   public:
     typedef QList<Hint> List;
-    enum Type { Label, ListItemLabelRef, ListVisibleElements, ListShowHeader, Pages, 
+    enum Type { Label, ListItemLabelRef, ListShowHeader, Pages, 
         PageReference, Appearance, Position };
 
     Hint();
@@ -54,7 +54,7 @@ class Hint
     void addElement( Type, const QDomElement );
     QList<QDomElement> elements( Type );
 
-    void setEnumValue( const QString &value, const QString &replacement );    
+    void setEnumValue( const QString &value, const QString &replacement );
     QString enumValue( const QString &value ) const;
 
   private:

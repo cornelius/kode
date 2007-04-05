@@ -165,17 +165,6 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
       hint.setValue( Hint::Appearance, contentAsString( e ) );
     } else if (name.localName() == "position" ) {
       hint.setValue( Hint::Position, contentAsString( e ) );
-    } else if (name.localName() == "listVisibleElements" ) {
-      hint.setValue( Hint::ListVisibleElements, contentAsString( e ) );
-      QDomNode child = n.firstChild();
-      while( !child.isNull() ) {
-        if( child.nodeName() == "listVisibleElement" ) {
-          QDomElement e = child.toElement();
-          if( !e.isNull() )
-            hint.addElement( Hint::ListVisibleElements, e );
-        }
-        child = child.nextSibling();
-      }
     } else if (name.localName() == "pages" ) {
       hint.setValue( Hint::Pages, contentAsString( e ) );
       QDomNode child = n.firstChild();

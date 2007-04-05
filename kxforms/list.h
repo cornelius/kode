@@ -48,14 +48,14 @@ class List : public GuiElement
         void setRefName( const QString &r ) { mRef = r; }
         QString refName() const { return mRef; }
         
-        void setLabelDom( const QDomElement &e ) { mLabelDom = e; }
-        QDomElement labelDom() const { return mLabelDom; } 
+        void addLabelDom( const QDomElement &e ) { mLabelDoms.append( e ); }
+        QList<QDomElement> labelDoms() const { return mLabelDoms; } 
 
         void setList( bool l ) { mList = l; }
         bool isList() { return mList; }
       private:
         QString mRef;
-        QDomElement mLabelDom;
+        QList<QDomElement> mLabelDoms;
         bool mList;
     };
 
@@ -66,7 +66,7 @@ class List : public GuiElement
 
     ItemClass itemClass( const QString &ref );
 
-    QString itemLabel( const ItemClass &itemClass,
+    QStringList itemLabels( const ItemClass &itemClass,
       const QDomElement &itemElement );
 
   protected:

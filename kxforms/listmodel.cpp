@@ -25,62 +25,74 @@ using namespace KXForms;
 
 ListItem::ListItem(const QList<QVariant> &data, ListItem *parent)
 {
-  parentItem = parent;
-  itemData = data;
+  mParentItem = parent;
+  mItemData = data;
 }
 
 ListItem::~ListItem()
 {
-  qDeleteAll(childItems);
+  qDeleteAll(mChildItems);
 }
 
 void ListItem::appendChild(ListItem *item)
 {
-  childItems.append(item);
+  mChildItems.append(item);
 }
 
 ListItem *ListItem::child(int row)
 {
-  return childItems.value(row);
+  return mChildItems.value(row);
 }
 
 void ListItem::removeChild(int row)
 {
-  delete childItems.value(row);
-  childItems.removeAt( row );
+  delete mChildItems.value(row);
+  mChildItems.removeAt( row );
 }
 
 int ListItem::childCount() const
 {
-  return childItems.count();
+  return mChildItems.count();
 }
 
 int ListItem::row() const
 {
-  if (parentItem)
-    return parentItem->childItems.indexOf(const_cast<ListItem*>(this));
+  if (mParentItem)
+    return mParentItem->mChildItems.indexOf(const_cast<ListItem*>(this));
   return 0;
 }
 
 int ListItem::columnCount() const
 {
-  return itemData.count();
+  return mItemData.count();
 }
 
 QVariant ListItem::data(int column) const
 {
-  return itemData.value(column);
+  return mItemData.value(column);
 }
 
 ListItem *ListItem::parent()
 {
-  return parentItem;
+  return mParentItem;
 }
 
 void ListItem::moveChild( int from, int to )
 {
-  childItems.move( from, to );
+  mChildItems.move( from, to );
 }
+
+void ListItem::setItemData( const QList<QVariant> &data )
+{
+  mItemData = data;
+}
+
+QList<QVariant> ListItem::itemData()
+{
+  return mItemData;
+}
+
+
 
 
 
@@ -189,17 +201,17 @@ QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
  }
 
-ListItem *ListModel::addItem( ListItem *parent, const QString &label, const Reference &ref, QDomElement element )
+ListItem *ListModel::addItem( ListItem *parent, const QStringList &labels, const Reference &ref )
 {
+  kDebug() << k_funcinfo << labels << endl;
   ListItem *parentItem = parent ? parent : rootItem;
   beginInsertRows( QModelIndex(), parentItem->childCount(), parentItem->childCount() );
 
   QList<QVariant> itemData;
-  itemData << label;
+  foreach( QString label, labels )
+    itemData << label;
   ListItem *item = new ListItem( itemData, parentItem );
-  item->label = label;
-  item->ref = ref;
-  item->element = element;
+  item->setReference( ref );
   parentItem->appendChild( item );
 
   endInsertRows();
@@ -214,7 +226,7 @@ int ListModel::itemCount( ListItem *parent, const QString &itemClass )
 
   for( int i = 0; i < item->childCount(); ++i ) {
     ListItem *child = item->child( i );
-    Reference r = child->ref;
+    Reference r = child->ref();
     if( !r.isEmpty() && r.lastSegment().name() == itemClass ) count++;
   }
   
@@ -253,12 +265,12 @@ void ListModel::recalculateSegmentCounts( ListItem *parent )
   for( int i = 0; i < parent->childCount(); ++i ) {
     ListItem *item = parent->child( i );
     int count = 1;
-    Reference::Segment segment = item->ref.segments().last();
+    Reference::Segment segment = item->ref().segments().last();
     QMap<QString, int>::ConstIterator it = counts.find( segment.name() );
     if ( it != counts.end() ) count = it.value();
 
     if ( count != segment.count() ) {
-      item->ref.lastSegment().setCount( count );
+      item->ref().lastSegment().setCount( count );
     } else {
       startRow++;
     }
@@ -289,6 +301,14 @@ void ListModel::setLabel( const QString &label )
 QString ListModel::label() const
 {
   return mLabel;
+}
+
+void ListModel::setHeaders( QStringList headers )
+{
+  QList<QVariant> data;
+  foreach( QString s, headers )
+    data << s;
+  rootItem->setItemData( data );
 }
 
 void ListModel::clear()

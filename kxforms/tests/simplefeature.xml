@@ -2,15 +2,16 @@
   <category>BlubbCategory0</category>
   <category>BlubbCategory1</category>
   <category>BlubbCategory2</category>
-  <title>24h</title>
+  <category>Blubb3</category>
+  <title>test</title>
   <description>
     <richtext>That is the <a href="www.suse.de" >
 description</a>.</richtext>
   </description>
   <bool>0</bool>
   <partnercontext>
-    <organization>11a</organization>
-    <externalid>123456</externalid>
+    <organization>test</organization>
+    <externalid>123</externalid>
   </partnercontext>
   <productcontext>
     <product>

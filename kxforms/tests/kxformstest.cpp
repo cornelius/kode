@@ -121,7 +121,7 @@ void KXFormsTest::testForm()
 
   n = n.firstChild();
 
-  QCOMPARE( n.nodeName(), QString( "arg" ) );
+  QCOMPARE( n.nodeName(), QString( "itemLabelArg" ) );
 
   QCOMPARE( n.toElement().attribute( "ref" ), QString( "." ) );
 
@@ -170,24 +170,6 @@ void KXFormsTest::testHints()
   QCOMPARE( hint.value( KXForms::Hint::ListShowHeader ), QString( "true" ) );
 
   QCOMPARE( hint.value( KXForms::Hint::ListItemLabelRef ), QString( "/product/productid" ) );
-
-  QCOMPARE( hint.elements( KXForms::Hint::ListVisibleElements ).size(), 2 );
-
-  QDomElement e = hint.elements( KXForms::Hint::ListVisibleElements ).first().toElement();
-
-  QCOMPARE( e.tagName(), QString( "listVisibleElement" ) );
-
-  QCOMPARE( e.text(), QString( "product/productid" ) );
-
-  QCOMPARE( e.attribute("label"), QString( "Id" ) );
-
-  e = hint.elements( KXForms::Hint::ListVisibleElements ).at( 1 );
-
-  QCOMPARE( e.tagName(), QString( "listVisibleElement" ) );
-
-  QCOMPARE( e.text(), QString( "product/version" ) );
-
-  QCOMPARE( e.attribute("label").isEmpty(), true );
 }
 
 QTEST_MAIN(KXFormsTest)

@@ -314,21 +314,21 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
   for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
     Reference::Segment segment = *it;
 
-    kDebug() << "  Segment: " << segment.toString() << " Count: " <<
-      segment.count() << endl;
+//     kDebug() << "  Segment: " << segment.toString() << " Count: " <<
+//       segment.count() << endl;
 
     QMap<QString, int> counts;
     QDomNode n;
     for( n = result.firstChild(); !n.isNull(); n = n.nextSibling() ) {
       QDomElement e = n.toElement();
 
-      kDebug() << "  E: " << e.tagName() << endl;
+//       kDebug() << "  E: " << e.tagName() << endl;
 
       int count = 1;
       QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
       if ( itCount != counts.end() ) count = itCount.value();
 
-      kDebug() << "  COUNT: " << count << endl;
+//       kDebug() << "  COUNT: " << count << endl;
 
       if ( e.tagName() == segment.name() && count == segment.count() ) {
         result = e;

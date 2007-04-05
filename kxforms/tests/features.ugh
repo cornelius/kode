@@ -1,6 +1,6 @@
 <ugh>
   <hint ref="category/feature">
-    <label>Feature: <arg ref="summary" truncate="50"/></label>
+    <label>Feature: <itemLabelArg ref="summary" truncate="50"/></label>
   </hint>
   <hint ref="feature/responsible">
     <label><arg ref="@name"/> &lt;<arg ref="@email"/>&gt;</label>

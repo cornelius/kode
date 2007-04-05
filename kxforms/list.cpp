@@ -135,8 +135,8 @@ void List::newItem()
   Reference reference = ref();
   if ( segment.name() != "." ) reference.append( segment );
 
-  QString il = itemLabel( itemClass( formRef ), newElement );
-  mModel->addItem( 0, il, ref() + segment, newElement );
+  QStringList il = itemLabels( itemClass( formRef ), newElement );
+  mModel->addItem( 0, il, ref() + segment );
 
   mManager->createGui( reference, this );
 
@@ -151,9 +151,9 @@ void List::deleteItem()
   ListItem *item = mModel->item( index );
 
   int result = KMessageBox::warningContinueCancel( mWidget,
-    i18n("Delete item '%1'?", item->label ) );
+    i18n("Delete item '%1'?", item->data( 0 ).toString() ) );
   if ( result == KMessageBox::Continue ) {
-    QDomElement element = mManager->applyReference( item->ref );
+    QDomElement element = mManager->applyReference( item->ref() );
     element.parentNode().removeChild( element );
     mModel->removeRows( index.row(), 1 );
     mModel->recalculateSegmentCounts();
@@ -171,7 +171,7 @@ void List::editItem()
 {
   QModelIndex index = selectedItem();
   if ( index.isValid() ) {
-    mManager->createGui( mModel->item( index )->ref, this );
+    mManager->createGui( mModel->item( index )->ref(), this );
   }
 }
 
@@ -180,7 +180,7 @@ void List::moveUp()
   QModelIndex index = selectedItem();
   if ( !index.isValid() || index.row() == 0 ) return;
 
-  QString ref = mModel->item( index )->ref.lastSegment().name();
+  QString ref = mModel->item( index )->ref().lastSegment().name();
   QDomNode oldNode = context().firstChildElement( ref );
   int cnt = 0;
   while( cnt++ < index.row() && !oldNode.isNull() )
@@ -200,7 +200,7 @@ void List::moveDown()
   QModelIndex index = selectedItem();
   if ( !index.isValid() || index.row() == mModel->rowCount() - 1 ) return;
 
-  QString ref = mModel->item( index )->ref.lastSegment().name();
+  QString ref = mModel->item( index )->ref().lastSegment().name();
   QDomNode oldNode = context().firstChildElement( ref );
   int cnt = 0;
   while( cnt++ < index.row() && !oldNode.isNull() )
@@ -231,26 +231,23 @@ void List::parseElement( const QDomElement &element )
       for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
         QDomElement e2 = n2.toElement();
         if ( e2.tagName() == "itemlabel" ) {
-          c.setLabelDom( e2 );
+          c.addLabelDom( e2 );
         }
       }
 
       mItemClasses.append( c );
-    } else if( e.tagName() == "visibleElements" ) {
+    } else if( e.tagName() == "headers" ) {
+      QStringList headers;
       QDomNode n2;
-      QList<ListModel::visibleElement> items;
       for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
         QDomElement e = n2.toElement();
         if( e.isNull() )
           continue;
-        if( e.tagName() == "visibleElement" ) {
-          ListModel::visibleElement i;
-          i.ref.fromString( e.attribute( "ref" ) );
-          i.label = e.text();
-          items.append( i );
+        if( e.tagName() == "header" ) {
+          headers.append( e.text() );
         }
       }
-      mModel->setVisibleElements( items );
+      mModel->setHeaders( headers );
     }
   }
 }
@@ -284,12 +281,12 @@ void List::loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &co
     Reference::Segment s( ic.refName(), count );
     Reference r;
     if( parent )
-      r = parent->ref + s;
+      r = parent->ref() + s;
     else
       r = ref() + s;
-    QString il = itemLabel( ic, e );
+    QStringList il = itemLabels( ic, e );
 //   kDebug() << "item label: " << il << endl;
-    ListItem *item = mModel->addItem( parent, il, r, e );
+    ListItem *item = mModel->addItem( parent, il, r );
 
     if( ic.isList() ) {
       QDomNode n2;
@@ -302,18 +299,21 @@ void List::loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &co
   }
 }
 
-QString List::itemLabel( const ItemClass &itemClass,
+QStringList List::itemLabels( const ItemClass &itemClass,
   const QDomElement &itemElement )
 {
-  QString itemLabel;
+  QStringList itemLabels;
+  QDomNode labelDom;
   QDomNode n;
-  for( n = itemClass.labelDom().firstChild(); !n.isNull();
+  foreach( QDomNode labelDom, itemClass.labelDoms() ) {
+  QString label;
+  for( n = labelDom.firstChild(); !n.isNull();
        n = n.nextSibling() ) {
     if ( n.isText() ) {
-      itemLabel.append( n.toText().data() );
+      label.append( n.toText().data() );
     } else if ( n.isElement() ) {
       QDomElement e2 = n.toElement();
-      if ( e2.tagName() != "arg" ) {
+      if ( e2.tagName() != "itemLabelArg" ) {
         kWarning() << "Illegal tag in itemlabel element: " << e2.tagName()
           << endl;
       } else {
@@ -333,11 +333,13 @@ QString List::itemLabel( const ItemClass &itemClass,
             }
           }
         }
-        itemLabel.append( txt );
+        label.append( txt );
       }
     }
   }
-  return itemLabel;
+  itemLabels.append( label );
+  }
+  return itemLabels;
 }
 
 void List::resizeColumns()
