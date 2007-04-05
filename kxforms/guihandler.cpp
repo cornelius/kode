@@ -83,6 +83,7 @@ void GuiHandler::addWidget( QLayout *l, QWidget *w ) const
 void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, 
             GuiElement::Properties *prop, bool indented ) const
 {
+  Q_UNUSED( prop );
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )
