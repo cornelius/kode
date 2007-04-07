@@ -33,7 +33,7 @@ set(schematest_SRCS schematest.cpp )
 
 kde4_automoc(${schematest_SRCS})
 
-kde4_add_executable(schematest ${schematest_SRCS})
+kde4_add_executable(schematest NOGUI RUN_UNINSTALLED ${schematest_SRCS})
 
 target_link_libraries(schematest  ${KDE4_KDECORE_LIBS} schema )
 
