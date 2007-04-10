@@ -3,7 +3,6 @@
     <label>Status of the documentation: </label>
   </hint>
   <hint ref="productcontext">
-    <listItemLabelRef>/product/productid</listItemLabelRef>
     <listShowHeader>true</listShowHeader>
   </hint>
   <hint ref="name">

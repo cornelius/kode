@@ -123,7 +123,7 @@ void KXFormsTest::testForm()
 
   QCOMPARE( n.nodeName(), QString( "itemLabelArg" ) );
 
-  QCOMPARE( n.toElement().attribute( "ref" ), QString( "." ) );
+  QCOMPARE( n.toElement().attribute( "ref" ), QString( "/.[1]" ) );
 
   QCOMPARE( n.toElement().attribute( "truncate" ), QString( "40" ) );
 
@@ -168,8 +168,6 @@ void KXFormsTest::testHints()
   KXForms::Hint hint = mHints.hint( "productcontext" );
 
   QCOMPARE( hint.value( KXForms::Hint::ListShowHeader ), QString( "true" ) );
-
-  QCOMPARE( hint.value( KXForms::Hint::ListItemLabelRef ), QString( "/product/productid" ) );
 }
 
 QTEST_MAIN(KXFormsTest)
