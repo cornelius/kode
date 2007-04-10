@@ -65,17 +65,7 @@
 
 \subsection{ The \texttt{list} Element}
 \begin{description}
- \item Description: This element enables handling of lists of elements. A list can operate in two different modes:
-\begin{itemize}
- \item \textbf{Single-Column Mode}
-
-In single-column mode only one column is shown in the list, which is suitable for simpleType elements or complexType elements that have a descriptive element. The relevant element and the label can be specified using the \texttt{itemClass} child element.
-
- \item \textbf{Multi-Column Mode}
-
-In multi-column mode the lists can show one or more columns. The \texttt{visibleElements} child element is used to specify the relevant elements and labels.
-\end{itemize}
-
+ \item Description: This element enables handling of lists of elements. A list can contain one or more types of elements which are specified by the \texttt{itemClass} child element. The number of columns and their content are also defined there per type of element. The headers can be defined using the \texttt{headers} child element. The \texttt{list} element is capable of both showing plain lists and tree structures.
 
  \item Common Attributes: Common (\ref{commonattributes})
 
@@ -101,9 +91,9 @@ An optional attribute specifying the maximum number of elements the list may con
  \item Special Child Elements:
 
 \begin{itemize}
- \item \textbf{\texttt{visibleElements}} (\ref{visibleElements})
+ \item \textbf{\texttt{headers}} (\ref{headersElement})
 
-Defines the elements that are shown as columns in the list. If this element exists the list will operate in multi-column mode, even if only one column is defined there. That means, that the itemClass child element does not have an effect.
+Defines the headers of the columns.
 
  \item \textbf{\texttt{itemClass}} (\ref{itemClass})
 
@@ -114,14 +104,20 @@ Defines the element that the list corresponds to when the list operates in singl
 
 \begin{lstlisting}[caption=\texttt{list} Element]
 <list showHeader="true">
- <visibleElements>
-  <visibleElement ref="product[1]/name[1]">Name</visibleElement>
-  <visibleElement ref="product[1]/version[1]">Version</visibleElement>
- </visibleElements>
- <xf:label>Productcontexts</xf:label>
- <itemclass ref="/productcontext">
-  <itemlabel><arg ref="/product/productid"/></itemlabel>
+ <xf:label>Item</xf:label>
+  <itemclass ref="/feature">
+    <itemlabel><itemLabelArg ref="/summary[1]" truncate="40"/></itemlabel>
+    <itemlabel><itemLabelArg ref="/@status[1]" truncate="40"/></itemlabel>
+    <itemlabel><itemLabelArg ref="/@target[1]" truncate="40"/></itemlabel>
+  </itemclass>
+ <itemclass ref="/category">
+  <itemlabel>Category: <itemLabelArg ref="@name"/></itemlabel>
  </itemclass>
+ <headers>
+  <header>Summary</header>
+  <header>Status</header>
+  <header>Target</header>
+ </headers>
 </list>
 \end{lstlisting}
 \end{description}

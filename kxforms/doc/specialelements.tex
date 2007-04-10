@@ -69,10 +69,10 @@ This attribute specifies the id of the page. This id can then be referenced by G
 
 
 
-\subsection{ The \texttt{visibleElements} Element}
-\label{visibleElements}
+\subsection{ The \texttt{headers} Element}
+\label{headersElement}
 \begin{description}
- \item Description: This element is used to specify elements that are shown as columns in a multi-column list.
+ \item Description: This element is used to specify headers of the columns of a list.
 
  \item Common Attributes: none
 
@@ -80,45 +80,39 @@ This attribute specifies the id of the page. This id can then be referenced by G
 
  \item Common Child Elements: none
 
- \item Special Child Elements: \texttt{visibleElement} (\ref{visibleElement})
+ \item Special Child Elements: \texttt{header} (\ref{headerElement})
 
  \item Example: 
 
-\begin{lstlisting}[caption=\texttt{visibleElements} Element]
-<visibleElements>
- <visibleElement ref="product[1]/name[1]">Name</visibleElement>
- <visibleElement ref="product[1]/version[1]">Version</visibleElement>
-</visibleElements>
+\begin{lstlisting}[caption=\texttt{headers} Element]
+<headers>
+ <header>Summary</header>
+ <header>Status</header>
+ <header>Target</header>
+</headers>
 \end{lstlisting}
 \end{description}
 
 
 
 
-\subsection{ The \texttt{visibleElement} Element}
-\label{visibleElement}
+\subsection{ The \texttt{header} Element}
+\label{headerElement}
 \begin{description}
- \item Description: This element defines the reference to one element and its label that is shown as a column in a list.
+ \item Description: This element defines the header of a column in a list element.
 
- \item Common Attributes: Common (\ref{commonattributes})
+ \item Common Attributes: none
 
  \item Special Attributes: none
 
- \item Common Child Elements:
-
-\begin{itemize}
- \item \textbf{\texttt{truncate}} [optional]
-
-Optional attribute that defines after how many chars the label should be truncated. If the label succeeds the defined length, it will be truncated and ``...'' should be appended to indicate the truncation.
-\end{itemize}
+ \item Common Child Elements: none
 
  \item Special Child Elements: none
 
  \item Example: 
 
-\begin{lstlisting}[caption=\texttt{visibleElement} Element]
-<visibleElement ref="product[1]/version[1]" 
-    truncate="20">Version</visibleElement>
+\begin{lstlisting}[caption=\texttt{header} Element]
+<header>Summary</header>
 \end{lstlisting}
 \end{description}
 
@@ -133,7 +127,12 @@ Optional attribute that defines after how many chars the label should be truncat
 
  \item Common Attributes: Common (\ref{commonattributes})
 
- \item Special Attributes: none
+ \item Special Attributes:
+\begin{itemize}
+ \item \textbf{\texttt{list}} [optional] [default=false]
+
+This attribute specifies if items of this class should be displayed recursively, building a tree. That sometimes gives a better overview over the data and makes navigation easier.
+\end{itemize}
 
  \item Common Child Elements: none
 
@@ -170,9 +169,7 @@ Optional attribute that defines after how many chars the label should be truncat
  \item Example: 
 
 \begin{lstlisting}[caption=\texttt{itemLabel} Element]
-<itemlabel>
- <itemLabelArg ref="/product/productid" truncate="20"/>
-</itemlabel>
+<itemlabel>Product-Id: <itemLabelArg ref="/product/productid" truncate="20"/></itemlabel>
 \end{lstlisting}
 \end{description}
 
@@ -183,7 +180,7 @@ Optional attribute that defines after how many chars the label should be truncat
 \subsection{ The \texttt{itemLabelArg} Element}
 \label{itemLabelArg}
 \begin{description}
- \item Description: This element defines the label for the list.
+ \item Description: This element defines a reference to an xml entity which will be substituted into the label for the list.
 
  \item Common Attributes: Common (\ref{commonattributes})
 

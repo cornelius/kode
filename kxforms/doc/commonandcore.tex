@@ -86,16 +86,41 @@ The \texttt{xf:label} child element is derived from XForms. It is used to define
 
 The \texttt{tip} child element allows to provide a tooltip for controls. The presentation of the tip is left to the application but usually it will just be displayed after the mouse rested a bit over the control.
 
-\begin{lstlisting}[caption=Example KXForms Document]
+\begin{lstlisting}[caption=\texttt{xf:label} and \texttt{tip} element]
 <xf:input ref="/password">
  <xf:label>Password:</xf:label>
  <tip>Please enter your private password.</tip>
 </xf:input>
 \end{lstlisting}
+
+
+ \item \textbf{\texttt{attributeElements}}
+
+The \texttt{attributeElements} child element encapsulates GUI Elements, that map to attributes of the parent element in the XML Schema. These elements might be visually separated from the other normal elements in order to make clear they are attributes.
+
+\begin{itemize}
+ \item Valid Child Elements: \texttt{xf:input}, \texttt{xf:textarea} (\ref{guielements})
+\end{itemize}
+
+\begin{lstlisting}[caption=\texttt{attributeElements} element]
+<xf:textarea ref="/productid[1]">
+ <xf:label>Productid</xf:label>
+ <attributes>
+  <xf:input ref="@legacypriotype">
+   <xf:label>Legacypriotype</xf:label>
+  </xf:input>
+  <xf:input ref="@legacytype">
+   <xf:label>Legacytype</xf:label>
+  </xf:input>
+  <xf:input ref="@legacyinfo">
+   <xf:label>Legacyinfo</xf:label>
+  </xf:input>
+ </attributes>
+</xf:textarea>
+
+\end{lstlisting}
+
 \end{description}
-
-
-
 
 
 
