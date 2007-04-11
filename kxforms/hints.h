@@ -21,6 +21,7 @@
 #ifndef HINTS_H
 #define HINTS_H
 
+#include "reference.h"
 #include <kxml_compiler/schema.h>
 
 #include <QList>
@@ -35,16 +36,16 @@ class Hint
 {
   public:
     typedef QList<Hint> List;
-    enum Type { Label, ListItemLabelRef, ListShowHeader, Pages, 
+    enum Type { Label, ListShowHeader, ListHeader, ListItemLabel, Pages, 
         PageReference, Appearance, Position };
 
     Hint();
-    Hint( const QString &ref );
+    Hint( const Reference &ref );
 
     bool isValid() const;
     
-    void setRef( const QString & );
-    QString ref() const;
+    void setRef( const Reference & );
+    Reference ref() const;
 
     void setValue( Type, const QString & );
     QString value( Type ) const;
@@ -58,7 +59,7 @@ class Hint
     QString enumValue( const QString &value ) const;
 
   private:
-    QString mRef;
+    Reference mRef;
     QMap<Type, QString> mValues;
     QMap<QString, QString> mEnums;
     QMap< Type, QList<QDomElement> > mElements;
@@ -74,7 +75,7 @@ class Hints
 
     void insertHint( const Hint & );
     
-    Hint hint( const QString &ref ) const;
+    Hint hint( const Reference &ref ) const;
 
     Hint::List hints() const;
 
@@ -84,10 +85,10 @@ class Hints
 
   protected:
     bool parse( const QDomDocument &doc );
-    void parseHint( const QDomElement &, const QString &refPrefix = QString() );
+    void parseHint( const QDomElement &, const Reference &refPrefix = Reference() );
 
     void extractHints( const QList<QDomElement> &annotations,
-      const QString &refPrefix = QString() );
+      const Reference &refPrefix = Reference() );
 
     QString contentAsString( const QDomElement &e );
 

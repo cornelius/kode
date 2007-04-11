@@ -55,7 +55,7 @@ class FormCreator
 
     QString createListItemLabel( const Schema::Relation &r, const Reference &path, const QString &itemType, bool attribute = false );
     QString createListHeader( const Reference &r );
-    QString getLabel( const QString &ref, const QString &fallback = QString(),
+    QString getLabel( const Reference &ref, const QString &fallback = QString(),
       bool pluralize = false );
 
     QString humanizeString( const QString &, bool pluralize = false );
@@ -64,7 +64,7 @@ class FormCreator
     void parseComplexType( const Schema::Element &r, XmlBuilder *xml, bool topLevel, Reference path );
     void parseElement( const Schema::Element &element, XmlBuilder *xml );
     void parseAttributes( const Schema::Element &element, XmlBuilder *xml, Reference path = Reference() );
-    void applyCommonHints( XmlBuilder *xml, const QString &ref );
+    void applyCommonHints( XmlBuilder *xml, const Reference &ref );
 
   private:
     Schema::Document mDocument;

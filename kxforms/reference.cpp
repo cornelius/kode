@@ -258,6 +258,45 @@ Reference &Reference::operator=( const char *str )
   return *this;
 }
 
+bool Reference::matches( const Reference &ref, bool exact, bool pathOnly ) const
+{
+//   qDebug() << "Looking for " << ref.toString() << " in " << toString();
+  if( ref.segments().count() > mSegments.count() )
+    return false;
+
+  bool inMatch = false;
+  Segment::List::ConstIterator it = mSegments.begin();
+  Segment::List list2 = ref.segments();
+  Segment::List::ConstIterator it2 = list2.begin();
+
+  while( it != mSegments.end() && it2 != list2.end() ) {
+//     qDebug() << "Matching: " << (*it).name() << ":" << (*it).isAttribute() << ":" << (*it).count();
+//     qDebug() << "With:     " << (*it2).name() << ":" << (*it2).isAttribute() << ":" << (*it2).count();
+    bool segmentsMatched = false;
+    segmentsMatched = ((*it).name() == ( (*it2).name()) && ((*it).isAttribute() == (*it2).isAttribute()) );
+
+    if( inMatch && !pathOnly && ( (*it).count() != ( (*it2).count() ) ) )
+      return false;
+
+    if( (inMatch || exact) && !segmentsMatched )
+      return false;
+
+    if( segmentsMatched )
+      inMatch = true;
+
+    if( inMatch )
+      ++it2;
+    ++it;
+  }
+
+  // We got a match in the middle of the reference, but
+  // that is not a real match
+  if( it != mSegments.end() )
+    return false;
+
+  return inMatch;
+}
+
 QDomElement Reference::apply( const QDomDocument &doc ) const
 {
   QDomElement result;

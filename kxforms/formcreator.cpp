@@ -63,7 +63,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
   form->tag( "xf:label", humanizeString( element.name() ) );
 
-  Hint hint = mHints.hint( element.name() );
+  Hint hint = mHints.hint( Reference( element.name() ) );
   if ( hint.isValid() ) {
     QList<QDomElement> elements = hint.elements( Hint::Pages );
     if( !elements.isEmpty() ) {
@@ -102,7 +102,7 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
       foreach( QString value, a.enumerationValues() ) {
         XmlBuilder *item = select1->tag( "xf:item" );
         QString itemLabel;
-        Hint hint = mHints.hint( element.identifier() + '/' + a.ref() );
+        Hint hint = mHints.hint( Reference( element.identifier() + '/' + a.ref() ) );
         if ( hint.isValid() ) itemLabel = hint.enumValue( value );
         if ( itemLabel.isEmpty() ) itemLabel = humanizeString( value );
         item->tag( "xf:label", itemLabel );
@@ -158,7 +158,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     applyCommonHints( section, element.name() );
     if(  element.elementRelations().size() <= 1 ) {
       section->attribute( "visible", "false" );
-      section->attribute( "overrideLabel", getLabel( element.ref(), element.name() ) );
+      section->attribute( "overrideLabel", getLabel( Reference( element.ref() ), element.name() ) );
     }
   } else {
     section = xml;
@@ -166,6 +166,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
   XmlBuilder *list = 0;
   QStringList listTitles;
+  bool listHeaderSuppressed = false;
   XmlBuilder *choice = 0;
 
   if( element.text() ) {
@@ -197,17 +198,18 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
           applyCommonHints( list, r.target() );
-          Hint hint = mHints.hint( r.target() );
+          Hint hint = mHints.hint( Reference( r.target() ) );
           if ( hint.isValid() ) {
             if( !hint.value( Hint::ListShowHeader ).isEmpty() )
               list->attribute( "showHeader", hint.value( Hint::ListShowHeader ) );
+              listHeaderSuppressed = (hint.value( Hint::ListShowHeader ) == "false");
           }
 
           QString label;
           if ( isMixedList ) {
             label = "Item";
           } else {
-            label = getLabel( element.identifier() + '[' + r.target() + ']' );
+            label = getLabel( Reference( element.identifier() + '[' + r.target() + ']' ) );
             if ( label.isEmpty() ) {
               label = humanizeString( r.target(), true );
             }
@@ -241,7 +243,8 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         subElementCnt += listElement.attributeRelations().size();
         if( subElementCnt <= 3 &&
             subElementCnt > 1 ) {
-          list->attribute( "showHeader", "true" );
+          if( !listHeaderSuppressed == true )
+            list->attribute( "showHeader", "true" );
           QStringList titles;
           foreach( Schema::Relation r2, listElement.elementRelations() ) {
             Schema::Element subElement = mDocument.element( r2.target() );
@@ -277,13 +280,13 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           else
             choice = section->tag( "xf:select1" );
           applyCommonHints( choice, element.ref() );
-          choice->tag( "xf:label",  getLabel( element.ref(), element.name() ) );
+          choice->tag( "xf:label",  getLabel( Reference( element.ref() ), element.name() ) );
           choice->attribute( "ref", (path + Reference( element.name() ) ).toString() );
         }
         Schema::Element choiceElement = mDocument.element( r );
         XmlBuilder *item = choice->tag( "xf:item" );
         QString value = choiceElement.name();
-        QString itemLabel = getLabel( choiceElement.ref(), choiceElement.name() );
+        QString itemLabel = getLabel( Reference( choiceElement.ref() ), choiceElement.name() );
         item->tag( "xf:label", itemLabel );
         item->tag( "xf:value", value );
       } else{
@@ -342,27 +345,25 @@ void FormCreator::mergeHints( const Hints &hints )
 
 void FormCreator::createLabel( XmlBuilder *parent, const Schema::Node &node )
 {
-  parent->tag( "xf:label", getLabel( node.identifier(), node.name() ) );
+  parent->tag( "xf:label", getLabel( Reference( node.identifier() ), node.name() ) );
 }
 
 QString FormCreator::createListHeader( const Reference &r )
 {
   QString header;
-
-  Hint hint = mHints.hint( r.path() );
+  Hint hint = mHints.hint( r );
   if ( hint.isValid() && !hint.value( Hint::ListHeader ).isEmpty() ) {
     header = hint.value( Hint::ListHeader );
   }
 
   if( header.isEmpty() )
-    header = getLabel( r.toString(), humanizeString( r.lastSegment().name() ) );
+    header = getLabel( r, humanizeString( r.lastSegment().name() ) );
 
   return header;
 }
 
 QString FormCreator::createListItemLabel( const Schema::Relation &r, const Reference &path, const QString &itemType, bool attribute )
 {
-  qDebug() << r.target() << path.toString();
   QString itemLabel;
   Schema::Element itemElement = mDocument.element( r );
 
@@ -376,7 +377,20 @@ QString FormCreator::createListItemLabel( const Schema::Relation &r, const Refer
   if( !itemType.isEmpty() )
     typeString = QString( "%1: " ).arg( itemType );
 
-  itemLabel = getLabel( (path + itemRef).toString() );
+
+  Hint hint = mHints.hint( path + Reference( r.target() ) );
+  if ( hint.isValid() && !hint.value( Hint::ListItemLabel ).isEmpty() ) {
+    itemLabel = QString( hint.value( Hint::ListItemLabel ) );
+    if( itemLabel.contains( "%1" ) ) {
+      if ( itemElement.type() == Schema::Node::String ||
+           (itemElement.type() == Schema::Node::ComplexType && itemElement.mixed() )) {
+        itemLabel.replace( "%1", QString( "<itemLabelArg ref=\"%1\" truncate=\"40\"/>" ).arg( (path + itemRef).toString() ) );
+      } else if ( itemElement.type() == Schema::Node::NormalizedString ||
+           itemElement.type() == Schema::Node::Token ) {
+        itemLabel.replace( "%1", QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + itemRef).toString() ) );
+      }
+    }
+  }
 
   if ( itemLabel.isEmpty() ) {
     // Try to guess a suitable item label.
@@ -403,7 +417,7 @@ QString FormCreator::createListItemLabel( const Schema::Relation &r, const Refer
   return itemLabel;
 }
 
-QString FormCreator::getLabel( const QString &ref, const QString &fallback,
+QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
   bool pluralize )
 {
 //  qDebug() << "GETLABEL: " << ref;
@@ -419,7 +433,7 @@ QString FormCreator::getLabel( const QString &ref, const QString &fallback,
   return label;
 }
 
-void FormCreator::applyCommonHints( XmlBuilder *xml, const QString &ref )
+void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
 {
   Hint hint = mHints.hint( ref );
   if( !hint.isValid() )

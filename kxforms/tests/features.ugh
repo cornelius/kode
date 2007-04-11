@@ -11,7 +11,10 @@
   <hint ref="userid">
     <label>User Id</label>
   </hint>
-  <hint ref="feature/@status">
+  <hint ref="@status">
     <enum value="inprogress">In Progress</enum>
+  </hint>
+  <hint ref="@email">
+    <listHeader>Email Address</listHeader>
   </hint>
 </ugh>

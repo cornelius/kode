@@ -97,6 +97,8 @@ class Reference
     bool operator==( const Reference & ) const;
     bool operator!=( const Reference & ) const;
 
+    bool matches( const Reference &ref, bool exact = true, bool pathOnly = false ) const;
+
     QDomElement apply( const QDomDocument & ) const;
 
     QDomElement applyElement( const QDomElement &context ) const;

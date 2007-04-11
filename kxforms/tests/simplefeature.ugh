@@ -1,4 +1,8 @@
 <ugh>
+  <hint ref="version">
+    <listHeader>Productversion</listHeader>
+    <listItemLabel><itemLabelArg ref="product/name"/> (v%1)</listItemLabel>
+  </hint>
   <hint ref="feature">
     <pages>
       <page id="feature">Feature</page>
@@ -19,18 +23,10 @@
   </hint>
   <hint ref="productcontext">
     <pageRef>other</pageRef>
-    <listItemLabelRef>/product/productid</listItemLabelRef>
-    <listShowHeader>true</listShowHeader>
-    <listVisibleElements>
-      <listVisibleElement>product/name</listVisibleElement>
-      <listVisibleElement label="Version">product/version</listVisibleElement>
-    </listVisibleElements>
   </hint>
   <hint ref="name">
-    <label>Title</label>
-  </hint>
-  <hint ref="product">
-    <label>Produkt:</label>
+    <label>Product</label>
+    <listHeader>Product</listHeader>
   </hint>
   <hint ref="externalid">
     <position>0</position>

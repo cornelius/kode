@@ -33,7 +33,7 @@ Hint::Hint()
 {
 }
 
-Hint::Hint( const QString &ref )
+Hint::Hint( const Reference &ref )
   : mRef( ref )
 {
 }
@@ -43,12 +43,12 @@ bool Hint::isValid() const
   return !mRef.isEmpty();
 }
 
-void Hint::setRef( const QString &ref )
+void Hint::setRef( const Reference &ref )
 {
   mRef = ref;
 }
 
-QString Hint::ref() const
+Reference Hint::ref() const
 {
   return mRef;
 }
@@ -127,11 +127,11 @@ bool Hints::parse( const QDomDocument &doc )
   return true;
 }
 
-void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
+void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
 {
 //  qDebug() << "Hints::parseHint()" << element.tagName() << refPrefix;
 
-  QString ref = element.attribute( "ref" );
+  Reference ref( element.attribute( "ref" ) );
 
 //  qDebug() << "  REF:" << ref;
 
@@ -140,9 +140,8 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
     qDebug() << "Error: No reference attribute in hint tag.";
     return;
   }
-  if ( !refPrefix.isEmpty() && !ref.startsWith( "/" ) ) {
-    if ( !refPrefix.endsWith( "/" ) ) ref.prepend( "/" );
-    ref.prepend( refPrefix );
+  if ( !refPrefix.isEmpty() && ref.isRelative() ) {
+    ref = refPrefix + ref;
   }
   
   Hint hint( ref );
@@ -157,8 +156,10 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
       hint.setEnumValue( e.attribute( "value" ), contentAsString( e ) );
     } else if (name.localName() == "label" ) {
       hint.setValue( Hint::Label, contentAsString( e ) );
-    } else if (name.localName() == "listItemLabelRef" ) {
-      hint.setValue( Hint::ListItemLabelRef, contentAsString( e ) );
+    } else if (name.localName() == "listHeader" ) {
+      hint.setValue( Hint::ListHeader, contentAsString( e ) );
+    } else if (name.localName() == "listItemLabel" ) {
+      hint.setValue( Hint::ListItemLabel, contentAsString( e ) );
     } else if (name.localName() == "pageRef" ) {
       hint.setValue( Hint::PageReference, contentAsString( e ) );
     } else if (name.localName() == "appearance" ) {
@@ -183,7 +184,7 @@ void Hints::parseHint( const QDomElement &element, const QString &refPrefix )
     }
   }
 
-  mHints[ ref ] = hint;
+  mHints[ ref.toString() ] = hint;
 }
 
 // TODO: Share with snippet from TextArea::loadData()
@@ -202,10 +203,20 @@ QString Hints::contentAsString( const QDomElement &element )
   return txt;
 }
 
-Hint Hints::hint( const QString &ref ) const
+Hint Hints::hint( const Reference &ref ) const
 {
-  if ( mHints.contains( ref ) ) return mHints[ ref ];
-  else return Hint();
+  // Try to find an exact match
+  if( mHints.contains( ref.toString() ) )
+    return mHints[ ref.toString() ];
+
+  // Try to find a partial match if there was no exact one
+  foreach( Hint h, mHints ) {
+    if( ref.matches( h.ref(), false ) ) {
+      return h;
+    }
+  }
+
+  return Hint();
 }
 
 Hint::List Hints::hints() const
@@ -232,7 +243,7 @@ void Hints::extractHints( const Schema::Document &schemaDocument )
 }
 
 void Hints::extractHints( const QList<QDomElement> &annotations,
-  const QString &refPrefix )
+  const Reference &refPrefix )
 {
   foreach( QDomElement element, annotations ) {
     for( QDomElement e = element.firstChildElement(); !e.isNull();
@@ -247,14 +258,14 @@ void Hints::extractHints( const QList<QDomElement> &annotations,
 
 void Hints::insertHint( const Hint &hint )
 {
-  mHints[ hint.ref() ] = hint;
+  mHints[ hint.ref().toString() ] = hint;
 }
 
 void Hints::dump() const
 {
   qDebug() << "---Hints::dump()";
   foreach( Hint h, mHints ) {
-    qDebug() << "HINT:" << h.ref();
+    qDebug() << "HINT:" << h.ref().toString();
   }
   qDebug() << "---Hints::dump() done";
 }
