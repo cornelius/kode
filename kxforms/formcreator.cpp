@@ -214,6 +214,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           }
           list->tag( "xf:label", label );
         }
+        QString listItemType;
+        if( isMixedList )
+          listItemType = humanizeString( r.target(), false );
+
         XmlBuilder *item = list->tag( "itemclass" );
         item->attribute( "ref", path.toString() + r.target() );
         qDebug() << path.toString() + r.target();
@@ -244,13 +248,15 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
             qDebug() << subElement.name();
             if( subElement.type() != Schema::Node::ComplexType ||
                 subElement.mixed() ) {
-              item->tag( "itemlabel", createListItemLabel( r2, listPath, isMixedList ) );
+              item->tag( "itemlabel", createListItemLabel( r2, listPath, listItemType ) );
+              listItemType = QString::null;
               titles.append( createListHeader( listPath + Reference( r2.target() ) ) );
             }
           }
           foreach( Schema::Relation r2, listElement.attributeRelations() ) {
-            item->tag( "itemlabel", createListItemLabel( r2, listPath, isMixedList, true ) );
-            titles.append( createListHeader( listPath + "@" + Reference( r2.target() ) ) );
+            item->tag( "itemlabel", createListItemLabel( r2, listPath, listItemType, true ) );
+            listItemType = QString::null;
+            titles.append( createListHeader( listPath + Reference( "@" + r2.target() ) ) );
           }
           if( titles.size() > listTitles.size() )
             listTitles = titles;
@@ -258,9 +264,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           Schema::Element subElement = mDocument.element( r.target() );
           if( subElement.elementRelations().size() == 0 &&
               subElement.attributeRelations().size() == 0 )
-            item->tag( "itemlabel", createListItemLabel( Schema::Relation("."), path, isMixedList ) );
+            item->tag( "itemlabel", createListItemLabel( Schema::Relation("."), path, listItemType ) );
           else
-            item->tag( "itemlabel", createListItemLabel( r, path, isMixedList ) );
+            item->tag( "itemlabel", createListItemLabel( r, path, listItemType ) );
+          listItemType = QString::null;
         }
         currentChoice = r.choice();
       } else if( !r.choice().isEmpty() ) {
@@ -342,16 +349,18 @@ QString FormCreator::createListHeader( const Reference &r )
 {
   QString header;
 
-//   Hint hint = mHints.hint( r.target() );
-//   if ( hint.isValid() && !hint.value( Hint::ListHeader ).isEmpty() ) {
-//     header = hint.value( Hint::ListHeader );
-//   }
+  Hint hint = mHints.hint( r.path() );
+  if ( hint.isValid() && !hint.value( Hint::ListHeader ).isEmpty() ) {
+    header = hint.value( Hint::ListHeader );
+  }
 
-  header = getLabel( r.toString(), humanizeString( r.lastSegment().name() ) );
+  if( header.isEmpty() )
+    header = getLabel( r.toString(), humanizeString( r.lastSegment().name() ) );
+
   return header;
 }
 
-QString FormCreator::createListItemLabel( const Schema::Relation &r, const Reference &path, bool isMixedList, bool attribute )
+QString FormCreator::createListItemLabel( const Schema::Relation &r, const Reference &path, const QString &itemType, bool attribute )
 {
   qDebug() << r.target() << path.toString();
   QString itemLabel;
@@ -364,8 +373,8 @@ QString FormCreator::createListItemLabel( const Schema::Relation &r, const Refer
     itemRef = Reference( r.target() );
 
   QString typeString;
-  if( isMixedList )
-    typeString = QString( "%1: " ).arg( humanizeString( r.target() ) );
+  if( !itemType.isEmpty() )
+    typeString = QString( "%1: " ).arg( itemType );
 
   itemLabel = getLabel( (path + itemRef).toString() );
 
@@ -373,9 +382,7 @@ QString FormCreator::createListItemLabel( const Schema::Relation &r, const Refer
     // Try to guess a suitable item label.
     foreach( Schema::Relation r2, itemElement.attributeRelations() ) {
       if ( r2.target() == "name" ) {
-        if ( isMixedList ) {
-          itemLabel = humanizeString( itemElement.name() ) + ": ";
-        }
+        itemLabel += typeString;
         itemLabel += "<itemLabelArg ref=\"@name\"/>";
        break;
       }
@@ -385,9 +392,11 @@ QString FormCreator::createListItemLabel( const Schema::Relation &r, const Refer
   if ( itemLabel.isEmpty() ) {
     if ( itemElement.type() == Schema::Node::String ||
          (itemElement.type() == Schema::Node::ComplexType && itemElement.mixed() )) {
+      itemLabel += typeString;
       itemLabel += QString( "<itemLabelArg ref=\"%1\" truncate=\"40\"/>" ).arg( (path + itemRef).toString() );
     } else if ( itemElement.type() == Schema::Node::NormalizedString ||
          itemElement.type() == Schema::Node::Token ) {
+      itemLabel += typeString;
       itemLabel += QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + itemRef).toString() );
     }
   }
