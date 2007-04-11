@@ -23,6 +23,7 @@
   </hint>
   <hint ref="productcontext">
     <pageRef>other</pageRef>
+    <listShowHeader>true</listShowHeader>
   </hint>
   <hint ref="name">
     <label>Product</label>
