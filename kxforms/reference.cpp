@@ -40,9 +40,8 @@ Reference::Segment::Segment( const QString &str )
 
 Reference::Segment::Segment( const QString &name, int count )
 {
-  mName = name;
   mCount = count;
-  mIsAttribute = false;
+  setName( name );
 }
 
 void Reference::Segment::setName( const QString &name )
