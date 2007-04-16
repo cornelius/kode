@@ -18,6 +18,6 @@
     <listHeader>Email Address</listHeader>
   </hint>
   <hint ref="category">
-    <listItemList>false</listItemList>
+    <listItemList>true</listItemList>
   </hint>
 </ugh>

@@ -24,11 +24,13 @@
 #include <QModelIndex>
 
 class QTreeView;
+class KLineEdit;
 
 namespace KXForms {
 
 class ListModel;
 class ListItem;
+class ListProxyModel;
 
 class List : public GuiElement
 {
@@ -87,7 +89,10 @@ class List : public GuiElement
 
     QTreeView *mView;
 
+    KLineEdit *mFilterEdit;
+
     ListModel *mModel;
+    ListProxyModel *mProxyModel;
 };
 
 }

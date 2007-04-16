@@ -22,6 +22,7 @@
 #include "manager.h"
 #include "formgui.h"
 #include "listmodel.h"
+#include "listproxymodel.h"
 #include "prefs.h"
 
 #include <kmessagebox.h>
@@ -30,6 +31,7 @@
 #include <kinputdialog.h>
 #include <kdebug.h>
 #include <kdialog.h>
+#include <klineedit.h>
 
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -56,9 +58,18 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   topLayout->setMargin( 0 );
 
   mModel = new ListModel( mWidget );
+  mProxyModel = new ListProxyModel( mWidget );
+  mProxyModel->setSourceModel( mModel );
+
   mView = new QTreeView( mWidget );
+  mFilterEdit = new KLineEdit;
+  mFilterEdit->setClearButtonShown( true );
+  connect( mFilterEdit, SIGNAL(textChanged(QString)), mProxyModel, SLOT(setFilterFixedString(QString)) );
+
+
+  topLayout->addWidget( mFilterEdit );
   topLayout->addWidget( mView );
-  mView->setModel( mModel );
+  mView->setModel( mProxyModel );
   mView->header()->hide();
   connect( mView, SIGNAL( doubleClicked( const QModelIndex & ) ),
     SLOT( editItem() ) );
@@ -144,7 +155,7 @@ void List::newItem()
 
 void List::deleteItem()
 {
-  QModelIndex index = selectedItem();
+  QModelIndex index = mProxyModel->mapToSource( selectedItem() );
 
   if ( !index.isValid() ) return;
 
@@ -169,7 +180,7 @@ QModelIndex List::selectedItem()
 
 void List::editItem()
 {
-  QModelIndex index = selectedItem();
+  QModelIndex index = mProxyModel->mapToSource( selectedItem() );
   if ( index.isValid() ) {
     mManager->createGui( mModel->item( index )->ref(), this );
   }
@@ -177,7 +188,7 @@ void List::editItem()
 
 void List::moveUp()
 {
-  QModelIndex index = selectedItem();
+  QModelIndex index = mProxyModel->mapToSource( selectedItem() );
   if ( !index.isValid() || index.row() == 0 ) return;
 
   QString ref = mModel->item( index )->ref().lastSegment().name();
@@ -192,12 +203,12 @@ void List::moveUp()
   }
 
   QModelIndex newIndex = mModel->moveItem( index, index.row() - 1 );
-  mView->setCurrentIndex( newIndex );
+  mView->setCurrentIndex( mProxyModel->mapFromSource( newIndex ) );
 }
 
 void List::moveDown()
 {
-  QModelIndex index = selectedItem();
+  QModelIndex index = mProxyModel->mapToSource( selectedItem() );
   if ( !index.isValid() || index.row() == mModel->rowCount() - 1 ) return;
 
   QString ref = mModel->item( index )->ref().lastSegment().name();
@@ -212,7 +223,7 @@ void List::moveDown()
   }
 
   QModelIndex newIndex = mModel->moveItem( index, index.row() + 1 );
-  mView->setCurrentIndex( newIndex );
+  mView->setCurrentIndex( mProxyModel->mapFromSource( newIndex ) );
 }
 
 void List::parseElement( const QDomElement &element )

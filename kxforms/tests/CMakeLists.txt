@@ -28,7 +28,8 @@ set(kxformstest_SRCS
    ../select1.cpp
    ../section.cpp 
    ../dispatcher.cpp
-   ../select.cpp )
+   ../select.cpp 
+   ../listproxymodel.cpp )
 
 kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 
