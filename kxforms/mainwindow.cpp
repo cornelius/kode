@@ -45,7 +45,6 @@
 using namespace KXForms;
 
 MainWindow::MainWindow()
-    : KMainWindow()
 {
   mLabel = new QLabel( i18n("Welcome!"), this );
 

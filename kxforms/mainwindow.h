@@ -23,7 +23,7 @@
 
 #include "manager.h"
 
-#include <kmainwindow.h>
+#include <kxmlguiwindow.h>
 #include <kurl.h>
 
 class QLabel;
@@ -38,7 +38,7 @@ class RemoteFile;
  * @author Cornelius Schumacher <schumacher@kde.org>
  * @version 0.1
  */
-class MainWindow : public KMainWindow
+class MainWindow : public KXmlGuiWindow
 {
     Q_OBJECT
   public:
