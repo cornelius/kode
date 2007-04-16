@@ -17,4 +17,7 @@
   <hint ref="@email">
     <listHeader>Email Address</listHeader>
   </hint>
+  <hint ref="category">
+    <listItemList>false</listItemList>
+  </hint>
 </ugh>

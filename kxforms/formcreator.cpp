@@ -200,9 +200,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           applyCommonHints( list, r.target() );
           Hint hint = mHints.hint( Reference( r.target() ) );
           if ( hint.isValid() ) {
-            if( !hint.value( Hint::ListShowHeader ).isEmpty() )
+            if( !hint.value( Hint::ListShowHeader ).isEmpty() ) {
               list->attribute( "showHeader", hint.value( Hint::ListShowHeader ) );
               listHeaderSuppressed = (hint.value( Hint::ListShowHeader ) == "false");
+            } 
           }
 
           QString label;
@@ -225,6 +226,11 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         qDebug() << path.toString() + r.target();
         Schema::Element listElement = mDocument.element( r.target() );
             qDebug() << listElement.name();
+
+        Hint hint = mHints.hint( Reference( r.target() ) );
+        if( hint.isValid() && !hint.value( Hint::ListItemList ).isEmpty() )
+          item->attribute( "list", hint.value( Hint::ListItemList ) );
+
         Reference listPath = path;
         if( listElement.elementRelations().size() == 1 && 
             listElement.attributeRelations().size() == 0 && 

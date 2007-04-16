@@ -160,6 +160,8 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       hint.setValue( Hint::ListHeader, contentAsString( e ) );
     } else if (name.localName() == "listItemLabel" ) {
       hint.setValue( Hint::ListItemLabel, contentAsString( e ) );
+    } else if (name.localName() == "listItemList" ) {
+      hint.setValue( Hint::ListItemList, contentAsString( e ) );
     } else if (name.localName() == "pageRef" ) {
       hint.setValue( Hint::PageReference, contentAsString( e ) );
     } else if (name.localName() == "appearance" ) {

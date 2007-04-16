@@ -122,84 +122,85 @@ bool ListModel::hasChildren( const QModelIndex &parent ) const
 
 int ListModel::rowCount( const QModelIndex &parent ) const
 {
-     ListItem *parentItem;
+  ListItem *parentItem;
 
-     if (!parent.isValid())
-         parentItem = rootItem;
-     else
-         parentItem = static_cast<ListItem*>(parent.internalPointer());
+  if (!parent.isValid())
+    parentItem = rootItem;
+  else
+    parentItem = static_cast<ListItem*>(parent.internalPointer());
 
-     return parentItem->childCount();
+   return parentItem->childCount();
 }
 
 int ListModel::columnCount( const QModelIndex &parent ) const
 {
-     if (parent.isValid())
-         return static_cast<ListItem*>(parent.internalPointer())->columnCount();
-     else
-         return rootItem->columnCount();
+  if (parent.isValid())
+    return static_cast<ListItem*>(parent.internalPointer())->columnCount();
+  else
+    return rootItem->columnCount();
 }
 
- QModelIndex ListModel::index(int row, int column, const QModelIndex &parent) const
- {
-     ListItem *parentItem;
+QModelIndex ListModel::index(int row, int column, const QModelIndex &parent) const
+{
+  ListItem *parentItem;
 
-     if (!parent.isValid())
-         parentItem = rootItem;
-     else
-         parentItem = static_cast<ListItem*>(parent.internalPointer());
+  if (!parent.isValid())
+    parentItem = rootItem;
+  else
+    parentItem = static_cast<ListItem*>(parent.internalPointer());
 
-     ListItem *childItem = parentItem->child(row);
-     if (childItem)
-         return createIndex(row, column, childItem);
-     else
-         return QModelIndex();
- } 
+  ListItem *childItem = parentItem->child(row);
+  if (childItem)
+    return createIndex(row, column, childItem);
+  else
+    return QModelIndex();
+}
 
- QModelIndex ListModel::parent(const QModelIndex &index) const
- {
-     if (!index.isValid())
-         return QModelIndex();
+QModelIndex ListModel::parent(const QModelIndex &index) const
+{
+  if (!index.isValid())
+    return QModelIndex();
 
-     ListItem *childItem = static_cast<ListItem*>(index.internalPointer());
-     if( !childItem )
-         return QModelIndex();
+  ListItem *childItem = static_cast<ListItem*>(index.internalPointer());
+  if( !childItem )
+    return QModelIndex();
 
-     ListItem *parentItem = childItem->parent();
-     if (parentItem == rootItem)
-         return QModelIndex();
+  ListItem *parentItem = childItem->parent();
+  if (parentItem == rootItem)
+    return QModelIndex();
 
-     return createIndex(parentItem->row(), 0, parentItem);
- }
+  return createIndex(parentItem->row(), 0, parentItem);
+}
 
 QVariant ListModel::data( const QModelIndex & index, int role ) const
 {
-     if (!index.isValid())
-         return QVariant();
+  if (!index.isValid())
+    return QVariant();
 
-     if (role != Qt::DisplayRole)
-         return QVariant();
+  if (role != Qt::DisplayRole)
+    return QVariant();
 
-     ListItem *item = static_cast<ListItem*>(index.internalPointer());
+  ListItem *item = static_cast<ListItem*>(index.internalPointer());
 
-     return item->data(index.column());
+  return item->data(index.column());
 }
 
 QVariant ListModel::headerData ( int section, Qt::Orientation orientation,
   int role ) const
 {
-     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-         return rootItem->data(section);
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    return rootItem->data(section);
 
-     return QVariant();
+  return QVariant();
 }
- Qt::ItemFlags ListModel::flags(const QModelIndex &index) const
- {
-     if (!index.isValid())
-         return Qt::ItemIsEnabled;
 
-     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
- }
+Qt::ItemFlags ListModel::flags(const QModelIndex &index) const
+{
+  if (!index.isValid())
+    return Qt::ItemIsEnabled;
+
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
 
 ListItem *ListModel::addItem( ListItem *parent, const QStringList &labels, const Reference &ref )
 {
