@@ -198,12 +198,15 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
           applyCommonHints( list, r.target() );
-          Hint hint = mHints.hint( Reference( r.target() ) );
+          Hint hint = mHints.hint( path + Reference( element.name() ) );
           if ( hint.isValid() ) {
             if( !hint.value( Hint::ListShowHeader ).isEmpty() ) {
               list->attribute( "showHeader", hint.value( Hint::ListShowHeader ) );
               listHeaderSuppressed = (hint.value( Hint::ListShowHeader ) == "false");
-            } 
+            }
+            if( !hint.value( Hint::ListShowSearch ).isEmpty() ) {
+              list->attribute( "showSearch", hint.value( Hint::ListShowSearch ) );
+            }
           }
 
           QString label;

@@ -64,6 +64,7 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   mView = new QTreeView( mWidget );
   mFilterEdit = new KLineEdit;
   mFilterEdit->setClearButtonShown( true );
+  mFilterEdit->hide();
   connect( mFilterEdit, SIGNAL(textChanged(QString)), mProxyModel, SLOT(setFilterFixedString(QString)) );
 
 
@@ -231,6 +232,8 @@ void List::parseElement( const QDomElement &element )
   QDomNode n;
   if( element.attribute( "showHeader" ) == "true" )
     mView->header()->show();
+  if( element.attribute( "showSearch" ) == "true" )
+    mFilterEdit->show();
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
     if ( e.tagName() == "itemclass" ) {
