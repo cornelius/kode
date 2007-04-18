@@ -160,8 +160,16 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       hint.setValue( Hint::ListHeader, contentAsString( e ) );
     } else if (name.localName() == "listSearch" ) {
       hint.setValue( Hint::ListShowSearch, contentAsString( e ) );
-    } else if (name.localName() == "listItemLabel" ) {
-      hint.setValue( Hint::ListItemLabel, contentAsString( e ) );
+    } else if (name.localName() == "listItemLabels" ) {
+      QDomNode child = n.firstChild();
+      while( !child.isNull() ) {
+        if( child.nodeName() == "listItemLabel" ) {
+          QDomElement e = child.toElement();
+          if( !e.isNull() )
+            hint.addElement( Hint::ListItemLabel, e );
+        }
+        child = child.nextSibling();
+      }
     } else if (name.localName() == "listItemList" ) {
       hint.setValue( Hint::ListItemList, contentAsString( e ) );
     } else if (name.localName() == "pageRef" ) {

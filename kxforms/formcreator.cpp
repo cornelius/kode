@@ -228,52 +228,65 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         Hint hint = mHints.hint( Reference( r.target() ) );
         if( hint.isValid() && !hint.value( Hint::ListItemList ).isEmpty() )
           item->attribute( "list", hint.value( Hint::ListItemList ) );
-
-        if( listElement.type() == Schema::Node::NormalizedString ||
-            listElement.type() == Schema::Node::Token ||
-            listElement.type() == Schema::Node::String ||
-            (listElement.type() == Schema::Node::ComplexType && listElement.mixed() ) ) {
-          item->tag( "itemlabel", createListItemLabel( Reference( "." ), path, listItemType ) );
-          listItemType = QString::null;
-          headers.append( createListHeader( r.target() ) );
-        } else {
-          int subElementCnt = 0;
-          int depth = 1;
-          QList< Reference > subElements;
-
-          subElements = collectSubElements( listElement, path, 1, false );
-
-          if( subElements.size() == 0 ) {
-            bool nameAttribute = false;
-            subElements = collectSubElements( listElement, path, 1, true );
-            foreach( Reference r, subElements ) {
-              if( r.toString().indexOf( "name" ) >= 0 )
-                nameAttribute = true;
+        if( hint.isValid() && hint.elements( Hint::ListItemLabel ).size() > 0 ) {
+          QList< QDomElement > labels = hint.elements( Hint::ListItemLabel );
+          foreach( QDomElement e, labels ) {
+            QString s;
+            QTextStream stream( &s );
+            for( QDomNode n = e.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+              n.save( stream, 0 );
             }
+            item->tag( "itemlabel", s );
+            listItemType = QString::null;
+            headers.append( createListHeader( e.attribute( "ref" ) ) );
+          }
+        } else {
+          if( listElement.type() == Schema::Node::NormalizedString ||
+              listElement.type() == Schema::Node::Token ||
+              listElement.type() == Schema::Node::String ||
+              (listElement.type() == Schema::Node::ComplexType && listElement.mixed() ) ) {
+            item->tag( "itemlabel", createListItemLabel( Reference( "." ), path, listItemType ) );
+            listItemType = QString::null;
+            headers.append( createListHeader( r.target() ) );
+          } else {
+            int subElementCnt = 0;
+            int depth = 1;
+            QList< Reference > subElements;
 
-            if( subElements.size() == 0 || !nameAttribute ) {
-              while( subElementCnt < 3 ) {
-                subElements = collectSubElements( listElement, path, depth++, true );
-                if( (depth > 3 || subElementCnt > 0 )
-                    && subElementCnt == subElements.size() )
-                  break;
-                subElementCnt = subElements.size();
+            subElements = collectSubElements( listElement, path, 1, false );
+
+            if( subElements.size() == 0 ) {
+              bool nameAttribute = false;
+              subElements = collectSubElements( listElement, path, 1, true );
+              foreach( Reference r, subElements ) {
+                if( r.toString().indexOf( "name" ) >= 0 )
+                nameAttribute = true;
+              }
+
+              if( subElements.size() == 0 || !nameAttribute ) {
+                while( subElementCnt < 3 ) {
+                  subElements = collectSubElements( listElement, path, depth++, true );
+                  if( (depth > 3 || subElementCnt > 0 )
+                       && subElementCnt == subElements.size() )
+                    break;
+                  subElementCnt = subElements.size();
+                }
               }
             }
-          }
 
-
-          if( subElements.size() > 1 && !listHeaderSuppressed )
-            list->attribute( "showHeader", "true" );
-
-          foreach( Reference r, subElements ) {
-            item->tag( "itemlabel", createListItemLabel( r, path, listItemType) );
-            listItemType = QString::null;
-            headers.append( createListHeader( r.lastSegment().name() ) );
+            foreach( Reference r, subElements ) {
+              item->tag( "itemlabel", createListItemLabel( r, path, listItemType) );
+              listItemType = QString::null;
+              headers.append( createListHeader( r.lastSegment().name() ) );
+            }
           }
         }
+
         if( headers.size() > listTitles.size() )
           listTitles = headers;
+
+        if( headers.size() > 1 && !listHeaderSuppressed )
+          list->attribute( "showHeader", "true" );
 
         if( !r.choice().contains("+") && list && listTitles.size() > 0 ) {
           XmlBuilder *listHeader = list->tag( "headers" );

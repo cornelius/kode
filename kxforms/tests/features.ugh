@@ -5,6 +5,13 @@
   <hint ref="category/feature">
     <label>Feature: <itemLabelArg ref="summary" truncate="50"/></label>
   </hint>
+  <hin ref="/feature">
+    <listItemLabels>
+      <listItemLabel ref="summary"><itemLabelArg ref="/summary" truncate="40"/></listItemLabel>
+      <listItemLabel ref="@status"><itemLabelArg ref="/@status"/></listItemLabel>
+      <listItemLabel ref="@target"><itemLabelArg ref="/@target"/></listItemLabel>
+    </listItemLabels>
+  </hint>
   <hint ref="feature/responsible">
     <label><arg ref="@name"/> &lt;<arg ref="@email"/>&gt;</label>
   </hint>
