@@ -12,13 +12,23 @@ description</a>.</richtext>
   <partnercontext>
     <organization>test</organization>
     <externalid>123</externalid>
+    <partnerbenefit>
+      <richtext/>
+    </partnerbenefit>
+    <nda>
+      <expires/>
+    </nda>
   </partnercontext>
-  <productcontext>
+  <productcontext legacyinfo="" >
     <product>
-      <productid>openSUSE 10.0</productid>
+      <productid legacypriotype="" legacytype="" legacyinfo="" >openSUSE 10.0</productid>
       <name>openSUSE</name>
       <version>10.0</version>
     </product>
+    <status>
+      <new/>
+    </status>
+    <architecture legacyinfo="i386" />
   </productcontext>
   <productcontext>
     <product>

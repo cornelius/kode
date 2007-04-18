@@ -53,7 +53,7 @@ class FormCreator
 
     void createLabel( XmlBuilder *parent, const Schema::Node &node );
 
-    QString createListItemLabel( const Schema::Relation &r, const Reference &path, const QString &itemType, bool attribute = false );
+    QString createListItemLabel( const Reference &r, const Reference &path, const QString &itemType );
     QString createListHeader( const Reference &r );
     QString getLabel( const Reference &ref, const QString &fallback = QString(),
       bool pluralize = false );
@@ -65,7 +65,10 @@ class FormCreator
     void parseElement( const Schema::Element &element, XmlBuilder *xml );
     void parseAttributes( const Schema::Element &element, XmlBuilder *xml, Reference path = Reference() );
     void applyCommonHints( XmlBuilder *xml, const Reference &ref );
+    QList< Reference > collectSubElements( const Schema::Element &element, const Reference &path, int depth, bool includeAttributes );
 
+
+    bool choiceOnly( const Schema::Element &element );
   private:
     Schema::Document mDocument;
 

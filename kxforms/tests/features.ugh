@@ -1,6 +1,5 @@
 <ugh>
   <hint ref="/category">
-    <listShowHeader>false</listShowHeader>
     <listSearch>true</listSearch>
   </hint>
   <hint ref="category/feature">

@@ -140,17 +140,12 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
   XmlBuilder *section;
 
-  bool choiceOnly = true;
-  foreach( Schema::Relation r, element.elementRelations() ) {
-    if( r.choice().isEmpty() )
-      choiceOnly = false;
-  }
   qDebug() << path.segments().size();
   qDebug() << path.toString();
   qDebug() << element.name();
   if( !topLevel && 
       !element.mixed() && 
-      !choiceOnly) {
+      !choiceOnly( element )) {
     section = xml->tag( "kxf:section" );
     section->attribute( "ref", path.toString() );
     path = path + Reference( element.name() );
@@ -197,6 +192,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
+          listTitles = QStringList();
           applyCommonHints( list, r.target() );
           Hint hint = mHints.hint( path + Reference( element.name() ) );
           if ( hint.isValid() ) {
@@ -221,66 +217,72 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           list->tag( "xf:label", label );
         }
         QString listItemType;
+        QStringList headers;
         if( isMixedList )
           listItemType = humanizeString( r.target(), false );
 
         XmlBuilder *item = list->tag( "itemclass" );
         item->attribute( "ref", path.toString() + r.target() );
-        qDebug() << path.toString() + r.target();
         Schema::Element listElement = mDocument.element( r.target() );
-            qDebug() << listElement.name();
 
         Hint hint = mHints.hint( Reference( r.target() ) );
         if( hint.isValid() && !hint.value( Hint::ListItemList ).isEmpty() )
           item->attribute( "list", hint.value( Hint::ListItemList ) );
 
-        Reference listPath = path;
-        if( listElement.elementRelations().size() == 1 && 
-            listElement.attributeRelations().size() == 0 && 
-            mDocument.element( listElement.elementRelations().first() ).type() == Schema::Node::ComplexType ) {
-          listElement = mDocument.element( listElement.elementRelations().first() );
-          listPath = listPath + Reference( listElement.identifier() );
-        }
+        if( listElement.type() == Schema::Node::NormalizedString ||
+            listElement.type() == Schema::Node::Token ||
+            listElement.type() == Schema::Node::String ||
+            (listElement.type() == Schema::Node::ComplexType && listElement.mixed() ) ) {
+          item->tag( "itemlabel", createListItemLabel( Reference( "." ), path, listItemType ) );
+          listItemType = QString::null;
+          headers.append( createListHeader( r.target() ) );
+        } else {
+          int subElementCnt = 0;
+          int depth = 1;
+          QList< Reference > subElements;
 
-            qDebug() << listElement.name();
-        int subElementCnt = 0;
-        foreach( Schema::Relation r2, listElement.elementRelations() ) {
-          Schema::Element subElement = mDocument.element( r2.target() );
-          if( subElement.type() != Schema::Node::ComplexType )
-            subElementCnt++;
-        }
-        subElementCnt += listElement.attributeRelations().size();
-        if( subElementCnt <= 3 &&
-            subElementCnt > 1 ) {
-          if( !listHeaderSuppressed == true )
-            list->attribute( "showHeader", "true" );
-          QStringList titles;
-          foreach( Schema::Relation r2, listElement.elementRelations() ) {
-            Schema::Element subElement = mDocument.element( r2.target() );
-            qDebug() << subElement.name();
-            if( subElement.type() != Schema::Node::ComplexType ||
-                subElement.mixed() ) {
-              item->tag( "itemlabel", createListItemLabel( r2, listPath, listItemType ) );
-              listItemType = QString::null;
-              titles.append( createListHeader( listPath + Reference( r2.target() ) ) );
+          subElements = collectSubElements( listElement, path, 1, false );
+
+          if( subElements.size() == 0 ) {
+            bool nameAttribute = false;
+            subElements = collectSubElements( listElement, path, 1, true );
+            foreach( Reference r, subElements ) {
+              if( r.toString().indexOf( "name" ) >= 0 )
+                nameAttribute = true;
+            }
+
+            if( subElements.size() == 0 || !nameAttribute ) {
+              while( subElementCnt < 3 ) {
+                subElements = collectSubElements( listElement, path, depth++, true );
+                if( (depth > 3 || subElementCnt > 0 )
+                    && subElementCnt == subElements.size() )
+                  break;
+                subElementCnt = subElements.size();
+              }
             }
           }
-          foreach( Schema::Relation r2, listElement.attributeRelations() ) {
-            item->tag( "itemlabel", createListItemLabel( r2, listPath, listItemType, true ) );
+
+
+          if( subElements.size() > 1 && !listHeaderSuppressed )
+            list->attribute( "showHeader", "true" );
+
+          foreach( Reference r, subElements ) {
+            item->tag( "itemlabel", createListItemLabel( r, path, listItemType) );
             listItemType = QString::null;
-            titles.append( createListHeader( listPath + Reference( "@" + r2.target() ) ) );
+            headers.append( createListHeader( r.lastSegment().name() ) );
           }
-          if( titles.size() > listTitles.size() )
-            listTitles = titles;
-        } else {
-          Schema::Element subElement = mDocument.element( r.target() );
-          if( subElement.elementRelations().size() == 0 &&
-              subElement.attributeRelations().size() == 0 )
-            item->tag( "itemlabel", createListItemLabel( Schema::Relation("."), path, listItemType ) );
-          else
-            item->tag( "itemlabel", createListItemLabel( r, path, listItemType ) );
-          listItemType = QString::null;
         }
+        if( headers.size() > listTitles.size() )
+          listTitles = headers;
+
+        if( !r.choice().contains("+") && list && listTitles.size() > 0 ) {
+          XmlBuilder *listHeader = list->tag( "headers" );
+          foreach( QString s, listTitles ) {
+            listHeader->tag( "header", s );
+          }
+          listTitles.clear();
+        }
+
         currentChoice = r.choice();
       } else if( !r.choice().isEmpty() ) {
         if( !choice ) {
@@ -316,11 +318,11 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         }
       }
     }
-    if( list && listTitles.size() > 0 ) {
-      XmlBuilder *header = list->tag( "headers" );
-      foreach( QString s, listTitles ) {
-        header->tag( "header", s );
-      }
+  }
+  if( list && listTitles.size() > 0 ) {
+    XmlBuilder *listHeader = list->tag( "headers" );
+    foreach( QString s, listTitles ) {
+      listHeader->tag( "header", s );
     }
   }
 }
@@ -371,32 +373,26 @@ QString FormCreator::createListHeader( const Reference &r )
   return header;
 }
 
-QString FormCreator::createListItemLabel( const Schema::Relation &r, const Reference &path, const QString &itemType, bool attribute )
+QString FormCreator::createListItemLabel( const Reference &r, const Reference &path, const QString &itemType )
 {
   QString itemLabel;
-  Schema::Element itemElement = mDocument.element( r );
-
-  Reference itemRef;
-  if( attribute )
-    itemRef = Reference( "@" + r.target() );
-  else
-    itemRef = Reference( r.target() );
+  Schema::Element itemElement = mDocument.element( r.lastSegment().name() );
 
   QString typeString;
   if( !itemType.isEmpty() )
     typeString = QString( "%1: " ).arg( itemType );
 
 
-  Hint hint = mHints.hint( path + Reference( r.target() ) );
+  Hint hint = mHints.hint( path + Reference( r.lastSegment().name() ) );
   if ( hint.isValid() && !hint.value( Hint::ListItemLabel ).isEmpty() ) {
     itemLabel = QString( hint.value( Hint::ListItemLabel ) );
     if( itemLabel.contains( "%1" ) ) {
       if ( itemElement.type() == Schema::Node::String ||
            (itemElement.type() == Schema::Node::ComplexType && itemElement.mixed() )) {
-        itemLabel.replace( "%1", QString( "<itemLabelArg ref=\"%1\" truncate=\"40\"/>" ).arg( (path + itemRef).toString() ) );
+        itemLabel.replace( "%1", QString( "<itemLabelArg ref=\"%1\" truncate=\"40\"/>" ).arg( (path + r).toString() ) );
       } else if ( itemElement.type() == Schema::Node::NormalizedString ||
            itemElement.type() == Schema::Node::Token ) {
-        itemLabel.replace( "%1", QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + itemRef).toString() ) );
+        itemLabel.replace( "%1", QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + r).toString() ) );
       }
     }
   }
@@ -416,14 +412,53 @@ QString FormCreator::createListItemLabel( const Schema::Relation &r, const Refer
     if ( itemElement.type() == Schema::Node::String ||
          (itemElement.type() == Schema::Node::ComplexType && itemElement.mixed() )) {
       itemLabel += typeString;
-      itemLabel += QString( "<itemLabelArg ref=\"%1\" truncate=\"40\"/>" ).arg( (path + itemRef).toString() );
+      itemLabel += QString( "<itemLabelArg ref=\"%1\" truncate=\"40\"/>" ).arg( (path + r).toString() );
     } else if ( itemElement.type() == Schema::Node::NormalizedString ||
          itemElement.type() == Schema::Node::Token ) {
       itemLabel += typeString;
-      itemLabel += QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + itemRef).toString() );
+      itemLabel += QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + r).toString() );
+    } else if (choiceOnly( itemElement) ) {
+      itemLabel += typeString;
+      itemLabel += QString( "<itemLabelArg ref=\"%1\"/>" ).arg( (path + r).toString() );
     }
   }
   return itemLabel;
+}
+
+QList< Reference > FormCreator::collectSubElements( const Schema::Element &element, const Reference &path, int depth, bool includeAttributes )
+{
+  qDebug() << element.name() << " " << path.toString() << " " << depth;
+  QList< Reference > list;
+  if( depth-- == 0 )
+    return list;
+
+  foreach( Schema::Relation r, element.elementRelations() ) {
+    Schema::Element subElement = mDocument.element( r );
+    if( subElement.type() == Schema::Node::NormalizedString ||
+        subElement.type() == Schema::Node::Token ||
+        subElement.type() == Schema::Node::String ||
+        (subElement.type() == Schema::Node::ComplexType && subElement.mixed() ) ) {
+      list.append( path + Reference( subElement.name() ) );
+    }
+    foreach( Reference r, collectSubElements( subElement, Reference( subElement.name() ), depth, includeAttributes ) ) {
+      if( !list.contains( r ) )
+        list.append( r );
+    }
+  }
+
+
+  if( includeAttributes ) {
+    foreach( Schema::Relation r, element.attributeRelations() ) {
+      Schema::Element subElement = mDocument.element( r );
+      if( subElement.type() == Schema::Node::NormalizedString ||
+          subElement.type() == Schema::Node::Token ||
+          subElement.type() == Schema::Node::String ) {
+      list.append( Reference( QString("%1@%2").arg( path.toString(), r.target() ) ) );
+      }
+    }
+  }
+
+  return list;
 }
 
 QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
@@ -467,4 +502,18 @@ void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
 Hints FormCreator::hints() const
 {
   return mHints;
+}
+
+bool FormCreator::choiceOnly( const Schema::Element &element )
+{
+//   if( element.attributeRelations().size() > 0 )
+//     return false;
+
+  foreach( Schema::Relation r, element.elementRelations() ) {
+    if( r.choice().isEmpty() ) {
+      return false;
+    }
+  }
+
+  return true;
 }
