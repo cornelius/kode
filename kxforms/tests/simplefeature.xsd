@@ -12,14 +12,8 @@
 	<xs:element ref="title"/>
 	<xs:element ref="description"/>
 	<xs:element ref="partnercontext"/>
+	<!-- <xs:element ref="productcontext"/> -->
         <xs:element minOccurs="1" maxOccurs="unbounded" ref="productcontext"/>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="actor"/>
-<!--        <xs:element minOccurs="0" ref="references"/>
-        <xs:element minOccurs="0" ref="documentationimpact"/>
-        <xs:element minOccurs="0" ref="effort"/>
-        <xs:element minOccurs="0" ref="testcase"/>
-        <xs:element minOccurs="0" ref="usecase"/>
-        <xs:element minOccurs="0" ref="discussion"/>-->
         <xs:element minOccurs="0" ref="documentationstatus"/>
       </xs:sequence>
     </xs:complexType>
@@ -48,156 +42,58 @@
     </xs:complexType>
   </xs:element>
 
-    <xs:element name="richtext">
-      <xs:complexType mixed="true">
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="p"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="b"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="ul"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="ol"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="em"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="pre"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="h3"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tt"/>
-        </xs:choice>
-      </xs:complexType>
+  <xs:element name="richtext">
+	  <xs:annotation>
+		  <xs:documentation>
+			  A block of richly formatted text. A subset of HTML is allowed to mark up
+			  the text.
+		  </xs:documentation>
+	  </xs:annotation>
+	  <xs:complexType mixed="true">
+		  <xs:choice minOccurs="0" maxOccurs="unbounded">
+			  <xs:element minOccurs="0" maxOccurs="unbounded" ref="p"/>
+		  </xs:choice>
+	  </xs:complexType>
     </xs:element>
     
-    <xs:element name="ul">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" ref="li"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-
-    <xs:element name="ol">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" ref="li"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-
-    <xs:element name="li">
-      <xs:complexType mixed="true">
-        <xs:sequence>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="b"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tt"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="em"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="p"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="ul"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-
     <xs:element name="p">
-      <xs:complexType mixed="true">
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="b"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="ul"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="ol"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tt"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="em"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="pre"/>
-        </xs:choice>
-      </xs:complexType>
+	    <xs:complexType mixed="true">
+		    <xs:choice minOccurs="0" maxOccurs="unbounded">
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
+		    </xs:choice>
+	    </xs:complexType>
     </xs:element>
-
-    <xs:element name="b">
-      <xs:complexType mixed="true">
-        <xs:sequence>
-          <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="b"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ul"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ol"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="tt"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="em"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="p"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="pre"/>
-          </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="class"/>
-      </xs:complexType>
-    </xs:element>
-
+    
     <xs:element name="a">
-      <xs:complexType mixed="true">
-        <xs:attribute name="href"/>
-      </xs:complexType>
-    </xs:element>
-
-    <xs:element name="tt">
-      <xs:complexType mixed="true">
-        <xs:sequence>
-          <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="b"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ul"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ol"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="p"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="tt"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="em"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" ref="pre"/>
-          </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="class"/>
-      </xs:complexType>   
-    </xs:element>
-
-    <xs:element name="em" type="xs:string">
-    </xs:element>
-
-    <xs:element name="pre">
-      <xs:complexType mixed="true">
-        <xs:sequence>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tt"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="b"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="em"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a"/>
-        </xs:sequence>
-        <xs:attribute name="class"/>
-      </xs:complexType>
-    </xs:element>
-
-
-    <xs:element name="h3" type="xs:string">
-    </xs:element>
+	    <xs:annotation>
+		    <xs:documentation>
+			    Markup for richtext: a link
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType mixed="true">
+		    <xs:attribute name="href"/>
+	    </xs:complexType>
+    </xs:element>    
     
     <xs:element name="productcontext">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="product"/>
-          <xs:element ref="status"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="priority"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="actor"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="architecture"/>
-        </xs:sequence>
-        <xs:attribute name="legacyinfo" type="xs:string"/>
-      </xs:complexType>
+	    <xs:annotation>
+		    <xs:documentation>
+			    This element collects the information about the feature which is
+			    relevant to a specific product.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType>
+		    <xs:sequence>
+			    <xs:element ref="product"/>
+			    <!--<xs:element ref="status"/>
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="priority"/>
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="actor"/>
+			    <xs:element minOccurs="0" maxOccurs="unbounded" ref="architecture"/> -->
+		    </xs:sequence>
+		    <!-- <xs:attribute name="legacyinfo" type="xs:string"/>-->
+	    </xs:complexType>
     </xs:element>
     
-    <xs:element name="status">
-      <xs:complexType>
-        <xs:choice>
-          <xs:element ref="new"/>
-          <xs:element ref="research"/>
-          <xs:element ref="ready"/>
-         <xs:element ref="evaluation"/>
-          <xs:element ref="rejected"/>
-          <xs:element ref="duplicate"/>
-          <xs:element ref="done"/>
-          <xs:element ref="implementation"/>
-          <xs:element ref="tested"/>
-        </xs:choice>
-        <xs:attribute name="prio-type" type="xs:string"/>
-        <xs:attribute name="legacyinfo" type="xs:string"/>
-      </xs:complexType>
-    </xs:element>
     
     <xs:element name="product">
 	    <xs:annotation>
@@ -229,78 +125,12 @@
     <xs:element name="productid" type="productid-type">
     </xs:element>
 
-    <xs:element name="new">
-      <xs:complexType/>
-    </xs:element>
-    <xs:element name="duplicate">
-      <xs:complexType>
-        <xs:attribute name="duplicateid" type="xs:string"/>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="research">
-      <xs:complexType/>
-    </xs:element>
-    <xs:element name="ready">
-      <xs:complexType/>
-    </xs:element>
-    <xs:element name="evaluation">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="owner"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="done">
-      <xs:complexType/>
-    </xs:element>
-    <xs:element name="rejected">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element minOccurs="0" ref="reason"/>
-          <xs:element minOccurs="0" ref="owner"/>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="person"/>
-          <xs:element minOccurs="0" ref="date"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="implementation">
-      <xs:complexType/>
-    </xs:element>
-    <xs:element name="tested">
-      <xs:complexType/>
-    </xs:element>
-    
-
-    <xs:element name="date" type="xs:string">
-    </xs:element>
-
-    <xs:element name="reason" type="xs:string">
-    </xs:element>    
-    
-    <xs:element name="owner">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="role"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-
-    <xs:element name="person">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="email"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="email" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          Email address of a person.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    
     <xs:element name="documentationstatus">
+	    <xs:annotation>
+		    <xs:documentation>
+			    Status of the documentation of the feature.
+		    </xs:documentation>
+	    </xs:annotation>
 	    <xs:complexType>
 		    <xs:choice>
 			    <xs:element ref="postponed"/>
@@ -353,257 +183,41 @@
     </xs:element>
 
     <xs:element name="partnercontext">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="organization"/>
-          <xs:element minOccurs="0" ref="externalid"/>
-          <xs:element minOccurs="0" ref="partnerbenefit"/>
-          <xs:element minOccurs="0" ref="nda"/>
-        </xs:sequence>
-      </xs:complexType>
+	    <xs:annotation>
+		    <xs:documentation>
+			    This element collects the information relevant to or provided by the
+			    partner requesting the feature.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType>
+		    <xs:sequence>
+			    <xs:element ref="organization"/>
+			    <xs:element ref="externalid"/>
+		    </xs:sequence>
+	    </xs:complexType>
     </xs:element>
     
     <xs:element name="organization">
-      <xs:complexType mixed="true">
-        <xs:attribute name="legacyinfo" type="xs:string"/>
-      </xs:complexType>
+	    <xs:annotation>
+		    <xs:documentation>
+			    A short string identifying the organization of the partner. This
+			    identifier is used as base for restricting access to the features for
+			    partners, so it should be unique per partner and the same string should
+			    be used for all features related to a specific partner.
+		    </xs:documentation>
+	    </xs:annotation>
+	    <xs:complexType mixed="true">
+		    <xs:attribute name="legacyinfo" type="xs:string"/>
+	    </xs:complexType>
     </xs:element>
     
     <xs:element name="externalid" type="xs:string">
-    </xs:element>
-    
-        <xs:element name="nda">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="expires"/>
-        </xs:sequence>
-        <xs:attribute name="legacyinfo"/>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="expires" type="xs:string"/>
-
-    <xs:element name="partnerbenefit">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="richtext"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <xs:element name="role">
-      <xs:annotation>
-        <xs:documentation>
-          Specification of a role. A role can be associated with a person in the
-          "actor" element. Some attributes of a feature a bound to specific
-          roles, e.g. the priority.
-        </xs:documentation>
-      </xs:annotation>
-      <xs:complexType>
-        <xs:sequence>
-          <xs:choice>
-            <xs:element ref="projectmanager"/>
-            <xs:element ref="productmanager"/>
-            <xs:element ref="teamleader"/>
-            <xs:element ref="developer"/>
-            <xs:element ref="requester"/>
-            <xs:element ref="documentationeditor"/>
-            <xs:element ref="technicalcontact"/>
-            <xs:element ref="interested"/>
-            <xs:element ref="partner"/>
-            <xs:element ref="infoprovider"/>
-            <xs:element ref="qareviewer"/>
-            <xs:element ref="qatester"/>
-          </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="legacyinfo"/>
-      </xs:complexType>
-    </xs:element>
-    
-        <xs:element name="productmanager" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A product manager with comment which product he's working on
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="projectmanager" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A project manager.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="teamleader" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A team leader.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="developer" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A developers.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="requester" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          The person requesting the feature or the person handling the feature
-          request within Novell. This always has to be a Novell-internal person.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="documentationeditor" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          The editor of the documentation of the feature.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="technicalcontact" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A person familiar with the technical background of the feature.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="interested" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A person interested in the feature. Interested persons will be notified
-          about changes of the feature data.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="partner" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A partner.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="infoprovider" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>
-          A person which is required to provide some information, for example
-          replying on a comment. 
-        </xs:documentation>
-      </xs:annotation>
-    </xs:element>
-    <xs:element name="qareviewer" type="xs:string">
-    </xs:element>
-    <xs:element name="qatester" type="xs:string">
-    </xs:element>
-    
-    
-    
-    
-    
-    
-    
-        <xs:element name="priority">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:choice>
-          	<xs:element ref="stopship"/>
-            <xs:element ref="mandatory"/>
-            <xs:element ref="important"/>
-            <xs:element ref="desirable"/>
-            <xs:element ref="neutral"/>
-          </xs:choice>
-          <xs:element ref="owner"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-
-    <xs:element name="stopship">
-      <xs:annotation>
-        <xs:documentation>
-        </xs:documentation>
-      </xs:annotation>
-      <xs:complexType/>
-    </xs:element>
-
-    <xs:element name="mandatory">
-      <xs:complexType>
-        <xs:attribute name="baseline" type="xs:boolean"/>
-      </xs:complexType>
-    </xs:element>
-    
-    <xs:element name="important">
-      <xs:complexType/>
-    </xs:element>
-    
-    <xs:element name="desirable">
-      <xs:complexType/>
-    </xs:element>
-    <xs:element name="neutral">
-      <xs:annotation>
-        <xs:documentation>
-          The corresponding actor has a neutral position to this feature.
-          Implementation of this feature has no specific priority.
-        </xs:documentation>
-      </xs:annotation>
-      <xs:complexType/>
-    </xs:element>
-    
-    
-    
-        <xs:element name="actor">
-      <xs:annotation>
-        <xs:documentation>
-          An actor associates a person with a role.
-        </xs:documentation>
-      </xs:annotation>
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element ref="role"/>
-          <xs:element ref="person"/>
-        </xs:sequence>
-      </xs:complexType>
-    </xs:element>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <xs:simpleType name="architecture-tokens">
-      <xs:restriction base="xs:string">
-        <xs:enumeration value="i386"/>
-        <xs:enumeration value="x86-64"/>
-        <xs:enumeration value="ia64"/>
-        <xs:enumeration value="ppc"/>
-        <xs:enumeration value="ppc32"/>
-        <xs:enumeration value="ppc64"/>
-        <xs:enumeration value="s390"/>
-        <xs:enumeration value="s390x"/>
-        <xs:enumeration value="all"/>
-      </xs:restriction>
-    </xs:simpleType>
-
-    <xs:element name="architecture">
-      <xs:complexType>
-        <xs:simpleContent>
-          <xs:extension base="architecture-tokens">
-            <xs:attribute name="legacyinfo" type="xs:string"/>
-          </xs:extension>
-        </xs:simpleContent>
-      </xs:complexType>
+	    <xs:annotation>
+		    <xs:documentation>
+			    External id for identifying the feature in the context of the system
+			    used by the partner for feature tracking.
+		    </xs:documentation>
+	    </xs:annotation>
     </xs:element>
     
 </xs:schema>

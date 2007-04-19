@@ -440,7 +440,6 @@ QString FormCreator::createListItemLabel( const Reference &r, const Reference &p
 
 QList< Reference > FormCreator::collectSubElements( const Schema::Element &element, const Reference &path, int depth, bool includeAttributes )
 {
-  qDebug() << element.name() << " " << path.toString() << " " << depth;
   QList< Reference > list;
   if( depth-- == 0 )
     return list;
@@ -453,7 +452,7 @@ QList< Reference > FormCreator::collectSubElements( const Schema::Element &eleme
         (subElement.type() == Schema::Node::ComplexType && subElement.mixed() ) ) {
       list.append( path + Reference( subElement.name() ) );
     }
-    foreach( Reference r, collectSubElements( subElement, Reference( subElement.name() ), depth, includeAttributes ) ) {
+    foreach( Reference r, collectSubElements( subElement, path + Reference( subElement.name() ), depth, includeAttributes ) ) {
       if( !list.contains( r ) )
         list.append( r );
     }
