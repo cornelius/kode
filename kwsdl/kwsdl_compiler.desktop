@@ -5,6 +5,7 @@ Name[es]=Compilador KWSDL
 Name[kk]=KWSDL компиляторы
 Name[sv]=KWSDL-kompilator
 Name[x-test]=xxKWSDL Compilerxx
+Name[zh_TW]=KWSDL 編譯器
 Exec=kdialog --sorry "kwsdl_compiler is a command-line only program.  Please read the handbook at help:/kwsdl_compiler for more info."
 Icon=gear
 Type=Application
