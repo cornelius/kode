@@ -29,7 +29,8 @@ set(kxforms_SRCS
    section.cpp 
    dispatcher.cpp
    select.cpp 
-   listproxymodel.cpp )
+   listproxymodel.cpp
+   layout.cpp )
 
 kde4_automoc(${kxforms_SRCS})
 

@@ -65,11 +65,11 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 
   Hint hint = mHints.hint( Reference( element.name() ) );
   if ( hint.isValid() ) {
-    QList<QDomElement> elements = hint.elements( Hint::Pages );
+    QList<QDomElement> elements = hint.elements( Hint::Groups );
     if( !elements.isEmpty() ) {
-      XmlBuilder *items = form->tag( "pages" );
+      XmlBuilder *items = form->tag( "groups" );
       foreach( QDomElement e, elements ) {
-        XmlBuilder *page = items->tag( "page", e.text() );
+        XmlBuilder *page = items->tag( "group", e.text() );
         page->attribute( "id", e.attribute( "id") );
       }
     }
@@ -95,10 +95,12 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
       XmlBuilder *input = attributes->tag( "xf:input" );
       input->attribute( "ref", (path + Reference( a.ref() )).toString() );
       createLabel( input, a );
+      applyCommonHints( input, path + Reference( a.ref() ) );
     } else if ( a.type() == Schema::Attribute::Enumeration ) {
       XmlBuilder *select1 = attributes->tag( "xf:select1" );
       select1->attribute( "ref", (path + Reference( a.ref() )).toString() );
       createLabel( select1, a );
+      applyCommonHints( select1, path + Reference( a.ref() ) );
       foreach( QString value, a.enumerationValues() ) {
         XmlBuilder *item = select1->tag( "xf:item" );
         QString itemLabel;
@@ -492,22 +494,30 @@ QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
 void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
 {
   Hint hint = mHints.hint( ref );
+  qDebug() << ref.toString();
   if( !hint.isValid() )
     return;
 
-  if( hint.hasValue( Hint::PageReference ) ) {
-    XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
-    layout->tag( "pageRef", hint.value( Hint::PageReference ) );
+  XmlBuilder *layout = 0;
+  if( hint.hasValue( Hint::GroupReference ) ) {
+    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
+    layout->tag( "groupRef", hint.value( Hint::GroupReference ) );
   }
 
   if( hint.hasValue( Hint::Appearance ) ) {
-    XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
+    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
     layout->tag( "appearance", hint.value( Hint::Appearance ) );
   }
 
-  if( hint.hasValue( Hint::Position ) ) {
-    XmlBuilder *layout = xml->tag( "properties" )->tag( "layout" );
-    layout->tag( "position", hint.value( Hint::Position ) );
+  if( hint.elements( Hint::Position ).size() > 0 ) {
+    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
+    QList<QDomElement> positions = hint.elements( Hint::Position );
+    foreach( QDomElement e, positions ) {
+      QString s;
+      QTextStream stream( &s );
+      e.save( stream, 0 );
+      layout->tag( "position", s );
+    }
   }
 }
 

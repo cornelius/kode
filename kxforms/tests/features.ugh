@@ -5,7 +5,7 @@
   <hint ref="category/feature">
     <label>Feature: <itemLabelArg ref="summary" truncate="50"/></label>
   </hint>
-  <hin ref="/feature">
+  <hint ref="/feature">
     <listItemLabels>
       <listItemLabel ref="summary"><itemLabelArg ref="/summary" truncate="40"/></listItemLabel>
       <listItemLabel ref="@status"><itemLabelArg ref="/@status"/></listItemLabel>
@@ -26,6 +26,7 @@
   </hint>
   <hint ref="@email">
     <listHeader>Email Address</listHeader>
+    <position><rightOf>@name</rightOf></position>
   </hint>
   <hint ref="category">
     <listItemList>true</listItemList>

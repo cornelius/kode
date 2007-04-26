@@ -22,6 +22,7 @@
 #define KXFORMS_FORMGUI_H
 
 #include "guielement.h"
+#include "layout.h"
 
 #include <QWidget>
 #include <QDomElement>
@@ -35,15 +36,17 @@ namespace KXForms {
 
 class Manager;
 
+
 class FormGui : public QWidget
 {
     Q_OBJECT
   public:
     typedef QList<FormGui *> List;
 
+
     FormGui( const QString &label, Manager *, QWidget *parent );
 
-    void parseElement( const QDomElement &, QLayout *l = 0, const QString overrideLabel = QString::null );
+    void parseElement( const QDomElement &, QLayout *l = 0, const QString &overrideLabel = QString::null, Layout *overrideGroup = 0 );
 
     void setRef( const Reference &ref );
     Reference ref() const;
@@ -65,8 +68,8 @@ class FormGui : public QWidget
 
     QDomElement findContextElement( const QDomDocument &doc );
 
-    bool hasPages( const QDomElement & );
-    void setupPages( const QDomElement &, QLayout * );
+    bool hasGroups( const QDomElement & );
+    void setupGroups( QLayout *, const QDomElement &element );
   private:
     Manager *mManager;
 
@@ -80,7 +83,8 @@ class FormGui : public QWidget
     QLabel *mRefLabel;
 
     QTabWidget *mTabWidget;
-    QMap< QString, QWidget *> mTabs;
+    QMap< QString, QLayout *> mTabs;
+    QMap< QString, QString > mGroups;
     
     bool mLabelHidden;
 };

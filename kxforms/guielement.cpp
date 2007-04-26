@@ -102,6 +102,10 @@ void GuiElement::applyProperties()
 
 void GuiElement::parseProperties( const QDomElement &element, Properties *properties )
 {
+  QString s;
+  QTextStream stream( &s );
+  element.save( stream, 0 );
+  qDebug() << s;
   QDomNode n;
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
@@ -122,14 +126,16 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
             properties->relevance[elem] = value;
         } else if ( e2.tagName() == "layout" ) {
           QDomNode n3;
-          bool ok;
           for( n3 = e2.firstChild(); !n3.isNull(); n3 = n3.nextSibling() ) {
             QDomElement e3 = n3.toElement();
-            if ( e3.tagName() == "pageRef" ) {
-              properties->page = e3.text();
+            if ( e3.tagName() == "groupRef" ) {
+              properties->group = e3.text();
             } else if ( e3.tagName() == "position" ) {
-              properties->position = e3.text().toInt( &ok );
-              if( !ok ) properties->position = -1;
+              QDomNode n = e3.firstChild();
+              while( !n.isNull() ) {
+                properties->positions.append( n.toElement() );
+                n = n.nextSibling();
+              }
             } else if ( e3.tagName() == "appearance" ) {
               if( e3.text() == "minimal" )
                 properties->appearance = Minimal;

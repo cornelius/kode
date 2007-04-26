@@ -49,6 +49,7 @@ class GuiHandler
     virtual void addWidget( QLayout *, QWidget * ) const;
     virtual void addElement( QLayout *, QWidget *label, QWidget *widget, 
                  GuiElement::Properties *prop = 0, bool indented = false ) const;
+    virtual void addElement( QLayout *, QWidget *label, QWidget *widget, int x, int y, int width, int height, GuiElement::Properties *prop = 0, bool indented = false ) const;
 
     Manager *manager() const;
 

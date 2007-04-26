@@ -37,7 +37,7 @@ class Hint
   public:
     typedef QList<Hint> List;
     enum Type { Label, ListShowHeader, ListHeader, ListShowSearch, ListItemLabel, 
-        ListItemList, Pages, PageReference, Appearance, Position };
+        ListItemList, Groups, GroupReference, Appearance, Position };
 
     Hint();
     Hint( const Reference &ref );

@@ -24,6 +24,7 @@
 #include <QDomDocument>
 #include <QXmlInputSource>
 #include <QXmlSimpleReader>
+#include <QGridLayout>
 
 using namespace KXForms;
 
@@ -262,5 +263,39 @@ void Manager::addElement( QLayout *l, GuiElement *e ) const
   mGuiHandler->addElement( l, e->labelWidget(), e->widget(), e->properties() );
   foreach( GuiElement *a, e->attributeElements() ) {
     mGuiHandler->addElement( l, a->labelWidget(), a->widget(), a->properties(), true );
+  }
+}
+
+void Manager::addElementRow( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight ) const
+{
+  int elements = 0;
+  Layout::Element *it = e;
+  while( it ) {
+    elements++;
+    it = it->rightElement();
+  }
+  
+  QGridLayout *gl = dynamic_cast<QGridLayout *>( l );
+  int row = gl ? gl->rowCount() : 0;
+
+  it = e;
+  int cnt = 0;
+  //TODO: Make this recursive
+  while( it ) {
+    int width = it->rightElement() ? 1 : totalWidth - cnt;
+    int height = it->belowElement() ? 1 : totalHeight;
+    kDebug() << cnt << " " << row << " " << width << " " << totalWidth << " " << totalHeight << endl;
+    mGuiHandler->addElement( l, it->element()->labelWidget(), it->element()->widget(), cnt,row, width, height, it->element()->properties() );
+
+    Layout::Element *it2 = it->belowElement();
+    int childRow = row+1;
+    while( it2 ) {
+      height = it2->belowElement() ? 1 : totalHeight - height;
+      mGuiHandler->addElement( l, it2->element()->labelWidget(), it2->element()->widget(), cnt,childRow, width, 1, it2->element()->properties() );
+      it2 = it2->belowElement();
+      childRow++;
+    }
+    it = it->rightElement();
+    cnt++;
   }
 }

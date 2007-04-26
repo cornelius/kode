@@ -4,14 +4,14 @@
     <listItemLabel><itemLabelArg ref="product/name"/> (v%1)</listItemLabel>
   </hint>
   <hint ref="feature">
-    <pages>
-      <page id="feature">Feature</page>
-      <page id="other">Other</page>
-      <page id="documentation">Documentation</page>
-    </pages>
+    <groups>
+      <group id="">Feature</group>
+      <group id="other">Other</group>
+      <group id="documentation">Documentation</group>
+    </groups>
   </hint>
   <hint ref="documentationstatus">
-    <pageRef>documentation</pageRef>
+    <groupRef>documentation</groupRef>
     <appearance>full</appearance>
     <label>Status of the documentation: </label>
   </hint>
@@ -19,20 +19,23 @@
     <label>Information required </label>
   </hint>
   <hint ref="partnercontext">
-    <pageRef>other</pageRef>
+    <groupRef>other</groupRef>
   </hint>
   <hint ref="productcontext">
-    <pageRef>other</pageRef>
+    <groupRef>other</groupRef>
     <listShowHeader>true</listShowHeader>
   </hint>
   <hint ref="name">
     <label>Product</label>
     <listHeader>Product</listHeader>
   </hint>
-  <hint ref="externalid">
-    <position>0</position>
-  </hint>
   <hint ref="organization">
-    <position>1</position>
+    <position><leftOf>externalid</leftOf></position>
+  </hint>
+  <hint ref="partnerbenefit/richtext">
+    <position><rightOf>nda/richtext</rightOf></position>
+  </hint>
+  <hint ref="description">
+    <position><rightOf>/title</rightOf></position>
   </hint>
 </ugh>

@@ -39,14 +39,14 @@ class GuiElement : public QObject
 
     enum Appearance { Undefined, Minimal, Compact, Full };
     struct Properties {
-        Properties() : readonly( false ), position( -1 ),
+        Properties() : readonly( false ),
             appearance( Undefined ) {}
         QString type;
         QString constraint;
         bool readonly;
         QMap<QString, QString> relevance;
-        QString page;
-        int position;
+        QString group;
+        QList< QDomElement> positions;
         Appearance appearance;
     };
 

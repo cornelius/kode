@@ -65,7 +65,7 @@ QString Hint::value( Type key) const
 
 bool Hint::hasValue( Type key) const
 {
-  return mValues.contains( key );
+  return ( mValues.contains( key ) || mElements.contains( key ) );
 }
 
 void Hint::setEnumValue( const QString &value, const QString &replacement )
@@ -172,20 +172,25 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       }
     } else if (name.localName() == "listItemList" ) {
       hint.setValue( Hint::ListItemList, contentAsString( e ) );
-    } else if (name.localName() == "pageRef" ) {
-      hint.setValue( Hint::PageReference, contentAsString( e ) );
+    } else if (name.localName() == "groupRef" ) {
+      hint.setValue( Hint::GroupReference, contentAsString( e ) );
     } else if (name.localName() == "appearance" ) {
       hint.setValue( Hint::Appearance, contentAsString( e ) );
     } else if (name.localName() == "position" ) {
-      hint.setValue( Hint::Position, contentAsString( e ) );
-    } else if (name.localName() == "pages" ) {
-      hint.setValue( Hint::Pages, contentAsString( e ) );
       QDomNode child = n.firstChild();
       while( !child.isNull() ) {
-        if( child.nodeName() == "page" ) {
+        QDomElement e = child.toElement();
+        if( !e.isNull() )
+          hint.addElement( Hint::Position, e );
+        child = child.nextSibling();
+      }
+    } else if (name.localName() == "groups" ) {
+      QDomNode child = n.firstChild();
+      while( !child.isNull() ) {
+        if( child.nodeName() == "group" ) {
           QDomElement e = child.toElement();
           if( !e.isNull() )
-            hint.addElement( Hint::Pages, e );
+            hint.addElement( Hint::Groups, e );
         }
         child = child.nextSibling();
       }

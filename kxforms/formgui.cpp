@@ -42,8 +42,9 @@
 
 using namespace KXForms;
 
+
 FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
-  : QWidget( parent ), mManager( m ), mLabelHidden( false )
+  : QWidget( parent ), mManager( m ), mTabWidget( 0 ), mLabelHidden( false )
 {
   kDebug() << "FormGui()" << endl;
 
@@ -98,17 +99,14 @@ void FormGui::setLabelHidden( bool hidden )
   mLabelHidden = hidden;
 }
 
-void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString overrideLabel )
+void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString &overrideLabel, Layout *overrideGroup )
 {
   kDebug() << "FormGui::parseElement()" << endl;
 
-  QMap< QLayout *, QMap< int, GuiElement *> > pendingElements;
+  QMap< QString, Layout > layoutMap;
 
   bool hasList = false;
   QLayout *layout = l ? l : mTopLayout;
-
-  if( hasPages( element ) )
-    setupPages( element, layout );
 
   QDomNode n;
   for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
@@ -123,12 +121,6 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     GuiElement *guiElement = 0;
     GuiElement::Properties *properties = new GuiElement::Properties;
     GuiElement::parseProperties( e, properties );
-    if( hasPages( element ) ) {
-      if( !properties->page.isEmpty() && mTabs[ properties->page ] )
-        layout = mTabs[ properties->page ]->layout();
-      else
-        layout = mTabWidget->widget( 0 )->layout();
-    }
 
     if ( tag == "xf:label" ) {
       mLabel->setText( e.text() );
@@ -158,7 +150,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
         guiElement->setRef( e.attribute( "ref" ) );
         parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ) );
       } else {
-        parseElement( e, layout, e.attribute( "overrideLabel" ) );
+        parseElement( e, layout, e.attribute( "overrideLabel" ), &layoutMap[properties->group] );
       }
     } else if ( tag == "attributes" ) {
       parseElement( e, layout );
@@ -166,29 +158,72 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       kWarning() << "  Unsupported element: " << tag << endl;
       delete properties;
     }
-    
-    if ( guiElement ) {
+    if( guiElement ) {
       if( !c.tip().isEmpty() )
         guiElement->setTip( c.tip() );
       guiElement->parseElement( e );
       parseAttributeElements( guiElement, e );
-      if( guiElement->properties()->position < 0 ||
-          pendingElements[ layout ].contains( guiElement->properties()->position ) ) {
-        mManager->addElement( layout, guiElement );
-        mGuiElements.append( guiElement );
-      } else {
-        pendingElements[ layout ][guiElement->properties()->position] = guiElement;
-      }
+      if( overrideGroup )
+        overrideGroup->addElement( guiElement );
+      else
+        layoutMap[properties->group].addElement( guiElement );
     }
   }
-  QMapIterator< QLayout *, QMap< int, GuiElement *> > it( pendingElements );
-  while (it.hasNext()) {
-    it.next();
-    QMapIterator< int, GuiElement *> it2( it.value() );
-    while( it2.hasNext() ) {
-      it2.next();
-      mManager->addElement( it.key(), it2.value() );
-      mGuiElements.append( it2.value() );
+
+  QMap< QString, Layout >::iterator it;
+  int threshold = 60;
+  int space = 0;
+  bool grouped = false;
+
+  int totalSpace = 0;
+  for( it = layoutMap.begin(); it != layoutMap.end(); ++it ){
+    it.value().order();
+    totalSpace += it.value().space();
+  }
+
+  if( (hasGroups( element ) || totalSpace > threshold) &&
+       layoutMap.size() > 1 ) {
+    setupGroups( layout, element );
+    layout = 0;
+    grouped = true;
+  }
+
+  for( it = layoutMap.begin(); it != layoutMap.end(); ++it ) {
+    it.value().order();
+    QList< Layout::Element * > list = it.value().orderedList();
+
+    space += it.value().space();
+    int height = it.value().height();
+    int width = it.value().width();
+
+    if( ( space > threshold && grouped ) || !layout ) {
+      space = it.value().space();
+      layout = mManager->getTopLayout();
+      QWidget *w = new QWidget( mTabWidget );
+      w->setLayout( layout );
+      QString title = mGroups[ it.key() ];
+      if( title.isEmpty() )
+        title = mGroups.values().first();
+      if( mTabWidget )
+        mTabWidget->addTab( w, title );
+    } else if( mTabWidget ) {
+      int index = mTabWidget->indexOf( layout->parentWidget() );
+      QString title = mTabWidget->tabText( index );
+      if( !mGroups[ it.key() ].isEmpty() ) {
+        if( !title.isEmpty() )
+          title += QString(" && ");
+        title += mGroups[ it.key() ];
+      }
+      if( mTabWidget )
+        mTabWidget->setTabText( index, title );
+    }
+
+    foreach( Layout::Element *e, list ) {
+      mManager->addElementRow( layout, e, width, height );
+    }
+
+    foreach( GuiElement *guiElem, it.value().elements() ) {
+      mGuiElements.append( guiElem );
     }
   }
 
@@ -278,23 +313,19 @@ void FormGui::saveData()
   }
 }
 
-bool FormGui::hasPages( const QDomElement &e )
+bool FormGui::hasGroups( const QDomElement &e )
 {
-  return !e.firstChildElement( "pages" ).isNull();
+  return !e.firstChildElement( "groups" ).isNull();
 }
 
-void FormGui::setupPages( const QDomElement &element, QLayout *l )
+void FormGui::setupGroups( QLayout *l, const QDomElement &element )
 {
   mTabWidget = new QTabWidget( this );
   l->addWidget( mTabWidget );
-  QDomElement e = element.firstChildElement( "pages" ).firstChild().toElement();
+  QDomElement e = element.firstChildElement( "groups" ).firstChild().toElement();
   while( !e.isNull() ) {
-    if( e.tagName() == "page" ) {
-      QWidget *w = new QWidget( mTabWidget );
-      QLayout *l = mManager->getTopLayout();
-      w->setLayout( l );
-      mTabWidget->addTab( w, e.text() );
-      mTabs[ e.attribute( "id" ) ] = w;
+    if( e.tagName() == "group" ) {
+      mGroups[ e.attribute( "id" ) ] = e.text();
     }
     e = e.nextSibling().toElement();
   }

@@ -130,3 +130,28 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget,
     vbl->insertLayout( l->count() - 1, newLayout );
   }
 }
+
+void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x, int y, int width, int height, 
+            GuiElement::Properties *prop, bool indented ) const
+{
+  Q_UNUSED( prop );
+  Q_UNUSED( indented );
+  //TODO: fix vertical layout-style
+  //TODO: make indention work again
+  if( layoutStyle() == GuiHandler::Grid ) {
+    QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
+    if( !gl )
+      return;
+
+    gl->setColumnStretch( (2*x)+1, 1 );
+    if( label ) {
+      qDebug() << "Adding label at: (" << y << "," << 2*x << ")";
+      gl->addWidget( label, y, (2*x), height, 1, Qt::AlignRight | Qt::AlignTop );
+      qDebug() << "Adding widget at: (" << y << "," << (2*x)+1 << ") (" << height << "," << (2*width)-1  << ")";
+      gl->addWidget( widget, y, (2*x)+1, height, (2*width)-1 );
+    }
+    else {
+      gl->addWidget( widget, y, (2*x), height, 2*width );
+    }
+  }
+}
