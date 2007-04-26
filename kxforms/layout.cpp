@@ -57,7 +57,7 @@ int Layout::Element::height() const
       h++;
       it2 = it2->belowElement();
     }
-    height = QMAX( height, h );
+    height = qMax( height, h );
     it = it->rightElement();
   }
 
@@ -165,7 +165,7 @@ int Layout::width() const
 {
   int width = 0;
   foreach( Element *e, mOrderedList ) {
-    width = QMAX( width, e->width() );
+    width = qMax( width, e->width() );
   }
   return width;
 }
@@ -174,7 +174,7 @@ int Layout::height() const
 {
   int height = 0;
   foreach( Element *e, mOrderedList ) {
-    height = QMAX( height, e->height() );
+    height = qMax( height, e->height() );
   }
   return height;
 }
