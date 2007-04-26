@@ -229,7 +229,7 @@ void KXFormsTest::testHints()
   QCOMPARE( mHints.hint( "version" ).value( KXForms::Hint::ListItemLabel ), QString( "<itemLabelArg ref=\"product/name\" /> (v%1)" ) );
 
 
-  QList<QDomElement> pages = mHints.hint( "feature" ).elements( KXForms::Hint::Pages );
+  QList<QDomElement> pages = mHints.hint( "feature" ).elements( KXForms::Hint::Groups );
 
   QCOMPARE( pages.size(), 3 );
 
@@ -238,7 +238,7 @@ void KXFormsTest::testHints()
   QCOMPARE( pages[1].attribute( "id" ), QString( "other" ) );
 
 
-  QCOMPARE( mHints.hint( "documentationstatus" ).value( KXForms::Hint::PageReference ), QString( "documentation" ) );
+  QCOMPARE( mHints.hint( "documentationstatus" ).value( KXForms::Hint::GroupReference ), QString( "documentation" ) );
 
   QCOMPARE( mHints.hint( "documentationstatus" ).value( KXForms::Hint::Appearance ), QString( "full" ) );
 
