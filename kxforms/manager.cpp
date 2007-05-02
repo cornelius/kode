@@ -29,7 +29,7 @@
 using namespace KXForms;
 
 Manager::Manager()
-  : mGuiHandler( 0 ), mDataLoaded( false )
+  : mGuiHandler( 0 ), mDataLoaded( false ), mDispatcher( new Dispatcher() )
 {
 }
 
@@ -38,6 +38,7 @@ Manager::~Manager()
   clearForms();
 
   delete mGuiHandler;
+  delete mDispatcher;
 }
 
 void Manager::setGuiHandler( GuiHandler *handler )
@@ -256,14 +257,6 @@ QLayout *Manager::getTopLayout() const
 void Manager::addWidget( QLayout *l, QWidget *w ) const
 {
   mGuiHandler->addWidget( l, w );
-}
-
-void Manager::addElement( QLayout *l, GuiElement *e ) const
-{
-  mGuiHandler->addElement( l, e->labelWidget(), e->widget(), e->properties() );
-  foreach( GuiElement *a, e->attributeElements() ) {
-    mGuiHandler->addElement( l, a->labelWidget(), a->widget(), a->properties(), true );
-  }
 }
 
 void Manager::addElementRow( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight ) const
