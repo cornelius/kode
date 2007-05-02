@@ -51,15 +51,7 @@ Manager *GuiHandler::manager() const
 
 QLayout *GuiHandler::getTopLayout() const
 {
-  if( layoutStyle() == GuiHandler::Grid ) {
-    QGridLayout *l = new QGridLayout();
-    return l;
-  }
-  else {
-    QVBoxLayout *l = new QVBoxLayout();
-    l->addStretch( 1 );
-    return l;
-  }
+  return new QGridLayout();
 }
 
 void GuiHandler::addWidget( QLayout *l, QWidget *w ) const
@@ -135,8 +127,7 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
             GuiElement::Properties *prop, bool indented ) const
 {
   Q_UNUSED( prop );
-  Q_UNUSED( indented );
-  //TODO: fix vertical layout-style
+
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )
@@ -164,6 +155,35 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
         gl->addLayout( hbl, y, (2*x), height, 2*width );
       }
         gl->addWidget( widget, y, (2*x), height, 2*width );
+    }
+  }
+  else {
+    QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
+    if( !gl )
+      return;
+
+    gl->setColumnStretch( x, 1 );
+    if( label ) {
+      qDebug() << "Adding label at: (" << 2*y << "," << x << ")";
+      gl->addWidget( label, 2*y, x, 1, width, Qt::AlignLeft | Qt::AlignTop );
+      qDebug() << "Adding widget at: (" << (2*y)+1 << "," << x << ") (" << (2*height)-1 << "," << width  << ")";
+      if( indented ) {
+        QHBoxLayout *hbl = new QHBoxLayout();
+        hbl->addSpacing( 40 );
+        hbl->addWidget( widget );
+        gl->addLayout( hbl, (2*y)+1, x, (2*height)-1, width );
+      }
+      else
+        gl->addWidget( widget, (2*y)+1, x, (2*height)-1, width );
+    }
+    else {
+      if( indented ) {
+        QHBoxLayout *hbl = new QHBoxLayout();
+        hbl->addSpacing( 40 );
+        hbl->addWidget( widget );
+        gl->addLayout( hbl, 2*y, x, 2*height, width );
+      }
+        gl->addWidget( widget, 2*y, x, 2*height, width );
     }
   }
 }
