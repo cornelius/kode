@@ -29,6 +29,11 @@ using namespace KXForms;
 int Layout::Element::space() const
 {
   //TODO:Implement some metric here
+  int space = 20;
+
+  foreach( GuiElement *e, element()->attributeElements() )
+    space += 20;
+
   return 20;
 }
 
@@ -49,12 +54,14 @@ int Layout::Element::height() const
 {
   int height = 1;
 
-  Layout::Element *it = rightElement();
+  const Layout::Element *it = this;
   while( it ) {
-    int h = 1;
-    Layout::Element *it2 = it->belowElement();
+    int h = 0;
+    const Layout::Element *it2 = it;
     while( it2 ) {
       h++;
+      foreach( GuiElement *e, it2->element()->attributeElements() )
+        h++;
       it2 = it2->belowElement();
     }
     height = qMax( height, h );

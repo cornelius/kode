@@ -277,9 +277,15 @@ void Manager::addElementRow( QLayout *l, Layout::Element *e, int totalWidth, int
 void Manager::addElementRowElement( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight, int xPosition, int yPosition ) const
 {
   int width = e->rightElement() ? 1 : totalWidth - xPosition;
-  int height = e->belowElement() ? 1 : totalHeight;
-  kDebug() << xPosition << " " << yPosition << " " << width << " " << totalWidth << " " << totalHeight << endl;
+  int height = e->belowElement() ? 1 : totalHeight - e->element()->attributeElements().size();
+
+  kDebug() << e->element()->ref().toString() << ": " << xPosition << " " << yPosition << " " << width << " " << totalWidth << " " << totalHeight << endl;
   mGuiHandler->addElement( l, e->element()->labelWidget(), e->element()->widget(), xPosition,yPosition, width, height, e->element()->properties() );
+
+  foreach( GuiElement *a, e->element()->attributeElements() ) {
+    ++yPosition;
+    mGuiHandler->addElement( l, a->labelWidget(), a->widget(), xPosition, yPosition, width, 1, a->properties(), true );
+  }
 
   if( e->rightElement() )
     addElementRowElement( l, e->rightElement(), totalWidth, totalHeight, xPosition+1, yPosition );

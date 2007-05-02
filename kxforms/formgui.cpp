@@ -171,7 +171,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
   }
 
   QMap< QString, Layout >::iterator it;
-  int threshold = 60;
+  int threshold = 100;
   int space = 0;
   bool grouped = false;
 
