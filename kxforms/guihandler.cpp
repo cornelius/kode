@@ -137,7 +137,6 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
   Q_UNUSED( prop );
   Q_UNUSED( indented );
   //TODO: fix vertical layout-style
-  //TODO: make indention work again
   if( layoutStyle() == GuiHandler::Grid ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )
@@ -148,10 +147,23 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
       qDebug() << "Adding label at: (" << y << "," << 2*x << ")";
       gl->addWidget( label, y, (2*x), height, 1, Qt::AlignRight | Qt::AlignTop );
       qDebug() << "Adding widget at: (" << y << "," << (2*x)+1 << ") (" << height << "," << (2*width)-1  << ")";
-      gl->addWidget( widget, y, (2*x)+1, height, (2*width)-1 );
+      if( indented ) {
+        QHBoxLayout *hbl = new QHBoxLayout();
+        hbl->addSpacing( 40 );
+        hbl->addWidget( widget );
+        gl->addLayout( hbl, y, (2*x)+1, height, (2*width)-1 );
+      }
+      else
+        gl->addWidget( widget, y, (2*x)+1, height, (2*width)-1 );
     }
     else {
-      gl->addWidget( widget, y, (2*x), height, 2*width );
+      if( indented ) {
+        QHBoxLayout *hbl = new QHBoxLayout();
+        hbl->addSpacing( 40 );
+        hbl->addWidget( widget );
+        gl->addLayout( hbl, y, (2*x), height, 2*width );
+      }
+        gl->addWidget( widget, y, (2*x), height, 2*width );
     }
   }
 }
