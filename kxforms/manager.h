@@ -71,6 +71,7 @@ class Manager
     void addWidget( QLayout *, QWidget * ) const;
     void addElement( QLayout *, GuiElement * ) const;
     void addElementRow( QLayout *, Layout::Element *e, int width, int height ) const;
+    void addElementRowElement( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight, int xPosition, int yPosition ) const;
 
     Dispatcher *dispatcher() { return &mDispatcher; }
   protected:

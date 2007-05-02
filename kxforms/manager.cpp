@@ -268,34 +268,21 @@ void Manager::addElement( QLayout *l, GuiElement *e ) const
 
 void Manager::addElementRow( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight ) const
 {
-  int elements = 0;
-  Layout::Element *it = e;
-  while( it ) {
-    elements++;
-    it = it->rightElement();
-  }
-  
   QGridLayout *gl = dynamic_cast<QGridLayout *>( l );
   int row = gl ? gl->rowCount() : 0;
 
-  it = e;
-  int cnt = 0;
-  //TODO: Make this recursive
-  while( it ) {
-    int width = it->rightElement() ? 1 : totalWidth - cnt;
-    int height = it->belowElement() ? 1 : totalHeight;
-    kDebug() << cnt << " " << row << " " << width << " " << totalWidth << " " << totalHeight << endl;
-    mGuiHandler->addElement( l, it->element()->labelWidget(), it->element()->widget(), cnt,row, width, height, it->element()->properties() );
+  addElementRowElement( l, e, totalWidth, totalHeight, 0, row );
+}
 
-    Layout::Element *it2 = it->belowElement();
-    int childRow = row+1;
-    while( it2 ) {
-      height = it2->belowElement() ? 1 : totalHeight - height;
-      mGuiHandler->addElement( l, it2->element()->labelWidget(), it2->element()->widget(), cnt,childRow, width, 1, it2->element()->properties() );
-      it2 = it2->belowElement();
-      childRow++;
-    }
-    it = it->rightElement();
-    cnt++;
-  }
+void Manager::addElementRowElement( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight, int xPosition, int yPosition ) const
+{
+  int width = e->rightElement() ? 1 : totalWidth - xPosition;
+  int height = e->belowElement() ? 1 : totalHeight;
+  kDebug() << xPosition << " " << yPosition << " " << width << " " << totalWidth << " " << totalHeight << endl;
+  mGuiHandler->addElement( l, e->element()->labelWidget(), e->element()->widget(), xPosition,yPosition, width, height, e->element()->properties() );
+
+  if( e->rightElement() )
+    addElementRowElement( l, e->rightElement(), totalWidth, totalHeight, xPosition+1, yPosition );
+  if( e->belowElement() )
+    addElementRowElement( l, e->belowElement(), totalWidth, totalHeight, xPosition, yPosition+1 );
 }
