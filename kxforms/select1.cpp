@@ -52,6 +52,17 @@ Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties 
   applyProperties();
 }
 
+int Select1::space() const
+{
+  if( mProperties->appearance == Full ) {
+    return 10 * mRadioButtons.size();
+  } else if( mProperties->appearance == Compact ) {
+    return 30;
+  } else {
+    return 15;
+  }
+}
+
 void Select1::parseElement( const QDomElement &formElement )
 {
   QDomNode n;

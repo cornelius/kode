@@ -36,6 +36,8 @@ class Section : public GuiElement
     void loadData() {}
     void saveData() {}
 
+    int space() const { return 0; }
+
     QLayout *layout() const { return mLayout; }
 
   private:

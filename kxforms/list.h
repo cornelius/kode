@@ -66,6 +66,8 @@ class List : public GuiElement
     void loadData();
     void saveData();
 
+    int space() const { return 40; }
+
     ItemClass itemClass( const QString &ref );
 
     QStringList itemLabels( const ItemClass &itemClass,

@@ -75,6 +75,8 @@ class GuiElement : public QObject
     virtual void saveData() = 0;
     virtual bool isValid() const { return true; }
 
+    virtual int space() const { return 15; }
+
     Properties *properties() const { return mProperties; }
 
     void setTip( const QString &tip );

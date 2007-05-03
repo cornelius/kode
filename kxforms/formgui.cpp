@@ -148,12 +148,12 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
         bool externalLabel = (e.attribute( "externalLabel" ) == "true" );
         guiElement = new Section( mManager, c.label(), this, properties, externalLabel );
         guiElement->setRef( e.attribute( "ref" ) );
-        parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ) );
+        parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ));
       } else {
         parseElement( e, layout, e.attribute( "overrideLabel" ), &layoutMap[properties->group] );
       }
     } else if ( tag == "attributes" ) {
-      parseElement( e, layout );
+      parseElement( e, layout, QString(), &layoutMap[properties->group] );
     } else {
       kWarning() << "  Unsupported element: " << tag << endl;
       delete properties;

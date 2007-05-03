@@ -40,6 +40,8 @@ class Select1 : public GuiElement
     void loadData();
     void saveData();
 
+    int space() const;
+
     void parseElement( const QDomElement &formElement );
 
   private:

@@ -28,13 +28,12 @@ using namespace KXForms;
 
 int Layout::Element::space() const
 {
-  //TODO:Implement some metric here
-  int space = 20;
+  int space = element()->space();
 
   foreach( GuiElement *e, element()->attributeElements() )
-    space += 20;
+    space += e->space();
 
-  return 20;
+  return space;
 }
 
 int Layout::Element::width() const

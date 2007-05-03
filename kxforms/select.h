@@ -40,6 +40,8 @@ class Select : public GuiElement
     void loadData();
     void saveData();
 
+    int space() const { return 10 * mCheckBoxes.size(); }
+
     void parseElement( const QDomElement &formElement );
 
   private:
