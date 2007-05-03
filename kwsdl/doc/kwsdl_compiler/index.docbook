@@ -320,7 +320,7 @@ void KWSDLTest::googleSearch( GGS__GoogleSearchResult *_return )
   QValueList&lt;GGS__ResultElement*&gt; *list = resultArray->items();
   QValueList&lt;GGS__ResultElement*&gt;::ConstIterator it;
   for ( it = list->begin(); it != list->end(); ++it ) {
-    qDebug( "url=%s", (*it)->uRL()->latin1() );
+    qDebug( "url=%s", (*it)->uRL()->toLatin1() );
   }
 
   delete _return;
