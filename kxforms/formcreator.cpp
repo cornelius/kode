@@ -448,10 +448,11 @@ QList< Reference > FormCreator::collectSubElements( const Schema::Element &eleme
 
   foreach( Schema::Relation r, element.elementRelations() ) {
     Schema::Element subElement = mDocument.element( r );
-    if( subElement.type() == Schema::Node::NormalizedString ||
+    if( (subElement.type() == Schema::Node::NormalizedString ||
         subElement.type() == Schema::Node::Token ||
         subElement.type() == Schema::Node::String ||
-        (subElement.type() == Schema::Node::ComplexType && subElement.mixed() ) ) {
+        (subElement.type() == Schema::Node::ComplexType && subElement.mixed() )) &&
+        r.choice().isEmpty() ) {
       list.append( path + Reference( subElement.name() ) );
     }
     foreach( Reference r, collectSubElements( subElement, path + Reference( subElement.name() ), depth, includeAttributes ) ) {
