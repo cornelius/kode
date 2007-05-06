@@ -26,10 +26,12 @@
 #include "kresult.h"
 #include "guihandler.h"
 #include "dispatcher.h"
+#include "editor/editor.h"
 
 #include <QDomElement>
 
 namespace KXForms {
+
 
 class Manager
 {
@@ -73,6 +75,8 @@ class Manager
     void addElementRowElement( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight, int xPosition, int yPosition ) const;
 
     Dispatcher *dispatcher() const { return mDispatcher; }
+
+    Editor *editor() const { return mEditor; }
   protected:
     void loadData();
 
@@ -89,6 +93,8 @@ class Manager
     QString mSchemaUri;
 
     Dispatcher *mDispatcher;
+
+    Editor *mEditor;
 };
 
 }

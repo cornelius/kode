@@ -34,12 +34,14 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent, Propertie
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
+  mManager->editor()->registerElement( this );
+
   mLabel = new QLabel( label, mParent );
   mEdit = new QTextEdit( mParent );
-  mWidget = mEdit;
 
   mEdit->setMinimumHeight( 40 );
 
+  setWidget( mEdit );
   applyProperties();
 
   connect( mEdit, SIGNAL(textChanged()), SLOT(emitValueChanged()) );

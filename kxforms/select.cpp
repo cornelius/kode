@@ -34,16 +34,20 @@ Select::Select( Manager *m, const QString &label, QWidget *parent, Properties *p
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
-    mLabel = new QLabel( label, parent );
+  mManager->editor()->registerElement( this );
+
+  mLabel = new QLabel( label, parent );
+  QWidget *w;
   if( mProperties->appearance == Full ) {
-    mWidget = new QWidget( parent );
-    mWidget->setLayout( new QVBoxLayout( parent ) );
+    w = new QWidget( parent );
+    w->setLayout( new QVBoxLayout( parent ) );
   } else {
     mListWidget = new QListWidget( parent );
     mListWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    mWidget = mListWidget;
+    w = mListWidget;
   }
 
+  setWidget( w );
   applyProperties();
 }
 

@@ -45,23 +45,25 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
+  mManager->editor()->registerElement( this );
+
   kDebug() << "List() " << label << endl;
-  mWidget = new QWidget( mParent );
+  QWidget *w = new QWidget( mParent );
   mLabel = new QLabel( label );
 
   QBoxLayout *topLayout;
   if ( Prefs::verticalListButtons() ) {
-    topLayout = new QHBoxLayout( mWidget );
+    topLayout = new QHBoxLayout( w );
   } else {
-    topLayout = new QVBoxLayout( mWidget );
+    topLayout = new QVBoxLayout( w );
   }
   topLayout->setMargin( 0 );
 
-  mModel = new ListModel( mWidget );
-  mProxyModel = new ListProxyModel( mWidget );
+  mModel = new ListModel( w );
+  mProxyModel = new ListProxyModel( w );
   mProxyModel->setSourceModel( mModel );
 
-  mView = new QTreeView( mWidget );
+  mView = new QTreeView( w );
   mFilterEdit = new KLineEdit;
   mFilterEdit->setClearButtonShown( true );
   mFilterEdit->hide();
@@ -87,30 +89,30 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
     buttonLayout->addStretch( 1 );
   }
 
-  QPushButton *button = new QPushButton( i18n("New Item..."), mWidget );
+  QPushButton *button = new QPushButton( i18n("New Item..."), w );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( newItem() ) );
 
-  button = new QPushButton( i18n("Delete Selected Item"), mWidget );
+  button = new QPushButton( i18n("Delete Selected Item"), w );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( deleteItem() ) );
 
-  button = new QPushButton( i18n("Edit Item..."), mWidget );
+  button = new QPushButton( i18n("Edit Item..."), w );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( editItem() ) );
 
-  button = new QPushButton( i18n("Move Item Up"), mWidget );
+  button = new QPushButton( i18n("Move Item Up"), w );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveUp() ) );
 
-  button = new QPushButton( i18n("Move Item Down"), mWidget );
+  button = new QPushButton( i18n("Move Item Down"), w );
   buttonLayout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( moveDown() ) );
 
   if ( !Prefs::developerMode() ) {
     mView->hideColumn( 1 );
   }
-
+  setWidget( w );
   applyProperties();
 }
 

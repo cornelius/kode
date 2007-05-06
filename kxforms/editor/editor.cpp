@@ -19,31 +19,31 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "section.h"
+#include "editor.h"
+#include "../guielement.h"
 
-#include "manager.h"
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QGroupBox>
+#include <kdebug.h>
 
 using namespace KXForms;
 
-Section::Section( Manager *m, const QString &label, QWidget *parent, Properties *p, bool externalLabel )
-  : GuiElement( parent, m, p )
+void Editor::registerElement( GuiElement *element )
 {
-  mBox = new QGroupBox( mParent );
-  QWidget *w = mBox;
-
-  if( externalLabel ) {
-    mLabel = new QLabel( label );
-  } else {
-    mBox->setTitle( label );
-  }
-
-  mLayout = mManager->getTopLayout();
-  mBox->setLayout( mLayout );
-
-  setWidget( w );
-  applyProperties();
+  kDebug() << k_funcinfo << "Registered element " << element->ref().toString() << endl;
+  mElements.append( element );
 }
+
+void Editor::setEditMode( bool enabled )
+{
+  kDebug() << k_funcinfo << "Setting editmode to " << enabled << endl;
+  mEditMode = enabled;
+  foreach( GuiElement *e, mElements ) {
+    e->setEditMode( enabled );
+  }
+}
+
+void Editor::toggleEditMode()
+{
+  setEditMode( !mEditMode );
+}
+
+#include "editor.moc"

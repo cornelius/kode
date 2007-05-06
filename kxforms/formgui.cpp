@@ -39,6 +39,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTabWidget>
+#include <QPushButton>
 
 using namespace KXForms;
 
@@ -63,6 +64,11 @@ FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
   f.setPointSize( f.pointSize() - 2 );
   mRefLabel->setFont( f );
   mManager->addWidget( mTopLayout, mRefLabel );
+
+  //TODO: turn this into a KAction
+  mEditButton = new QPushButton( "Toggle Edit Mode", this );
+  connect( mEditButton, SIGNAL(clicked()), mManager->editor(), SLOT(toggleEditMode()) );
+  mManager->addWidget( mTopLayout, mEditButton );
 
   setRefLabel( "[undefined reference]" );
 

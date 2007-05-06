@@ -30,7 +30,9 @@ set(kxforms_SRCS
    dispatcher.cpp
    select.cpp 
    listproxymodel.cpp
-   layout.cpp )
+   layout.cpp
+   editor/editorwidget.cpp
+   editor/editor.cpp )
 
 kde4_automoc(${kxforms_SRCS})
 
@@ -41,7 +43,6 @@ kde4_add_executable(kxforms ${kxforms_SRCS})
 target_link_libraries(kxforms  ${KDE4_KIO_LIBS} kschema ${KDE4_KDE3SUPPORT_LIBS} )
 
 install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
-
 
 ########### next target ###############
 

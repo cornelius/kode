@@ -30,7 +30,9 @@ set(kxformstest_SRCS
    ../dispatcher.cpp
    ../select.cpp 
    ../listproxymodel.cpp
-   ../layout.cpp )
+   ../layout.cpp
+   ../editor/editorwidget.cpp
+   ../editor/editor.cpp )
 
 kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 

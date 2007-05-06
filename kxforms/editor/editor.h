@@ -18,32 +18,33 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
+#ifndef EDITOR_H
+#define EDITOR_H
 
-#include "section.h"
+#include <QObject>
+#include <QList>
 
-#include "manager.h"
+namespace KXForms {
 
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QGroupBox>
+class GuiElement;
 
-using namespace KXForms;
-
-Section::Section( Manager *m, const QString &label, QWidget *parent, Properties *p, bool externalLabel )
-  : GuiElement( parent, m, p )
+class Editor : public QObject
 {
-  mBox = new QGroupBox( mParent );
-  QWidget *w = mBox;
+  Q_OBJECT
+  public:
+    Editor() : mEditMode( false )  {};
 
-  if( externalLabel ) {
-    mLabel = new QLabel( label );
-  } else {
-    mBox->setTitle( label );
-  }
+    void registerElement( GuiElement * );
+    bool editMode() { return mEditMode; }
 
-  mLayout = mManager->getTopLayout();
-  mBox->setLayout( mLayout );
+  public Q_SLOTS:
+    void setEditMode( bool );
+    void toggleEditMode();
 
-  setWidget( w );
-  applyProperties();
+  private:
+    QList< GuiElement *> mElements;
+    bool mEditMode;
+};
+
 }
+#endif

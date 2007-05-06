@@ -22,22 +22,44 @@
 #include "guielement.h"
 #include "manager.h"
 #include "dispatcher.h"
+#include "editor/editorwidget.h"
 
 #include <kdebug.h>
+#include <QStackedWidget>
 
 using namespace KXForms;
 
 GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
-  : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mManager( manager ),
-    mProperties( p )
+  : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mStackedWidget( new QStackedWidget( parent ) ),
+    mEditorWidget( new EditorWidget( parent ) ), mManager( manager ), mProperties( p )
 {
   if( !mProperties )
     mProperties = new Properties;
+
+  mStackedWidget->addWidget( mEditorWidget );
 }
 
 GuiElement::~GuiElement()
 {
   delete mProperties;
+}
+
+void GuiElement::setWidget( QWidget *w )
+{
+  mWidget = w;
+  mStackedWidget->addWidget( w );
+  mStackedWidget->setCurrentWidget( w );
+  mEditorWidget->setBuddyWidget( w );
+}
+
+void GuiElement::setEditMode( bool enabled )
+{
+  if( enabled ) {
+    mEditorWidget->takeSnapshot();
+    mStackedWidget->setCurrentWidget( mEditorWidget );
+   }
+  else
+    mStackedWidget->setCurrentWidget( mWidget );
 }
 
 void GuiElement::setRef( const Reference &ref )

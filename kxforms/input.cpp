@@ -37,22 +37,25 @@ Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
+  mManager->editor()->registerElement( this );
+
   mLabel = new QLabel( label, mParent );
+  QWidget *w;
   if( mProperties->type == "xs:integer" ) {
     mSpinBox = new QSpinBox( mParent );
-    mWidget = mSpinBox;
+    w = mSpinBox;
     connect( mSpinBox, SIGNAL( valueChanged(int) ), SLOT( emitValueChanged() ) );
   } else if( mProperties->type == "xs:boolean" ) {
     mCheckBox = new QCheckBox( mParent );
-    mWidget = mCheckBox;
+    w = mCheckBox;
     connect( mCheckBox, SIGNAL( stateChanged(int) ), SLOT( emitValueChanged() ) );
   } else {
     mLineEdit = new KLineEdit( mParent );
-    mWidget = mLineEdit;
+    w = mLineEdit;
     connect( mLineEdit, SIGNAL( textChanged(QString) ), SLOT( emitValueChanged() ) );
     connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
   }
-
+  setWidget( w );
 
   applyProperties();
 }

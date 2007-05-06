@@ -27,10 +27,12 @@
 #include <QDomElement>
 #include <QLabel>
 #include <QMap>
+#include <QStackedWidget>
 
 namespace KXForms {
 
 class Manager;
+class EditorWidget;
 
 class GuiElement : public QObject
 {
@@ -68,7 +70,7 @@ class GuiElement : public QObject
     void loadData( const QDomElement &context );
     void save();
 
-    virtual QWidget *widget() const { return mWidget; }
+    virtual QWidget *widget() const { return mStackedWidget; }
     virtual QWidget *labelWidget() const { return mLabel; }
 
     virtual void loadData() = 0;
@@ -89,14 +91,18 @@ class GuiElement : public QObject
   public slots:
     void slotValueChanged( const QString &, const QString & );
     void setRelevant( bool );
+    void setEditMode( bool );
 
   protected:
     virtual void applyProperties();
+    virtual void setWidget( QWidget * );
 
   protected:
     QWidget *mParent;
     QLabel *mLabel;
     QWidget *mWidget;
+    QStackedWidget *mStackedWidget;
+    EditorWidget *mEditorWidget;
     Manager *mManager;
     Properties *mProperties;
     GuiElement::List mAttributeElements;

@@ -19,31 +19,22 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "section.h"
+#include "editorwidget.h"
 
-#include "manager.h"
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QGroupBox>
+#include <kdebug.h>
+#include <kpixmapeffect.h>
 
 using namespace KXForms;
 
-Section::Section( Manager *m, const QString &label, QWidget *parent, Properties *p, bool externalLabel )
-  : GuiElement( parent, m, p )
+void EditorWidget::setBuddyWidget( QWidget *w )
 {
-  mBox = new QGroupBox( mParent );
-  QWidget *w = mBox;
-
-  if( externalLabel ) {
-    mLabel = new QLabel( label );
-  } else {
-    mBox->setTitle( label );
-  }
-
-  mLayout = mManager->getTopLayout();
-  mBox->setLayout( mLayout );
-
-  setWidget( w );
-  applyProperties();
+  mBuddyWidget = w;
 }
+
+void EditorWidget::takeSnapshot()
+{
+  QPixmap p = QPixmap::grabWidget( mBuddyWidget );
+  setPixmap( KPixmapEffect::fade( p, 0.2, Qt::black ) );
+}
+
+#include "editorwidget.moc"

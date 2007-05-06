@@ -29,7 +29,8 @@
 using namespace KXForms;
 
 Manager::Manager()
-  : mGuiHandler( 0 ), mDataLoaded( false ), mDispatcher( new Dispatcher() )
+  : mGuiHandler( 0 ), mDataLoaded( false ), mDispatcher( new Dispatcher() ), 
+    mEditor( new Editor() )
 {
 }
 
@@ -39,6 +40,7 @@ Manager::~Manager()
 
   delete mGuiHandler;
   delete mDispatcher;
+  delete mEditor;
 }
 
 void Manager::setGuiHandler( GuiHandler *handler )

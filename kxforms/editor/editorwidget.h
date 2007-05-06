@@ -18,32 +18,25 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-
-#include "section.h"
-
-#include "manager.h"
+#ifndef EDITORWIDGET_H
+#define EDITORWIDGET_H
 
 #include <QLabel>
-#include <QVBoxLayout>
-#include <QGroupBox>
 
-using namespace KXForms;
+namespace KXForms {
 
-Section::Section( Manager *m, const QString &label, QWidget *parent, Properties *p, bool externalLabel )
-  : GuiElement( parent, m, p )
+class EditorWidget : public QLabel
 {
-  mBox = new QGroupBox( mParent );
-  QWidget *w = mBox;
+  Q_OBJECT
+  public:
+    EditorWidget( QWidget *parent = 0 ) : QLabel( parent ) {};
 
-  if( externalLabel ) {
-    mLabel = new QLabel( label );
-  } else {
-    mBox->setTitle( label );
-  }
+    void setBuddyWidget( QWidget *w );
+    void takeSnapshot();
 
-  mLayout = mManager->getTopLayout();
-  mBox->setLayout( mLayout );
+  private:
+    QWidget *mBuddyWidget;
+};
 
-  setWidget( w );
-  applyProperties();
 }
+#endif

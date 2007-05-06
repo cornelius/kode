@@ -31,6 +31,7 @@
 class QLayout;
 class QLabel;
 class QTabWidget;
+class QPushButton;
 
 namespace KXForms {
 
@@ -81,6 +82,8 @@ class FormGui : public QWidget
 
     QLabel *mLabel;
     QLabel *mRefLabel;
+
+    QPushButton *mEditButton;
 
     QTabWidget *mTabWidget;
     QMap< QString, QLayout *> mTabs;

@@ -36,19 +36,23 @@ Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties 
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
-    mLabel = new QLabel( label, parent );
+  mManager->editor()->registerElement( this );
+
+  mLabel = new QLabel( label, parent );
+  QWidget *w;
   if( mProperties->appearance == Full ) {
-    mWidget = new QWidget( parent );
-    mWidget->setLayout( new QVBoxLayout( parent ) );
+    w = new QWidget( parent );
+    w->setLayout( new QVBoxLayout( parent ) );
   } else if( mProperties->appearance == Compact ) {
     mListWidget = new QListWidget( parent );
     mListWidget->setSelectionMode( QAbstractItemView::SingleSelection );
-    mWidget = mListWidget;
+    w = mListWidget;
   } else {
     mComboBox = new QComboBox( parent );
-    mWidget = mComboBox;
+    w = mComboBox;
   }
 
+  setWidget( w );
   applyProperties();
 }
 
