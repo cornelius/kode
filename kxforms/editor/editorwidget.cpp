@@ -20,6 +20,7 @@
 */
 
 #include "editorwidget.h"
+#incldue "editor"
 
 #include <kdebug.h>
 #include <kpixmapeffect.h>
@@ -36,5 +37,16 @@ void EditorWidget::takeSnapshot()
   QPixmap p = QPixmap::grabWidget( mBuddyWidget );
   setPixmap( KPixmapEffect::fade( p, 0.2, Qt::black ) );
 }
+
+void EditorWidget::enterEvent ( QEvent * event )
+{
+
+}
+
+void EditorWidget::leaveEvent ( QEvent * event )
+{
+
+}
+
 
 #include "editorwidget.moc"

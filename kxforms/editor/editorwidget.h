@@ -25,17 +25,28 @@
 
 namespace KXForms {
 
+class Editor;
+class GuiElement;
+
 class EditorWidget : public QLabel
 {
   Q_OBJECT
   public:
-    EditorWidget( QWidget *parent = 0 ) : QLabel( parent ) {};
+    EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent = 0 )
+     : QLabel( parent ), mEditor( e ), mElement( guiElem ) {};
 
     void setBuddyWidget( QWidget *w );
     void takeSnapshot();
 
+    GuiElement *element() const { return mElement; }
+
+    virtual void QWidget::enterEvent ( QEvent * event );
+    virtual void QWidget::leaveEvent ( QEvent * event );
+
   private:
+    Editor *mEditor;
     QWidget *mBuddyWidget;
+    GuiElement *mElement;
 };
 
 }
