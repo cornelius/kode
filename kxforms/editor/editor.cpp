@@ -57,10 +57,16 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
 
   KAction *titleAction = new KAction( i18n("Change Title"), menu );
+  titleAction->setData( "edit_title" );
   QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
   menu->addAction( titleAction );
 
   return menu;
+}
+
+void Editor::performAction( const QString &actionId, EditorWidget *w )
+{
+  kDebug() << "Performing action " << actionId << endl;
 }
 
 #include "editor.moc"

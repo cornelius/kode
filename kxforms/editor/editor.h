@@ -47,6 +47,8 @@ class Editor : public QObject
 
     KActionMenu *actionMenu( EditorWidget *w );
 
+    void performAction( const QString &actionId, EditorWidget *w );
+
   public Q_SLOTS:
     void setEditMode( bool );
     void toggleEditMode();

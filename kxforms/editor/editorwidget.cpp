@@ -51,6 +51,7 @@ void EditorWidget::takeSnapshot()
 
 void EditorWidget::enterEvent ( QEvent * event )
 {
+  Q_UNUSED( event );
   if( !mEditor->inEdit() ) {
     mMenuTimer->start( 1000 );
   }
@@ -61,22 +62,28 @@ void EditorWidget::enterEvent ( QEvent * event )
 
 void EditorWidget::leaveEvent ( QEvent * event )
 {
-    mMenuTimer->stop();
+  Q_UNUSED( event );
+  mMenuTimer->stop();
 }
 
 void EditorWidget::showEditMenu()
 {
-    KActionMenu *menu = mEditor->actionMenu( this );
+  KActionMenu *menu = mEditor->actionMenu( this );
 
-    if( !menu )
-      return;
+  if( !menu )
+    return;
 
-    connect( menu->menu(), SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
-    menu->menu()->popup( mapToGlobal( pos() ) );
+  connect( menu->menu(), SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
+  menu->menu()->popup( mapToGlobal( pos() ) );
 }
 
 void EditorWidget::actionTriggered()
 {
+  QAction *action = dynamic_cast<QAction *>( sender() );
+  if( !action )
+    return;
+
+  mEditor->performAction( action->data().toString(), this );
 }
 
 #include "editorwidget.moc"
