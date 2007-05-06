@@ -127,7 +127,7 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
   QString s;
   QTextStream stream( &s );
   element.save( stream, 0 );
-  qDebug() << s;
+  kDebug() << s << endl;
   QDomNode n;
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();

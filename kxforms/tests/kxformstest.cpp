@@ -25,7 +25,7 @@
 #include <kxml_compiler/parserxsd.h>
 
 #include <QFile>
-#include <QDebug>
+#include <kdebug.h>
 
 void KXFormsTest::initTestCase()
 {
@@ -56,7 +56,7 @@ void KXFormsTest::initTestCase()
   KXForms::FormCreator creator;
   creator.mergeHints( mHints );
   QString form = creator.create( doc );
-  qDebug() << form;
+  kDebug() << form << endl;
   if( !mDoc.setContent( form ) ) {
     QFAIL( "The generated kxforms-document is malformed" );
     return;

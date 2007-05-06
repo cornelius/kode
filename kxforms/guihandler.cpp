@@ -135,9 +135,9 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
 
     gl->setColumnStretch( (2*x)+1, 1 );
     if( label ) {
-//       qDebug() << "Adding label at: (" << y << "," << 2*x << ")";
+//       kDebug() << "Adding label at: (" << y << "," << 2*x << ")" << endl;
       gl->addWidget( label, y, (2*x), height, 1, Qt::AlignRight | Qt::AlignTop );
-//       qDebug() << "Adding widget at: (" << y << "," << (2*x)+1 << ") (" << height << "," << (2*width)-1  << ")";
+//       kDebug() << "Adding widget at: (" << y << "," << (2*x)+1 << ") (" << height << "," << (2*width)-1  << ")" << endl;
       if( indented ) {
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addSpacing( 40 );
@@ -164,9 +164,9 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
 
     gl->setColumnStretch( x, 1 );
     if( label ) {
-//       qDebug() << "Adding label at: (" << 2*y << "," << x << ")";
+//       kDebug() << "Adding label at: (" << 2*y << "," << x << ")" << endl;
       gl->addWidget( label, 2*y, x, 1, width, Qt::AlignLeft | Qt::AlignTop );
-//       qDebug() << "Adding widget at: (" << (2*y)+1 << "," << x << ") (" << (2*height)-1 << "," << width  << ")";
+//       kDebug() << "Adding widget at: (" << (2*y)+1 << "," << x << ") (" << (2*height)-1 << "," << width  << ")" << endl;
       if( indented ) {
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addSpacing( 40 );

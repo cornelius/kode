@@ -23,7 +23,7 @@
 
 #include <common/qname.h>
 
-#include <QDebug>
+#include <kdebug.h>
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -95,7 +95,7 @@ Hints::Hints()
 
 bool Hints::parseFile( QFile &file )
 {
-  qDebug() << "---Hints::parseFile() " << file.fileName();
+  kDebug() << "---Hints::parseFile() " << file.fileName() << endl;
 
   QDomDocument doc;
   doc.setContent( &file );
@@ -105,7 +105,7 @@ bool Hints::parseFile( QFile &file )
 
 bool Hints::parseString( const QString &data )
 {
-  qDebug() << "---Hints::parseString() ";
+  kDebug() << "---Hints::parseString() " << endl;
 
   QDomDocument doc;
   doc.setContent( data );
@@ -122,22 +122,22 @@ bool Hints::parse( const QDomDocument &doc )
     parseHint( e );
   }
 
-  qDebug() << "---Hints::parse() done";
+  kDebug() << "---Hints::parse() done" << endl;
 
   return true;
 }
 
 void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
 {
-//  qDebug() << "Hints::parseHint()" << element.tagName() << refPrefix;
+//  kDebug() << "Hints::parseHint()" << element.tagName() << refPrefix << endl;
 
   Reference ref( element.attribute( "ref" ) );
 
-//  qDebug() << "  REF:" << ref;
+//  kDebug() << "  REF:" << ref << endl;
 
   if ( ref.isEmpty() ) ref = refPrefix;
   if ( ref.isEmpty() ) {
-    qDebug() << "Error: No reference attribute in hint tag.";
+    kDebug() << "Error: No reference attribute in hint tag." << endl;
     return;
   }
   if ( !refPrefix.isEmpty() && ref.isRelative() ) {
@@ -146,7 +146,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
   
   Hint hint( ref );
 
-//  qDebug() << "Hints::parseHint()" << ref;
+//  kDebug() << "Hints::parseHint()" << ref << endl;
 
   QDomNode n;
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
@@ -197,7 +197,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
     } else if (name.localName() == "listShowHeader" ) {
       hint.setValue( Hint::ListShowHeader, contentAsString( e ) );
     } else {
-      qDebug() << "Unknown hint type: " << name.localName();
+      kDebug() << "Unknown hint type: " << name.localName() << endl;
     }
   }
 
@@ -280,9 +280,9 @@ void Hints::insertHint( const Hint &hint )
 
 void Hints::dump() const
 {
-  qDebug() << "---Hints::dump()";
+  kDebug() << "---Hints::dump()" << endl;
   foreach( Hint h, mHints ) {
-    qDebug() << "HINT:" << h.ref().toString();
+    kDebug() << "HINT:" << h.ref().toString();
   }
-  qDebug() << "---Hints::dump() done";
+  kDebug() << "---Hints::dump() done" << endl << endl;
 }

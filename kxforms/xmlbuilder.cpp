@@ -21,7 +21,7 @@
 
 #include "xmlbuilder.h"
 
-#include <QDebug>
+#include <kdebug.h>
 
 XmlBuilder::Node::Node( const QString &text )
   : mText( text ), mXml( 0 )

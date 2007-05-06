@@ -40,7 +40,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QLabel>
-#include <QDebug>
+#include <kdebug.h>
 
 using namespace KXForms;
 
@@ -298,7 +298,7 @@ void MainWindow::slotGetFormResult( bool ok )
 
 void MainWindow::parseForm( const QString &data )
 {
-  qDebug() << data;
+  kDebug() << data << endl;
   if ( !mFormsManager.parseForms( data ) ) {
     KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.",
         mFormFile->url().prettyUrl() ) );

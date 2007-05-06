@@ -260,7 +260,7 @@ Reference &Reference::operator=( const char *str )
 
 bool Reference::matches( const Reference &ref, bool exact, bool pathOnly ) const
 {
-//   qDebug() << "Looking for " << ref.toString() << " in " << toString();
+//   kDebug() << "Looking for " << ref.toString() << " in " << toString() << endl;
   if( ref.segments().count() > mSegments.count() )
     return false;
 
@@ -270,8 +270,8 @@ bool Reference::matches( const Reference &ref, bool exact, bool pathOnly ) const
   Segment::List::ConstIterator it2 = list2.begin();
 
   while( it != mSegments.end() && it2 != list2.end() ) {
-//     qDebug() << "Matching: " << (*it).name() << ":" << (*it).isAttribute() << ":" << (*it).count();
-//     qDebug() << "With:     " << (*it2).name() << ":" << (*it2).isAttribute() << ":" << (*it2).count();
+//     kDebug() << "Matching: " << (*it).name() << ":" << (*it).isAttribute() << ":" << (*it).count() << endl;
+//     kDebug() << "With:     " << (*it2).name() << ":" << (*it2).isAttribute() << ":" << (*it2).count() << endl;
     bool segmentsMatched = false;
     segmentsMatched = ((*it).name() == ( (*it2).name()) && ((*it).isAttribute() == (*it2).isAttribute()) );
 

@@ -39,7 +39,6 @@
 
 #include <QDir>
 #include <QByteArray>
-#include <QDebug>
 
 #include <iostream>
 
@@ -97,7 +96,7 @@ int main(int argc, char **argv)
     hints.parseFile( ughFile );
 
     foreach( KXForms::Hint h, hints.hints() ) {
-      qDebug() << "Hint" << h.ref() << h.label();
+      kDebug() << "Hint" << h.ref() << h.label() << endl;
     }
   }
 

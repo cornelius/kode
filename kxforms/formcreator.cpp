@@ -23,7 +23,7 @@
 
 #include "xmlbuilder.h"
 
-#include <QDebug>
+#include <kdebug.h>
 
 using namespace KXForms;
 
@@ -33,7 +33,7 @@ FormCreator::FormCreator()
 
 QString FormCreator::create( const Schema::Document &schemaDocument )
 {
-  qDebug() << "---FormCreator::create()";
+  kDebug() << "---FormCreator::create()" << endl;
 
   mDocument = schemaDocument;
 
@@ -49,7 +49,7 @@ QString FormCreator::create( const Schema::Document &schemaDocument )
     }
   }
 
-  qDebug() << "---FormCreator::create() done";
+  kDebug() << "---FormCreator::create() done" << endl;
 
   return xml.print();
 }
@@ -58,7 +58,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 {
   if ( mCollapsedForms.contains( element.name() ) ) return;
 
-  qDebug() << "ELEMENT" << element.name();
+  kDebug() << "ELEMENT" << element.name() << endl;
   XmlBuilder *form = xml->tag( "form" )->attribute( "ref", element.name() );
 
   form->tag( "xf:label", humanizeString( element.name() ) );
@@ -89,7 +89,7 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
 
-    qDebug() << "  ATTRIBUTE: " << a.identifier();
+    kDebug() << "  ATTRIBUTE: " << a.identifier() << endl;
 
     if ( a.type() == Schema::Attribute::String ) {
       XmlBuilder *input = attributes->tag( "xf:input" );
@@ -111,7 +111,7 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
         item->tag( "xf:value", value );
       }
     } else {
-      qDebug() << "Unsupported type: " << a.type();
+      kDebug() << "Unsupported type: " << a.type() << endl;
     }
   }
 }
@@ -132,7 +132,7 @@ void FormCreator::parseElement( const Schema::Element &element, XmlBuilder *xml 
   } else if ( element.type() == Schema::Node::ComplexType ) {
     parseComplexType( element, xml, true, Reference() );
   } else {
-    qDebug() << "Unsupported type: " << element.type();
+    kDebug() << "Unsupported type: " << element.type() << endl;
   }
 }
 
@@ -142,9 +142,9 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
   XmlBuilder *section;
 
-  qDebug() << path.segments().size();
-  qDebug() << path.toString();
-  qDebug() << element.name();
+  kDebug() << path.segments().size() << endl;
+  kDebug() << path.toString() << endl;
+  kDebug() << element.name() << endl;
   if( !topLevel && 
       !element.mixed() && 
       !choiceOnly( element )) {
@@ -188,8 +188,8 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   }
   else {
     foreach( Schema::Relation r, element.elementRelations() ) {
-      qDebug() << "  CHILD ELEMENT" << r.target();
-      qDebug() << "    CHOICE" << r.choice();
+      kDebug() << "  CHILD ELEMENT" << r.target() << endl;
+      kDebug() << "    CHOICE" << r.choice() << endl;
       if ( r.isList()) {
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
@@ -479,7 +479,7 @@ QList< Reference > FormCreator::collectSubElements( const Schema::Element &eleme
 QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
   bool pluralize )
 {
-//  qDebug() << "GETLABEL: " << ref;
+//  kDebug() << "GETLABEL: " << ref << endl;
 
   QString label;
 
@@ -495,7 +495,7 @@ QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
 void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
 {
   Hint hint = mHints.hint( ref );
-  qDebug() << ref.toString();
+  kDebug() << ref.toString() << endl;
   if( !hint.isValid() )
     return;
 
