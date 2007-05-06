@@ -59,8 +59,7 @@ int Layout::Element::height() const
     const Layout::Element *it2 = it;
     while( it2 ) {
       h++;
-      foreach( GuiElement *e, it2->element()->attributeElements() )
-        h++;
+      h += it2->element()->attributeElements().size();
       it2 = it2->belowElement();
     }
     height = qMax( height, h );
