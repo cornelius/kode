@@ -31,7 +31,7 @@ using namespace KXForms;
 
 GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
   : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mStackedWidget( new QStackedWidget( parent ) ),
-    mEditorWidget( new EditorWidget( manager->editor(), parent ) ), mManager( manager ), mProperties( p )
+    mEditorWidget( new EditorWidget( this, manager->editor(), parent ) ), mManager( manager ), mProperties( p )
 {
   if( !mProperties )
     mProperties = new Properties;

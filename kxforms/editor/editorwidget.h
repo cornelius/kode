@@ -40,9 +40,6 @@ class EditorWidget : public QLabel
 
     GuiElement *element() const { return mElement; }
 
-    virtual void QWidget::enterEvent ( QEvent * event );
-    virtual void QWidget::leaveEvent ( QEvent * event );
-
   private:
     Editor *mEditor;
     QWidget *mBuddyWidget;
