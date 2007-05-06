@@ -24,18 +24,28 @@
 #include <QObject>
 #include <QList>
 
+class KActionMenu;
+
 namespace KXForms {
 
 class GuiElement;
+class EditorWidget;
 
 class Editor : public QObject
 {
   Q_OBJECT
   public:
-    Editor() : mEditMode( false )  {};
+    Editor() : mEditMode( false ), mInEdit( false )  {};
 
     void registerElement( GuiElement * );
     bool editMode() { return mEditMode; }
+
+    void beginEdit() { mInEdit = true; }
+    void finishEdit() { mInEdit = false; }
+
+    bool inEdit() { return mInEdit; }
+
+    KActionMenu *actionMenu( EditorWidget *w );
 
   public Q_SLOTS:
     void setEditMode( bool );
@@ -44,6 +54,7 @@ class Editor : public QObject
   private:
     QList< GuiElement *> mElements;
     bool mEditMode;
+    bool mInEdit;
 };
 
 }

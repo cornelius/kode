@@ -24,8 +24,19 @@
 
 #include <kdebug.h>
 #include <kpixmapeffect.h>
+#include <kactionmenu.h>
+#include <kmenu.h>
+
+#include <QTimer>
 
 using namespace KXForms;
+
+EditorWidget::EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent )
+  : QLabel( parent ), mEditor( e ), mElement( guiElem )
+{
+  mMenuTimer = new QTimer( this );
+  connect( mMenuTimer, SIGNAL(timeout()), SLOT(showEditMenu()) );
+}
 
 void EditorWidget::setBuddyWidget( QWidget *w )
 {
@@ -38,5 +49,34 @@ void EditorWidget::takeSnapshot()
   setPixmap( KPixmapEffect::fade( p, 0.2, Qt::black ) );
 }
 
+void EditorWidget::enterEvent ( QEvent * event )
+{
+  if( !mEditor->inEdit() ) {
+    mMenuTimer->start( 1000 );
+  }
+  else {
+    
+  }
+}
+
+void EditorWidget::leaveEvent ( QEvent * event )
+{
+    mMenuTimer->stop();
+}
+
+void EditorWidget::showEditMenu()
+{
+    KActionMenu *menu = mEditor->actionMenu( this );
+
+    if( !menu )
+      return;
+
+    connect( menu->menu(), SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
+    menu->menu()->popup( mapToGlobal( pos() ) );
+}
+
+void EditorWidget::actionTriggered()
+{
+}
 
 #include "editorwidget.moc"

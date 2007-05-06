@@ -23,6 +23,8 @@
 
 #include <QLabel>
 
+class QTimer;
+
 namespace KXForms {
 
 class Editor;
@@ -32,18 +34,28 @@ class EditorWidget : public QLabel
 {
   Q_OBJECT
   public:
-    EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent = 0 )
-     : QLabel( parent ), mEditor( e ), mElement( guiElem ) {};
+    EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent = 0 );
 
     void setBuddyWidget( QWidget *w );
     void takeSnapshot();
 
     GuiElement *element() const { return mElement; }
 
+    virtual void enterEvent ( QEvent * event );
+    virtual void leaveEvent ( QEvent * event );
+
+  public Q_SLOTS:
+    void actionTriggered();
+
+  private Q_SLOTS:
+    void showEditMenu();
+
   private:
     Editor *mEditor;
     QWidget *mBuddyWidget;
     GuiElement *mElement;
+
+    QTimer *mMenuTimer;
 };
 
 }

@@ -20,9 +20,13 @@
 */
 
 #include "editor.h"
+#include "editorwidget.h"
 #include "../guielement.h"
 
+#include <kactionmenu.h>
 #include <kdebug.h>
+#include <klocale.h>
+#include <kmenu.h>
 
 using namespace KXForms;
 
@@ -44,6 +48,19 @@ void Editor::setEditMode( bool enabled )
 void Editor::toggleEditMode()
 {
   setEditMode( !mEditMode );
+}
+
+KActionMenu *Editor::actionMenu( EditorWidget *w )
+{
+  KActionMenu *menu = new KActionMenu( this );
+
+  menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
+
+  KAction *titleAction = new KAction( i18n("Change Title"), menu );
+  QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+  menu->addAction( titleAction );
+
+  return menu;
 }
 
 #include "editor.moc"
