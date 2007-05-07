@@ -50,8 +50,13 @@ void AppearanceAction::perform( EditorWidget *w )
   bool ok;
   QStringList list;
   list << "minimal" << "compact" << "full";
+
+  int currentPosition = 0;
+  if( w->element()->properties() )
+     currentPosition = w->element()->properties()->appearance - 1;
+
   newStyle = KInputDialog::getItem( i18n("Select the appearance style"), i18n("Appearance style for %1:", w->element()->ref().toString()),
-      list, 0, false, &ok );
+      list, currentPosition, false, &ok );
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Style: " << newStyle << endl;

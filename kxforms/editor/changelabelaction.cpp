@@ -30,6 +30,8 @@
 #include <kdebug.h>
 #include <klocale.h>
 
+#include <QLabel>
+
 using namespace KXForms;
 
 ChangeLabelAction::ChangeLabelAction( Editor *e)
@@ -48,8 +50,14 @@ void ChangeLabelAction::perform( EditorWidget *w )
 
   QString newLabel;
   bool ok;
+
+  QString currentLabel;
+  QLabel *labelWidget = dynamic_cast<QLabel *>( w->element()->labelWidget() );
+  if( labelWidget )
+    currentLabel = labelWidget->text();
+
   newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1:", w->element()->ref().toString()),
-      QString(), &ok );
+      currentLabel, &ok );
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
