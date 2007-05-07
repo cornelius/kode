@@ -54,6 +54,9 @@ void ChangeLabelAction::perform( EditorWidget *w )
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+    h.setRef( w->element()->ref() );
+    h.setValue( Hint::Label, newLabel );
+    emit hintGenerated( h );
   }
 
   editor()->finishEdit();
