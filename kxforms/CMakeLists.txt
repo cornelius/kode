@@ -32,7 +32,8 @@ set(kxforms_SRCS
    listproxymodel.cpp
    layout.cpp
    editor/editorwidget.cpp
-   editor/editor.cpp )
+   editor/editor.cpp 
+   editor/editoraction.cpp )
 
 kde4_automoc(${kxforms_SRCS})
 

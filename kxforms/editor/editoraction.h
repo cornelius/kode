@@ -18,44 +18,31 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef EDITORWIDGET_H
-#define EDITORWIDGET_H
+#ifndef EDITORACTION_H
+#define EDITORACTION_H
 
-#include <QLabel>
-
-class QTimer;
+#include <QObject>
 
 namespace KXForms {
 
+class EditorWidget;
+class Hint;
 class Editor;
-class GuiElement;
 
-class EditorWidget : public QLabel
+class EditorAction : public QObject
 {
   Q_OBJECT
   public:
-    EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent = 0 );
+    EditorAction( Editor *e );
+    virtual ~EditorAction();
 
-    void setBuddyWidget( QWidget *w );
-    void takeSnapshot();
+    virtual void perform( EditorWidget *w ) = 0;
 
-    GuiElement *element() const { return mElement; }
-
-    virtual void enterEvent ( QEvent * event );
-    virtual void leaveEvent ( QEvent * event );
-
-  public Q_SLOTS:
-    void actionTriggered();
-
-  private Q_SLOTS:
-    void showEditMenu();
+  Q_SIGNALS:
+    void hintGenerated( const Hint &hint );
 
   private:
     Editor *mEditor;
-    QWidget *mBuddyWidget;
-    GuiElement *mElement;
-
-    QTimer *mMenuTimer;
 };
 
 }
