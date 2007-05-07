@@ -89,6 +89,15 @@ QList<QDomElement> Hint::elements( Type type)
   return mElements[type];
 }
 
+void Hint::merge( const Hint &h )
+{
+  QMap<Type, QString> values = h.values();
+  QMap<Type, QString>::iterator it;
+  for( it = values.begin(); it != values.end(); ++it ) {
+    setValue( it.key(), it.value() );
+  }
+}
+
 Hints::Hints()
 {
 }
@@ -282,7 +291,7 @@ void Hints::dump() const
 {
   kDebug() << "---Hints::dump()" << endl;
   foreach( Hint h, mHints ) {
-    kDebug() << "HINT:" << h.ref().toString();
+    kDebug() << "HINT:" << h.ref().toString() << endl;
   }
   kDebug() << "---Hints::dump() done" << endl << endl;
 }

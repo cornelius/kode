@@ -55,9 +55,12 @@ class Hint
     void addElement( Type, const QDomElement );
     QList<QDomElement> elements( Type );
 
+    void merge( const Hint & h );
+
     void setEnumValue( const QString &value, const QString &replacement );
     QString enumValue( const QString &value ) const;
 
+    QMap<Type, QString> values() const { return mValues; }
   private:
     Reference mRef;
     QMap<Type, QString> mValues;
