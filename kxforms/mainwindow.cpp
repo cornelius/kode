@@ -238,12 +238,14 @@ void MainWindow::parseSchema()
 //  schemaHints.dump();
 
   creator.setHints( schemaHints );
+  mFormsManager.setHints( schemaHints );
 
   if ( mHintsFile->isLoaded() ) {
     KXForms::Hints hints;
     hints.parseString( mHintsFile->data() );
 //    hints.dump();
     creator.mergeHints( hints );
+    mFormsManager.setHints( hints );
   }
 
   creator.hints().dump();

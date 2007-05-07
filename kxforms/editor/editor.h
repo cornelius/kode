@@ -43,16 +43,19 @@ class Editor : public QObject
     ~Editor();
 
     void registerElement( GuiElement * );
-    bool editMode() { return mEditMode; }
+    bool editMode() const { return mEditMode; }
 
     void beginEdit() { mInEdit = true; }
     void finishEdit() { mInEdit = false; }
 
-    bool inEdit() { return mInEdit; }
+    bool inEdit() const { return mInEdit; }
 
     KActionMenu *actionMenu( EditorWidget *w );
 
     void performAction( const QString &actionId, EditorWidget *w );
+
+    void setHints( const Hints &h ) { mHints.merge( h ); }
+    Hints hints() const { return mHints; }
 
   public Q_SLOTS:
     void setEditMode( bool );

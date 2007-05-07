@@ -77,6 +77,9 @@ class Manager
     Dispatcher *dispatcher() const { return mDispatcher; }
 
     Editor *editor() const { return mEditor; }
+
+    void setHints( const Hints &h ) { mEditor->setHints( h ); }
+
   protected:
     void loadData();
 
