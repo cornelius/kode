@@ -32,7 +32,7 @@
 using namespace KXForms;
 
 EditorWidget::EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent )
-  : QLabel( parent ), mEditor( e ), mElement( guiElem )
+  : QLabel( parent ), mEditor( e ), mElement( guiElem ), mActionTypes( CommonActions )
 {
   mMenuTimer = new QTimer( this );
   connect( mMenuTimer, SIGNAL(timeout()), SLOT(showEditMenu()) );

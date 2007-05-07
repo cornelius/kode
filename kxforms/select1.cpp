@@ -21,6 +21,7 @@
 
 #include "select1.h"
 #include "manager.h"
+#include "editor/editorwidget.h"
 
 #include <kdebug.h>
 
@@ -37,6 +38,8 @@ Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties 
 {
   mManager->dispatcher()->registerElement( this );
   mManager->editor()->registerElement( this );
+
+  mEditorWidget->setActionTypes( EditorWidget::CommonActions | EditorWidget::AppearanceActions );
 
   mLabel = new QLabel( label, parent );
   QWidget *w;

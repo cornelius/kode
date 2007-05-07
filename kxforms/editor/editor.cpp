@@ -82,10 +82,12 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
 
   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
 
-  KAction *titleAction = new KAction( i18n("Change Label"), menu );
-  titleAction->setData( "edit_label" );
-  QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-  menu->addAction( titleAction );
+  if( w->actionTypes() & EditorWidget::CommonActions ) {
+    KAction *titleAction = new KAction( i18n("Change Label"), menu );
+    titleAction->setData( "edit_label" );
+    QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+    menu->addAction( titleAction );
+  }
 
   return menu;
 }

@@ -34,6 +34,13 @@ class EditorWidget : public QLabel
 {
   Q_OBJECT
   public:
+    enum ActionType{
+      CommonActions = 0x1,
+      ListActions = 0x2,
+      AppearanceActions = 0x4
+    };
+    Q_DECLARE_FLAGS(ActionTypes, ActionType)
+
     EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent = 0 );
 
     void setBuddyWidget( QWidget *w );
@@ -43,6 +50,9 @@ class EditorWidget : public QLabel
 
     virtual void enterEvent ( QEvent * event );
     virtual void leaveEvent ( QEvent * event );
+
+    void setActionTypes( ActionTypes t ) { mActionTypes = t; }
+    ActionTypes actionTypes() const { return mActionTypes; }
 
   public Q_SLOTS:
     void actionTriggered();
@@ -56,7 +66,11 @@ class EditorWidget : public QLabel
     GuiElement *mElement;
 
     QTimer *mMenuTimer;
+
+    ActionTypes mActionTypes;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(EditorWidget::ActionTypes)
 
 }
 #endif

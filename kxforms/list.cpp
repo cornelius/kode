@@ -24,6 +24,7 @@
 #include "listmodel.h"
 #include "listproxymodel.h"
 #include "prefs.h"
+#include "editor/editorwidget.h"
 
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -46,6 +47,8 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
 {
   mManager->dispatcher()->registerElement( this );
   mManager->editor()->registerElement( this );
+
+  mEditorWidget->setActionTypes( EditorWidget::CommonActions | EditorWidget::ListActions );
 
   kDebug() << "List() " << label << endl;
   QWidget *w = new QWidget( mParent );
