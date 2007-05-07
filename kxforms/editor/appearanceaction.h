@@ -18,48 +18,25 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
+#ifndef APPEARANCEACTION_H
+#define APPEARANCEACTION_H
 
-#include "changelabelaction.h"
+#include "editoraction.h"
 
-#include "editor.h"
-#include "editorwidget.h"
-#include "../hints.h"
-#include "../guielement.h"
+namespace KXForms {
 
-#include <kinputdialog.h>
-#include <kdebug.h>
-#include <klocale.h>
-
-using namespace KXForms;
-
-ChangeLabelAction::ChangeLabelAction( Editor *e)
-: EditorAction( e )
+class AppearanceAction : public EditorAction
 {
+  Q_OBJECT
+  public:
+    AppearanceAction( Editor *e );
+    ~AppearanceAction();
+
+    void perform( EditorWidget *w );
+
+  Q_SIGNALS:
+    void hintGenerated( const Hint &hint );
+};
+
 }
-
-ChangeLabelAction::~ChangeLabelAction()
-{
-}
-
-void ChangeLabelAction::perform( EditorWidget *w )
-{
-  kDebug() << k_funcinfo << endl;
-  editor()->beginEdit();
-
-  QString newLabel;
-  bool ok;
-  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1:", w->element()->ref().toString()),
-      QString(), &ok );
-
-  if( ok ) {
-    kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
-    Hint h;
-    h.setRef( w->element()->ref() );
-    h.setValue( Hint::Label, newLabel );
-    emit hintGenerated( h );
-  }
-
-  editor()->finishEdit();
-}
-
-#include "changelabelaction.moc"
+#endif

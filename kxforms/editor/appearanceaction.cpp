@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "changelabelaction.h"
+#include "appearanceaction.h"
 
 #include "editor.h"
 #include "editorwidget.h"
@@ -32,34 +32,36 @@
 
 using namespace KXForms;
 
-ChangeLabelAction::ChangeLabelAction( Editor *e)
+AppearanceAction::AppearanceAction( Editor *e)
 : EditorAction( e )
 {
 }
 
-ChangeLabelAction::~ChangeLabelAction()
+AppearanceAction::~AppearanceAction()
 {
 }
 
-void ChangeLabelAction::perform( EditorWidget *w )
+void AppearanceAction::perform( EditorWidget *w )
 {
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
-  QString newLabel;
+  QString newStyle;
   bool ok;
-  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1:", w->element()->ref().toString()),
-      QString(), &ok );
+  QStringList list;
+  list << "minimal" << "compact" << "full";
+  newStyle = KInputDialog::getItem( i18n("Select the appearance style"), i18n("Appearance style for %1:", w->element()->ref().toString()),
+      list, 0, false, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+    kDebug() << k_funcinfo << "New Style: " << newStyle << endl;
     Hint h;
     h.setRef( w->element()->ref() );
-    h.setValue( Hint::Label, newLabel );
+    h.setValue( Hint::Appearance, newStyle );
     emit hintGenerated( h );
   }
 
   editor()->finishEdit();
 }
 
-#include "changelabelaction.moc"
+#include "appearanceaction.moc"

@@ -23,6 +23,7 @@
 #include "editorwidget.h"
 #include "editoraction.h"
 #include "changelabelaction.h"
+#include "appearanceaction.h"
 
 #include "../guielement.h"
 
@@ -54,6 +55,11 @@ void Editor::setupActions()
   connect( a, SIGNAL(hintGenerated( const Hint & )), 
       SLOT(applyHint( const Hint & )) );
   mActions[ "edit_label" ] = a;
+
+  a = new AppearanceAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_appearance" ] = a;
 }
 
 void Editor::registerElement( GuiElement *element )
@@ -85,6 +91,13 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
   if( w->actionTypes() & EditorWidget::CommonActions ) {
     KAction *titleAction = new KAction( i18n("Change Label"), menu );
     titleAction->setData( "edit_label" );
+    QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+    menu->addAction( titleAction );
+  }
+
+  if( w->actionTypes() & EditorWidget::AppearanceActions ) {
+    KAction *titleAction = new KAction( i18n("Change Appearance"), menu );
+    titleAction->setData( "edit_appearance" );
     QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
     menu->addAction( titleAction );
   }

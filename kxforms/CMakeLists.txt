@@ -33,7 +33,8 @@ set(kxforms_SRCS
    layout.cpp
    editor/editorwidget.cpp
    editor/editor.cpp 
-   editor/editoraction.cpp 
+   editor/editoraction.cpp
+   editor/appearanceaction.cpp 
    editor/changelabelaction.cpp )
 
 kde4_automoc(${kxforms_SRCS})
