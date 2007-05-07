@@ -21,9 +21,10 @@
 
 #include "editor.h"
 #include "editorwidget.h"
-#include "../guielement.h"
 #include "editoraction.h"
 #include "changelabelaction.h"
+
+#include "../guielement.h"
 
 #include <kactionmenu.h>
 #include <kdebug.h>
@@ -47,7 +48,12 @@ Editor::~Editor()
 
 void Editor::setupActions()
 {
-  mActions[ "edit_label" ] = new ChangeLabelAction( this );
+  EditorAction *a;
+
+  a = new ChangeLabelAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_label" ] = a;
 }
 
 void Editor::registerElement( GuiElement *element )
@@ -86,13 +92,26 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
 
 void Editor::performAction( const QString &actionId, EditorWidget *w )
 {
-  kDebug() << "Performing action " << actionId << endl;
+  kDebug() << k_funcinfo << "Performing action " << actionId << endl;
 
   EditorAction *a = mActions[ actionId ];
   if( !a )
     return;
 
   a->perform( w );
+}
+
+void Editor::applyHint( const Hint &h )
+{
+  kDebug() << k_funcinfo << endl;
+  mHints.dump();
+
+  if( mHints.hint( h.ref() ).isValid() )
+    mHints.hint( h.ref() ).merge( h );
+  else
+    mHints.insertHint( h );
+
+  mHints.dump();
 }
 
 #include "editor.moc"

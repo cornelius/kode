@@ -26,8 +26,8 @@
 namespace KXForms {
 
 class EditorWidget;
-class Hint;
 class Editor;
+class Hint;
 
 class EditorAction : public QObject
 {
@@ -39,6 +39,7 @@ class EditorAction : public QObject
     virtual void perform( EditorWidget *w ) = 0;
 
     Editor *editor() const { return mEditor; }
+
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );
 

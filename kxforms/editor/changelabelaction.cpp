@@ -46,7 +46,6 @@ void ChangeLabelAction::perform( EditorWidget *w )
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
-  Hint h;
   QString newLabel;
   bool ok;
   newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1", w->element()->ref().toString()),
@@ -54,6 +53,7 @@ void ChangeLabelAction::perform( EditorWidget *w )
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+    Hint h;
     h.setRef( w->element()->ref() );
     h.setValue( Hint::Label, newLabel );
     emit hintGenerated( h );

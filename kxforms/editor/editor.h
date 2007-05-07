@@ -21,6 +21,8 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
+#include "../hints.h"
+
 #include <QObject>
 #include <QList>
 #include <QMap>
@@ -56,6 +58,9 @@ class Editor : public QObject
     void setEditMode( bool );
     void toggleEditMode();
 
+  private Q_SLOTS:
+    void applyHint( const Hint &h );
+
   private:
     void setupActions();
 
@@ -64,6 +69,8 @@ class Editor : public QObject
     QMap< QString, EditorAction * > mActions;
     bool mEditMode;
     bool mInEdit;
+
+    Hints mHints;
 };
 
 }
