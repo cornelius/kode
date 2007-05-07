@@ -24,6 +24,7 @@
 #include "editoraction.h"
 #include "changelabelaction.h"
 #include "appearanceaction.h"
+#include "listaction.h"
 
 #include "../guielement.h"
 
@@ -60,6 +61,11 @@ void Editor::setupActions()
   connect( a, SIGNAL(hintGenerated( const Hint & )), 
       SLOT(applyHint( const Hint & )) );
   mActions[ "edit_appearance" ] = a;
+
+  a = new ListAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_list" ] = a;
 }
 
 void Editor::registerElement( GuiElement *element )
@@ -96,10 +102,17 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
   }
 
   if( w->actionTypes() & EditorWidget::AppearanceActions ) {
-    KAction *titleAction = new KAction( i18n("Change Appearance"), menu );
-    titleAction->setData( "edit_appearance" );
-    QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( titleAction );
+    KAction *appearanceAction = new KAction( i18n("Change Appearance"), menu );
+    appearanceAction->setData( "edit_appearance" );
+    QObject::connect( appearanceAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+    menu->addAction( appearanceAction );
+  }
+
+  if( w->actionTypes() & EditorWidget::ListActions ) {
+    KAction *listAction = new KAction( i18n("Change List Properties"), menu );
+    listAction->setData( "edit_list" );
+    QObject::connect( listAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+    menu->addAction( listAction );
   }
 
   return menu;
