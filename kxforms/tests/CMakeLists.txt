@@ -33,7 +33,8 @@ set(kxformstest_SRCS
    ../layout.cpp
    ../editor/editorwidget.cpp
    ../editor/editor.cpp 
-   ../editor/editoraction.cpp )
+   ../editor/editoraction.cpp 
+   ../editor/changelabelaction.cpp )
 
 kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 

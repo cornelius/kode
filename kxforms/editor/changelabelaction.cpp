@@ -18,33 +18,44 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef EDITORACTION_H
-#define EDITORACTION_H
 
-#include <QObject>
+#include "changelabelaction.h"
 
-namespace KXForms {
+#include "editor.h"
+#include "editorwidget.h"
+#include "../hints.h"
 
-class EditorWidget;
-class Hint;
-class Editor;
+#include <kinputdialog.h>
+#include <kdebug.h>
+#include <klocale.h>
 
-class EditorAction : public QObject
+using namespace KXForms;
+
+ChangeLabelAction::ChangeLabelAction( Editor *e)
+: EditorAction( e )
 {
-  Q_OBJECT
-  public:
-    EditorAction( Editor *e );
-    virtual ~EditorAction();
-
-    virtual void perform( EditorWidget *w ) = 0;
-
-    Editor *editor() const { return mEditor; }
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
-
-  private:
-    Editor *mEditor;
-};
-
 }
-#endif
+
+ChangeLabelAction::~ChangeLabelAction()
+{
+}
+
+void ChangeLabelAction::perform( EditorWidget *w )
+{
+  kDebug() << k_funcinfo << endl;
+  editor()->beginEdit();
+
+  Hint h;
+  QString newLabel;
+  bool ok;
+  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label"),
+      QString(), &ok );
+
+  if( !ok )
+    return;
+  kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+
+  editor()->finishEdit();
+}
+
+#include "changelabelaction.moc"

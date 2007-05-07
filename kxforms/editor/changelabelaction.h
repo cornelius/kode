@@ -18,32 +18,24 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef EDITORACTION_H
-#define EDITORACTION_H
+#ifndef CHANGELABELACTION_H
+#define CHANGELABELACTION_H
 
-#include <QObject>
+#include "editoraction.h"
 
 namespace KXForms {
 
-class EditorWidget;
-class Hint;
-class Editor;
-
-class EditorAction : public QObject
+class ChangeLabelAction : public EditorAction
 {
   Q_OBJECT
   public:
-    EditorAction( Editor *e );
-    virtual ~EditorAction();
+    ChangeLabelAction( Editor *e );
+    ~ChangeLabelAction();
 
-    virtual void perform( EditorWidget *w ) = 0;
+    void perform( EditorWidget *w );
 
-    Editor *editor() const { return mEditor; }
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );
-
-  private:
-    Editor *mEditor;
 };
 
 }
