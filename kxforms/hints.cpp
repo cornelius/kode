@@ -213,6 +213,16 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
   mHints[ ref.toString() ] = hint;
 }
 
+void Hints::merge( const Hints &hints )
+{
+  foreach( Hint h, hints.hints() ) {
+    if( mHints[ h.ref().toString() ].isValid() )
+      mHints[ h.ref().toString() ].merge( h );
+    else
+      mHints[ h.ref().toString() ] = h;
+  }
+}
+
 // TODO: Share with snippet from TextArea::loadData()
 QString Hints::contentAsString( const QDomElement &element )
 {
