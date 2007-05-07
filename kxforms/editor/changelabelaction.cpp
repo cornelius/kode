@@ -24,6 +24,7 @@
 #include "editor.h"
 #include "editorwidget.h"
 #include "../hints.h"
+#include "../guielement.h"
 
 #include <kinputdialog.h>
 #include <kdebug.h>
@@ -48,12 +49,12 @@ void ChangeLabelAction::perform( EditorWidget *w )
   Hint h;
   QString newLabel;
   bool ok;
-  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label"),
+  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1", w->element()->ref().toString()),
       QString(), &ok );
 
-  if( !ok )
-    return;
-  kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+  if( ok ) {
+    kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+  }
 
   editor()->finishEdit();
 }

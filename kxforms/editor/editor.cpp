@@ -22,6 +22,8 @@
 #include "editor.h"
 #include "editorwidget.h"
 #include "../guielement.h"
+#include "editoraction.h"
+#include "changelabelaction.h"
 
 #include <kactionmenu.h>
 #include <kdebug.h>
@@ -29,6 +31,24 @@
 #include <kmenu.h>
 
 using namespace KXForms;
+
+Editor::Editor()
+: mEditMode( false ), mInEdit( false )
+{
+  setupActions();
+}
+
+Editor::~Editor()
+{
+  foreach( EditorAction *a, mActions.values() ) {
+    delete a;
+  }
+}
+
+void Editor::setupActions()
+{
+  mActions[ "edit_label" ] = new ChangeLabelAction( this );
+}
 
 void Editor::registerElement( GuiElement *element )
 {
@@ -56,8 +76,8 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
 
   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
 
-  KAction *titleAction = new KAction( i18n("Change Title"), menu );
-  titleAction->setData( "edit_title" );
+  KAction *titleAction = new KAction( i18n("Change Label"), menu );
+  titleAction->setData( "edit_label" );
   QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
   menu->addAction( titleAction );
 
@@ -67,6 +87,12 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
 void Editor::performAction( const QString &actionId, EditorWidget *w )
 {
   kDebug() << "Performing action " << actionId << endl;
+
+  EditorAction *a = mActions[ actionId ];
+  if( !a )
+    return;
+
+  a->perform( w );
 }
 
 #include "editor.moc"

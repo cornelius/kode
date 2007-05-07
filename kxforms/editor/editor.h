@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QMap>
 
 class KActionMenu;
 
@@ -30,12 +31,14 @@ namespace KXForms {
 
 class GuiElement;
 class EditorWidget;
+class EditorAction;
 
 class Editor : public QObject
 {
   Q_OBJECT
   public:
-    Editor() : mEditMode( false ), mInEdit( false )  {};
+    Editor();
+    ~Editor();
 
     void registerElement( GuiElement * );
     bool editMode() { return mEditMode; }
@@ -54,7 +57,11 @@ class Editor : public QObject
     void toggleEditMode();
 
   private:
+    void setupActions();
+
+  private:
     QList< GuiElement *> mElements;
+    QMap< QString, EditorAction * > mActions;
     bool mEditMode;
     bool mInEdit;
 };
