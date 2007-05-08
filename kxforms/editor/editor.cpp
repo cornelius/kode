@@ -182,10 +182,7 @@ EditorWidget *Editor::selectWidget()
   mChosenEditorWidget = 0;
   mEventLoop->exec();
 
-  if( mChosenEditorWidget )
-    return mChosenEditorWidget;
-  else
-    return 0;
+  return mChosenEditorWidget;
 }
 
 #include "editor.moc"
