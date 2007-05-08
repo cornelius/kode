@@ -25,6 +25,7 @@
 #include "changelabelaction.h"
 #include "appearanceaction.h"
 #include "listaction.h"
+#include "positionaction.h"
 
 #include "../guielement.h"
 
@@ -33,10 +34,13 @@
 #include <klocale.h>
 #include <kmenu.h>
 
+#include <QEvent>
+#include <QEventLoop>
+
 using namespace KXForms;
 
 Editor::Editor()
-: mEditMode( false ), mInEdit( false )
+: mEventLoop( new QEventLoop( this ) ), mEditMode( false ), mInEdit( false )
 {
   setupActions();
 }
@@ -66,11 +70,17 @@ void Editor::setupActions()
   connect( a, SIGNAL(hintGenerated( const Hint & )), 
       SLOT(applyHint( const Hint & )) );
   mActions[ "edit_list" ] = a;
+
+  a = new PositionAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_position" ] = a;
 }
 
 void Editor::registerElement( GuiElement *element )
 {
   kDebug() << k_funcinfo << "Registered element " << element->ref().toString() << endl;
+  element->editorWidget()->installEventFilter( this );
   mElements.append( element );
 }
 
@@ -99,6 +109,12 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
     titleAction->setData( "edit_label" );
     QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
     menu->addAction( titleAction );
+
+
+    KAction *positionAction = new KAction( i18n("Change Position"), menu );
+    positionAction->setData( "edit_position" );
+    QObject::connect( positionAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+    menu->addAction( positionAction );
   }
 
   if( w->actionTypes() & EditorWidget::AppearanceActions ) {
@@ -140,6 +156,36 @@ void Editor::applyHint( const Hint &h )
     mHints.insertHint( h );
 
   mHints.dump();
+}
+
+bool Editor::eventFilter( QObject *obj, QEvent *e )
+{
+  if (e->type() == QEvent::MouseButtonRelease) {
+    EditorWidget *w = dynamic_cast<EditorWidget *>( obj );
+    if( !w )
+      return false;
+
+    mChosenEditorWidget = w;
+    if( mEventLoop->isRunning() ) {
+      mEventLoop->exit();
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+EditorWidget *Editor::selectWidget()
+{
+  kDebug() << k_funcinfo << endl;
+
+  mChosenEditorWidget = 0;
+  mEventLoop->exec();
+
+  if( mChosenEditorWidget )
+    return mChosenEditorWidget;
+  else
+    return 0;
 }
 
 #include "editor.moc"

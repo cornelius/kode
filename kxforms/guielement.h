@@ -72,6 +72,7 @@ class GuiElement : public QObject
 
     virtual QWidget *widget() const { return mStackedWidget; }
     virtual QWidget *labelWidget() const { return mLabel; }
+    virtual EditorWidget *editorWidget() const { return mEditorWidget; }
 
     virtual void loadData() = 0;
     virtual void saveData() = 0;

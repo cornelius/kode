@@ -28,6 +28,7 @@
 #include <QMap>
 
 class KActionMenu;
+class QEventLoop;
 
 namespace KXForms {
 
@@ -61,6 +62,11 @@ class Editor : public QObject
     void setEditMode( bool );
     void toggleEditMode();
 
+    EditorWidget *selectWidget();
+
+  protected:
+    bool eventFilter( QObject *obj, QEvent *e );
+
   private Q_SLOTS:
     void applyHint( const Hint &h );
 
@@ -70,8 +76,11 @@ class Editor : public QObject
   private:
     QList< GuiElement *> mElements;
     QMap< QString, EditorAction * > mActions;
+    QEventLoop *mEventLoop;
     bool mEditMode;
     bool mInEdit;
+
+    EditorWidget *mChosenEditorWidget;
 
     Hints mHints;
 };
