@@ -45,7 +45,7 @@ class DateInputField : public SimpleInputField
     virtual QWidget *createWidget( QWidget *parent );
 
   private slots:
-    void inputChanged( QDate );
+    void inputChanged( const QDate & );
 
   private:
     KDatePicker *mInputWidget;

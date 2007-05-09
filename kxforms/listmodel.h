@@ -85,7 +85,7 @@ class ListModel : public QAbstractListModel
     void setLabel( const QString & );
     QString label() const;
 
-    void setHeaders( QStringList headers );
+    void setHeaders( const QStringList &headers );
 
     void clear();
 

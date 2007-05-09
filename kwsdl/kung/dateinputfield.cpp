@@ -72,7 +72,7 @@ QWidget *DateInputField::createWidget( QWidget *parent )
   return mInputWidget;
 }
 
-void DateInputField::inputChanged( QDate date )
+void DateInputField::inputChanged( const QDate &date )
 {
   mValue = date;
 

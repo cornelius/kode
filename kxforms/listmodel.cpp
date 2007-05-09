@@ -304,7 +304,7 @@ QString ListModel::label() const
   return mLabel;
 }
 
-void ListModel::setHeaders( QStringList headers )
+void ListModel::setHeaders( const QStringList &headers )
 {
   QList<QVariant> data;
   foreach( QString s, headers )
