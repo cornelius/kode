@@ -371,7 +371,7 @@ void FormCreator::mergeHints( const Hints &hints )
 
 void FormCreator::createLabel( XmlBuilder *parent, const Schema::Node &node )
 {
-  parent->tag( "xf:label", getLabel( Reference( node.identifier() ), node.name() ) );
+  parent->tag( "xf:label", getLabel( Reference( node.ref() ), node.name() ) );
 }
 
 QString FormCreator::createListHeader( const Reference &r )
@@ -479,7 +479,7 @@ QList< Reference > FormCreator::collectSubElements( const Schema::Element &eleme
 QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
   bool pluralize )
 {
-//  kDebug() << "GETLABEL: " << ref << endl;
+//   kDebug() << k_funcinfo << ref.toString() << endl;
 
   QString label;
 
@@ -495,7 +495,7 @@ QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
 void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
 {
   Hint hint = mHints.hint( ref );
-  kDebug() << ref.toString() << endl;
+//   kDebug() << ref.toString() << endl;
   if( !hint.isValid() )
     return;
 
