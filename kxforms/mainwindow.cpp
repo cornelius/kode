@@ -40,7 +40,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QLabel>
-#include <kdebug.h>
 
 using namespace KXForms;
 

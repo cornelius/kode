@@ -34,7 +34,6 @@
 #include <QFrame>
 #include <QStackedWidget>
 #include <QPushButton>
-#include <kdebug.h>
 
 using namespace KXForms;
 

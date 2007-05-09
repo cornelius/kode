@@ -28,7 +28,6 @@
 
 #include <kmessagebox.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kinputdialog.h>
 #include <kdebug.h>
 #include <kdialog.h>
