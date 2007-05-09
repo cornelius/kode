@@ -85,6 +85,7 @@ class Hints
     void extractHints( const Schema::Document & );
 
     void merge( const Hints &h );
+    void merge( const Hint &h );
 
     void dump() const;
 

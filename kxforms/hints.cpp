@@ -55,6 +55,9 @@ Reference Hint::ref() const
 
 void Hint::setValue( Type key, const QString &value )
 {
+  if( mValues.contains( key ) ) {
+    mValues.remove( key );
+  }
   mValues[key] = value;
 }
 
@@ -216,11 +219,16 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
 void Hints::merge( const Hints &hints )
 {
   foreach( Hint h, hints.hints() ) {
-    if( mHints[ h.ref().toString() ].isValid() )
-      mHints[ h.ref().toString() ].merge( h );
-    else
-      mHints[ h.ref().toString() ] = h;
+    merge( h );
   }
+}
+
+void Hints::merge( const Hint &hint )
+{
+  if( mHints.contains( hint.ref().toString() ) )
+    mHints[hint.ref().toString()].merge( hint );
+  else
+    insertHint( hint );
 }
 
 // TODO: Share with snippet from TextArea::loadData()

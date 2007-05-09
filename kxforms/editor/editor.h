@@ -55,8 +55,11 @@ class Editor : public QObject
 
     void performAction( const QString &actionId, EditorWidget *w );
 
-    void setHints( const Hints &h ) { mHints.merge( h ); }
+    void addHints( const Hints &h ) { mHints.merge( h ); }
     Hints hints() const { return mHints; }
+
+  Q_SIGNALS:
+    void hintsChanged( const Hints &h );
 
   public Q_SLOTS:
     void setEditMode( bool );

@@ -78,8 +78,6 @@ class Manager
 
     Editor *editor() const { return mEditor; }
 
-    void setHints( const Hints &h ) { mEditor->setHints( h ); }
-
   protected:
     void loadData();
 

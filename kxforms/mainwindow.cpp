@@ -25,6 +25,7 @@
 #include "guihandlerdialogs.h"
 #include "remotefile.h"
 #include "formcreator.h"
+#include "editor/editor.h"
 
 #include <kxml_compiler/schema.h>
 #include <kxml_compiler/parserxsd.h>
@@ -79,6 +80,9 @@ MainWindow::MainWindow()
     SLOT( slotGetDataResult( bool ) ) );
   connect( mDataFile, SIGNAL( resultGet( bool ) ),
     SLOT( slotPutDataResult( bool ) ) );
+
+  connect( mFormsManager.editor(), SIGNAL( hintsChanged(const Hints &) ),
+    SLOT( refresh(const Hints &) ) );
 }
 
 MainWindow::~MainWindow()
@@ -237,14 +241,14 @@ void MainWindow::parseSchema()
 //  schemaHints.dump();
 
   creator.setHints( schemaHints );
-  mFormsManager.setHints( schemaHints );
+  mFormsManager.editor()->addHints( schemaHints );
 
   if ( mHintsFile->isLoaded() ) {
     KXForms::Hints hints;
     hints.parseString( mHintsFile->data() );
 //    hints.dump();
     creator.mergeHints( hints );
-    mFormsManager.setHints( hints );
+    mFormsManager.editor()->addHints( hints );
   }
 
   creator.hints().dump();
@@ -336,6 +340,24 @@ void MainWindow::slotPutDataResult( bool ok )
   if ( !ok ) {
     return;
   }
+}
+
+void MainWindow::refresh( const Hints &h )
+{
+  kDebug() << k_funcinfo << endl;
+
+  RNG::ParserXsd parser;
+  parser.setVerbose( true );
+  Schema::Document schemaDocument = parser.parse( mSchemaFile->data() );
+
+  KXForms::FormCreator creator;
+  creator.setHints( h );
+
+  h.dump( true );
+
+  QString form = creator.create( schemaDocument );
+
+  parseForm( form );
 }
 
 #include "mainwindow.moc"

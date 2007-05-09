@@ -18,8 +18,8 @@
   <hint ref="arch">
     <label>Architecture</label>
   </hint>
-  <hint ref="userid">
-    <label>User Id</label>
+  <hint ref="@name">
+    <label>Name :)</label>
   </hint>
   <hint ref="@status">
     <enum value="inprogress">In Progress</enum>

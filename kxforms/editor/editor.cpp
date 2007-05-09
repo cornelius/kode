@@ -148,14 +148,14 @@ void Editor::performAction( const QString &actionId, EditorWidget *w )
 void Editor::applyHint( const Hint &h )
 {
   kDebug() << k_funcinfo << endl;
-  mHints.dump();
 
-  if( mHints.hint( h.ref() ).isValid() )
-    mHints.hint( h.ref() ).merge( h );
-  else
-    mHints.insertHint( h );
+  mHints.dump( true );
+  mHints.merge( h );
+  mHints.dump( true );
 
-  mHints.dump();
+  mElements.clear();
+  mEditMode = false;
+  emit hintsChanged( mHints );
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *e )

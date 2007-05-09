@@ -29,6 +29,11 @@
 class QLabel;
 class KUpdate;
 class RemoteFile;
+namespace KXForms {
+  class Hints;
+}
+
+using namespace KXForms;
 
 /**
  * This class serves as the main window for MainWindow.  It handles the
@@ -68,6 +73,8 @@ class MainWindow : public KXmlGuiWindow
     void slotPutDataResult( bool ok );
 
     bool save();
+
+    void refresh( const Hints &h );
 
   private slots:
     void fileNew();
