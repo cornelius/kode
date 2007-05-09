@@ -34,7 +34,6 @@
 #include <kcmdlineargs.h>
 #include <kglobal.h>
 #include <kconfig.h>
-#include <kconfig.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 
