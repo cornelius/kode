@@ -239,7 +239,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
               n.save( stream, 0 );
             }
             item->tag( "itemlabel", s );
-            listItemType = QString::null;
+            listItemType.clear();
             headers.append( createListHeader( e.attribute( "ref" ) ) );
           }
         } else {
@@ -248,7 +248,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
               listElement.type() == Schema::Node::String ||
               (listElement.type() == Schema::Node::ComplexType && listElement.mixed() ) ) {
             item->tag( "itemlabel", createListItemLabel( Reference( "." ), path, listItemType ) );
-            listItemType = QString::null;
+            listItemType.clear();
             headers.append( createListHeader( r.target() ) );
           } else {
             int subElementCnt = 0;
@@ -278,7 +278,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
             foreach( Reference r, subElements ) {
               item->tag( "itemlabel", createListItemLabel( r, path, listItemType) );
-              listItemType = QString::null;
+              listItemType.clear();
               headers.append( createListHeader( r.lastSegment().name() ) );
             }
           }

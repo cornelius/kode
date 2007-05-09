@@ -127,7 +127,7 @@ class KResult
       Create error KResult object of given error type and optional detailed error
       message.
     */
-    KResult( ErrorType, const QString &details = QString::null );
+    KResult( ErrorType, const QString &details = QString() );
 
     /**
       Destruct KResult object.

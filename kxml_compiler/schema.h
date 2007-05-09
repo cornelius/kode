@@ -54,7 +54,7 @@ class KSCHEMA_EXPORT Relation
     void setChoice( const QString & );
     QString choice() const;
 
-    QString asString( const QString &type = QString::null ) const;
+    QString asString( const QString &type = QString() ) const;
 
   private:
     QString mTarget;

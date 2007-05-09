@@ -47,7 +47,7 @@ class FormGui : public QWidget
 
     FormGui( const QString &label, Manager *, QWidget *parent );
 
-    void parseElement( const QDomElement &, QLayout *l = 0, const QString &overrideLabel = QString::null, Layout *overrideGroup = 0 );
+    void parseElement( const QDomElement &, QLayout *l = 0, const QString &overrideLabel = QString(), Layout *overrideGroup = 0 );
 
     void setRef( const Reference &ref );
     Reference ref() const;

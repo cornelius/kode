@@ -167,7 +167,7 @@ void MainWindow::fileNew()
 
 void MainWindow::fileOpen()
 {
-  KUrl url = KFileDialog::getOpenUrl( KUrl(), QString::null, this,
+  KUrl url = KFileDialog::getOpenUrl( KUrl(), QString(), this,
     i18n("Open XML File") );
 
   if ( !url.isEmpty() ) {
