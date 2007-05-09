@@ -353,7 +353,7 @@ void MainWindow::refresh( const Hints &h )
   KXForms::FormCreator creator;
   creator.setHints( h );
 
-  h.dump( true );
+  h.dump();
 
   QString form = creator.create( schemaDocument );
 

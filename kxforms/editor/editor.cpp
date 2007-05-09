@@ -149,9 +149,9 @@ void Editor::applyHint( const Hint &h )
 {
   kDebug() << k_funcinfo << endl;
 
-  mHints.dump( true );
+  mHints.dump();
   mHints.merge( h );
-  mHints.dump( true );
+  mHints.dump();
 
   mElements.clear();
   mEditMode = false;
