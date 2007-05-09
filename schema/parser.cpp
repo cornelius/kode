@@ -847,7 +847,7 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
   QDir dir( location );
 
   if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
-    schemaLocation = context->documentBaseUrl() + "/" + location;
+    schemaLocation = context->documentBaseUrl() + '/' + location;
 
   qDebug( "including schema at %s", qPrintable( schemaLocation ) );
 
