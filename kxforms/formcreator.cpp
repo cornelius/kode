@@ -88,23 +88,27 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
   XmlBuilder *attributes = xml->tag( "attributes" );
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
+    QString ref = a.ref();
+    if( !ref.startsWith( "@" ) )
+      ref.prepend( '@' );
+    ref = (path + Reference( ref )).toString();
 
     kDebug() << "  ATTRIBUTE: " << a.identifier() << endl;
 
     if ( a.type() == Schema::Attribute::String ) {
       XmlBuilder *input = attributes->tag( "xf:input" );
-      input->attribute( "ref", (path + Reference( a.ref() )).toString() );
+      input->attribute( "ref", ref );
       createLabel( input, a );
       applyCommonHints( input, path + Reference( a.ref() ) );
     } else if ( a.type() == Schema::Attribute::Enumeration ) {
       XmlBuilder *select1 = attributes->tag( "xf:select1" );
-      select1->attribute( "ref", (path + Reference( a.ref() )).toString() );
+      select1->attribute( "ref", ref );
       createLabel( select1, a );
       applyCommonHints( select1, path + Reference( a.ref() ) );
       foreach( QString value, a.enumerationValues() ) {
         XmlBuilder *item = select1->tag( "xf:item" );
         QString itemLabel;
-        Hint hint = mHints.hint( Reference( element.identifier() + '/' + a.ref() ) );
+        Hint hint = mHints.hint( ref );
         if ( hint.isValid() ) itemLabel = hint.enumValue( value );
         if ( itemLabel.isEmpty() ) itemLabel = humanizeString( value );
         item->tag( "xf:label", itemLabel );
