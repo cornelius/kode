@@ -70,15 +70,14 @@ void PositionAction::perform( EditorWidget *w )
     return;
   }
 
-
   Hint h;
   h.setRef( w->element()->ref() );
-  QDomElement e;
-  e.setTagName( position );
-  e.setNodeValue( chosenWidget->element()->ref().toString() );
+  QDomDocument doc;
+  QDomElement e = doc.createElement( position );
+  QDomNode child = doc.createTextNode( chosenWidget->element()->ref().toString() );
+  e.appendChild( child );
   h.addElement( Hint::Position, e );
   emit hintGenerated( h );
-
 
   editor()->finishEdit();
 }
