@@ -329,11 +329,7 @@ Relation::List Element::elementRelations() const
 
 void Element::addAttributeRelation( const Relation &r )
 {
-  Relation ar = r;
-  if( !ar.target().startsWith( "@" ) )
-    ar.setTarget( "@" + ar.target() );
-
-  mAttributeRelations.append( ar );
+  mAttributeRelations.append( r );
 }
 
 Relation::List Element::attributeRelations() const
