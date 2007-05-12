@@ -12,7 +12,7 @@ kde4_automoc(${testfeatures_SRCS})
 
 kde4_add_executable(testfeatures ${testfeatures_SRCS})
 
-target_link_libraries(testfeatures  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(testfeatures  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
 ########### next target ###############
 
@@ -23,7 +23,7 @@ kde4_automoc(${testholidays_SRCS})
 
 kde4_add_executable(testholidays ${testholidays_SRCS})
 
-target_link_libraries(testholidays  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(testholidays  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
 
 ########### next target ###############

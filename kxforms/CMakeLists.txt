@@ -58,7 +58,7 @@ kde4_automoc(${testreferences_SRCS})
 
 kde4_add_executable(testreferences ${testreferences_SRCS})
 
-target_link_libraries(testreferences  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(testreferences  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
 endif(KDE4_BUILD_TESTS)
 
