@@ -197,6 +197,8 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       hint.setValue( Hint::GroupReference, contentAsString( e ) );
     } else if (name.localName() == "appearance" ) {
       hint.setValue( Hint::Appearance, contentAsString( e ) );
+    } else if (name.localName() == "layoutstyle" ) {
+      hint.setValue( Hint::LayoutStyle, contentAsString( e ) );
     } else if (name.localName() == "position" ) {
       QDomNode child = n.firstChild();
       while( !child.isNull() ) {

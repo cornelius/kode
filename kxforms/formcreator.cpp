@@ -514,6 +514,11 @@ void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
     layout->tag( "appearance", hint.value( Hint::Appearance ) );
   }
 
+  if( hint.hasValue( Hint::LayoutStyle ) ) {
+    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
+    layout->tag( "layoutstyle", hint.value( Hint::LayoutStyle ) );
+  }
+
   if( hint.elements( Hint::Position ).size() > 0 ) {
     if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
     QList<QDomElement> positions = hint.elements( Hint::Position );
