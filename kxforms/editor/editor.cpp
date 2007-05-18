@@ -26,6 +26,7 @@
 #include "appearanceaction.h"
 #include "listaction.h"
 #include "positionaction.h"
+#include "layoutstyleaction.h"
 
 #include "../guielement.h"
 
@@ -75,6 +76,11 @@ void Editor::setupActions()
   connect( a, SIGNAL(hintGenerated( const Hint & )), 
       SLOT(applyHint( const Hint & )) );
   mActions[ "edit_position" ] = a;
+
+  a = new LayoutStyleAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_layoutstyle" ] = a;
 }
 
 void Editor::registerElement( GuiElement *element )
@@ -115,6 +121,12 @@ KActionMenu *Editor::actionMenu( EditorWidget *w )
     positionAction->setData( "edit_position" );
     QObject::connect( positionAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
     menu->addAction( positionAction );
+
+
+    KAction *layoutStyleAction = new KAction( i18n("Change Layout Style"), menu );
+    layoutStyleAction->setData( "edit_layoutstyle" );
+    QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
+    menu->addAction( layoutStyleAction );
   }
 
   if( w->actionTypes() & EditorWidget::AppearanceActions ) {

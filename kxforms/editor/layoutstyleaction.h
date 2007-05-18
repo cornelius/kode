@@ -18,19 +18,19 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-#ifndef POSITIONACTION_H
-#define POSITIONACTION_H
+#ifndef LAYOUTSTYLEACTION_H
+#define LAYOUTSTYLEACTION_H
 
 #include "editoraction.h"
 
 namespace KXForms {
 
-class PositionAction : public EditorAction
+class LayoutStyleAction : public EditorAction
 {
   Q_OBJECT
   public:
-    PositionAction( Editor *e );
-    ~PositionAction();
+    LayoutStyleAction( Editor *e );
+    ~LayoutStyleAction();
 
     void perform( EditorWidget *w );
 

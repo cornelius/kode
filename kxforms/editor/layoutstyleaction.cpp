@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "positionaction.h"
+#include "layoutstyleaction.h"
 
 #include "editor.h"
 #include "editorwidget.h"
@@ -33,37 +33,27 @@
 
 using namespace KXForms;
 
-PositionAction::PositionAction( Editor *e)
+LayoutStyleAction::LayoutStyleAction( Editor *e)
 : EditorAction( e )
 {
 }
 
-PositionAction::~PositionAction()
+LayoutStyleAction::~LayoutStyleAction()
 {
 }
 
-void PositionAction::perform( EditorWidget *w )
+void LayoutStyleAction::perform( EditorWidget *w )
 {
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
-  KMessageBox::information( w, i18n("Select the new neighbour of %1", w->element()->ref().toString()), i18n("New Neighbour" ) );
-  EditorWidget *chosenWidget = editor()->selectWidget();
-
-  if( !chosenWidget ) {
-    editor()->finishEdit();
-    return;
-  }
-  kDebug() << k_funcinfo << "Chosen element: " << chosenWidget->element()->ref().toString() << endl;
-
-
-
-  QString position;
+  QString style;
   QStringList list;
   bool ok;
-  list << "above" << "rightOf" << "below" << "leftOf";
-  position = KInputDialog::getItem( i18n("Select the relative Position"), i18n("Relative Position of %1:", w->element()->ref().toString()),
-      list, 0, false, &ok );
+  int current = w->element()->properties()->layoutStyle;
+  list << "horizontal" << "vertical";
+  style = KInputDialog::getItem( i18n("Select the layout style"), i18n("Layout style of %1:", w->element()->ref().toString()),
+      list, current, false, &ok );
 
   if( !ok ) {
     editor()->finishEdit();
@@ -72,14 +62,10 @@ void PositionAction::perform( EditorWidget *w )
 
   Hint h;
   h.setRef( w->element()->ref() );
-  QDomDocument doc;
-  QDomElement e = doc.createElement( position );
-  QDomNode child = doc.createTextNode( chosenWidget->element()->ref().toString() );
-  e.appendChild( child );
-  h.addElement( Hint::Position, e );
+  h.setValue( Hint::LayoutStyle, style );
   emit hintGenerated( h );
 
   editor()->finishEdit();
 }
 
-#include "positionaction.moc"
+#include "layoutstyleaction.moc"
