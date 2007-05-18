@@ -53,7 +53,8 @@ class Hint
     bool hasValue( Type ) const;
 
     void addElement( Type, const QDomElement );
-    QList<QDomElement> elements( Type );
+    QList<QDomElement> elements( Type ) const;
+    QMap< Type, QList<QDomElement> > allElements() const;
 
     void merge( const Hint & h );
 

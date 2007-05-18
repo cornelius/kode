@@ -22,7 +22,7 @@
     <label>Name :)</label>
   </hint>
   <hint ref="@status">
-    <enum value="inprogress">In Progress</enum>
+    <position><rightOf>@target</rightOf></position>
   </hint>
   <hint ref="@email">
     <listHeader>Email Address</listHeader>

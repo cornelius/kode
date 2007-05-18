@@ -17,6 +17,7 @@
 */
 
 #include "manager.h"
+#include "guielement.h"
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -29,8 +30,8 @@
 using namespace KXForms;
 
 Manager::Manager()
-  : mGuiHandler( 0 ), mDataLoaded( false ), mDispatcher( new Dispatcher() ), 
-    mEditor( new Editor() )
+  : mGuiHandler( 0 ), mDefaultProperties( new GuiElement::Properties() ), mDataLoaded( false ), 
+    mDispatcher( new Dispatcher() ), mEditor( new Editor() )
 {
 }
 
@@ -72,8 +73,11 @@ bool Manager::parseForms( const QString &xml )
       Form *form = parseForm( e );
       if ( !form ) return false;
       mForms.append( form );
+    } else if( e.tagName() == "defaults" ) {
+      kDebug() << "Found a defaults-element" << endl;
+      GuiElement::parseProperties( docElement, mDefaultProperties );
     } else {
-      kError() << "Expected 'form' element. Got '" << e.tagName() << "'" << endl;
+      kError() << "Expected 'form' or 'defaults' element. Got '" << e.tagName() << "'" << endl;
       return false;
     }
   }

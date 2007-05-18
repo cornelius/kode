@@ -131,7 +131,8 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
   QDomNode n;
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
-    if ( e.tagName() == "properties" ) {
+    if ( e.tagName() == "properties" ||
+          e.tagName() == "defaults" ) {
       QDomNode n2;
       for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
         QDomElement e2 = n2.toElement();

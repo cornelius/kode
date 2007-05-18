@@ -32,6 +32,7 @@
 
 namespace KXForms {
 
+class GuiElement::Properties;
 
 class Manager
 {
@@ -78,12 +79,15 @@ class Manager
 
     Editor *editor() const { return mEditor; }
 
+    GuiElement::Properties *defaultProperties() { return mDefaultProperties; }
   protected:
     void loadData();
 
   private:
     GuiHandler *mGuiHandler;
-  
+
+    GuiElement::Properties *mDefaultProperties;
+
     Form::List mForms;
 
     FormGui::List mGuis;

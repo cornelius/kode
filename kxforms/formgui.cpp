@@ -125,7 +125,8 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       c.setLabel( overrideLabel );
 
     GuiElement *guiElement = 0;
-    GuiElement::Properties *properties = new GuiElement::Properties;
+    GuiElement::Properties *properties = new GuiElement::Properties();
+    *properties = *mManager->defaultProperties();
     GuiElement::parseProperties( e, properties );
 
     if ( tag == "xf:label" ) {

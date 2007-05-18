@@ -87,9 +87,14 @@ void Hint::addElement( Type type, const QDomElement e )
   mElements[type].append( e.cloneNode().toElement() );
 }
 
-QList<QDomElement> Hint::elements( Type type)
+QList<QDomElement> Hint::elements( Type type) const
 {
   return mElements[type];
+}
+
+QMap< Hint::Type, QList<QDomElement> > Hint::allElements() const
+{
+  return mElements;
 }
 
 void Hint::merge( const Hint &h )
@@ -98,6 +103,10 @@ void Hint::merge( const Hint &h )
   QMap<Type, QString>::iterator it;
   for( it = values.begin(); it != values.end(); ++it ) {
     setValue( it.key(), it.value() );
+  }
+
+  foreach( Type type, h.allElements().keys() ) {
+      mElements[ type ] = h.elements( type );
   }
 }
 
