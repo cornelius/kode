@@ -40,9 +40,10 @@ class GuiElement : public QObject
   public:
 
     enum Appearance { Undefined, Minimal, Compact, Full };
+    enum LayoutStyle { Horizontal, Vertical };
     struct Properties {
         Properties() : readonly( false ),
-            appearance( Undefined ) {}
+            appearance( Undefined ), layoutStyle( Horizontal ) {}
         QString type;
         QString constraint;
         bool readonly;
@@ -50,6 +51,7 @@ class GuiElement : public QObject
         QString group;
         QList< QDomElement> positions;
         Appearance appearance;
+        LayoutStyle layoutStyle;
     };
 
     typedef QList<GuiElement *> List;

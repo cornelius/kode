@@ -34,7 +34,6 @@ class Manager;
 class GuiHandler
 {
   public:
-    enum LayoutStyle { Grid, Vertical };
     /**
       Create GuiHandler and register it with the manager. The manager takes
       ownership of the GuiHandler object.
@@ -53,12 +52,8 @@ class GuiHandler
 
     Manager *manager() const;
 
-    void setLayoutStyle( LayoutStyle style ) { mLayoutStyle = style; }
-    LayoutStyle layoutStyle() const { return mLayoutStyle; }
-
   private:
     Manager *mManager;
-    LayoutStyle mLayoutStyle;
 };
 
 }

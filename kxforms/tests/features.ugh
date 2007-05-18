@@ -20,6 +20,7 @@
   </hint>
   <hint ref="@name">
     <label>Name :)</label>
+    <layout><layoutstyle>vertical</layoutstyle></layout>
   </hint>
   <hint ref="@status">
     <position><rightOf>@target</rightOf></position>

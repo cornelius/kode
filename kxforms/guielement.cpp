@@ -166,6 +166,11 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
                 properties->appearance = Compact;
               else if( e3.text() == "full" )
                 properties->appearance = Full;
+            } else if ( e3.tagName() == "layoutstyle" ) {
+              if( e3.text() == "horizontal" )
+                properties->layoutStyle = Horizontal;
+              else if( e3.text() == "vertical" )
+                properties->layoutStyle = Vertical;
             }
           } 
         }

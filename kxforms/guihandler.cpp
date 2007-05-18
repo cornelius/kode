@@ -34,7 +34,7 @@
 using namespace KXForms;
 
 GuiHandler::GuiHandler( Manager *m )
-  : mManager( m ), mLayoutStyle( Grid )
+  : mManager( m )
 {
   mManager->setGuiHandler( this );
 }
@@ -56,27 +56,18 @@ QLayout *GuiHandler::getTopLayout() const
 
 void GuiHandler::addWidget( QLayout *l, QWidget *w ) const
 {
-  if( layoutStyle() == GuiHandler::Grid ) {
-    QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
-    if( !gl )
-      return;
+  QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
+  if( !gl )
+    return;
 
-    gl->addWidget( w, gl->rowCount(), 0, 1, 3 );
-  }
-  else {
-    QVBoxLayout *vbl = dynamic_cast< QVBoxLayout *>( l );
-    if( !vbl )
-      return;
-
-    vbl->insertWidget( l->count() - 1, w );
-  }
+  gl->addWidget( w, gl->rowCount(), 0, 1, -1 );
 }
 
 void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, 
             GuiElement::Properties *prop, bool indented ) const
 {
   Q_UNUSED( prop );
-  if( layoutStyle() == GuiHandler::Grid ) {
+  if( prop->layoutStyle == GuiElement::Horizontal ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )
       return;
@@ -128,7 +119,7 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
 {
   Q_UNUSED( prop );
 
-  if( layoutStyle() == GuiHandler::Grid ) {
+  if( prop->layoutStyle == GuiElement::Horizontal ) {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )
       return;
