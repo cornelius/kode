@@ -90,6 +90,8 @@ class GuiHandlerFlat : public QObject, public GuiHandler
     QWidget *createRootGui( QWidget *parent );
     void createGui( const Reference &ref, QWidget *parent );
 
+    FormGui *currentGui() { return static_cast<FormGui *>( mStackWidget->currentWidget() ); }
+
   protected:
     FormGui *createGui( Form *form, QWidget *parent );
 

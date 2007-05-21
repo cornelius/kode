@@ -71,7 +71,7 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
     if( !gl )
       return;
 
-    gl->setColumnStretch( (2*x)+1, 1 );
+//     gl->setColumnStretch( (2*x)+1, 1 );
     if( label ) {
 //       kDebug() << k_funcinfo << "Adding label at: (" << y << "," << 2*x << ")" << endl;
       gl->addWidget( label, y, (2*x), height, 1, Qt::AlignRight | Qt::AlignTop );
@@ -100,7 +100,7 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
     if( !gl )
       return;
 
-    gl->setColumnStretch( x, 1 );
+//     gl->setColumnStretch( x, 1 );
     if( label ) {
 //       kDebug() << k_funcinfo << "Adding label at: (" << 2*y << "," << x << ")" << endl;
       gl->addWidget( label, 2*y, 2*x, 1, 2*width, Qt::AlignLeft | Qt::AlignTop );

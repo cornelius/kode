@@ -47,14 +47,14 @@ void PositionAction::perform( EditorWidget *w )
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
-  KMessageBox::information( w, i18n("Select the new neighbour of %1", w->element()->ref().toString()), i18n("New Neighbour" ) );
+  KMessageBox::information( w, i18n("Select the new neighbour of %1"/*, w->element()->ref().toString()*/), i18n("New Neighbour" ) );
   EditorWidget *chosenWidget = editor()->selectWidget();
 
   if( !chosenWidget ) {
     editor()->finishEdit();
     return;
   }
-  kDebug() << k_funcinfo << "Chosen element: " << chosenWidget->element()->ref().toString() << endl;
+  kDebug() << k_funcinfo << "Chosen element: " /*<< chosenWidget->element()->ref().toString()*/ << endl;
 
 
 
@@ -62,7 +62,7 @@ void PositionAction::perform( EditorWidget *w )
   QStringList list;
   bool ok;
   list << "above" << "rightOf" << "below" << "leftOf";
-  position = KInputDialog::getItem( i18n("Select the relative Position"), i18n("Relative Position of %1:", w->element()->ref().toString()),
+  position = KInputDialog::getItem( i18n("Select the relative Position"), i18n("Relative Position of %1:"/*, w->element()->ref().toString()*/),
       list, 0, false, &ok );
 
   if( !ok ) {
@@ -71,11 +71,11 @@ void PositionAction::perform( EditorWidget *w )
   }
 
   Hint h;
-  h.setRef( w->element()->ref() );
+//   h.setRef( w->element()->ref() );
   QDomDocument doc;
   QDomElement e = doc.createElement( position );
-  QDomNode child = doc.createTextNode( chosenWidget->element()->ref().toString() );
-  e.appendChild( child );
+//   QDomNode child = doc.createTextNode( chosenWidget->element()->ref().toString() );
+//   e.appendChild( child );
   h.addElement( Hint::Position, e );
   emit hintGenerated( h );
 

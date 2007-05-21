@@ -21,56 +21,38 @@
 #ifndef EDITORWIDGET_H
 #define EDITORWIDGET_H
 
-#include <QLabel>
+#include <QWidget>
+#include "../guielement.h"
 
 class QTimer;
 
 namespace KXForms {
 
 class Editor;
-class GuiElement;
 
-class EditorWidget : public QLabel
+class EditorWidget : public QWidget
 {
   Q_OBJECT
   public:
-    enum ActionType{
-      CommonActions = 0x1,
-      ListActions = 0x2,
-      AppearanceActions = 0x4
-    };
-    Q_DECLARE_FLAGS(ActionTypes, ActionType)
 
-    EditorWidget( GuiElement *guiElem, Editor *e, QWidget *parent = 0 );
+    EditorWidget( Editor *e, QWidget *parent = 0 );
 
-    void setBuddyWidget( QWidget *w );
-    void takeSnapshot();
-
-    GuiElement *element() const { return mElement; }
-
-    virtual void enterEvent ( QEvent * event );
-    virtual void leaveEvent ( QEvent * event );
-
-    void setActionTypes( ActionTypes t ) { mActionTypes = t; }
-    ActionTypes actionTypes() const { return mActionTypes; }
+    void setGuiElements( const GuiElement::List &list ) { mGuiElements = list; }
 
   public Q_SLOTS:
     void actionTriggered();
 
-  private Q_SLOTS:
-    void showEditMenu();
+  protected:
+    void mouseMoveEvent( QMouseEvent *event );
+    void paintEvent( QPaintEvent *event );
+    void drawInterface( QPainter *p, GuiElement *e );
 
   private:
     Editor *mEditor;
-    QWidget *mBuddyWidget;
-    GuiElement *mElement;
+    GuiElement::List mGuiElements;
 
-    QTimer *mMenuTimer;
-
-    ActionTypes mActionTypes;
+    GuiElement *mHoveredElement;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(EditorWidget::ActionTypes)
 
 }
 #endif

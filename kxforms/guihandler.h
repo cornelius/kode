@@ -30,6 +30,7 @@ class QWidget;
 namespace KXForms {
 
 class Manager;
+class FormGui;
 
 class GuiHandler
 {
@@ -47,6 +48,8 @@ class GuiHandler
     virtual QLayout *getTopLayout() const;
     virtual void addWidget( QLayout *, QWidget * ) const;
     virtual void addElement( QLayout *, QWidget *label, QWidget *widget, int x, int y, int width, int height, GuiElement::Properties *prop = 0, bool indented = false ) const;
+
+    virtual FormGui *currentGui() = 0;
 
     Manager *manager() const;
 

@@ -30,13 +30,11 @@
 using namespace KXForms;
 
 GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
-  : mParent( parent ), mLabel( 0 ), mWidget( 0 ), mStackedWidget( new QStackedWidget( parent ) ),
-    mEditorWidget( new EditorWidget( this, manager->editor(), parent ) ), mManager( manager ), mProperties( p )
+  : mParent( parent ), mLabel( 0 ), mWidget( 0 ),
+    mManager( manager ), mProperties( p ), mActionTypes( Editor::CommonActions )
 {
   if( !mProperties )
     mProperties = new Properties;
-
-  mStackedWidget->addWidget( mEditorWidget );
 }
 
 GuiElement::~GuiElement()
@@ -47,19 +45,6 @@ GuiElement::~GuiElement()
 void GuiElement::setWidget( QWidget *w )
 {
   mWidget = w;
-  mStackedWidget->addWidget( w );
-  mStackedWidget->setCurrentWidget( w );
-  mEditorWidget->setBuddyWidget( w );
-}
-
-void GuiElement::setEditMode( bool enabled )
-{
-  if( enabled ) {
-    mEditorWidget->takeSnapshot();
-    mStackedWidget->setCurrentWidget( mEditorWidget );
-   }
-  else
-    mStackedWidget->setCurrentWidget( mWidget );
 }
 
 void GuiElement::setRef( const Reference &ref )

@@ -65,6 +65,8 @@ class GuiHandlerDialogs : public QObject, public GuiHandler
     QWidget *createRootGui( QWidget *parent );
     void createGui( const Reference &ref, QWidget *parent );
 
+    FormGui *currentGui() { return static_cast<FormGui *>( mWidgetStack.last() ); }
+
   protected slots:
     void slotDialogClosed();
 
@@ -73,6 +75,7 @@ class GuiHandlerDialogs : public QObject, public GuiHandler
 
   private:
     FormGui *mRootGui;
+    QList< QWidget *> mWidgetStack;
 };
 
 }

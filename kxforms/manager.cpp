@@ -31,7 +31,7 @@ using namespace KXForms;
 
 Manager::Manager()
   : mGuiHandler( 0 ), mDefaultProperties( new GuiElement::Properties() ), mDataLoaded( false ), 
-    mDispatcher( new Dispatcher() ), mEditor( new Editor() )
+    mDispatcher( new Dispatcher() ), mEditor( new Editor( this ) )
 {
 }
 

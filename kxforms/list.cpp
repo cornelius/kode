@@ -45,9 +45,7 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
-  mManager->editor()->registerElement( this );
-
-  mEditorWidget->setActionTypes( EditorWidget::CommonActions | EditorWidget::ListActions );
+  setActionTypes( Editor::CommonActions | Editor::ListActions );
 
   kDebug() << "List() " << label << endl;
   QWidget *w = new QWidget( mParent );
@@ -66,6 +64,7 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   mProxyModel->setSourceModel( mModel );
 
   mView = new QTreeView( w );
+  mView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mFilterEdit = new KLineEdit;
   mFilterEdit->setClearButtonShown( true );
   mFilterEdit->hide();

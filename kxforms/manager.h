@@ -80,6 +80,8 @@ class Manager
     Editor *editor() const { return mEditor; }
 
     GuiElement::Properties *defaultProperties() { return mDefaultProperties; }
+
+    FormGui *currentGui() { return mGuiHandler->currentGui(); }
   protected:
     void loadData();
 

@@ -93,6 +93,7 @@ QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
   }
 
   mRootGui = gui;
+  mWidgetStack.push_back( gui );
   return gui;
 }
 
@@ -134,6 +135,7 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
     manager()->loadData( gui );
   }
 
+  mWidgetStack.push_back( gui );
   dlg.exec();
 }
 
@@ -157,6 +159,7 @@ FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
 
 void GuiHandlerDialogs::slotDialogClosed()
 {
+  mWidgetStack.pop_back();
   if( mRootGui )
     manager()->loadData( mRootGui );
 }

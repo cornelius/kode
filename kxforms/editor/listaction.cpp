@@ -100,11 +100,11 @@ void ListAction::perform( EditorWidget *w )
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
-  ListActionDialog *dlg = new ListActionDialog( i18n("Edit %1", w->element()->ref().toString()), w );
+  ListActionDialog *dlg = new ListActionDialog( i18n("Edit %1"/*, w->element()->ref().toString()*/), w );
   if( dlg->exec() == QDialog::Accepted ) {
 
     Hint h;
-    h.setRef( w->element()->ref() );
+//     h.setRef( w->element()->ref() );
     h.setValue( Hint::ListShowHeader, dlg->showHeader() ? "true" : "false" );
     h.setValue( Hint::ListShowSearch, dlg->showFilter() ? "true" : "false" );
     emit hintGenerated( h );

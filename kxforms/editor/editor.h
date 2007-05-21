@@ -29,18 +29,28 @@
 
 class KActionMenu;
 class QEventLoop;
+class QLabel;
 
 namespace KXForms {
 
 class GuiElement;
 class EditorWidget;
 class EditorAction;
+class Manager;
 
 class Editor : public QObject
 {
   Q_OBJECT
   public:
-    Editor();
+    enum ActionType{
+      CommonActions = 0x1,
+      ListActions = 0x2,
+      AppearanceActions = 0x4
+    };
+    Q_DECLARE_FLAGS(ActionTypes, ActionType)
+
+
+    Editor( Manager *);
     ~Editor();
 
     void registerElement( GuiElement * );
@@ -83,10 +93,16 @@ class Editor : public QObject
     bool mEditMode;
     bool mInEdit;
 
+    EditorWidget *mEditorWidget;
+
     EditorWidget *mChosenEditorWidget;
 
     Hints mHints;
+
+    Manager *mManager;
 };
 
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(KXForms::Editor::ActionTypes)
 #endif

@@ -35,9 +35,7 @@ Select::Select( Manager *m, const QString &label, QWidget *parent, Properties *p
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
-  mManager->editor()->registerElement( this );
-
-  mEditorWidget->setActionTypes( EditorWidget::CommonActions | EditorWidget::AppearanceActions );
+  setActionTypes( Editor::CommonActions | Editor::AppearanceActions );
 
   mLabel = new QLabel( label, parent );
   QWidget *w;

@@ -28,20 +28,24 @@
 #include "positionaction.h"
 #include "layoutstyleaction.h"
 
+#include "../manager.h"
 #include "../guielement.h"
 
 #include <kactionmenu.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmenu.h>
+#include <kapplication.h>
+#include <kpixmapeffect.h>
 
 #include <QEvent>
 #include <QEventLoop>
 
 using namespace KXForms;
 
-Editor::Editor()
-: mEventLoop( new QEventLoop( this ) ), mEditMode( false ), mInEdit( false )
+Editor::Editor( Manager *m)
+: mEventLoop( new QEventLoop( this ) ), mEditMode( false ), mInEdit( false ),
+  mEditorWidget( 0 ), mManager( m )
 {
   setupActions();
 }
@@ -86,7 +90,7 @@ void Editor::setupActions()
 void Editor::registerElement( GuiElement *element )
 {
   kDebug() << k_funcinfo << "Registered element " << element->ref().toString() << endl;
-  element->editorWidget()->installEventFilter( this );
+//   element->editorWidget()->installEventFilter( this );
   mElements.append( element );
 }
 
@@ -94,56 +98,26 @@ void Editor::setEditMode( bool enabled )
 {
   kDebug() << k_funcinfo << "Setting editmode to " << enabled << endl;
   mEditMode = enabled;
-  foreach( GuiElement *e, mElements ) {
-    e->setEditMode( enabled );
-  }
+
+  if( enabled ) {
+    GuiElement::List list = mManager->currentGui()->elements();
+    QWidget *w = list.first()->widget()->parentWidget();
+    mEditorWidget = new EditorWidget( this, w );
+    mEditorWidget->setGuiElements( list );
+    mEditorWidget->show();
+  } else {
+    mEditorWidget->hide();
+    mEditorWidget->deleteLater();
+  } 
+
+//   foreach( GuiElement *e, mElements ) {
+//     e->setEditMode( enabled );
+//   }
 }
 
 void Editor::toggleEditMode()
 {
   setEditMode( !mEditMode );
-}
-
-KActionMenu *Editor::actionMenu( EditorWidget *w )
-{
-  KActionMenu *menu = new KActionMenu( this );
-
-  menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
-
-  if( w->actionTypes() & EditorWidget::CommonActions ) {
-    KAction *titleAction = new KAction( i18n("Change Label"), menu );
-    titleAction->setData( "edit_label" );
-    QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( titleAction );
-
-
-    KAction *positionAction = new KAction( i18n("Change Position"), menu );
-    positionAction->setData( "edit_position" );
-    QObject::connect( positionAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( positionAction );
-
-
-    KAction *layoutStyleAction = new KAction( i18n("Change Layout Style"), menu );
-    layoutStyleAction->setData( "edit_layoutstyle" );
-    QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( layoutStyleAction );
-  }
-
-  if( w->actionTypes() & EditorWidget::AppearanceActions ) {
-    KAction *appearanceAction = new KAction( i18n("Change Appearance"), menu );
-    appearanceAction->setData( "edit_appearance" );
-    QObject::connect( appearanceAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( appearanceAction );
-  }
-
-  if( w->actionTypes() & EditorWidget::ListActions ) {
-    KAction *listAction = new KAction( i18n("Change List Properties"), menu );
-    listAction->setData( "edit_list" );
-    QObject::connect( listAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( listAction );
-  }
-
-  return menu;
 }
 
 void Editor::performAction( const QString &actionId, EditorWidget *w )

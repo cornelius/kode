@@ -22,6 +22,7 @@
 #define KXFORMS_GUIELEMENT_H
 
 #include "reference.h"
+#include "editor/editor.h"
 
 #include <QList>
 #include <QDomElement>
@@ -72,9 +73,11 @@ class GuiElement : public QObject
     void loadData( const QDomElement &context );
     void save();
 
-    virtual QWidget *widget() const { return mStackedWidget; }
+    void setActionTypes( Editor::ActionTypes t ) { mActionTypes = t; }
+    Editor::ActionTypes actionTypes() const { return mActionTypes; }
+
+    virtual QWidget *widget() const { return mWidget; }
     virtual QWidget *labelWidget() const { return mLabel; }
-    virtual EditorWidget *editorWidget() const { return mEditorWidget; }
 
     virtual void loadData() = 0;
     virtual void saveData() = 0;
@@ -94,7 +97,6 @@ class GuiElement : public QObject
   public slots:
     void slotValueChanged( const QString &, const QString & );
     void setRelevant( bool );
-    void setEditMode( bool );
 
   protected:
     virtual void applyProperties();
@@ -104,8 +106,6 @@ class GuiElement : public QObject
     QWidget *mParent;
     QLabel *mLabel;
     QWidget *mWidget;
-    QStackedWidget *mStackedWidget;
-    EditorWidget *mEditorWidget;
     Manager *mManager;
     Properties *mProperties;
     GuiElement::List mAttributeElements;
@@ -113,6 +113,7 @@ class GuiElement : public QObject
   private:
     Reference mRef;
     QDomElement mContext;
+    Editor::ActionTypes mActionTypes;
 };
 
 }
