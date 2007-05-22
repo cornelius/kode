@@ -38,7 +38,7 @@ class EditorWidget : public QWidget
 
     EditorWidget( Editor *e, QWidget *parent = 0 );
 
-    void setGuiElements( const GuiElement::List &list ) { mGuiElements = list; }
+    void setGuiElements( const GuiElement::List &list );
 
     GuiElement *hoveredElement() { return mHoveredElement; }
   public Q_SLOTS:
@@ -47,11 +47,12 @@ class EditorWidget : public QWidget
   protected:
     void mouseMoveEvent( QMouseEvent *event );
     void paintEvent( QPaintEvent *event );
-    void drawInterface( QPainter *p, GuiElement *e );
+    void drawInterface( QPainter *p, const QRect &, GuiElement *e );
 
   private:
     Editor *mEditor;
-    GuiElement::List mGuiElements;
+//     GuiElement::List mGuiElements;
+    QMap< GuiElement *, QRect > mElementMap;
 
     QPushButton *mEditButton;
 

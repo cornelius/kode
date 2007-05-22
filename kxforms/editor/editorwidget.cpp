@@ -50,17 +50,28 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
   connect( mEditButton, SIGNAL(clicked()), SLOT(showActionMenu()) );
 }
 
+void EditorWidget::setGuiElements( const GuiElement::List &list )
+{
+//   mGuiElements = list;
+  foreach( GuiElement *e, list ) {
+    QRect r = e->widget()->geometry() | e->labelWidget()->geometry();
+    QPoint widgetPos = e->widget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0));
+    QPoint labelWidgetPos = e->labelWidget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0));
+    r.moveTop( qMin( widgetPos.y(), labelWidgetPos.y() ) );
+    r.moveLeft( qMin( widgetPos.x(), labelWidgetPos.x() ) );
+
+    mElementMap[e] = r;
+  }
+}
 
 void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 {
   kDebug() << k_funcinfo << endl;
   GuiElement *newElement = 0;
   QPoint pos = event->pos();
-  foreach( GuiElement *e, mGuiElements ) {
-    QRect r = e->widget()->geometry();
-    r.moveTopLeft( e->widget()->mapToGlobal(QPoint(0,0)) );
-    if( r.contains( mapToGlobal( pos ) ) ) {
-      newElement = e;
+  foreach( QRect r, mElementMap.values() ) {
+    if( r.contains( pos ) ) {
+      newElement = mElementMap.key( r );
       break;
     }
   }
@@ -80,18 +91,15 @@ void EditorWidget::paintEvent( QPaintEvent *event )
 //   QLabel::paintEvent( event );
   if( mHoveredElement ) {
     kDebug() << k_funcinfo << endl;
-    drawInterface( &p, mHoveredElement );
+    drawInterface( &p, mElementMap[mHoveredElement], mHoveredElement );
   } else {
     mEditButton->hide();
   }
 }
 
-void EditorWidget::drawInterface( QPainter *p, GuiElement *w )
+void EditorWidget::drawInterface( QPainter *p, const QRect &r, GuiElement *w )
 {
   //   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
-
-  QRect r = w->widget()->geometry();
-  r.moveTopLeft( w->widget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0)) );
 
   QPen pen;
   pen.setColor( QColor(255,255,255,255) );
@@ -99,7 +107,7 @@ void EditorWidget::drawInterface( QPainter *p, GuiElement *w )
   p->setPen( pen );
   p->drawRect( r );
 
-  QBrush b( QColor(0,0,0,50) );
+  QBrush b( QColor(0,0,0,100) );
   p->fillRect( r, b );
 
 
