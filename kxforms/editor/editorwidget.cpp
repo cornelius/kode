@@ -117,8 +117,6 @@ void EditorWidget::paintEvent( QPaintEvent *event )
 //   kDebug() << k_funcinfo << endl;
   QPainter p( this );
 
-  drawGlobalInterface( &p );
-
   if( mSelectionMode ) {
     if( mHoveredElement != mActiveElement )
       targetElement( &p, mElementMap[mHoveredElement], mHoveredElement );
@@ -137,6 +135,8 @@ void EditorWidget::paintEvent( QPaintEvent *event )
       highlightElement( &p, mElementMap[mActiveElement], mActiveElement );
     }
   }
+
+  drawGlobalInterface( &p );
 }
 
 void EditorWidget::drawGlobalInterface( QPainter *p )
