@@ -124,7 +124,6 @@ void EditorWidget::paintEvent( QPaintEvent *event )
 
   if( !mInEdit ) {
     if( mHoveredElement ) {
-      kDebug() << k_funcinfo << endl;
       highlightElement( &p, mElementMap[mHoveredElement], mHoveredElement );
       drawInterface( &p, mElementMap[mHoveredElement], mHoveredElement );
     } else {

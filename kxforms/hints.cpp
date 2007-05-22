@@ -37,6 +37,8 @@ Hint::Hint()
 Hint::Hint( const Reference &ref )
   : mRef( ref )
 {
+  if( !mRef.isAbsolute() && !mRef.toString().startsWith( '@' ) )
+    mRef.fromString( '/' + mRef.toString() );
 }
 
 bool Hint::isValid() const
@@ -47,6 +49,9 @@ bool Hint::isValid() const
 void Hint::setRef( const Reference &ref )
 {
   mRef = ref;
+
+  if( !mRef.isAbsolute() && !mRef.toString().startsWith( '@' ) )
+    mRef.fromString( '/' + mRef.toString() );
 }
 
 Reference Hint::ref() const
