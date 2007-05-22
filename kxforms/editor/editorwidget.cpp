@@ -81,8 +81,11 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
   QPoint pos = event->pos();
   foreach( QRect r, mElementMap.values() ) {
     if( r.contains( pos ) ) {
-      newElement = mElementMap.key( r );
-      break;
+      if( !newElement || 
+          mElementMap[ newElement ].width() > r.width() ||
+          mElementMap[ newElement ].height() > r.height() ) {
+        newElement = mElementMap.key( r );
+      }
     }
   }
   if( mHoveredElement != newElement )
