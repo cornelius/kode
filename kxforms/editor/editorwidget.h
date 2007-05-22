@@ -25,6 +25,7 @@
 #include "../guielement.h"
 
 class QTimer;
+class QPushButton;
 
 namespace KXForms {
 
@@ -39,8 +40,9 @@ class EditorWidget : public QWidget
 
     void setGuiElements( const GuiElement::List &list ) { mGuiElements = list; }
 
+    GuiElement *hoveredElement() { return mHoveredElement; }
   public Q_SLOTS:
-    void actionTriggered();
+    void showActionMenu();
 
   protected:
     void mouseMoveEvent( QMouseEvent *event );
@@ -50,6 +52,8 @@ class EditorWidget : public QWidget
   private:
     Editor *mEditor;
     GuiElement::List mGuiElements;
+
+    QPushButton *mEditButton;
 
     GuiElement *mHoveredElement;
 };

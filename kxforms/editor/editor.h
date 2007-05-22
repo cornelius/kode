@@ -61,12 +61,14 @@ class Editor : public QObject
 
     bool inEdit() const { return mInEdit; }
 
-    KActionMenu *actionMenu( EditorWidget *w );
+    KActionMenu *actionMenu( GuiElement *e );
 
-    void performAction( const QString &actionId, EditorWidget *w );
+    void performAction( const QString &actionId, GuiElement *w );
 
     void addHints( const Hints &h ) { mHints.merge( h ); }
     Hints hints() const { return mHints; }
+
+    EditorWidget *selectWidget();
 
   Q_SIGNALS:
     void hintsChanged( const Hints &h );
@@ -75,13 +77,12 @@ class Editor : public QObject
     void setEditMode( bool );
     void toggleEditMode();
 
-    EditorWidget *selectWidget();
-
   protected:
     bool eventFilter( QObject *obj, QEvent *e );
 
   private Q_SLOTS:
     void applyHint( const Hint &h );
+    void actionTriggered();
 
   private:
     void setupActions();

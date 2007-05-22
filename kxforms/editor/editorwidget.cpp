@@ -27,11 +27,13 @@
 #include <kactionmenu.h>
 #include <kmenu.h>
 #include <klocale.h>
+#include <kiconloader.h>
 
 #include <QTimer>
 #include <QPoint>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QPushButton>
 
 using namespace KXForms;
 
@@ -40,6 +42,12 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
 {
   setMouseTracking( true );
   setGeometry( parent->geometry() );
+
+
+  mEditButton = new QPushButton( this );
+  mEditButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
+  mEditButton->hide();
+  connect( mEditButton, SIGNAL(clicked()), SLOT(showActionMenu()) );
 }
 
 
@@ -73,14 +81,14 @@ void EditorWidget::paintEvent( QPaintEvent *event )
   if( mHoveredElement ) {
     kDebug() << k_funcinfo << endl;
     drawInterface( &p, mHoveredElement );
+  } else {
+    mEditButton->hide();
   }
 }
 
 void EditorWidget::drawInterface( QPainter *p, GuiElement *w )
 {
-  KActionMenu *menu = new KActionMenu( this );
-
-//   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
+  //   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
 
   QRect r = w->widget()->geometry();
   r.moveTopLeft( w->widget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0)) );
@@ -95,64 +103,29 @@ void EditorWidget::drawInterface( QPainter *p, GuiElement *w )
   p->fillRect( r, b );
 
 
-  QPoint point( r.x()+20, r.y()+20 );
+  QPoint point( r.x()+20, r.y() );
 
   p->save();
   QFont fnt;
   fnt.setPointSize( 14 );
   fnt.setBold( true );
   p->setFont( fnt );
-  p->drawText( point, w->ref().toString() );
-  point.setY( point.y() + 20 );
+  p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->ref().toString() );
+  point.setX( point.x() + 10 + QFontMetrics( fnt ).width( w->ref().toString() ));
   p->restore();
 
-  if( w->actionTypes() & Editor::CommonActions ) {
-    p->drawText( point, i18n("Change Label") );
-    point.setY( point.y() + 20 );
-    KAction *titleAction = new KAction( i18n("Change Label"), menu );
-    titleAction->setData( "edit_label" );
-    QObject::connect( titleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( titleAction );
+  mEditButton->move( point );
+  point.setY( point.y() + 20 );
+  mEditButton->show();
+  
 
-
-    KAction *positionAction = new KAction( i18n("Change Position"), menu );
-    positionAction->setData( "edit_position" );
-    QObject::connect( positionAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( positionAction );
-
-
-    KAction *layoutStyleAction = new KAction( i18n("Change Layout Style"), menu );
-    layoutStyleAction->setData( "edit_layoutstyle" );
-    QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( layoutStyleAction );
-  }
-
-  if( w->actionTypes() & Editor::AppearanceActions ) {
-    p->drawText( point, i18n("Change Appearance") );
-    point.setY( point.y() + 20 );
-    KAction *appearanceAction = new KAction( i18n("Change Appearance"), menu );
-    appearanceAction->setData( "edit_appearance" );
-    QObject::connect( appearanceAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( appearanceAction );
-  }
-
-  if( w->actionTypes() & Editor::ListActions ) {
-    p->drawText( point, i18n("Change List Properties") );
-    point.setY( point.y() + 20 );
-    KAction *listAction = new KAction( i18n("Change List Properties"), menu );
-    listAction->setData( "edit_list" );
-    QObject::connect( listAction, SIGNAL(triggered(bool)), w, SLOT( actionTriggered() ) );
-    menu->addAction( listAction );
-  }
 }
 
-void EditorWidget::actionTriggered()
+void EditorWidget::showActionMenu()
 {
-  QAction *action = dynamic_cast<QAction *>( sender() );
-  if( !action )
-    return;
-
-  mEditor->performAction( action->data().toString(), this );
+  KActionMenu *menu = mEditor->actionMenu( mHoveredElement );
+  menu->menu()->popup( mapToGlobal( mEditButton->pos() ) );
 }
+
 
 #include "editorwidget.moc"

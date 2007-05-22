@@ -43,7 +43,7 @@ ChangeLabelAction::~ChangeLabelAction()
 {
 }
 
-void ChangeLabelAction::perform( EditorWidget *w )
+void ChangeLabelAction::perform( GuiElement *e )
 {
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
@@ -52,17 +52,17 @@ void ChangeLabelAction::perform( EditorWidget *w )
   bool ok;
 
   QString currentLabel;
-//   QLabel *labelWidget = dynamic_cast<QLabel *>( w->element()->labelWidget() );
-//   if( labelWidget )
-//     currentLabel = labelWidget->text();
+  QLabel *labelWidget = dynamic_cast<QLabel *>( e->labelWidget() );
+  if( labelWidget )
+    currentLabel = labelWidget->text();
 
-  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1:"/*, w->element()->ref().toString()*/),
+  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1:", e->ref().toString()),
       currentLabel, &ok );
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
     Hint h;
-//     h.setRef( w->element()->ref() );
+    h.setRef( e->ref() );
     h.setValue( Hint::Label, newLabel );
     emit hintGenerated( h );
   }

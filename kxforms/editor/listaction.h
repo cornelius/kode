@@ -32,7 +32,7 @@ class ListAction : public EditorAction
     ListAction( Editor *e );
     ~ListAction();
 
-    void perform( EditorWidget *w );
+    void perform( GuiElement *e );
 
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );

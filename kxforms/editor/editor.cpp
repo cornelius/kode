@@ -87,6 +87,46 @@ void Editor::setupActions()
   mActions[ "edit_layoutstyle" ] = a;
 }
 
+KActionMenu *Editor::actionMenu( GuiElement *e )
+{
+  KActionMenu *menu = new KActionMenu( this );
+  if( e->actionTypes() & Editor::CommonActions ) {
+    KAction *titleAction = new KAction( i18n("Change Label"), menu );
+    titleAction->setData( "edit_label" );
+    QObject::connect( titleAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( titleAction );
+
+
+    KAction *positionAction = new KAction( i18n("Change Position"), menu );
+    positionAction->setData( "edit_position" );
+    QObject::connect( positionAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( positionAction );
+
+
+    KAction *layoutStyleAction = new KAction( i18n("Change Layout Style"), menu );
+    layoutStyleAction->setData( "edit_layoutstyle" );
+    QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( layoutStyleAction );
+  }
+
+  if( e->actionTypes() & Editor::AppearanceActions ) {
+    KAction *appearanceAction = new KAction( i18n("Change Appearance"), menu );
+    appearanceAction->setData( "edit_appearance" );
+    QObject::connect( appearanceAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( appearanceAction );
+  }
+
+  if( e->actionTypes() & Editor::ListActions ) {
+    KAction *listAction = new KAction( i18n("Change List Properties"), menu );
+    listAction->setData( "edit_list" );
+    QObject::connect( listAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( listAction );
+  }
+
+  connect( menu->menu(), SIGNAL(aboutToHide()), menu, SLOT(deleteLater())) ;
+  return menu;
+}
+
 void Editor::registerElement( GuiElement *element )
 {
   kDebug() << k_funcinfo << "Registered element " << element->ref().toString() << endl;
@@ -109,11 +149,7 @@ void Editor::setEditMode( bool enabled )
   } else {
     mEditorWidget->hide();
     mEditorWidget->deleteLater();
-  } 
-
-//   foreach( GuiElement *e, mElements ) {
-//     e->setEditMode( enabled );
-//   }
+  }
 }
 
 void Editor::toggleEditMode()
@@ -121,7 +157,16 @@ void Editor::toggleEditMode()
   setEditMode( !mEditMode );
 }
 
-void Editor::performAction( const QString &actionId, EditorWidget *w )
+void Editor::actionTriggered()
+{
+  QAction *action = dynamic_cast<QAction *>( sender() );
+  if( !action )
+    return;
+
+  performAction( action->data().toString(), mEditorWidget->hoveredElement() );
+}
+
+void Editor::performAction( const QString &actionId, GuiElement *e )
 {
   kDebug() << k_funcinfo << "Performing action " << actionId << endl;
 
@@ -129,7 +174,7 @@ void Editor::performAction( const QString &actionId, EditorWidget *w )
   if( !a )
     return;
 
-  a->perform( w );
+  a->perform( e );
 }
 
 void Editor::applyHint( const Hint &h )

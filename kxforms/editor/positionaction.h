@@ -32,7 +32,7 @@ class PositionAction : public EditorAction
     PositionAction( Editor *e );
     ~PositionAction();
 
-    void perform( EditorWidget *w );
+    void perform( GuiElement *e );
 
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );

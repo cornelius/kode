@@ -42,7 +42,7 @@ LayoutStyleAction::~LayoutStyleAction()
 {
 }
 
-void LayoutStyleAction::perform( EditorWidget *w )
+void LayoutStyleAction::perform( GuiElement *e )
 {
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
@@ -50,10 +50,10 @@ void LayoutStyleAction::perform( EditorWidget *w )
   QString style;
   QStringList list;
   bool ok;
-//   int current = w->element()->properties()->layoutStyle;
+  int current = e->properties()->layoutStyle;
   list << "horizontal" << "vertical";
-  style = KInputDialog::getItem( i18n("Select the layout style"), i18n("Layout style of %1:"/*, w->element()->ref().toString()*/),
-      list, /*current*/0, false, &ok );
+  style = KInputDialog::getItem( i18n("Select the layout style"), i18n("Layout style of %1:", e->ref().toString()),
+      list, current, false, &ok );
 
   if( !ok ) {
     editor()->finishEdit();
@@ -61,7 +61,7 @@ void LayoutStyleAction::perform( EditorWidget *w )
   }
 
   Hint h;
-//   h.setRef( w->element()->ref() );
+  h.setRef( e->ref() );
   h.setValue( Hint::LayoutStyle, style );
   emit hintGenerated( h );
 

@@ -41,7 +41,7 @@ AppearanceAction::~AppearanceAction()
 {
 }
 
-void AppearanceAction::perform( EditorWidget *w )
+void AppearanceAction::perform( GuiElement *e )
 {
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
@@ -52,16 +52,16 @@ void AppearanceAction::perform( EditorWidget *w )
   list << "minimal" << "compact" << "full";
 
   int currentPosition = 0;
-//   if( w->element()->properties() )
-//      currentPosition = w->element()->properties()->appearance - 1;
+  if( e->properties() )
+     currentPosition =e->properties()->appearance - 1;
 
-  newStyle = KInputDialog::getItem( i18n("Select the appearance style"), i18n("Appearance style for %1:"/*, w->element()->ref().toString()*/),
+  newStyle = KInputDialog::getItem( i18n("Select the appearance style"), i18n("Appearance style for %1:", e->ref().toString()),
       list, currentPosition, false, &ok );
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Style: " << newStyle << endl;
     Hint h;
-//     h.setRef( w->element()->ref() );
+    h.setRef( e->ref() );
     h.setValue( Hint::Appearance, newStyle );
     emit hintGenerated( h );
   }

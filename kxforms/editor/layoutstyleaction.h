@@ -32,7 +32,7 @@ class LayoutStyleAction : public EditorAction
     LayoutStyleAction( Editor *e );
     ~LayoutStyleAction();
 
-    void perform( EditorWidget *w );
+    void perform( GuiElement *e );
 
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );

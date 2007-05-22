@@ -32,7 +32,7 @@ class ChangeLabelAction : public EditorAction
     ChangeLabelAction( Editor *e );
     ~ChangeLabelAction();
 
-    void perform( EditorWidget *w );
+    void perform( GuiElement *e );
 
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );
