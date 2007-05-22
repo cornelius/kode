@@ -62,6 +62,8 @@ class Hint
     QString enumValue( const QString &value ) const;
 
     QMap<Type, QString> values() const { return mValues; }
+
+    static QString nameForType( Type t );
   private:
     Reference mRef;
     QMap<Type, QString> mValues;
@@ -89,6 +91,7 @@ class Hints
     void merge( const Hint &h );
 
     void dump() const;
+    QString toRichText() const;
 
   protected:
     bool parse( const QDomDocument &doc );

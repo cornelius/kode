@@ -35,6 +35,7 @@
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QEventLoop>
+#include <QWhatsThis>
 
 using namespace KXForms;
 
@@ -44,6 +45,11 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
 {
   setMouseTracking( true );
   setGeometry( parent->geometry() );
+
+  mShowHintsButton = new QPushButton( this );
+  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "list", K3Icon::NoGroup, 32 ) );
+  mShowHintsButton->move( QPoint( width() - mShowHintsButton->width(), 0 ) );
+  connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
 
 
   mEditButton = new QPushButton( this );
@@ -76,7 +82,7 @@ void EditorWidget::setInEdit( bool b )
 
 void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 {
-  kDebug() << k_funcinfo << endl;
+//   kDebug() << k_funcinfo << endl;
   GuiElement *newElement = 0;
   QPoint pos = event->pos();
   foreach( QRect r, mElementMap.values() ) {
@@ -96,7 +102,7 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 
 void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 {
-  kDebug() << k_funcinfo << endl;
+//   kDebug() << k_funcinfo << endl;
   if( !mSelectionMode )
     return;
 
@@ -108,10 +114,10 @@ void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 
 void EditorWidget::paintEvent( QPaintEvent *event )
 {
-  kDebug() << k_funcinfo << endl;
+//   kDebug() << k_funcinfo << endl;
   QPainter p( this );
-  QBrush b( QColor(0,0,0,25) );
-  p.fillRect( event->rect(), b );
+
+  drawGlobalInterface( &p );
 
   if( mSelectionMode ) {
     if( mHoveredElement != mActiveElement )
@@ -131,6 +137,30 @@ void EditorWidget::paintEvent( QPaintEvent *event )
       highlightElement( &p, mElementMap[mActiveElement], mActiveElement );
     }
   }
+}
+
+void EditorWidget::drawGlobalInterface( QPainter *p )
+{
+  p->save();
+
+  QBrush b( QColor(0,0,0,25) );
+  p->fillRect( rect(), b );
+
+  int boxWidth = 20 + mShowHintsButton->width();
+  int boxHeight = 20 + mShowHintsButton->height();
+  QRect r( width() - boxWidth - 10, 10, boxWidth, boxHeight );
+
+  QPen pen;
+  pen.setColor( QColor(255,255,255,255) );
+  pen.setWidth( 2 );
+  b.setColor( QColor(0,0,0,100) );
+  p->setPen( pen );
+  p->setBrush( b );
+  p->drawRoundRect( r );
+
+  mShowHintsButton->move( width() - 20 - mShowHintsButton->width(), 20 );
+
+  p->restore();
 }
 
 void EditorWidget::targetElement( QPainter *p, const QRect &r, GuiElement *w )
@@ -189,6 +219,12 @@ void EditorWidget::showActionMenu()
   KActionMenu *menu = mEditor->actionMenu( mHoveredElement );
   menu->menu()->popup( mapToGlobal( mEditButton->pos() ) );
   mActiveElement = mHoveredElement;
+}
+
+void EditorWidget::showHints()
+{
+  QString text = mEditor->hints().toRichText();
+  QWhatsThis::showText( mapToGlobal( mShowHintsButton->pos() ), text );
 }
 
 GuiElement *EditorWidget::selectElement()

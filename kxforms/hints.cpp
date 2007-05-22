@@ -110,6 +110,51 @@ void Hint::merge( const Hint &h )
   }
 }
 
+QString Hint::nameForType( Type t )
+{
+  QString s;
+  switch( t ) {
+    case Label:
+      s = "Label";
+      break;
+    case ListShowHeader:
+      s = "ListShowHeader";
+      break;
+    case ListHeader:
+      s = "ListHeader";
+      break;
+    case ListShowSearch:
+      s = "ListShowSearch";
+      break;
+    case ListItemLabel:
+      s = "ListItemLabel";
+      break;
+    case ListItemList:
+      s = "ListItemList";
+      break;
+    case Groups:
+      s = "Groups";
+      break;
+    case GroupReference:
+      s = "GroupReference";
+      break;
+    case Appearance:
+      s = "Appearance";
+      break;
+    case Position:
+      s = "Position";
+      break;
+    case LayoutStyle:
+      s = "LayoutStyle";
+      break;
+    default:
+      s = "Unknown";
+  }
+
+  return s;
+}
+
+
 Hints::Hints()
 {
 }
@@ -314,6 +359,32 @@ void Hints::extractHints( const QList<QDomElement> &annotations,
 void Hints::insertHint( const Hint &hint )
 {
   mHints[ hint.ref().toString() ] = hint;
+}
+
+QString Hints::toRichText() const
+{
+  QString s;
+
+  foreach( Hint h, mHints ) {
+    s += QString( "<b>%1</b><br>" ).arg( h.ref().toString() );
+
+    QMap<Hint::Type, QString> values = h.values();
+    foreach( Hint::Type t, values.keys() ) {
+      s += QString( "&nbsp;&nbsp;&nbsp;%1: \"%2\"<br>" ).arg( Hint::nameForType( t ), values[t] );
+    }
+    QMap< Hint::Type, QList<QDomElement> > elementValues = h.allElements();
+    foreach( Hint::Type t, elementValues.keys() ) {
+      QList<QDomElement> list = elementValues[t];
+      foreach( QDomElement e, list ) {
+        QString tmp;
+        QTextStream stream( &tmp );
+        e.save( stream, 0 );
+        s += QString( "&nbsp;&nbsp;&nbsp;%1: \"%2\"<br>" ).arg( Hint::nameForType( t ), tmp.simplified() );
+      }
+    }
+  }
+  s = QString("<qt><b><u>Hints:</u></b><br>%1</qt>").arg( s );
+  return s;
 }
 
 void Hints::dump() const

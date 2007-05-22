@@ -49,20 +49,24 @@ class EditorWidget : public QWidget
 
   public Q_SLOTS:
     void showActionMenu();
+    void showHints();
 
   protected:
     void mouseMoveEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
     void paintEvent( QPaintEvent *event );
+
     void drawInterface( QPainter *p, const QRect &, GuiElement *e );
     void highlightElement( QPainter *p, const QRect &, GuiElement *e );
     void targetElement( QPainter *p, const QRect &, GuiElement *e );
+    void drawGlobalInterface( QPainter *p );
 
   private:
     Editor *mEditor;
     QMap< GuiElement *, QRect > mElementMap;
 
     QPushButton *mEditButton;
+    QPushButton *mShowHintsButton;
 
     GuiElement *mHoveredElement;
     GuiElement *mActiveElement;
