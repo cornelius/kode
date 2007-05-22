@@ -48,13 +48,13 @@ void PositionAction::perform( GuiElement *e )
   editor()->beginEdit();
 
   KMessageBox::information( e->widget(), i18n("Select the new neighbour of %1", e->ref().toString()), i18n("New Neighbour" ) );
-  EditorWidget *chosenWidget = editor()->selectWidget();
+  GuiElement *chosenElement = editor()->selectWidget();
 
-  if( !chosenWidget ) {
+  if( !chosenElement ) {
     editor()->finishEdit();
     return;
   }
-//   kDebug() << k_funcinfo << "Chosen element: " << chosenWidget->element()->ref().toString() << endl;
+  kDebug() << k_funcinfo << "Chosen element: " << chosenElement->ref().toString() << endl;
 
 
 
@@ -74,8 +74,8 @@ void PositionAction::perform( GuiElement *e )
   h.setRef( e->ref() );
   QDomDocument doc;
   QDomElement elem = doc.createElement( position );
-//   QDomNode child = doc.createTextNode( chosenWidget->element()->ref().toString() );
-//   elem.appendChild( child );
+  QDomNode child = doc.createTextNode( chosenElement->ref().toString() );
+  elem.appendChild( child );
   h.addElement( Hint::Position, elem );
   emit hintGenerated( h );
 

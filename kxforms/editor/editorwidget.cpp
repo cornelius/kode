@@ -34,11 +34,13 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QEventLoop>
 
 using namespace KXForms;
 
 EditorWidget::EditorWidget( Editor *e, QWidget *parent )
-  : QWidget( parent ), mEditor( e ), mHoveredElement( 0 )
+  : QWidget( parent ), mEditor( e ), mHoveredElement( 0 ), mActiveElement( 0 ),
+    mEventLoop( new QEventLoop( this ) ), mSelectionMode( false ), mInEdit( false )
 {
   setMouseTracking( true );
   setGeometry( parent->geometry() );
@@ -52,7 +54,6 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
 
 void EditorWidget::setGuiElements( const GuiElement::List &list )
 {
-//   mGuiElements = list;
   foreach( GuiElement *e, list ) {
     QRect r = e->widget()->geometry() | e->labelWidget()->geometry();
     QPoint widgetPos = e->widget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0));
@@ -62,6 +63,13 @@ void EditorWidget::setGuiElements( const GuiElement::List &list )
 
     mElementMap[e] = r;
   }
+}
+
+void EditorWidget::setInEdit( bool b )
+{
+  mInEdit = b;
+  if( !b )
+    mActiveElement = 0;
 }
 
 void EditorWidget::mouseMoveEvent( QMouseEvent *event )
@@ -81,6 +89,18 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
   mHoveredElement = newElement;
 }
 
+void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
+{
+  kDebug() << k_funcinfo << endl;
+  if( !mSelectionMode )
+    return;
+
+  if( mEventLoop->isRunning() ) {
+    mEventLoop->exit();
+  }
+  mSelectionMode = false;
+}
+
 void EditorWidget::paintEvent( QPaintEvent *event )
 {
   kDebug() << k_funcinfo << endl;
@@ -88,18 +108,44 @@ void EditorWidget::paintEvent( QPaintEvent *event )
   QBrush b( QColor(0,0,0,25) );
   p.fillRect( event->rect(), b );
 
-//   QLabel::paintEvent( event );
-  if( mHoveredElement ) {
-    kDebug() << k_funcinfo << endl;
-    drawInterface( &p, mElementMap[mHoveredElement], mHoveredElement );
+  if( mSelectionMode ) {
+    if( mHoveredElement != mActiveElement )
+      targetElement( &p, mElementMap[mHoveredElement], mHoveredElement );
+  }
+
+  if( !mInEdit ) {
+    if( mHoveredElement ) {
+      kDebug() << k_funcinfo << endl;
+      highlightElement( &p, mElementMap[mHoveredElement], mHoveredElement );
+      drawInterface( &p, mElementMap[mHoveredElement], mHoveredElement );
+    } else {
+      mEditButton->hide();
+    }
   } else {
-    mEditButton->hide();
+    if( mActiveElement ) {
+      highlightElement( &p, mElementMap[mActiveElement], mActiveElement );
+    }
   }
 }
 
-void EditorWidget::drawInterface( QPainter *p, const QRect &r, GuiElement *w )
+void EditorWidget::targetElement( QPainter *p, const QRect &r, GuiElement *w )
 {
-  //   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
+  p->save();
+
+  QPen pen;
+  pen.setColor( QColor(255,0,0,255) );
+  pen.setWidth( 3 );
+  p->setPen( pen );
+  p->drawRect( r );
+
+  p->restore();
+}
+
+void EditorWidget::highlightElement( QPainter *p, const QRect &r, GuiElement *w )
+{
+  p->save();
+
+  QPoint point( r.x()+20, r.y() );
 
   QPen pen;
   pen.setColor( QColor(255,255,255,255) );
@@ -110,30 +156,41 @@ void EditorWidget::drawInterface( QPainter *p, const QRect &r, GuiElement *w )
   QBrush b( QColor(0,0,0,100) );
   p->fillRect( r, b );
 
-
-  QPoint point( r.x()+20, r.y() );
-
-  p->save();
   QFont fnt;
   fnt.setPointSize( 14 );
   fnt.setBold( true );
   p->setFont( fnt );
   p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->ref().toString() );
-  point.setX( point.x() + 10 + QFontMetrics( fnt ).width( w->ref().toString() ));
+
   p->restore();
+}
+
+void EditorWidget::drawInterface( QPainter *p, const QRect &r, GuiElement *w )
+{
+  Q_UNUSED( p );
+
+  QPoint point( r.x()+20, r.y() );
+  QFont fnt;
+  fnt.setPointSize( 14 );
+  fnt.setBold( true );
+  point.setX( point.x() + 10 + QFontMetrics( fnt ).width( w->ref().toString() ));
 
   mEditButton->move( point );
-  point.setY( point.y() + 20 );
   mEditButton->show();
-  
-
 }
 
 void EditorWidget::showActionMenu()
 {
   KActionMenu *menu = mEditor->actionMenu( mHoveredElement );
   menu->menu()->popup( mapToGlobal( mEditButton->pos() ) );
+  mActiveElement = mHoveredElement;
 }
 
+GuiElement *EditorWidget::selectElement()
+{
+  mSelectionMode = true;
+  mEventLoop->exec();
+  return mHoveredElement;
+}
 
 #include "editorwidget.moc"

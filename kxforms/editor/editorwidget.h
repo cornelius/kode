@@ -26,6 +26,7 @@
 
 class QTimer;
 class QPushButton;
+class QEventLoop;
 
 namespace KXForms {
 
@@ -41,22 +42,35 @@ class EditorWidget : public QWidget
     void setGuiElements( const GuiElement::List &list );
 
     GuiElement *hoveredElement() { return mHoveredElement; }
+
+    GuiElement *selectElement();
+
+    void setInEdit( bool b );
+
   public Q_SLOTS:
     void showActionMenu();
 
   protected:
     void mouseMoveEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event );
     void paintEvent( QPaintEvent *event );
     void drawInterface( QPainter *p, const QRect &, GuiElement *e );
+    void highlightElement( QPainter *p, const QRect &, GuiElement *e );
+    void targetElement( QPainter *p, const QRect &, GuiElement *e );
 
   private:
     Editor *mEditor;
-//     GuiElement::List mGuiElements;
     QMap< GuiElement *, QRect > mElementMap;
 
     QPushButton *mEditButton;
 
     GuiElement *mHoveredElement;
+    GuiElement *mActiveElement;
+
+    QEventLoop *mEventLoop;
+
+    bool mSelectionMode;
+    bool mInEdit;
 };
 
 }

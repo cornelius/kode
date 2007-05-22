@@ -56,8 +56,8 @@ class Editor : public QObject
     void registerElement( GuiElement * );
     bool editMode() const { return mEditMode; }
 
-    void beginEdit() { mInEdit = true; }
-    void finishEdit() { mInEdit = false; }
+    void beginEdit();
+    void finishEdit();
 
     bool inEdit() const { return mInEdit; }
 
@@ -68,7 +68,7 @@ class Editor : public QObject
     void addHints( const Hints &h ) { mHints.merge( h ); }
     Hints hints() const { return mHints; }
 
-    EditorWidget *selectWidget();
+    GuiElement *selectWidget();
 
   Q_SIGNALS:
     void hintsChanged( const Hints &h );
@@ -76,9 +76,6 @@ class Editor : public QObject
   public Q_SLOTS:
     void setEditMode( bool );
     void toggleEditMode();
-
-  protected:
-    bool eventFilter( QObject *obj, QEvent *e );
 
   private Q_SLOTS:
     void applyHint( const Hint &h );

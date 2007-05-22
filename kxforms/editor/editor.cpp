@@ -130,7 +130,6 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
 void Editor::registerElement( GuiElement *element )
 {
   kDebug() << k_funcinfo << "Registered element " << element->ref().toString() << endl;
-//   element->editorWidget()->installEventFilter( this );
   mElements.append( element );
 }
 
@@ -190,31 +189,23 @@ void Editor::applyHint( const Hint &h )
   emit hintsChanged( mHints );
 }
 
-bool Editor::eventFilter( QObject *obj, QEvent *e )
-{
-  if (e->type() == QEvent::MouseButtonRelease) {
-    EditorWidget *w = dynamic_cast<EditorWidget *>( obj );
-    if( !w )
-      return false;
-
-    mChosenEditorWidget = w;
-    if( mEventLoop->isRunning() ) {
-      mEventLoop->exit();
-    }
-    return true;
-  } else {
-    return false;
-  }
-}
-
-EditorWidget *Editor::selectWidget()
+GuiElement *Editor::selectWidget()
 {
   kDebug() << k_funcinfo << endl;
 
-  mChosenEditorWidget = 0;
-  mEventLoop->exec();
+  return mEditorWidget->selectElement();
+}
 
-  return mChosenEditorWidget;
+void Editor::beginEdit()
+{
+  mInEdit = true;
+  mEditorWidget->setInEdit( true );
+}
+
+void Editor::finishEdit()
+{
+  mInEdit = false;
+  mEditorWidget->setInEdit( false );
 }
 
 #include "editor.moc"
