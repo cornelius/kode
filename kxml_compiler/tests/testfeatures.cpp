@@ -27,7 +27,6 @@
 #include <kdebug.h>
 
 #include <QFile>
-#include <QCoreApplication>
 #include <QTextStream>
 
 #include <iostream>
@@ -70,8 +69,6 @@ int main( int argc, char **argv )
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
-
-  QCoreApplication app( *KCmdLineArgs::qt_argc(), *KCmdLineArgs::qt_argv() );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
