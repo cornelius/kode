@@ -26,6 +26,7 @@
 #include <kdebug.h>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QTextDocument>
 
 using namespace KXForms;
 
@@ -379,7 +380,7 @@ QString Hints::toRichText() const
         QString tmp;
         QTextStream stream( &tmp );
         e.save( stream, 0 );
-        s += QString( "&nbsp;&nbsp;&nbsp;%1: \"%2\"<br>" ).arg( Hint::nameForType( t ), tmp.simplified() );
+        s += QString( "&nbsp;&nbsp;&nbsp;%1: \"%2\"<br>" ).arg( Hint::nameForType( t ), Qt::escape( tmp.simplified() ) );
       }
     }
   }
