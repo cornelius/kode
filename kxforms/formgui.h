@@ -59,7 +59,7 @@ class FormGui : public QWidget
 
     void setLabelHidden( bool );
 
-    GuiElement::List elements() { return mGuiElements; }
+    GuiElement::List elements();
   signals:
     void editingFinished();
 
@@ -87,9 +87,8 @@ class FormGui : public QWidget
     QPushButton *mEditButton;
 
     QTabWidget *mTabWidget;
-    QMap< QString, QLayout *> mTabs;
     QMap< QString, QString > mGroups;
-    
+
     bool mLabelHidden;
 };
 

@@ -99,9 +99,10 @@ void Editor::setEditMode( bool enabled )
   kDebug() << k_funcinfo << "Setting editmode to " << enabled << endl;
   mEditMode = enabled;
 
+
   if( enabled ) {
-    GuiElement::List list = mManager->currentGui()->elements();
-    QWidget *w = list.first()->widget()->parentWidget();
+    FormGui *w = mManager->currentGui();
+    GuiElement::List list = w->elements();
     mEditorWidget = new EditorWidget( this, w );
     mEditorWidget->setGuiElements( list );
     mEditorWidget->show();

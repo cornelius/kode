@@ -49,9 +49,9 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
   GuiElement *newElement = 0;
   QPoint pos = event->pos();
   foreach( GuiElement *e, mGuiElements ) {
-    kDebug() << pos << " : " << e->widget()->geometry() << endl;
-    if( e->widget()->geometry().contains( pos ) ) {
-      kDebug() << k_funcinfo << "Contains!!!!" << endl;
+    QRect r = e->widget()->geometry();
+    r.moveTopLeft( e->widget()->mapToGlobal(QPoint(0,0)) );
+    if( r.contains( mapToGlobal( pos ) ) ) {
       newElement = e;
       break;
     }
@@ -82,17 +82,29 @@ void EditorWidget::drawInterface( QPainter *p, GuiElement *w )
 
 //   menu->menu()->addTitle( i18n("Edit %1", w->element()->ref().toString() ) );
 
+  QRect r = w->widget()->geometry();
+  r.moveTopLeft( w->widget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0)) );
+
   QPen pen;
   pen.setColor( QColor(255,255,255,255) );
   pen.setWidth( 3 );
   p->setPen( pen );
-  p->drawRect( w->widget()->geometry() );
+  p->drawRect( r );
 
   QBrush b( QColor(0,0,0,50) );
-  p->fillRect( w->widget()->geometry(), b );
+  p->fillRect( r, b );
 
 
-  QPoint point( w->widget()->geometry().x()+20, w->widget()->geometry().y()+20 );
+  QPoint point( r.x()+20, r.y()+20 );
+
+  p->save();
+  QFont fnt;
+  fnt.setPointSize( 14 );
+  fnt.setBold( true );
+  p->setFont( fnt );
+  p->drawText( point, w->ref().toString() );
+  point.setY( point.y() + 20 );
+  p->restore();
 
   if( w->actionTypes() & Editor::CommonActions ) {
     p->drawText( point, i18n("Change Label") );

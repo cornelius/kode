@@ -211,8 +211,9 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       QString title = mGroups[ it.key() ];
       if( title.isEmpty() )
         title = mGroups.values().first();
-      if( mTabWidget )
+      if( mTabWidget ) {
         mTabWidget->addTab( w, title );
+      }
     } else if( mTabWidget ) {
       int index = mTabWidget->indexOf( layout->parentWidget() );
       QString title = mTabWidget->tabText( index );
@@ -335,6 +336,28 @@ void FormGui::setupGroups( QLayout *l, const QDomElement &element )
       mGroups[ e.attribute( "id" ) ] = e.text();
     }
     e = e.nextSibling().toElement();
+  }
+}
+
+GuiElement::List FormGui::elements()
+{
+  if( !mTabWidget )
+    return mGuiElements;
+  else {
+    GuiElement::List list;
+    int currentIndex = mTabWidget->currentIndex();
+    foreach( GuiElement *e, mGuiElements ) {
+      QWidget *it = e->widget();
+      while( it->parentWidget() ) {
+        if( mTabWidget->indexOf( it ) >= 0 &&
+             mTabWidget->indexOf( it ) == currentIndex ) {
+          list.append( e );
+          break;
+        }
+        it = it->parentWidget();
+      }
+    }
+    return list;
   }
 }
 

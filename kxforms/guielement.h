@@ -91,6 +91,7 @@ class GuiElement : public QObject
 
     void addAttributeElement( GuiElement *e ) { mAttributeElements.append( e ); }
     GuiElement::List attributeElements() { return mAttributeElements; }
+
   signals:
     void valueChanged( const QString &, const QString & );
 
