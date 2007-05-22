@@ -55,9 +55,11 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
 void EditorWidget::setGuiElements( const GuiElement::List &list )
 {
   foreach( GuiElement *e, list ) {
-    QRect r = e->widget()->geometry() | e->labelWidget()->geometry();
+    QRect r = e->widget()->geometry();
+    if( e->labelWidget() )
+      r |= e->labelWidget()->geometry();
     QPoint widgetPos = e->widget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0));
-    QPoint labelWidgetPos = e->labelWidget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0));
+    QPoint labelWidgetPos = e->labelWidget() ? e->labelWidget()->mapToGlobal(QPoint(0,0)) - mapToGlobal(QPoint(0,0)) : widgetPos;
     r.moveTop( qMin( widgetPos.y(), labelWidgetPos.y() ) );
     r.moveLeft( qMin( widgetPos.x(), labelWidgetPos.x() ) );
 
