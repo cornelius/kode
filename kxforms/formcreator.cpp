@@ -41,6 +41,8 @@ QString FormCreator::create( const Schema::Document &schemaDocument )
 
   XmlBuilder xml( "kxforms" );
 
+  createDefaults( &xml );
+
   createForm( &xml, schemaDocument.startElement() );
 
   foreach ( Schema::Element element, schemaDocument.usedElements() ) {
@@ -52,6 +54,15 @@ QString FormCreator::create( const Schema::Document &schemaDocument )
   kDebug() << "---FormCreator::create() done" << endl;
 
   return xml.print();
+}
+
+void FormCreator::createDefaults( XmlBuilder *xml )
+{
+  Reference r( "*");
+  if( mHints.hint( r ).isValid() ) {
+    XmlBuilder *defaults = xml->tag( "defaults" );
+    applyCommonHints( defaults, r );
+  }
 }
 
 void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )

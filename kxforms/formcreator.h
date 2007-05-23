@@ -50,6 +50,7 @@ class FormCreator
 
   protected:
     void createForm( XmlBuilder *xml, const Schema::Element &element );
+    void createDefaults( XmlBuilder *xml );
 
     void createLabel( XmlBuilder *parent, const Schema::Node &node );
 
