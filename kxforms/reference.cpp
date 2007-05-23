@@ -182,6 +182,8 @@ void Reference::fromString( const QString &str )
 {
   mAbsolute = str.startsWith( "/" );
 
+  mSegments.clear();
+
   QStringList s = str.split( "/" );
   QStringList::ConstIterator it;
   for( it = s.begin(); it != s.end(); ++it ) {
