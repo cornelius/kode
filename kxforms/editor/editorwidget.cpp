@@ -36,6 +36,7 @@
 #include <QPushButton>
 #include <QEventLoop>
 #include <QWhatsThis>
+#include <QVBoxLayout>
 
 using namespace KXForms;
 
@@ -45,12 +46,27 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
 {
   setMouseTracking( true );
   setGeometry( parent->geometry() );
+  init();
+}
 
-  mShowHintsButton = new QPushButton( this );
+void EditorWidget::init()
+{
+  mInterfaceWidget = new QWidget( this );
+  QVBoxLayout *vbl = new QVBoxLayout( mInterfaceWidget );
+  vbl->setMargin( 0 );
+
+  mShowHintsButton = new QPushButton( mInterfaceWidget );
   mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "list", K3Icon::NoGroup, 32 ) );
-  mShowHintsButton->move( QPoint( width() - mShowHintsButton->width(), 0 ) );
   mShowHintsButton->setToolTip( i18n("Show hints") );
   connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
+  vbl->addWidget( mShowHintsButton );
+
+
+  mEditDefaultsButton = new QPushButton( mInterfaceWidget );
+  mEditDefaultsButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
+  mEditDefaultsButton->setToolTip( i18n("Edit global defaults") );
+  connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
+  vbl->addWidget( mEditDefaultsButton );
 
 
   mEditButton = new QPushButton( this );
@@ -147,9 +163,8 @@ void EditorWidget::drawGlobalInterface( QPainter *p )
   QBrush b( QColor(0,0,0,25) );
   p->fillRect( rect(), b );
 
-  int boxWidth = 20 + mShowHintsButton->width();
-  int boxHeight = 20 + mShowHintsButton->height();
-  QRect r( width() - boxWidth - 10, 10, boxWidth, boxHeight );
+  mInterfaceWidget->move( width() - mInterfaceWidget->width()-10, 10 );
+  QRect r( width() - mInterfaceWidget->width() - 15, 5,  mInterfaceWidget->width()+10,  mInterfaceWidget->height()+10 );
 
   QPen pen;
   pen.setColor( QColor(255,255,255,255) );
@@ -158,8 +173,6 @@ void EditorWidget::drawGlobalInterface( QPainter *p )
   p->setPen( pen );
   p->setBrush( b );
   p->drawRoundRect( r );
-
-  mShowHintsButton->move( width() - 20 - mShowHintsButton->width(), 20 );
 
   p->restore();
 }

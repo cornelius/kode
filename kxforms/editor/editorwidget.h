@@ -52,6 +52,8 @@ class EditorWidget : public QWidget
     void showHints();
 
   protected:
+    void init();
+
     void mouseMoveEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
     void paintEvent( QPaintEvent *event );
@@ -65,8 +67,10 @@ class EditorWidget : public QWidget
     Editor *mEditor;
     QMap< GuiElement *, QRect > mElementMap;
 
+    QWidget *mInterfaceWidget;
     QPushButton *mEditButton;
     QPushButton *mShowHintsButton;
+    QPushButton *mEditDefaultsButton;
 
     GuiElement *mHoveredElement;
     GuiElement *mActiveElement;
