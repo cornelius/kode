@@ -50,6 +50,7 @@ class EditorWidget : public QWidget
   public Q_SLOTS:
     void showActionMenu();
     void showHints();
+    void editDefaults();
 
   protected:
     void init();

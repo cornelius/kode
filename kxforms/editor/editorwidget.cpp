@@ -65,7 +65,7 @@ void EditorWidget::init()
   mEditDefaultsButton = new QPushButton( mInterfaceWidget );
   mEditDefaultsButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
   mEditDefaultsButton->setToolTip( i18n("Edit global defaults") );
-  connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
+  connect( mShowHintsButton, SIGNAL(clicked()), SLOT(editDefaults()) );
   vbl->addWidget( mEditDefaultsButton );
 
 
@@ -239,6 +239,10 @@ void EditorWidget::showHints()
 {
   QString text = mEditor->hints().toRichText();
   QWhatsThis::showText( mapToGlobal( mShowHintsButton->pos() ), text );
+}
+
+void EditorWidget::editDefaults()
+{
 }
 
 GuiElement *EditorWidget::selectElement()
