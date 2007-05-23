@@ -49,12 +49,14 @@ EditorWidget::EditorWidget( Editor *e, QWidget *parent )
   mShowHintsButton = new QPushButton( this );
   mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "list", K3Icon::NoGroup, 32 ) );
   mShowHintsButton->move( QPoint( width() - mShowHintsButton->width(), 0 ) );
+  mShowHintsButton->setToolTip( i18n("Show hints") );
   connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
 
 
   mEditButton = new QPushButton( this );
   mEditButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
   mEditButton->hide();
+  mEditButton->setToolTip( i18n("Edit element") );
   connect( mEditButton, SIGNAL(clicked()), SLOT(showActionMenu()) );
 }
 
