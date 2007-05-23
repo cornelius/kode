@@ -1,4 +1,8 @@
 <ugh>
+  <hint ref="*">
+    <layoutstyle>vertical</layoutstyle>
+    <appearance>full</appearance>
+  </hint>
   <hint ref="/category">
     <listSearch>true</listSearch>
   </hint>

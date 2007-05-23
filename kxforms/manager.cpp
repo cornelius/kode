@@ -75,7 +75,7 @@ bool Manager::parseForms( const QString &xml )
       mForms.append( form );
     } else if( e.tagName() == "defaults" ) {
       kDebug() << "Found a defaults-element" << endl;
-      GuiElement::parseProperties( docElement, mDefaultProperties );
+      GuiElement::parseProperties( e, mDefaultProperties );
     } else {
       kError() << "Expected 'form' or 'defaults' element. Got '" << e.tagName() << "'" << endl;
       return false;
