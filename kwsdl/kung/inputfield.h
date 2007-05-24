@@ -38,7 +38,7 @@ class ComplexType;
 /**
   Abstract base class for all kinds of input fields.
  */
-class KUNG_EXPORT InputField : public QObject
+class KSCHEMAWIDGETS_EXPORT InputField : public QObject
 {
   Q_OBJECT
 

@@ -32,7 +32,7 @@
 
 namespace KXForms {
 
-class GuiElement::Properties;
+struct GuiElement::Properties;
 
 class Manager
 {

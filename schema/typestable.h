@@ -49,7 +49,7 @@ class TypesTable
 
     QString typeName( int id ) const;
 
-    int addExternalTypeId( const QName &type, XSDType *type );
+    int addExternalTypeId( const QName &name, XSDType *type );
 
     int numExtRefs() const;
     QName extRefName( int index ) const;

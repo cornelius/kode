@@ -28,7 +28,7 @@
 
 #include "inputfield.h"
 
-class KUNG_EXPORT PageInputField : public InputField
+class KSCHEMAWIDGETS_EXPORT PageInputField : public InputField
 {
   Q_OBJECT
 

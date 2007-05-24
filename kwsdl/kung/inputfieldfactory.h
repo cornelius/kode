@@ -33,7 +33,7 @@ class SimpleType;
 /**
   Factory class, which creates InputFields for a given type.
  */
-class KUNG_EXPORT InputFieldFactory
+class KSCHEMAWIDGETS_EXPORT InputFieldFactory
 {
   public:
     /**

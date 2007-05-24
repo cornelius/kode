@@ -24,7 +24,7 @@
 
 #include <kdialog.h>
 #include <kode_export.h>
-class KUNG_EXPORT InputDialog : public KDialog
+class KSCHEMAWIDGETS_EXPORT InputDialog : public KDialog
 {
   public:
     InputDialog( QWidget *page, QWidget *parent );
