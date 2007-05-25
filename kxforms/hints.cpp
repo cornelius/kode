@@ -121,40 +121,40 @@ QString Hint::nameForType( Type t )
   QString s;
   switch( t ) {
     case Label:
-      s = "Label";
+      s = "label";
       break;
     case ListShowHeader:
-      s = "ListShowHeader";
+      s = "listShowHeader";
       break;
     case ListHeader:
-      s = "ListHeader";
+      s = "listHeader";
       break;
     case ListShowSearch:
-      s = "ListShowSearch";
+      s = "listShowSearch";
       break;
     case ListItemLabel:
-      s = "ListItemLabel";
+      s = "listItemLabel";
       break;
     case ListItemList:
-      s = "ListItemList";
+      s = "listItemList";
       break;
     case Groups:
-      s = "Groups";
+      s = "groups";
       break;
     case GroupReference:
-      s = "GroupReference";
+      s = "groupReference";
       break;
     case Appearance:
-      s = "Appearance";
+      s = "appearance";
       break;
     case Position:
-      s = "Position";
+      s = "position";
       break;
     case LayoutStyle:
-      s = "LayoutStyle";
+      s = "layoutStyle";
       break;
     default:
-      s = "Unknown";
+      s = "unknown";
   }
 
   return s;
@@ -277,6 +277,47 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
 
   mHints[ ref.toString() ] = hint;
 }
+
+QString Hints::toXml()
+{
+  QString xml;
+  xml = "<ugh>\n";
+
+  Hint::List theHints = hints();
+  foreach( Hint h, theHints) {
+    xml.append( QString( "  <hint ref=\"%1\">\n" ).arg( h.ref().toString() ) );
+
+    QMap<Hint::Type, QString>::iterator it;
+    QMap<Hint::Type, QString> values = h.values();
+    for( it = values.begin(); it != values.end(); ++it ) {
+      xml.append( QString( "    <%1>%2</%1>\n" ).arg( Hint::nameForType( it.key() ), it.value() ) );
+    }
+
+    QMap< Hint::Type, QList<QDomElement> >::iterator it2;
+    QMap< Hint::Type, QList<QDomElement> > elements = h.allElements();
+    for( it2 = elements.begin(); it2 != elements.end(); ++it2 ) {
+      xml.append( QString( "    <%1>\n").arg( Hint::nameForType( it2.key() ) ) );
+
+      foreach( QDomElement e, it2.value() ) {
+        QString s;
+        QTextStream stream( &s );
+        e.save( stream, 6);
+        xml.append( s );
+      }
+
+      xml.append( QString( "    </%1>\n").arg( Hint::nameForType( it2.key() ) ) );
+    }
+    xml.append( QString( "  </hint>\n") );
+  }
+
+
+  xml.append( "<ugh>" );
+
+  kDebug() << k_funcinfo << xml << endl;
+
+  return xml;
+}
+
 
 void Hints::merge( const Hints &hints )
 {

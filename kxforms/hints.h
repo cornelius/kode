@@ -79,6 +79,8 @@ class Hints
     bool parseFile( QFile & );
     bool parseString( const QString & );
 
+    QString toXml();
+
     void insertHint( const Hint & );
     
     Hint hint( const Reference &ref ) const;
