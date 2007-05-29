@@ -61,6 +61,13 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   mTypeLineEdit = new KLineEdit( page );
   topLayout->addWidget( mTypeLineEdit, 1, 1 );
 
+
+  QLabel *constraintLabel = new QLabel( i18n("Constraint for input elements"), page );
+  topLayout->addWidget( constraintLabel, 2, 0 );
+
+  mConstraintLineEdit = new KLineEdit( page );
+  topLayout->addWidget( mConstraintLineEdit, 2, 1 );
+
   load();
 }
 
@@ -70,6 +77,7 @@ void GlobalSettingsDialog::load()
 
   mAppearanceBox->setCurrentIndex( p.appearance );
   mTypeLineEdit->setText( p.type );
+  mConstraintLineEdit->setText( p.constraint );
 }
 
 void GlobalSettingsDialog::save()

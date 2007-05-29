@@ -49,6 +49,7 @@ class GlobalSettingsDialog : public KDialog
 
     QComboBox *mAppearanceBox;
     KLineEdit *mTypeLineEdit;
+    KLineEdit *mConstraintLineEdit;
 };
 
 }
