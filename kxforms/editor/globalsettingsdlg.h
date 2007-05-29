@@ -28,6 +28,7 @@
 
 class QComboBox;
 class KLineEdit;
+class QCheckBox;
 
 namespace KXForms {
 
@@ -50,6 +51,7 @@ class GlobalSettingsDialog : public KDialog
     QComboBox *mAppearanceBox;
     KLineEdit *mTypeLineEdit;
     KLineEdit *mConstraintLineEdit;
+    QCheckBox *mReadOnlyCheckBox;
 };
 
 }

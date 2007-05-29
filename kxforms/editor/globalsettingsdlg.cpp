@@ -25,6 +25,7 @@
 
 #include <QGridLayout>
 #include <QComboBox>
+#include <QCheckBox>
 
 #include <klocale.h>
 #include <klineedit.h>
@@ -68,6 +69,15 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   mConstraintLineEdit = new KLineEdit( page );
   topLayout->addWidget( mConstraintLineEdit, 2, 1 );
 
+
+
+  QLabel *readOnlyLabel = new QLabel( i18n("Read only"), page );
+  topLayout->addWidget( readOnlyLabel, 3, 0 );
+
+  mReadOnlyCheckBox = new QCheckBox( page );
+  topLayout->addWidget( mReadOnlyCheckBox, 3, 1 );
+
+
   load();
 }
 
@@ -78,6 +88,7 @@ void GlobalSettingsDialog::load()
   mAppearanceBox->setCurrentIndex( p.appearance );
   mTypeLineEdit->setText( p.type );
   mConstraintLineEdit->setText( p.constraint );
+  mReadOnlyCheckBox->setChecked( p.readonly );
 }
 
 void GlobalSettingsDialog::save()
