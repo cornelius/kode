@@ -74,6 +74,8 @@ class Editor : public QObject
 
     GuiElement *selectWidget();
 
+    Manager *manager() { return mManager; }
+
   Q_SIGNALS:
     void hintsChanged( const Hints &h );
 

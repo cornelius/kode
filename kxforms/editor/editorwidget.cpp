@@ -21,6 +21,8 @@
 
 #include "editorwidget.h"
 #include "editor.h"
+#include "globalsettingsdlg.h"
+#include "../manager.h"
 
 #include <kdebug.h>
 #include <kpixmapeffect.h>
@@ -76,8 +78,8 @@ void EditorWidget::init()
 
   mEditDefaultsButton = new QPushButton( mInterfaceWidget );
   mEditDefaultsButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
-  mEditDefaultsButton->setToolTip( i18n("Edit global defaults") );
-  connect( mShowHintsButton, SIGNAL(clicked()), SLOT(editDefaults()) );
+  mEditDefaultsButton->setToolTip( i18n("Edit global settings") );
+  connect( mEditDefaultsButton, SIGNAL(clicked()), SLOT(editDefaults()) );
   vbl->addWidget( mEditDefaultsButton );
 
 
@@ -132,6 +134,7 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 
 void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 {
+  Q_UNUSED( event )
 //   kDebug() << k_funcinfo << endl;
   if( !mSelectionMode )
     return;
@@ -144,6 +147,7 @@ void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 
 void EditorWidget::paintEvent( QPaintEvent *event )
 {
+  Q_UNUSED( event )
 //   kDebug() << k_funcinfo << endl;
   QPainter p( this );
 
@@ -191,6 +195,8 @@ void EditorWidget::drawGlobalInterface( QPainter *p )
 
 void EditorWidget::targetElement( QPainter *p, const QRect &r, GuiElement *w )
 {
+  Q_UNUSED( w )
+
   p->save();
 
   QPen pen;
@@ -255,6 +261,10 @@ void EditorWidget::showHints()
 
 void EditorWidget::editDefaults()
 {
+  GlobalSettingsDialog dlg( *mEditor->manager()->defaultProperties(), this );
+
+  if( dlg.exec() == QDialog::Accepted ) {
+  }
 }
 
 GuiElement *EditorWidget::selectElement()
