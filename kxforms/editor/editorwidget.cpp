@@ -62,6 +62,18 @@ void EditorWidget::init()
   vbl->addWidget( mShowHintsButton );
 
 
+  mSaveHintsButton = new QPushButton( mInterfaceWidget );
+  mSaveHintsButton->setIcon( KIconLoader::global()->loadIcon( "document-save", K3Icon::NoGroup, 32 ) );
+  mSaveHintsButton->setToolTip( i18n("Save hints") );
+  connect( mSaveHintsButton, SIGNAL(clicked()), mEditor, SLOT(saveHints()) );
+  vbl->addWidget( mSaveHintsButton );
+
+  mSaveHintsAsButton = new QPushButton( mInterfaceWidget );
+  mSaveHintsAsButton->setIcon( KIconLoader::global()->loadIcon( "document-save-as", K3Icon::NoGroup, 32 ) );
+  mSaveHintsAsButton->setToolTip( i18n("Save hints as...") );
+  connect( mSaveHintsAsButton, SIGNAL(clicked()), mEditor, SLOT(saveHintsAs()) );
+  vbl->addWidget( mSaveHintsAsButton );
+
   mEditDefaultsButton = new QPushButton( mInterfaceWidget );
   mEditDefaultsButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
   mEditDefaultsButton->setToolTip( i18n("Edit global defaults") );

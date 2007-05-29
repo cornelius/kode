@@ -249,6 +249,7 @@ void MainWindow::parseSchema()
 //    hints.dump();
     creator.mergeHints( hints );
     mFormsManager.editor()->addHints( hints );
+    mFormsManager.editor()->setCurrentHintsUrl( mHintsFile->url() );
   }
 
   creator.hints().dump();

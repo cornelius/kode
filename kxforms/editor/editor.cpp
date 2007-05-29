@@ -36,7 +36,8 @@
 #include <klocale.h>
 #include <kmenu.h>
 #include <kapplication.h>
-#include <kpixmapeffect.h>
+#include <kmessagebox.h>
+#include <kfiledialog.h>
 
 #include <QEvent>
 #include <QEventLoop>
@@ -206,6 +207,37 @@ void Editor::finishEdit()
 {
   mInEdit = false;
   mEditorWidget->setInEdit( false );
+}
+
+void Editor::saveHints()
+{
+  if( mHintsUrl.isEmpty() || !mHintsUrl.isValid() ) {
+    KMessageBox::sorry( mEditorWidget, i18n("Invalid Url '%1'.",
+        mHintsUrl.prettyUrl() ) );
+    return;
+  } else {
+    QFile file( mHintsUrl.path() );
+    if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) {
+      KMessageBox::sorry( mEditorWidget, i18n("Can't open '%1'.",
+        mHintsUrl.prettyUrl() ) );
+      return;
+    }
+    file.write( mHints.toXml().toLatin1() );
+    file.close();
+  }
+}
+
+void Editor::saveHintsAs()
+{
+  KUrl url = KFileDialog::getSaveUrl(  KUrl(), QString(), mEditorWidget,
+    i18n("Select Hints File") );
+  if( !url.isEmpty() && url.isValid() ) {
+    mHintsUrl = url;
+    saveHints();
+  } else  {
+    KMessageBox::sorry( mEditorWidget, i18n("Invalid Url '%1'.",
+        url.prettyUrl() ) );
+  }
 }
 
 #include "editor.moc"

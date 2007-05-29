@@ -27,6 +27,8 @@
 #include <QList>
 #include <QMap>
 
+#include <kurl.h>
+
 class KActionMenu;
 class QEventLoop;
 class QLabel;
@@ -68,6 +70,8 @@ class Editor : public QObject
     void addHints( const Hints &h ) { mHints.merge( h ); }
     Hints hints() const { return mHints; }
 
+    void setCurrentHintsUrl( const KUrl &url ) { mHintsUrl = url; }
+
     GuiElement *selectWidget();
 
   Q_SIGNALS:
@@ -76,6 +80,9 @@ class Editor : public QObject
   public Q_SLOTS:
     void setEditMode( bool );
     void toggleEditMode();
+
+    void saveHints();
+    void saveHintsAs();
 
   private Q_SLOTS:
     void applyHint( const Hint &h );
@@ -96,6 +103,8 @@ class Editor : public QObject
     EditorWidget *mChosenEditorWidget;
 
     Hints mHints;
+
+    KUrl mHintsUrl;
 
     Manager *mManager;
 };
