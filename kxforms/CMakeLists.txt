@@ -38,6 +38,7 @@ set(kxforms_SRCS
    editor/listaction.cpp
    editor/positionaction.cpp
    editor/layoutstyleaction.cpp
+   editor/groupaction.cpp
    editor/changelabelaction.cpp )
 
 kde4_automoc(${kxforms_SRCS})

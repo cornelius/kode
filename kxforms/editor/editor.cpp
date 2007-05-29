@@ -27,6 +27,7 @@
 #include "listaction.h"
 #include "positionaction.h"
 #include "layoutstyleaction.h"
+#include "groupaction.h"
 
 #include "../manager.h"
 #include "../guielement.h"
@@ -86,6 +87,11 @@ void Editor::setupActions()
   connect( a, SIGNAL(hintGenerated( const Hint & )), 
       SLOT(applyHint( const Hint & )) );
   mActions[ "edit_layoutstyle" ] = a;
+
+  a = new GroupAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_group" ] = a;
 }
 
 KActionMenu *Editor::actionMenu( GuiElement *e )
@@ -108,6 +114,12 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
     layoutStyleAction->setData( "edit_layoutstyle" );
     QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
     menu->addAction( layoutStyleAction );
+
+
+    KAction *groupAction = new KAction( i18n("Change Group"), menu );
+    groupAction->setData( "edit_group" );
+    QObject::connect( groupAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( groupAction );
   }
 
   if( e->actionTypes() & Editor::AppearanceActions ) {
