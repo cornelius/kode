@@ -27,6 +27,7 @@
 #include <QComboBox>
 
 #include <klocale.h>
+#include <klineedit.h>
 
 using namespace KXForms;
 
@@ -38,8 +39,6 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   setButtons( KDialog::Ok | KDialog::Cancel );
   setDefaultButton( KDialog::Ok );
   showButtonSeparator( true );
-
-  GuiElement::Properties p( *mManager->defaultProperties() );
 
   QWidget *page = new QWidget(this);
   setMainWidget(page);
@@ -53,6 +52,27 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   appearanceValues << "minimal" << "compact" << "full";
   mAppearanceBox = new QComboBox( page );
   mAppearanceBox->addItems( appearanceValues );
-  mAppearanceBox->setCurrentIndex( p.appearance );
   topLayout->addWidget( mAppearanceBox, 0, 1 );
+
+
+  QLabel *typeLabel = new QLabel( i18n("Type for input elements"), page );
+  topLayout->addWidget( typeLabel, 1, 0 );
+
+  mTypeLineEdit = new KLineEdit( page );
+  topLayout->addWidget( mTypeLineEdit, 1, 1 );
+
+  load();
+}
+
+void GlobalSettingsDialog::load()
+{
+  GuiElement::Properties p( *mManager->defaultProperties() );
+
+  mAppearanceBox->setCurrentIndex( p.appearance );
+  mTypeLineEdit->setText( p.type );
+}
+
+void GlobalSettingsDialog::save()
+{
+
 }

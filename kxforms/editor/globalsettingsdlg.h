@@ -27,6 +27,7 @@
 #include "../guielement.h"
 
 class QComboBox;
+class KLineEdit;
 
 namespace KXForms {
 
@@ -38,11 +39,16 @@ class GlobalSettingsDialog : public KDialog
     GlobalSettingsDialog( Manager *manager, QWidget *parent );
 
   private:
+    void load();
+    void save();
+
+  private:
     GuiElement::Properties mDefaultProperties;
 
     Manager *mManager;
 
     QComboBox *mAppearanceBox;
+    KLineEdit *mTypeLineEdit;
 };
 
 }
