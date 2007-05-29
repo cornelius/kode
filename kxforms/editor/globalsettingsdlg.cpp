@@ -20,16 +20,18 @@
 */
 
 #include "globalsettingsdlg.h"
+#include "../manager.h"
+#include "../guielement.h"
 
-#include <QVBoxLayout>
-#include <QGroupBox>
+#include <QGridLayout>
+#include <QComboBox>
 
 #include <klocale.h>
 
 using namespace KXForms;
 
-GlobalSettingsDialog::GlobalSettingsDialog( const GuiElement::Properties &defaultProperties, QWidget *parent )
-: KDialog( parent ), mDefaultProperties( defaultProperties )
+GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
+: KDialog( parent ), mManager( manager )
 {
   setCaption( i18n("Global Settings") );
 
@@ -37,9 +39,20 @@ GlobalSettingsDialog::GlobalSettingsDialog( const GuiElement::Properties &defaul
   setDefaultButton( KDialog::Ok );
   showButtonSeparator( true );
 
+  GuiElement::Properties p( *mManager->defaultProperties() );
+
   QWidget *page = new QWidget(this);
   setMainWidget(page);
 
-  QVBoxLayout *topLayout = new QVBoxLayout( page );	
-  topLayout->addSpacing( spacingHint() );
+  QGridLayout *topLayout = new QGridLayout( page );
+
+  QLabel *appearanceLabel = new QLabel( i18n("Appearance"), page );
+  topLayout->addWidget( appearanceLabel, 0, 0 );
+
+  QStringList appearanceValues;
+  appearanceValues << "minimal" << "compact" << "full";
+  mAppearanceBox = new QComboBox( page );
+  mAppearanceBox->addItems( appearanceValues );
+  mAppearanceBox->setCurrentIndex( p.appearance );
+  topLayout->addWidget( mAppearanceBox, 0, 1 );
 }

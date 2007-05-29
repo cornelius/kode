@@ -261,7 +261,7 @@ void EditorWidget::showHints()
 
 void EditorWidget::editDefaults()
 {
-  GlobalSettingsDialog dlg( *mEditor->manager()->defaultProperties(), this );
+  GlobalSettingsDialog dlg( mEditor->manager(), this );
 
   if( dlg.exec() == QDialog::Accepted ) {
   }

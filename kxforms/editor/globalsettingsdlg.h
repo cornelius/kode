@@ -26,17 +26,23 @@
 
 #include "../guielement.h"
 
+class QComboBox;
+
 namespace KXForms {
 
-class GuiElement::Properties;
+class Manager;
 
 class GlobalSettingsDialog : public KDialog
 {
   public:
-    GlobalSettingsDialog( const GuiElement::Properties &defaultProperties, QWidget *parent );
+    GlobalSettingsDialog( Manager *manager, QWidget *parent );
 
   private:
     GuiElement::Properties mDefaultProperties;
+
+    Manager *mManager;
+
+    QComboBox *mAppearanceBox;
 };
 
 }
