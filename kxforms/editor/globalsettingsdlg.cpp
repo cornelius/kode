@@ -81,7 +81,7 @@ void GlobalSettingsDialog::load()
   GuiElement::Properties p( *mManager->defaultProperties() );
 
   mAppearanceBox->setCurrentIndex( p.appearance );
-  mReadOnlyCheckBox->setChecked( p.readonly );
+  mReadOnlyCheckBox->setCheckState( p.readonly ? Qt::Checked : Qt::Unchecked );
   mStyleBox->setCurrentIndex( p.layoutStyle );
 }
 

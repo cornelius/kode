@@ -514,30 +514,35 @@ void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
   if( !hint.isValid() )
     return;
 
+  XmlBuilder *properties = 0;
+  XmlBuilder *inputproperties = 0;
   XmlBuilder *layout = 0;
   if( hint.hasValue( Hint::GroupReference ) ) {
-    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
+    if( !properties ) properties = xml->tag( "properties" );
+    if( !layout ) layout = properties->tag( "layout" );
     layout->tag( "groupRef", hint.value( Hint::GroupReference ) );
   }
 
   if( hint.hasValue( Hint::Appearance ) ) {
-    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
+    if( !properties ) properties = xml->tag( "properties" );
+    if( !layout ) layout = properties->tag( "layout" );
     layout->tag( "appearance", hint.value( Hint::Appearance ) );
   }
 
   if( hint.hasValue( Hint::LayoutStyle ) ) {
-    if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
+    if( !properties ) properties = xml->tag( "properties" );
+    if( !layout ) layout = properties->tag( "layout" );
     layout->tag( "layoutstyle", hint.value( Hint::LayoutStyle ) );
   }
 
   if( hint.hasValue( Hint::ReadOnly ) ) {
-    if( !layout ) layout = xml->tag( "properties" );
-    layout->tag( "readonly", hint.value( Hint::ReadOnly ) );
+    if( !properties ) properties = xml->tag( "properties" );
+    properties->tag( "readonly", hint.value( Hint::ReadOnly ) );
   }
 
   if( hint.hasValue( Hint::InputType ) ) {
-    if( !layout ) layout = xml->tag( "properties" );
-    layout->tag( "inputtype", hint.value( Hint::InputType ) );
+    if( !inputproperties ) inputproperties = xml->tag( "inputproperties" );
+    inputproperties->tag( "inputtype", hint.value( Hint::InputType ) );
   }
 
   if( hint.elements( Hint::Position ).size() > 0 ) {

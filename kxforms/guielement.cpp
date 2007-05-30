@@ -35,6 +35,8 @@ GuiElement::GuiElement( QWidget *parent, Manager *manager, Properties *p )
 {
   if( !mProperties )
     mProperties = new Properties;
+
+  setRelevant( !mProperties->readonly );
 }
 
 GuiElement::~GuiElement()

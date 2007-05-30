@@ -154,7 +154,7 @@ QString Hint::nameForType( Type t )
       s = "layoutStyle";
       break;
     case ReadOnly:
-      s = "readonly";
+      s = "readOnly";
       break;
     case InputType:
       s = "type";
@@ -276,7 +276,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       }
     } else if (name.localName() == "listShowHeader" ) {
       hint.setValue( Hint::ListShowHeader, contentAsString( e ) );
-    } else if (name.localName() == "readonly" ) {
+    } else if (name.localName() == "readOnly" ) {
       hint.setValue( Hint::ReadOnly, contentAsString( e ) );
     } else if (name.localName() == "type" ) {
       hint.setValue( Hint::InputType, contentAsString( e ) );
