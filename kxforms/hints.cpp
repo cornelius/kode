@@ -153,6 +153,12 @@ QString Hint::nameForType( Type t )
     case LayoutStyle:
       s = "layoutStyle";
       break;
+    case ReadOnly:
+      s = "readonly";
+      break;
+    case InputType:
+      s = "type";
+      break;
     default:
       s = "unknown";
   }
