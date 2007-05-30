@@ -261,10 +261,16 @@ void EditorWidget::showHints()
 
 void EditorWidget::editDefaults()
 {
-  GlobalSettingsDialog dlg( mEditor->manager(), this );
+  GlobalSettingsDialog *dlg = new GlobalSettingsDialog( mEditor->manager(), this );
+  Hint h;
 
-  if( dlg.exec() == QDialog::Accepted ) {
+  if( dlg->exec() == QDialog::Accepted ) {
+    h = dlg->hint();
   }
+  dlg->deleteLater();
+
+  if( h.isValid() )
+    mEditor->applyHint( h );
 }
 
 GuiElement *EditorWidget::selectElement()

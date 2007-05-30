@@ -25,6 +25,7 @@
 #include <kdialog.h>
 
 #include "../guielement.h"
+#include "../hints.h"
 
 class QComboBox;
 class KLineEdit;
@@ -39,18 +40,24 @@ class GlobalSettingsDialog : public KDialog
   public:
     GlobalSettingsDialog( Manager *manager, QWidget *parent );
 
+    Hint hint() { return mHint; }
+
+  protected:
+    virtual void accept();
+
   private:
     void load();
-    void save();
 
   private:
     GuiElement::Properties mDefaultProperties;
 
+    Hint mHint;
+
     Manager *mManager;
 
     QComboBox *mAppearanceBox;
+    QComboBox *mStyleBox;
     KLineEdit *mTypeLineEdit;
-    KLineEdit *mConstraintLineEdit;
     QCheckBox *mReadOnlyCheckBox;
 };
 

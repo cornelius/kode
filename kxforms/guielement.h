@@ -40,7 +40,7 @@ class GuiElement : public QObject
   Q_OBJECT
   public:
 
-    enum Appearance { Undefined, Minimal, Compact, Full };
+    enum Appearance { Undefined = -1, Minimal, Compact, Full };
     enum LayoutStyle { Horizontal, Vertical };
     struct Properties {
         Properties() : readonly( false ),

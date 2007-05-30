@@ -1,4 +1,8 @@
 <ugh>
+  <hint ref="*">
+    <appearance>compact</appearance>
+    <layoutstyle>vertical</layoutstyle>
+  </hint>
   <hint ref="version">
     <listHeader>Productversion</listHeader>
     <listItemLabel><itemLabelArg ref="product/name"/> (v%1)</listItemLabel>

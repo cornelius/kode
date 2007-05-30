@@ -56,26 +56,28 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   topLayout->addWidget( mAppearanceBox, 0, 1 );
 
 
-  QLabel *typeLabel = new QLabel( i18n("Type for input elements"), page );
-  topLayout->addWidget( typeLabel, 1, 0 );
+  QLabel *styleLabel = new QLabel( i18n("Layout Style"), page );
+  topLayout->addWidget( styleLabel, 1, 0 );
 
-  mTypeLineEdit = new KLineEdit( page );
-  topLayout->addWidget( mTypeLineEdit, 1, 1 );
-
-
-  QLabel *constraintLabel = new QLabel( i18n("Constraint for input elements"), page );
-  topLayout->addWidget( constraintLabel, 2, 0 );
-
-  mConstraintLineEdit = new KLineEdit( page );
-  topLayout->addWidget( mConstraintLineEdit, 2, 1 );
-
+  QStringList styleValues;
+  styleValues << "horizontal" << "vertical";
+  mStyleBox = new QComboBox( page );
+  mStyleBox->addItems( styleValues );
+  topLayout->addWidget( mStyleBox, 1, 1 );
 
 
   QLabel *readOnlyLabel = new QLabel( i18n("Read only"), page );
-  topLayout->addWidget( readOnlyLabel, 3, 0 );
+  topLayout->addWidget( readOnlyLabel, 2, 0 );
 
   mReadOnlyCheckBox = new QCheckBox( page );
-  topLayout->addWidget( mReadOnlyCheckBox, 3, 1 );
+  topLayout->addWidget( mReadOnlyCheckBox, 2, 1 );
+
+
+  QLabel *typeLabel = new QLabel( i18n("Type for input elements"), page );
+  topLayout->addWidget( typeLabel, 3, 0 );
+
+  mTypeLineEdit = new KLineEdit( page );
+  topLayout->addWidget( mTypeLineEdit, 3, 1 );
 
 
   load();
@@ -87,11 +89,17 @@ void GlobalSettingsDialog::load()
 
   mAppearanceBox->setCurrentIndex( p.appearance );
   mTypeLineEdit->setText( p.type );
-  mConstraintLineEdit->setText( p.constraint );
   mReadOnlyCheckBox->setChecked( p.readonly );
+  mStyleBox->setCurrentIndex( p.layoutStyle );
 }
 
-void GlobalSettingsDialog::save()
+void GlobalSettingsDialog::accept()
 {
+  mHint.setRef( "*" );
+  mHint.setValue( Hint::Appearance, mAppearanceBox->currentText() );
+  mHint.setValue( Hint::LayoutStyle, mStyleBox->currentText() );
+  mHint.setValue( Hint::ReadOnly, mReadOnlyCheckBox->checkState() == Qt::Checked ? "true" : "false" );
+  mHint.setValue( Hint::InputType, mTypeLineEdit->text() );
 
+  KDialog::accept();
 }

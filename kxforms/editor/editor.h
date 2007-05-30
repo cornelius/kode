@@ -83,11 +83,12 @@ class Editor : public QObject
     void setEditMode( bool );
     void toggleEditMode();
 
+    void applyHint( const Hint &h );
+
     void saveHints();
     void saveHintsAs();
 
   private Q_SLOTS:
-    void applyHint( const Hint &h );
     void actionTriggered();
 
   private:
