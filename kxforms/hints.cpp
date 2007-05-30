@@ -272,7 +272,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       hint.setValue( Hint::ListShowHeader, contentAsString( e ) );
     } else if (name.localName() == "readonly" ) {
       hint.setValue( Hint::ReadOnly, contentAsString( e ) );
-    } else if (name.localName() == "inputtype" ) {
+    } else if (name.localName() == "type" ) {
       hint.setValue( Hint::InputType, contentAsString( e ) );
     } else {
       kDebug() << "Unknown hint type: " << name.localName() << endl;

@@ -73,13 +73,6 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   topLayout->addWidget( mReadOnlyCheckBox, 2, 1 );
 
 
-  QLabel *typeLabel = new QLabel( i18n("Type for input elements"), page );
-  topLayout->addWidget( typeLabel, 3, 0 );
-
-  mTypeLineEdit = new KLineEdit( page );
-  topLayout->addWidget( mTypeLineEdit, 3, 1 );
-
-
   load();
 }
 
@@ -88,7 +81,6 @@ void GlobalSettingsDialog::load()
   GuiElement::Properties p( *mManager->defaultProperties() );
 
   mAppearanceBox->setCurrentIndex( p.appearance );
-  mTypeLineEdit->setText( p.type );
   mReadOnlyCheckBox->setChecked( p.readonly );
   mStyleBox->setCurrentIndex( p.layoutStyle );
 }
@@ -99,7 +91,6 @@ void GlobalSettingsDialog::accept()
   mHint.setValue( Hint::Appearance, mAppearanceBox->currentText() );
   mHint.setValue( Hint::LayoutStyle, mStyleBox->currentText() );
   mHint.setValue( Hint::ReadOnly, mReadOnlyCheckBox->checkState() == Qt::Checked ? "true" : "false" );
-  mHint.setValue( Hint::InputType, mTypeLineEdit->text() );
 
   KDialog::accept();
 }

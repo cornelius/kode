@@ -530,6 +530,16 @@ void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
     layout->tag( "layoutstyle", hint.value( Hint::LayoutStyle ) );
   }
 
+  if( hint.hasValue( Hint::ReadOnly ) ) {
+    if( !layout ) layout = xml->tag( "properties" );
+    layout->tag( "readonly", hint.value( Hint::ReadOnly ) );
+  }
+
+  if( hint.hasValue( Hint::InputType ) ) {
+    if( !layout ) layout = xml->tag( "properties" );
+    layout->tag( "inputtype", hint.value( Hint::InputType ) );
+  }
+
   if( hint.elements( Hint::Position ).size() > 0 ) {
     if( !layout ) layout = xml->tag( "properties" )->tag( "layout" );
     QList<QDomElement> positions = hint.elements( Hint::Position );

@@ -57,7 +57,6 @@ class GlobalSettingsDialog : public KDialog
 
     QComboBox *mAppearanceBox;
     QComboBox *mStyleBox;
-    KLineEdit *mTypeLineEdit;
     QCheckBox *mReadOnlyCheckBox;
 };
 
