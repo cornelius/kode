@@ -142,7 +142,7 @@ QString Hint::nameForType( Type t )
       s = "groups";
       break;
     case GroupReference:
-      s = "groupReference";
+      s = "groupRef";
       break;
     case Appearance:
       s = "appearance";
@@ -254,7 +254,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       hint.setValue( Hint::GroupReference, contentAsString( e ) );
     } else if (name.localName() == "appearance" ) {
       hint.setValue( Hint::Appearance, contentAsString( e ) );
-    } else if (name.localName() == "layoutstyle" ) {
+    } else if (name.localName() == "layoutStyle" ) {
       hint.setValue( Hint::LayoutStyle, contentAsString( e ) );
     } else if (name.localName() == "position" ) {
       QDomNode child = n.firstChild();
