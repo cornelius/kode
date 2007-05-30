@@ -1,51 +1,45 @@
 <ugh>
-  <hint ref="/*[1]">
-    <appearance>minimal</appearance>
-    <layoutStyle>horizontal</layoutStyle>
-    <readonly>true</readonly>
+  <hint ref="*">
+    <appearance>compact</appearance>
+    <layoutstyle>vertical</layoutstyle>
   </hint>
-  <hint ref="/description[1]">
-    <position>
-      <rightOf>/title</rightOf>
-    </position>
+  <hint ref="version">
+    <listHeader>Productversion</listHeader>
+    <listItemLabel><itemLabelArg ref="product/name"/> (v%1)</listItemLabel>
   </hint>
-  <hint ref="/documentationstatus[1]">
-    <label>Status of the documentation: </label>
-    <groupReference>documentation</groupReference>
-    <appearance>full</appearance>
-  </hint>
-  <hint ref="/feature[1]">
+  <hint ref="feature">
     <groups>
-      <group id="" >Feature</group>
-      <group id="other" >Other</group>
-      <group id="documentation" >Documentation</group>
+      <group id="">Feature</group>
+      <group id="other">Other</group>
+      <group id="documentation">Documentation</group>
     </groups>
   </hint>
-  <hint ref="/name[1]">
+  <hint ref="documentationstatus">
+    <groupRef>documentation</groupRef>
+    <appearance>full</appearance>
+    <label>Status of the documentation: </label>
+  </hint>
+  <hint ref="needinfo">
+    <label>Information required </label>
+  </hint>
+  <hint ref="partnercontext">
+    <groupRef>other</groupRef>
+  </hint>
+  <hint ref="productcontext">
+    <groupRef>other</groupRef>
+    <listShowHeader>true</listShowHeader>
+  </hint>
+  <hint ref="name">
     <label>Product</label>
     <listHeader>Product</listHeader>
   </hint>
-  <hint ref="/needinfo[1]">
-    <label>Information required </label>
+  <hint ref="organization">
+    <position><leftOf>externalid</leftOf></position>
   </hint>
-  <hint ref="/organization[1]">
-    <position>
-      <leftOf>externalid</leftOf>
-    </position>
+  <hint ref="partnerbenefit/richtext">
+    <position><rightOf>nda/richtext</rightOf></position>
   </hint>
-  <hint ref="/partnerbenefit[1]/richtext[1]">
-    <position>
-      <rightOf>nda/richtext</rightOf>
-    </position>
+  <hint ref="description">
+    <position><rightOf>/title</rightOf></position>
   </hint>
-  <hint ref="/partnercontext[1]">
-    <groupReference>other</groupReference>
-  </hint>
-  <hint ref="/productcontext[1]">
-    <listShowHeader>true</listShowHeader>
-    <groupReference>other</groupReference>
-  </hint>
-  <hint ref="/version[1]">
-    <listHeader>Productversion</listHeader>
-  </hint>
-<ugh>
+</ugh>
