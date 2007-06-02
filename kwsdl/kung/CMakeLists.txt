@@ -29,7 +29,7 @@ kde4_add_library(kschemawidgets SHARED ${kschemawidgets_LIB_SRCS})
 target_link_libraries(kschemawidgets  ${KDE4_KDECORE_LIBS} ${KDE4_KPARTS_LIBS} schema wsdl )
 
 # FIXME: Versioning like libtool?
-set_target_properties(kschemawidgets PROPERTIES VERSION 1.0.0 SOVERSION 1 )
+set_target_properties(kschemawidgets PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 install(TARGETS kschemawidgets  DESTINATION ${LIB_INSTALL_DIR})
 
 ########### next target ###############
