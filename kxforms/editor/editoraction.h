@@ -25,7 +25,6 @@
 
 namespace KXForms {
 
-class EditorWidget;
 class Editor;
 class Hint;
 class GuiElement;

@@ -24,7 +24,6 @@
 #include <QWidget>
 #include "../guielement.h"
 
-class QTimer;
 class QPushButton;
 class QEventLoop;
 

@@ -27,7 +27,6 @@
 #include <kurl.h>
 
 class QLabel;
-class KUpdate;
 class RemoteFile;
 namespace KXForms {
   class Hints;

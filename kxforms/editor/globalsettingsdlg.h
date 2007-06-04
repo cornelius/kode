@@ -28,7 +28,6 @@
 #include "../hints.h"
 
 class QComboBox;
-class KLineEdit;
 class QCheckBox;
 
 namespace KXForms {

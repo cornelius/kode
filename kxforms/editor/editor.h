@@ -31,7 +31,6 @@
 
 class KActionMenu;
 class QEventLoop;
-class QLabel;
 
 namespace KXForms {
 

@@ -24,12 +24,10 @@
 #include <QList>
 #include <QDomElement>
 
-class QWidget;
 
 namespace KXForms {
 
 class Manager;
-class FormGui;
 
 class Form
 {

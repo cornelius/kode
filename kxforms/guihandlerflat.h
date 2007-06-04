@@ -31,7 +31,6 @@
 #include <QUrl>
 
 class QWidget;
-class QBoxLayout;
 class QStackedWidget;
 class QPushButton;
 

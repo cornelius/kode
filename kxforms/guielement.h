@@ -33,7 +33,6 @@
 namespace KXForms {
 
 class Manager;
-class EditorWidget;
 
 class GuiElement : public QObject
 {
