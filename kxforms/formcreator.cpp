@@ -153,8 +153,6 @@ void FormCreator::parseElement( const Schema::Element &element, XmlBuilder *xml 
 
 void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *xml, bool topLevel, Reference path )
 {
-  QString currentChoice;
-
   XmlBuilder *section;
 
   kDebug() << path.segments().size() << endl;
@@ -178,8 +176,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
   XmlBuilder *list = 0;
   QStringList listTitles;
+  QString listRef;
   bool listHeaderSuppressed = false;
   XmlBuilder *choice = 0;
+  QString currentChoice;
 
   if( element.text() ) {
     XmlBuilder *textInput = 0;
@@ -202,25 +202,17 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     mCollapsedForms.append( element.name() );
   }
   else {
-    foreach( Schema::Relation r, element.elementRelations() ) {
+    Schema::Relation::List relations = element.elementRelations();
+    for( int i = 0; i < relations.size(); ++i ) {
+      Schema::Relation r = relations[i];
       kDebug() << "  CHILD ELEMENT" << r.target() << endl;
       kDebug() << "    CHOICE" << r.choice() << endl;
+
       if ( r.isList()) {
         bool isMixedList = r.choice().contains( "+" );
         if ( !list || r.choice().isEmpty() || currentChoice != r.choice() ) {
           list = section->tag( "list" );
           listTitles = QStringList();
-          applyCommonHints( list, r.target() );
-          Hint hint = mHints.hint( path + Reference( element.name() ) );
-          if ( hint.isValid() ) {
-            if( !hint.value( Hint::ListShowHeader ).isEmpty() ) {
-              list->attribute( "showHeader", hint.value( Hint::ListShowHeader ) );
-              listHeaderSuppressed = (hint.value( Hint::ListShowHeader ) == "false");
-            }
-            if( !hint.value( Hint::ListShowSearch ).isEmpty() ) {
-              list->attribute( "showSearch", hint.value( Hint::ListShowSearch ) );
-            }
-          }
 
           QString label;
           if ( isMixedList ) {
@@ -299,21 +291,43 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           }
         }
 
+        if( listRef.length() > 0 )
+          listRef.append( '+' + r.target() );
+        else
+          listRef = QString( "list/%1" ).arg( r.target() );
+
         if( headers.size() > listTitles.size() )
           listTitles = headers;
 
         if( headers.size() > 1 && !listHeaderSuppressed )
           list->attribute( "showHeader", "true" );
 
-        if( !r.choice().contains("+") && list && listTitles.size() > 0 ) {
-          XmlBuilder *listHeader = list->tag( "headers" );
-          foreach( QString s, listTitles ) {
-            listHeader->tag( "header", s );
+        currentChoice = r.choice();
+
+      if( list && ( (i == relations.size()-1) || ( i < relations.size()-1 && (relations[i+1].choice() != r.choice() || !relations[i+1].isList() ) ) ) ) {
+        kDebug() << k_funcinfo << r.target() << " " << r.choice() << " " << listRef << endl;
+        XmlBuilder *listHeader = list->tag( "headers" );
+        foreach( QString s, listTitles ) {
+          listHeader->tag( "header", s );
+        }
+        list->attribute( "ref", listRef );
+
+ 
+        applyCommonHints( list, listRef );
+        Hint hint = mHints.hint( listRef );
+        if ( hint.isValid() ) {
+          if( !hint.value( Hint::ListShowHeader ).isEmpty() ) {
+            list->attribute( "showHeader", hint.value( Hint::ListShowHeader ) );
+            listHeaderSuppressed = (hint.value( Hint::ListShowHeader ) == "false");
           }
-          listTitles.clear();
+          if( !hint.value( Hint::ListShowSearch ).isEmpty() ) {
+            list->attribute( "showSearch", hint.value( Hint::ListShowSearch ) );
+          }
         }
 
-        currentChoice = r.choice();
+        listTitles.clear();
+        listRef.clear();
+      }
       } else if( !r.choice().isEmpty() ) {
         if( !choice ) {
           if( r.isList() )

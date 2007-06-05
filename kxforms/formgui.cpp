@@ -134,7 +134,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
       if ( !mLabelHidden ) mLabel->show();
     } else if ( tag == "list" ) {
       guiElement = new KXForms::List( mManager, c.label(), this, properties );
-      guiElement->setRef( ref() );
+      guiElement->setRef( e.attribute( "ref" ) );
       hasList = true;
     } else if ( tag == "xf:input" ) {
       Input *input = new Input( mManager, c.label(), this, properties );
