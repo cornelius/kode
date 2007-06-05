@@ -177,6 +177,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   XmlBuilder *list = 0;
   QStringList listTitles;
   QString listRef;
+  int listItemClassCount = 0;
   bool listHeaderSuppressed = false;
   XmlBuilder *choice = 0;
   QString currentChoice;
@@ -233,6 +234,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         XmlBuilder *item = list->tag( "itemclass" );
         item->attribute( "ref", path.toString() + r.target() );
         Schema::Element listElement = mDocument.element( r.target() );
+        listItemClassCount++;
 
         Hint hint = mHints.hint( Reference( r.target() ) );
         if( hint.isValid() && !hint.value( Hint::ListItemList ).isEmpty() )
@@ -304,7 +306,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
         currentChoice = r.choice();
 
-      if( list && ( (i == relations.size()-1) || ( i < relations.size()-1 && (relations[i+1].choice() != r.choice() || !relations[i+1].isList() ) ) ) ) {
+      if( list && ( (i == relations.size()-1) || listItemClassCount == r.choice().count( '+' )+1 || ( i < relations.size()-1 && (relations[i+1].choice() != r.choice() || !relations[i+1].isList() ) ) ) ) {
         kDebug() << k_funcinfo << r.target() << " " << r.choice() << " " << listRef << endl;
         XmlBuilder *listHeader = list->tag( "headers" );
         foreach( QString s, listTitles ) {
@@ -327,6 +329,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 
         listTitles.clear();
         listRef.clear();
+        listItemClassCount = 0;
       }
       } else if( !r.choice().isEmpty() ) {
         if( !choice ) {
