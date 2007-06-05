@@ -82,6 +82,11 @@ void EditorWidget::init()
   connect( mEditDefaultsButton, SIGNAL(clicked()), SLOT(editDefaults()) );
   vbl->addWidget( mEditDefaultsButton );
 
+  mExitButton = new QPushButton( this );
+  mExitButton->setIcon( KIconLoader::global()->loadIcon( "dialog-cancel", K3Icon::NoGroup, 32 ) );
+  mExitButton->setToolTip( i18n("Quit edit mode") );
+  connect( mExitButton, SIGNAL(clicked()), mEditor, SLOT(toggleEditMode()) );
+  vbl->addWidget( mExitButton );
 
   mEditButton = new QPushButton( this );
   mEditButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );

@@ -73,6 +73,7 @@ class EditorWidget : public QWidget
     QPushButton *mEditDefaultsButton;
     QPushButton *mSaveHintsButton;
     QPushButton *mSaveHintsAsButton;
+    QPushButton *mExitButton;
 
     GuiElement *mHoveredElement;
     GuiElement *mActiveElement;
