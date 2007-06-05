@@ -100,15 +100,16 @@ void ListAction::perform( GuiElement *e )
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
-  ListActionDialog dlg( i18n("Edit %1", e->ref().toString()), e->widget() );
-  if( dlg.exec() == QDialog::Accepted ) {
+  ListActionDialog *dlg = new ListActionDialog( i18n("Edit %1", e->ref().toString()), e->widget() );
+  if( dlg->exec() == QDialog::Accepted ) {
 
     Hint h;
     h.setRef( e->ref() );
-    h.setValue( Hint::ListShowHeader, dlg.showHeader() ? "true" : "false" );
-    h.setValue( Hint::ListShowSearch, dlg.showFilter() ? "true" : "false" );
+    h.setValue( Hint::ListShowHeader, dlg->showHeader() ? "true" : "false" );
+    h.setValue( Hint::ListShowSearch, dlg->showFilter() ? "true" : "false" );
     emit hintGenerated( h );
   }
+  dlg->deleteLater();
 
   editor()->finishEdit();
 }
