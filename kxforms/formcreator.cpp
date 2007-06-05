@@ -294,7 +294,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         if( listRef.length() > 0 )
           listRef.append( '+' + r.target() );
         else
-          listRef = QString( "list/%1" ).arg( r.target() );
+          listRef = QString( "list_%1" ).arg( r.target() );
 
         if( headers.size() > listTitles.size() )
           listTitles = headers;
