@@ -233,10 +233,14 @@ void List::moveDown()
 void List::parseElement( const QDomElement &element )
 {
   QDomNode n;
-  if( element.attribute( "showHeader" ) == "true" )
+  if( element.attribute( "showHeader" ) == "true" ) {
     mView->header()->show();
-  if( element.attribute( "showSearch" ) == "true" )
+    mListProperties.showHeader = true;
+  }
+  if( element.attribute( "showSearch" ) == "true" ) {
     mFilterEdit->show();
+    mListProperties.showFilter = true;
+  }
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
     if ( e.tagName() == "itemclass" ) {

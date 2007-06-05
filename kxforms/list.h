@@ -38,6 +38,12 @@ class List : public GuiElement
   public:
     List( Manager *, const QString &label, QWidget *parent, Properties *p );
 
+    struct ListProperties {
+      ListProperties() : showHeader( false ), showFilter( false ) {}
+      bool showHeader;
+      bool showFilter;
+    };
+
     class ItemClass
     {
       public:
@@ -73,6 +79,8 @@ class List : public GuiElement
     QStringList itemLabels( const ItemClass &itemClass,
       const QDomElement &itemElement );
 
+    ListProperties listProperties() { return mListProperties; }
+
   protected:
     void loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &counts );
     QModelIndex selectedItem();
@@ -88,6 +96,8 @@ class List : public GuiElement
 
   private:
     ItemClass::List mItemClasses;
+
+    ListProperties mListProperties;
 
     QTreeView *mView;
 

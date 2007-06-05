@@ -25,6 +25,7 @@
 #include "editorwidget.h"
 #include "../hints.h"
 #include "../guielement.h"
+#include "../list.h"
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -41,7 +42,9 @@ class ListActionDialog : public KDialog
     ListActionDialog( const QString &caption, QWidget *parent );
 
     bool showHeader();
+    void setShowHeader( bool a ) { mChkHeader->setChecked( a ); }
     bool showFilter();
+    void setShowFilter( bool a ) { mChkFilter->setChecked( a ); }
 
   private:
     QCheckBox *mChkHeader;
@@ -100,7 +103,13 @@ void ListAction::perform( GuiElement *e )
   kDebug() << k_funcinfo << endl;
   editor()->beginEdit();
 
+  List::ListProperties prop;
+  if( List *l = dynamic_cast< List *>( e ) )
+    prop = l->listProperties();
+
   ListActionDialog *dlg = new ListActionDialog( i18n("Edit %1", e->ref().toString()), e->widget() );
+  dlg->setShowHeader( prop.showHeader );
+  dlg->setShowFilter( prop.showFilter );
   if( dlg->exec() == QDialog::Accepted ) {
 
     Hint h;
