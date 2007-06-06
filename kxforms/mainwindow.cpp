@@ -37,6 +37,7 @@
 #include <kstatusbar.h>
 #include <kdebug.h>
 #include <kactioncollection.h>
+#include <kaction.h>
 
 #include <QFile>
 #include <QTextStream>
@@ -148,6 +149,12 @@ void MainWindow::setupActions()
   KStandardAction::quit(this, SLOT(close()), actionCollection());
 
   KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
+
+  KAction *editAction = new KAction("toggle_editmode", this);
+  editAction->setIcon(KIcon("edit"));
+  editAction->setText(i18n("Toggle Edit mode"));
+  connect(editAction, SIGNAL(triggered(bool)), mFormsManager.editor(), SLOT(toggleEditMode()));
+  actionCollection()->addAction( "toggle_editmode", editAction );
 
 #if 0
   // this doesn't do anything useful.  it's just here to illustrate

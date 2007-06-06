@@ -7,5 +7,8 @@
   <Menu name="help">
     <Action name="update" />
   </Menu>
+  <Menu name="settings">
+  <Action name="toggle_editmode" />
+  </Menu>
 </MenuBar>
 </kpartgui>

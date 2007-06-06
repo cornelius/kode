@@ -139,16 +139,18 @@ void Select1::saveData()
 
   QString txt;
   if( mProperties->appearance == Full ) {
-    for( int i = 0; i < mRadioButtons.size(); ++i ) {
+    for( int i = 0; i < mRadioButtons.size() && i < mValues.size(); ++i ) {
       if( mRadioButtons[i]->isChecked() ) {
         txt = mValues[ i ];
         break;
       }
     }
   } else if( mProperties->appearance == Compact ) {
-    txt = mValues[ mListWidget->currentRow() ];
+    if( mListWidget->currentRow() < mValues.size() )
+      txt = mValues[ mListWidget->currentRow() ];
   } else { 
-    txt = mValues[ mComboBox->currentIndex() ];
+    if( mComboBox->currentIndex() < mValues.size() )
+      txt = mValues[ mComboBox->currentIndex() ];
   }
 
   if ( s.isAttribute() ) {
