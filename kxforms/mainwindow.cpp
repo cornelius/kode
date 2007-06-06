@@ -156,6 +156,12 @@ void MainWindow::setupActions()
   connect(editAction, SIGNAL(triggered(bool)), mFormsManager.editor(), SLOT(toggleEditMode()));
   actionCollection()->addAction( "toggle_editmode", editAction );
 
+  KAction *exportKxformsAction = new KAction("export_kxform", this);
+  exportKxformsAction->setIcon(KIcon("document-save"));
+  exportKxformsAction->setText(i18n("Export Kxforms Document"));
+  connect(exportKxformsAction, SIGNAL(triggered(bool)), SLOT(exportKxformsDocument()));
+  actionCollection()->addAction( "export_kxform", exportKxformsAction );
+
 #if 0
   // this doesn't do anything useful.  it's just here to illustrate
   // how to insert a custom menu and menu item
@@ -191,6 +197,21 @@ void MainWindow::fileSaveAs()
   KUrl file_url = KFileDialog::getSaveUrl();
   if ( !file_url.isEmpty() && file_url.isValid() ) {
     save( file_url );
+  }
+}
+
+void MainWindow::exportKxformsDocument()
+{
+  KUrl file_url = KFileDialog::getSaveUrl();
+  if ( !file_url.isEmpty() && file_url.isValid() ) {
+    QFile file( file_url.path() );
+    if( !file.open( QIODevice::WriteOnly ) ) {
+      KMessageBox::sorry( this, i18n("Could not open file '%1'.",
+        file_url.url() ) );
+    } else {
+      file.write( mKxformsDocument.toLatin1() );
+      file.close();
+    }
   }
 }
 
@@ -312,6 +333,7 @@ void MainWindow::slotGetFormResult( bool ok )
 void MainWindow::parseForm( const QString &data )
 {
   kDebug() << data << endl;
+  mKxformsDocument = data;
   if ( !mFormsManager.parseForms( data ) ) {
     KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.",
         mFormFile->url().prettyUrl() ) );

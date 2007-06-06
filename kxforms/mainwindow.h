@@ -80,6 +80,7 @@ class MainWindow : public KXmlGuiWindow
     void fileOpen();
     void fileSaveAs();
     void optionsPreferences();
+    void exportKxformsDocument();
 
     void changeStatusbar(const QString& text);
     void changeCaption(const QString& text);
@@ -97,6 +98,7 @@ class MainWindow : public KXmlGuiWindow
     RemoteFile *mDataFile;
     RemoteFile *mSchemaFile;
     RemoteFile *mHintsFile;
+    QString mKxformsDocument;
 };
 
 #endif

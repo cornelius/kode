@@ -1,7 +1,7 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="kdummy" version="390">
+<kpartgui name="kdummy" version="391">
 <MenuBar>
-  <Menu name="custom">
+  <Menu name="custom"><text>C&amp;ustom</text>
     <Action name="custom_action" />
   </Menu>
   <Menu name="help">
@@ -11,5 +11,6 @@
 <Toolbar name="editor">
   <text>Editor</text>
   <Action name="toggle_editmode" />
+  <Action name="export_kxform" />
 </Toolbar>
 </kpartgui>
