@@ -1,14 +1,15 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
 <kpartgui name="kdummy" version="390">
 <MenuBar>
-  <Menu name="custom"><text>C&amp;ustom</text>
+  <Menu name="custom">
     <Action name="custom_action" />
   </Menu>
   <Menu name="help">
     <Action name="update" />
   </Menu>
-  <Menu name="settings">
-  <Action name="toggle_editmode" />
-  </Menu>
 </MenuBar>
+<Toolbar name="editor">
+  <text>Editor</text>
+  <Action name="toggle_editmode" />
+</Toolbar>
 </kpartgui>
