@@ -163,12 +163,13 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       !choiceOnly( element )) {
     section = xml->tag( "kxf:section" );
     section->attribute( "ref", path.toString() );
-    path = path + Reference( element.name() );
     createLabel( section, element );
     applyCommonHints( section, element.name() );
     if(  element.elementRelations().size() <= 1 ) {
       section->attribute( "visible", "false" );
       section->attribute( "overrideLabel", getLabel( Reference( element.ref() ), element.name() ) );
+    } else {
+      path = Reference();
     }
   } else {
     section = xml;
@@ -208,6 +209,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       Schema::Relation r = relations[i];
       kDebug() << "  CHILD ELEMENT" << r.target() << endl;
       kDebug() << "    CHOICE" << r.choice() << endl;
+      Reference fullRef = path + Reference( r.target() );
 
       if ( r.isList()) {
         bool isMixedList = r.choice().contains( "+" );
@@ -232,11 +234,11 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           listItemType = humanizeString( r.target(), false );
 
         XmlBuilder *item = list->tag( "itemclass" );
-        item->attribute( "ref", path.toString() + r.target() );
+        item->attribute( "ref", fullRef.toString() );
         Schema::Element listElement = mDocument.element( r.target() );
         listItemClassCount++;
 
-        Hint hint = mHints.hint( Reference( r.target() ) );
+        Hint hint = mHints.hint( fullRef );
         if( hint.isValid() && !hint.value( Hint::ListItemList ).isEmpty() )
           item->attribute( "list", hint.value( Hint::ListItemList ) );
         if( hint.isValid() && hint.elements( Hint::ListItemLabel ).size() > 0 ) {
@@ -258,7 +260,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
               (listElement.type() == Schema::Node::ComplexType && listElement.mixed() ) ) {
             item->tag( "itemlabel", createListItemLabel( Reference( "." ), path, listItemType ) );
             listItemType.clear();
-            headers.append( createListHeader( r.target() ) );
+            headers.append( createListHeader( fullRef ) );
           } else {
             int subElementCnt = 0;
             int depth = 1;
@@ -288,7 +290,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
             foreach( Reference r, subElements ) {
               item->tag( "itemlabel", createListItemLabel( r, path, listItemType) );
               listItemType.clear();
-              headers.append( createListHeader( r.lastSegment().name() ) );
+              headers.append( createListHeader( fullRef.lastSegment().name() ) );
             }
           }
         }
@@ -338,19 +340,19 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           else
             choice = section->tag( "xf:select1" );
           applyCommonHints( choice, element.ref() );
-          choice->tag( "xf:label",  getLabel( Reference( element.ref() ), element.name() ) );
-          choice->attribute( "ref", (path + Reference( element.name() ) ).toString() );
+          choice->tag( "xf:label",  getLabel( path, element.name() ) );
+          choice->attribute( "ref", path.toString() );
         }
         Schema::Element choiceElement = mDocument.element( r );
         XmlBuilder *item = choice->tag( "xf:item" );
         QString value = choiceElement.name();
-        QString itemLabel = getLabel( Reference( choiceElement.ref() ), choiceElement.name() );
+        QString itemLabel = getLabel( fullRef, choiceElement.name() );
         item->tag( "xf:label", itemLabel );
         item->tag( "xf:value", value );
       } else{
         Schema::Element textElement = mDocument.element( r.target() );
         if( textElement.type() == Schema::Node::ComplexType && !textElement.mixed() ) {
-          parseComplexType( textElement, section, false, path );
+          parseComplexType( textElement, section, false, fullRef );
         } else {
           XmlBuilder *textInput = 0;
           if ( textElement.type() == Schema::Node::NormalizedString ) {
@@ -358,8 +360,8 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
           } else {
             textInput = section->tag( "xf:textarea" );
           }
-          applyCommonHints( textInput, r.target() );
-          textInput->attribute( "ref", (path + Reference( textElement.name() ) ).toString() );
+          applyCommonHints( textInput, fullRef );
+          textInput->attribute( "ref", fullRef.toString() );
           createLabel( textInput, textElement );
           mCollapsedForms.append( r.target() );
         }
