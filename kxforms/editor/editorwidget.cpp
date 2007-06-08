@@ -227,7 +227,7 @@ void EditorWidget::highlightElement( QPainter *p, const QRect &r, GuiElement *w 
 {
   p->save();
 
-  QPoint point( r.x()+20, r.y() );
+  QPoint point( r.x()+30+mEditButton->sizeHint().width(), r.y() );
 
   QPen pen;
   pen.setColor( QColor(255,255,255,255) );
@@ -250,13 +250,9 @@ void EditorWidget::highlightElement( QPainter *p, const QRect &r, GuiElement *w 
 void EditorWidget::drawInterface( QPainter *p, const QRect &r, GuiElement *w )
 {
   Q_UNUSED( p );
+  Q_UNUSED( w );
 
   QPoint point( r.x()+20, r.y() );
-  QFont fnt;
-  fnt.setPointSize( 14 );
-  fnt.setBold( true );
-  point.setX( point.x() + 10 + QFontMetrics( fnt ).width( w->ref().toString() ));
-
   mEditButton->move( point );
   mEditButton->show();
 }
