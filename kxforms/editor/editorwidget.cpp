@@ -200,8 +200,6 @@ void EditorWidget::drawGlobalInterface( QPainter *p )
 
 void EditorWidget::targetElement( QPainter *p, const QRect &r, GuiElement *w )
 {
-  Q_UNUSED( w )
-
   p->save();
 
   QPen pen;
@@ -209,6 +207,18 @@ void EditorWidget::targetElement( QPainter *p, const QRect &r, GuiElement *w )
   pen.setWidth( 3 );
   p->setPen( pen );
   p->drawRect( r );
+
+  QBrush b( QColor(0,0,0,50) );
+  p->fillRect( r, b );
+
+  if( w ) {
+    QPoint point( r.x()+20, r.y() );
+    QFont fnt;
+    fnt.setPointSize( 14 );
+    fnt.setBold( true );
+    p->setFont( fnt );
+    p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->ref().toString() );
+  }
 
   p->restore();
 }
