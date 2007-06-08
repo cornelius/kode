@@ -183,10 +183,14 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   XmlBuilder *choice = 0;
   QString currentChoice;
 
+      kDebug() << "    element: " << Reference(element.name()).toString() << endl;
+      kDebug() << "    path:    " << path.toString() << endl;
+  Reference fullRef = path.matches( Reference(element.name()), false ) ? path : path + Reference( element.name() );
+
   if( element.text() ) {
     XmlBuilder *textInput = 0;
     textInput = section->tag( "xf:textarea" );
-    textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
+    textInput->attribute( "ref", fullRef.toString() );
     createLabel( textInput, element );
     applyCommonHints( textInput, element.name() );
     mCollapsedForms.append( element.name() );
@@ -197,10 +201,10 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     } else {
       textInput = section->tag( "xf:textarea" );
     }
-    textInput->attribute( "ref", (path + Reference( element.name() ) ).toString() );
+    textInput->attribute( "ref", fullRef.toString() );
     createLabel( textInput, element );
     applyCommonHints( textInput, element.name() );
-    parseAttributes( element, textInput, path + Reference( element.name() ) );
+    parseAttributes( element, textInput, fullRef );
     mCollapsedForms.append( element.name() );
   }
   else {
@@ -209,7 +213,8 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
       Schema::Relation r = relations[i];
       kDebug() << "  CHILD ELEMENT" << r.target() << endl;
       kDebug() << "    CHOICE" << r.choice() << endl;
-      Reference fullRef = path + Reference( r.target() );
+
+      fullRef = (Reference(r.target()) == path ) ? path : path + Reference( r.target() );
 
       if ( r.isList()) {
         bool isMixedList = r.choice().contains( "+" );
