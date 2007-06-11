@@ -46,7 +46,8 @@ class Editor : public QObject
     enum ActionType{
       CommonActions = 0x1,
       ListActions = 0x2,
-      AppearanceActions = 0x4
+      AppearanceActions = 0x4,
+      InputActions = 0x8
     };
     Q_DECLARE_FLAGS(ActionTypes, ActionType)
     enum SelectionMode { 

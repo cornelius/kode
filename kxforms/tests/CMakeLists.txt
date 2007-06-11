@@ -40,6 +40,8 @@ set(kxformstest_SRCS
    ../editor/layoutstyleaction.cpp
    ../editor/groupaction.cpp
    ../editor/changelabelaction.cpp 
+   ../editor/readonlyaction.cpp
+   ../editor/inputtypeaction.cpp
    ../editor/globalsettingsdlg.cpp )
 
 

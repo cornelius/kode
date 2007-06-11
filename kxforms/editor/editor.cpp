@@ -28,6 +28,8 @@
 #include "positionaction.h"
 #include "layoutstyleaction.h"
 #include "groupaction.h"
+#include "readonlyaction.h"
+#include "inputtypeaction.h"
 
 #include "../manager.h"
 #include "../guielement.h"
@@ -92,6 +94,16 @@ void Editor::setupActions()
   connect( a, SIGNAL(hintGenerated( const Hint & )), 
       SLOT(applyHint( const Hint & )) );
   mActions[ "edit_group" ] = a;
+
+  a = new ReadOnlyAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_readonly" ] = a;
+
+  a = new InputTypeAction( this );
+  connect( a, SIGNAL(hintGenerated( const Hint & )), 
+      SLOT(applyHint( const Hint & )) );
+  mActions[ "edit_inputtype" ] = a;
 }
 
 KActionMenu *Editor::actionMenu( GuiElement *e )
@@ -120,9 +132,17 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
     groupAction->setData( "edit_group" );
     QObject::connect( groupAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
     menu->addAction( groupAction );
+
+    KAction *readonlyAction = new KAction( i18n("Change ReadOnly Mode"), menu );
+    readonlyAction->setData( "edit_readonly" );
+    QObject::connect( readonlyAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( readonlyAction );
   }
 
   if( e->actionTypes() & Editor::AppearanceActions ) {
+    if( e->actionTypes() & Editor::CommonActions )
+      menu->addSeparator();
+
     KAction *appearanceAction = new KAction( i18n("Change Appearance"), menu );
     appearanceAction->setData( "edit_appearance" );
     QObject::connect( appearanceAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
@@ -130,10 +150,24 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
   }
 
   if( e->actionTypes() & Editor::ListActions ) {
+    if( e->actionTypes() & Editor::CommonActions ||
+        e->actionTypes() & Editor::AppearanceActions )
+      menu->addSeparator();
     KAction *listAction = new KAction( i18n("Change List Properties"), menu );
     listAction->setData( "edit_list" );
     QObject::connect( listAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
     menu->addAction( listAction );
+  }
+
+  if( e->actionTypes() & Editor::InputActions ) {
+    if( e->actionTypes() & Editor::CommonActions ||
+        e->actionTypes() & Editor::AppearanceActions ||
+        e->actionTypes() & Editor::ListActions )
+      menu->addSeparator();
+    KAction *typeAction = new KAction( i18n("Change Input Type"), menu );
+    typeAction->setData( "edit_inputtype" );
+    QObject::connect( typeAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( typeAction );
   }
 
   connect( menu->menu(), SIGNAL(aboutToHide()), menu, SLOT(deleteLater())) ;

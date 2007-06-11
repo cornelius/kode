@@ -37,6 +37,7 @@ Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
   : GuiElement( parent, m, p )
 {
   mManager->dispatcher()->registerElement( this );
+  setActionTypes( Editor::CommonActions | Editor::InputActions );
 
   mLabel = new QLabel( label, mParent );
   QWidget *w;
