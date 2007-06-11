@@ -22,7 +22,6 @@
 #include "positionaction.h"
 
 #include "editor.h"
-#include "editorwidget.h"
 #include "../hints.h"
 #include "../guielement.h"
 
@@ -48,7 +47,7 @@ void PositionAction::perform( GuiElement *e )
   editor()->beginEdit();
 
   KMessageBox::information( e->widget(), i18n("Select the new neighbour of %1", e->ref().toString()), i18n("New Neighbour" ) );
-  GuiElement *chosenElement = editor()->selectWidget();
+  GuiElement *chosenElement = editor()->selectWidget( Editor::SelectSameGroupOnly );
 
   if( !chosenElement ) {
     editor()->finishEdit();

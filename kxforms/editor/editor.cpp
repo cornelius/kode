@@ -202,11 +202,10 @@ void Editor::applyHint( const Hint &h )
   emit hintsChanged( mHints );
 }
 
-GuiElement *Editor::selectWidget()
+GuiElement *Editor::selectWidget( SelectionMode sm )
 {
   kDebug() << k_funcinfo << endl;
-
-  return mEditorWidget->selectElement();
+  return mEditorWidget->selectElement( sm );
 }
 
 void Editor::beginEdit()

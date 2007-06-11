@@ -44,7 +44,7 @@ using namespace KXForms;
 
 EditorWidget::EditorWidget( Editor *e, QWidget *parent )
   : QWidget( parent ), mEditor( e ), mHoveredElement( 0 ), mActiveElement( 0 ),
-    mEventLoop( new QEventLoop( this ) ), mSelectionMode( false ), mInEdit( false )
+    mEventLoop( new QEventLoop( this ) ), mInSelection( false ), mInEdit( false )
 {
   setMouseTracking( true );
   setGeometry( parent->geometry() );
@@ -131,23 +131,23 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
       }
     }
   }
-  if( mHoveredElement != newElement )
+  if( mHoveredElement != newElement ) {
+    mHoveredElement = newElement;
     update();
-
-  mHoveredElement = newElement;
+  }
 }
 
 void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 {
   Q_UNUSED( event )
 //   kDebug() << k_funcinfo << endl;
-  if( !mSelectionMode )
+  if( !mInSelection )
     return;
 
   if( mEventLoop->isRunning() ) {
     mEventLoop->exit();
   }
-  mSelectionMode = false;
+  mInSelection = false;
 }
 
 void EditorWidget::paintEvent( QPaintEvent *event )
@@ -156,9 +156,14 @@ void EditorWidget::paintEvent( QPaintEvent *event )
 //   kDebug() << k_funcinfo << endl;
   QPainter p( this );
 
-  if( mSelectionMode ) {
-    if( mHoveredElement != mActiveElement )
-      targetElement( &p, mElementMap[mHoveredElement], mHoveredElement );
+  if( mInSelection ) {
+    if( mHoveredElement != mActiveElement ) {
+      if( mHoveredElement && mActiveElement->properties()->group != mHoveredElement->properties()->group )
+        printMessage( &p, mElementMap[mHoveredElement], i18n("Groups do not match: %1 != %2", mActiveElement->properties()->group,
+           mHoveredElement->properties()->group));
+      else
+        targetElement( &p, mElementMap[mHoveredElement], mHoveredElement );
+    }
   }
 
   if( !mInEdit ) {
@@ -170,7 +175,7 @@ void EditorWidget::paintEvent( QPaintEvent *event )
     }
   } else {
     if( mActiveElement ) {
-      highlightElement( &p, mElementMap[mActiveElement], mActiveElement );
+        highlightElement( &p, mElementMap[mActiveElement], mActiveElement );
     }
   }
 
@@ -247,6 +252,29 @@ void EditorWidget::highlightElement( QPainter *p, const QRect &r, GuiElement *w 
   p->restore();
 }
 
+void EditorWidget::printMessage( QPainter *p, const QRect &r, const QString &msg )
+{
+  p->save();
+
+  QPen pen;
+  pen.setColor( QColor(0,0,0,180) );
+  pen.setWidth( 3 );
+  p->setPen( pen );
+  p->drawRect( r );
+
+  QBrush b( QColor(0,0,0,50) );
+  p->fillRect( r, b );
+
+  QPoint point( r.x()+20, r.y() );
+  QFont fnt;
+  fnt.setPointSize( 14 );
+  fnt.setBold( true );
+  p->setFont( fnt );
+  p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), msg );
+
+  p->restore();
+}
+
 void EditorWidget::drawInterface( QPainter *p, const QRect &r, GuiElement *w )
 {
   Q_UNUSED( p );
@@ -284,10 +312,14 @@ void EditorWidget::editDefaults()
     mEditor->applyHint( h );
 }
 
-GuiElement *EditorWidget::selectElement()
+GuiElement *EditorWidget::selectElement( Editor::SelectionMode sm )
 {
-  mSelectionMode = true;
+  mInSelection = true;
+  mSelectionMode = sm;
   mEventLoop->exec();
+  if( !mHoveredElement | !mActiveElement || mHoveredElement->properties()->group !=
+      mActiveElement->properties()->group )
+    mHoveredElement = 0;
   return mHoveredElement;
 }
 

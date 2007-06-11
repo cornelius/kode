@@ -34,10 +34,10 @@ class QEventLoop;
 
 namespace KXForms {
 
-class GuiElement;
-class EditorWidget;
 class EditorAction;
+class EditorWidget;
 class Manager;
+class GuiElement;
 
 class Editor : public QObject
 {
@@ -49,6 +49,10 @@ class Editor : public QObject
       AppearanceActions = 0x4
     };
     Q_DECLARE_FLAGS(ActionTypes, ActionType)
+    enum SelectionMode { 
+      SelectAllElements, 
+      SelectSameGroupOnly 
+    };
 
 
     Editor( Manager *);
@@ -71,7 +75,7 @@ class Editor : public QObject
 
     void setCurrentHintsUrl( const KUrl &url ) { mHintsUrl = url; }
 
-    GuiElement *selectWidget();
+    GuiElement *selectWidget( SelectionMode sm );
 
     Manager *manager() { return mManager; }
 
@@ -101,8 +105,6 @@ class Editor : public QObject
     bool mInEdit;
 
     EditorWidget *mEditorWidget;
-
-    EditorWidget *mChosenEditorWidget;
 
     Hints mHints;
 

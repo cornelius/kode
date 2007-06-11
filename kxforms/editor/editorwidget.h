@@ -21,8 +21,9 @@
 #ifndef EDITORWIDGET_H
 #define EDITORWIDGET_H
 
-#include <QWidget>
 #include "../guielement.h"
+
+#include <QWidget>
 
 class QPushButton;
 class QEventLoop;
@@ -35,14 +36,13 @@ class EditorWidget : public QWidget
 {
   Q_OBJECT
   public:
-
     EditorWidget( Editor *e, QWidget *parent = 0 );
 
     void setGuiElements( const GuiElement::List &list );
 
     GuiElement *hoveredElement() { return mHoveredElement; }
 
-    GuiElement *selectElement();
+    GuiElement *selectElement( Editor::SelectionMode sm );
 
     void setInEdit( bool b );
 
@@ -61,6 +61,7 @@ class EditorWidget : public QWidget
     void drawInterface( QPainter *p, const QRect &, GuiElement *e );
     void highlightElement( QPainter *p, const QRect &, GuiElement *e );
     void targetElement( QPainter *p, const QRect &, GuiElement *e );
+    void printMessage( QPainter *p, const QRect &, const QString &msg );
     void drawGlobalInterface( QPainter *p );
 
   private:
@@ -80,7 +81,8 @@ class EditorWidget : public QWidget
 
     QEventLoop *mEventLoop;
 
-    bool mSelectionMode;
+    bool mInSelection;
+    Editor::SelectionMode mSelectionMode;
     bool mInEdit;
 };
 
