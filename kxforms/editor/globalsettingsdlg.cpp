@@ -168,10 +168,28 @@ void GlobalSettingsDialog::load()
 
 void GlobalSettingsDialog::accept()
 {
-  mHint.setRef( "*" );
-  mHint.setValue( Hint::Appearance, mAppearanceBox->currentText() );
-  mHint.setValue( Hint::LayoutStyle, mStyleBox->currentText() );
-  mHint.setValue( Hint::ReadOnly, mReadOnlyCheckBox->checkState() == Qt::Checked ? "true" : "false" );
+  kDebug() << k_funcinfo << endl;
+  mHints = Hints();
+  Hint globalHint;
+  globalHint.setRef( "*" );
+  globalHint.setValue( Hint::Appearance, mAppearanceBox->currentText() );
+  globalHint.setValue( Hint::LayoutStyle, mStyleBox->currentText() );
+  globalHint.setValue( Hint::ReadOnly, mReadOnlyCheckBox->checkState() == Qt::Checked ? "true" : "false" );
+  mHints.insertHint( globalHint );
+
+  Hint formHint;
+  QDomDocument doc;
+  formHint.setRef( mManager->currentGui()->ref() );
+  for( int i = 0; i < mGroupWidget->topLevelItemCount(); ++i ) {
+    QTreeWidgetItem *item = mGroupWidget->topLevelItem( i );
+    kDebug() << item->text( 0 ) << item->text( 1 ) << endl;
+    QDomElement e = doc.createElement( "group" );
+    QDomText t = doc.createTextNode( item->text( 1 ) );
+    e.setAttribute( "id", item->text( 0 ) );
+    e.appendChild( t );
+    formHint.addElement( Hint::Groups, e );
+  }
+  mHints.insertHint( formHint );
 
   KDialog::accept();
 }

@@ -302,15 +302,14 @@ void EditorWidget::showHints()
 void EditorWidget::editDefaults()
 {
   GlobalSettingsDialog *dlg = new GlobalSettingsDialog( mEditor->manager(), this );
-  Hint h;
+  Hints hints;
 
   if( dlg->exec() == QDialog::Accepted ) {
-    h = dlg->hint();
+    hints = dlg->hints();
   }
   dlg->deleteLater();
 
-  if( h.isValid() )
-    mEditor->applyHint( h );
+  mEditor->applyHints( hints );
 }
 
 GuiElement *EditorWidget::selectElement( Editor::SelectionMode sm )

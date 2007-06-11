@@ -41,7 +41,7 @@ class GlobalSettingsDialog : public KDialog
   public:
     GlobalSettingsDialog( Manager *manager, QWidget *parent );
 
-    Hint hint() { return mHint; }
+    Hints hints() { return mHints; }
 
   protected:
     virtual void accept();
@@ -57,7 +57,7 @@ class GlobalSettingsDialog : public KDialog
   private:
     GuiElement::Properties mDefaultProperties;
 
-    Hint mHint;
+    Hints mHints;
 
     Manager *mManager;
 
