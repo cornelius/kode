@@ -59,7 +59,7 @@ void GroupAction::perform( GuiElement *e )
   QString newGroup;
 
   newGroup = KInputDialog::getItem( i18n("Select new group"), i18n("Group for %1:", e->ref().toString()),
-      groups, currentGroup, true, &ok );
+      groups, currentGroup, false, &ok );
 
   if( ok ) {
     kDebug() << k_funcinfo << "New Group: " << newGroup << endl;
