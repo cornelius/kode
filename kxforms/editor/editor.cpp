@@ -109,11 +109,24 @@ void Editor::setupActions()
 KActionMenu *Editor::actionMenu( GuiElement *e )
 {
   KActionMenu *menu = new KActionMenu( this );
+  bool needSeparator = false;
   if( e->actionTypes() & Editor::CommonActions ) {
+    needSeparator = true;
     KAction *titleAction = new KAction( i18n("Change Label"), menu );
     titleAction->setData( "edit_label" );
     QObject::connect( titleAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
     menu->addAction( titleAction );
+
+
+    KAction *layoutStyleAction = new KAction( i18n("Change Layout Style"), menu );
+    layoutStyleAction->setData( "edit_layoutstyle" );
+    QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( layoutStyleAction );
+
+    KAction *readonlyAction = new KAction( i18n("Change ReadOnly Mode"), menu );
+    readonlyAction->setData( "edit_readonly" );
+    QObject::connect( readonlyAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
+    menu->addAction( readonlyAction );
 
 
     KAction *positionAction = new KAction( i18n("Change Position"), menu );
@@ -122,26 +135,16 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
     menu->addAction( positionAction );
 
 
-    KAction *layoutStyleAction = new KAction( i18n("Change Layout Style"), menu );
-    layoutStyleAction->setData( "edit_layoutstyle" );
-    QObject::connect( layoutStyleAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
-    menu->addAction( layoutStyleAction );
-
-
     KAction *groupAction = new KAction( i18n("Change Group"), menu );
     groupAction->setData( "edit_group" );
     QObject::connect( groupAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
     menu->addAction( groupAction );
-
-    KAction *readonlyAction = new KAction( i18n("Change ReadOnly Mode"), menu );
-    readonlyAction->setData( "edit_readonly" );
-    QObject::connect( readonlyAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
-    menu->addAction( readonlyAction );
   }
 
   if( e->actionTypes() & Editor::AppearanceActions ) {
-    if( e->actionTypes() & Editor::CommonActions )
+    if( needSeparator )
       menu->addSeparator();
+    needSeparator = true;
 
     KAction *appearanceAction = new KAction( i18n("Change Appearance"), menu );
     appearanceAction->setData( "edit_appearance" );
@@ -150,9 +153,10 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
   }
 
   if( e->actionTypes() & Editor::ListActions ) {
-    if( e->actionTypes() & Editor::CommonActions ||
-        e->actionTypes() & Editor::AppearanceActions )
+    if( needSeparator )
       menu->addSeparator();
+    needSeparator = true;
+
     KAction *listAction = new KAction( i18n("Change List Properties"), menu );
     listAction->setData( "edit_list" );
     QObject::connect( listAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
@@ -160,10 +164,10 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
   }
 
   if( e->actionTypes() & Editor::InputActions ) {
-    if( e->actionTypes() & Editor::CommonActions ||
-        e->actionTypes() & Editor::AppearanceActions ||
-        e->actionTypes() & Editor::ListActions )
+    if( needSeparator )
       menu->addSeparator();
+    needSeparator = true;
+
     KAction *typeAction = new KAction( i18n("Change Input Type"), menu );
     typeAction->setData( "edit_inputtype" );
     QObject::connect( typeAction, SIGNAL(triggered(bool)), SLOT( actionTriggered() ) );
