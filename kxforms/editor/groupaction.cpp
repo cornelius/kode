@@ -55,6 +55,7 @@ void GroupAction::perform( GuiElement *e )
   QStringList groups;
   foreach( QString s, editor()->manager()->currentGui()->groups().keys() )
     groups << s;
+  kDebug() << editor()->manager()->currentGui()->ref().toString() << " : " << editor()->manager()->currentGui()->groups().keys() << endl;
   int currentGroup = groups.indexOf( e->properties()->group );
   QString newGroup;
 

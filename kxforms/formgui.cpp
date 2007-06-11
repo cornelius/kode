@@ -103,7 +103,7 @@ void FormGui::setLabelHidden( bool hidden )
 void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString &overrideLabel, Layout *overrideGroup )
 {
   kDebug() << "FormGui::parseElement()" << endl;
-
+  kDebug() << k_funcinfo << element.tagName() << element.attribute("ref") << endl;
   QMap< QString, Layout > layoutMap;
 
   bool hasList = false;
@@ -185,6 +185,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     totalSpace += it.value().space();
   }
 
+  kDebug() << hasGroups( element ) << endl;
   if( (hasGroups( element ) || totalSpace > mSizeThreshold) &&
        layoutMap.size() > 1 ) {
     setupGroups( layout, element );
@@ -318,9 +319,20 @@ void FormGui::saveData()
   }
 }
 
-bool FormGui::hasGroups( const QDomElement &e )
+bool FormGui::hasGroups( const QDomElement &element )
 {
-  return !e.firstChildElement( "groups" ).isNull();
+  QDomElement e = element.firstChildElement( "groups" );
+  if( e.isNull() )
+    return false;
+  e = e.firstChild().toElement();
+
+  while( !e.isNull() ) {
+    if( e.tagName() == "group" ) {
+      mGroups[ e.attribute( "id" ) ] = e.text();
+    }
+    e = e.nextSibling().toElement();
+  }
+  return true;
 }
 
 void FormGui::setupGroups( QLayout *l, const QDomElement &element )
@@ -330,7 +342,7 @@ void FormGui::setupGroups( QLayout *l, const QDomElement &element )
   QDomElement e = element.firstChildElement( "groups" ).firstChild().toElement();
   while( !e.isNull() ) {
     if( e.tagName() == "group" ) {
-      mGroups[ e.attribute( "id" ) ] = e.text();
+      kDebug() << k_funcinfo << "Adding group: " << e.attribute( "id" ) <<endl;
     }
     e = e.nextSibling().toElement();
   }

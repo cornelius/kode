@@ -33,6 +33,7 @@
 
 #include <klocale.h>
 #include <klineedit.h>
+#include <ktabwidget.h>
 
 using namespace KXForms;
 
@@ -89,8 +90,11 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   setDefaultButton( KDialog::Ok );
   showButtonSeparator( true );
 
-  QWidget *page = new QWidget(this);
-  setMainWidget(page);
+  KTabWidget *tabWidget = new KTabWidget(this);
+  setMainWidget(tabWidget);
+
+  QWidget *page = new QWidget( tabWidget );
+  tabWidget->addTab( page, i18n("Global options") );
 
   QGridLayout *topLayout = new QGridLayout( page );
 
@@ -122,25 +126,32 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
 
 
   QLabel *thresholdLabel = new QLabel( i18n("Size Threshold"), page );
-  topLayout->addWidget( thresholdLabel, 3, 0 );
+  topLayout->addWidget( thresholdLabel, 3, 0, Qt::AlignTop  );
 
   mSizeThresholdSpin = new QSpinBox( this );
   mSizeThresholdSpin->setRange( 0, 500 );
-  topLayout->addWidget( mSizeThresholdSpin, 3, 1 );
+  topLayout->addWidget( mSizeThresholdSpin, 3, 1, Qt::AlignTop  );
 
 
-  QLabel *groupLabel = new QLabel( i18n("Groups"), page );
-  topLayout->addWidget( groupLabel, 4, 0, 2, 1, Qt::AlignTop );
 
-  mGroupWidget = new QTreeWidget( page );
+
+  QWidget *formPage = new QWidget( tabWidget );
+  tabWidget->addTab( formPage, i18n("%1 options", mManager->currentGui()->ref().lastSegment().toString()) );
+
+  QGridLayout *topFormLayout = new QGridLayout( formPage );
+
+  QLabel *groupLabel = new QLabel( i18n("Groups"), formPage );
+  topFormLayout->addWidget( groupLabel, 1, 0, 2, 1, Qt::AlignTop );
+
+  mGroupWidget = new QTreeWidget( formPage );
   connect( mGroupWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), SLOT(slotEditGroup()));
   QStringList headerStrings;
   headerStrings << i18n("Id") << i18n("Title");
   QTreeWidgetItem *header = new QTreeWidgetItem( headerStrings );
   mGroupWidget->setHeaderItem( header );
-  topLayout->addWidget( mGroupWidget, 4, 1 );
+  topFormLayout->addWidget( mGroupWidget, 1, 1 );
 
-  QHBoxLayout *buttonLayout = new QHBoxLayout( page );
+  QHBoxLayout *buttonLayout = new QHBoxLayout( formPage );
   mAddGroupButton = new QPushButton( i18n("Add"), this );
   connect( mAddGroupButton, SIGNAL(clicked()), SLOT(slotAddGroup()));
   buttonLayout->addWidget( mAddGroupButton );
@@ -150,7 +161,7 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   mDeleteGroupButton = new QPushButton( i18n("Remove"), this );
   connect( mDeleteGroupButton, SIGNAL(clicked()), SLOT(slotDeleteGroup()));
   buttonLayout->addWidget( mDeleteGroupButton );
-  topLayout->addLayout( buttonLayout, 5, 1 );
+  topFormLayout->addLayout( buttonLayout, 2, 1 );
 
 
   load();
@@ -190,7 +201,7 @@ void GlobalSettingsDialog::accept()
 
   Hint formHint;
   QDomDocument doc;
-  formHint.setRef( mManager->currentGui()->ref() );
+  formHint.setRef( Reference( mManager->currentGui()->ref().lastSegment().toString() ) );
   for( int i = 0; i < mGroupWidget->topLevelItemCount(); ++i ) {
     QTreeWidgetItem *item = mGroupWidget->topLevelItem( i );
     kDebug() << item->text( 0 ) << item->text( 1 ) << endl;

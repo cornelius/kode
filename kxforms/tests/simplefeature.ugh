@@ -1,6 +1,9 @@
 <ugh>
   <hint ref="/*[1]">
     <appearance>compact</appearance>
+    <layoutStyle>horizontal</layoutStyle>
+    <readOnly>false</readOnly>
+    <formsizethreshold>100</formsizethreshold>
   </hint>
   <hint ref="/documentationstatus[1]">
     <label>Status of the documentation: </label>
@@ -15,8 +18,8 @@
   <hint ref="/feature[1]">
     <groups>
       <group id="" >Feature</group>
-      <group id="other" >Other</group>
       <group id="documentation" >Documentation</group>
+      <group id="other" >Other</group>
     </groups>
   </hint>
   <hint ref="/list_productcontext[1]">
@@ -24,6 +27,12 @@
     <position>
       <rightOf>/documentationstatus[1]</rightOf>
     </position>
+  </hint>
+  <hint ref="/list_productcontext[1]/productcontext[1]">
+    <groups>
+      <group id="product" >Product</group>
+      <group id="other" >Other</group>
+    </groups>
   </hint>
   <hint ref="/name[1]">
     <label>Product</label>
