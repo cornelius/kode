@@ -185,6 +185,7 @@ void GlobalSettingsDialog::accept()
   globalHint.setValue( Hint::Appearance, mAppearanceBox->currentText() );
   globalHint.setValue( Hint::LayoutStyle, mStyleBox->currentText() );
   globalHint.setValue( Hint::ReadOnly, mReadOnlyCheckBox->checkState() == Qt::Checked ? "true" : "false" );
+  globalHint.setValue( Hint::FormSizeThreshold, QString::number( mSizeThresholdSpin->value() ) );
   mHints.insertHint( globalHint );
 
   Hint formHint;
@@ -199,7 +200,6 @@ void GlobalSettingsDialog::accept()
     e.appendChild( t );
     formHint.addElement( Hint::Groups, e );
   }
-  formHint.setValue( Hint::FormSizeThreshold, QString::number( mSizeThresholdSpin->value() ) );
   mHints.insertHint( formHint );
 
 
