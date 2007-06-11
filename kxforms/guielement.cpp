@@ -124,10 +124,6 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
         QDomElement e2 = n2.toElement();
         if ( e2.tagName() == "readonly" ) {
           properties->readonly = (e2.text() == "true");
-        } else if ( e2.tagName() == "type" ) {
-          properties->type = e2.text();
-        } else if ( e2.tagName() == "constraint" ) {
-          properties->constraint = e2.text();
         } else if ( e2.tagName() == "relevant" ) {
           QString elem = Reference( e2.attribute( "ref" ) ).toString();
           QString value = e2.text();
@@ -159,6 +155,16 @@ void GuiElement::parseProperties( const QDomElement &element, Properties *proper
                 properties->layoutStyle = Vertical;
             }
           } 
+        }
+      }
+    } else if( e.tagName() == "inputproperties" ) {
+      QDomNode n2;
+      for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
+        QDomElement e2 = n2.toElement();
+        if ( e2.tagName() == "inputtype" ) {
+          properties->type = e2.text();
+        } else if ( e2.tagName() == "constraint" ) {
+          properties->constraint = e2.text();
         }
       }
     }
