@@ -25,6 +25,8 @@
 #include "editorwidget.h"
 #include "../hints.h"
 #include "../guielement.h"
+#include "../manager.h"
+#include "../formgui.h"
 
 #include <kinputdialog.h>
 #include <kdebug.h>
@@ -51,6 +53,8 @@ void GroupAction::perform( GuiElement *e )
   bool ok;
 
   QStringList groups;
+  foreach( QString s, editor()->manager()->currentGui()->groups().keys() )
+    groups << s;
   int currentGroup = groups.indexOf( e->properties()->group );
   QString newGroup;
 

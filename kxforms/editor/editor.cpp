@@ -189,6 +189,13 @@ void Editor::performAction( const QString &actionId, GuiElement *e )
   a->perform( e );
 }
 
+void Editor::applyHint( const Hint &h )
+{
+  Hints hints;
+  hints.insertHint( h );
+  applyHints( hints );
+}
+
 void Editor::applyHints( const Hints &h )
 {
   kDebug() << k_funcinfo << endl;
