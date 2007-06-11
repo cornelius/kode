@@ -31,12 +31,13 @@ class QEventLoop;
 namespace KXForms {
 
 class Editor;
+class FormGui;
 
 class EditorWidget : public QWidget
 {
   Q_OBJECT
   public:
-    EditorWidget( Editor *e, QWidget *parent = 0 );
+    EditorWidget( Editor *e, FormGui *parent = 0 );
 
     void setGuiElements( const GuiElement::List &list );
 
@@ -66,6 +67,7 @@ class EditorWidget : public QWidget
 
   private:
     Editor *mEditor;
+    FormGui *mGui;
     QMap< GuiElement *, QRect > mElementMap;
 
     QWidget *mInterfaceWidget;

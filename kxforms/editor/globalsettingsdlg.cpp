@@ -24,13 +24,60 @@
 #include "../guielement.h"
 
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QTreeWidget>
+#include <QPushButton>
 
 #include <klocale.h>
 #include <klineedit.h>
 
 using namespace KXForms;
+
+class GroupDialog :  public KDialog
+{
+  public:
+    GroupDialog( const QString &caption, const QString &id, const QString &title, QWidget *parent );
+
+    QString id() { return mId->text(); }
+    QString title() { return mTitle->text(); }
+
+  private:
+    KLineEdit *mId;
+    KLineEdit *mTitle;
+};
+
+GroupDialog::GroupDialog( const QString &caption, const QString &id, const QString &title, QWidget *parent )
+: KDialog( parent )
+{
+  setCaption( caption );
+  setButtons( KDialog::Ok | KDialog::Cancel );
+  setDefaultButton( KDialog::Ok );
+  showButtonSeparator( true );
+
+  QWidget *page = new QWidget(this);
+  setMainWidget(page);
+
+  QGridLayout *topLayout = new QGridLayout( page );
+
+  QLabel *idLabel = new QLabel( i18n("Id"), this );
+  topLayout->addWidget( idLabel, 0, 0 );
+  mId = new KLineEdit( this );
+  topLayout->addWidget( mId, 0, 1 );
+  QLabel *titleLabel = new QLabel( i18n("Title"), this );
+  topLayout->addWidget( titleLabel, 1, 0 );
+  mTitle = new KLineEdit( this );
+  topLayout->addWidget( mTitle, 1, 1 );
+
+  mId->setText( id );
+  mTitle->setText( title );
+  mId->setFocus();
+  mId->setSelection( 0, id.length() );
+}
+
+
+
 
 GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
 : KDialog( parent ), mManager( manager )
@@ -73,16 +120,50 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   topLayout->addWidget( mReadOnlyCheckBox, 2, 1 );
 
 
+  QLabel *groupLabel = new QLabel( i18n("Groups"), page );
+  topLayout->addWidget( groupLabel, 3, 0, 2, 1, Qt::AlignTop );
+
+  mGroupWidget = new QTreeWidget( page );
+  connect( mGroupWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), SLOT(slotEditGroup()));
+  QStringList headerStrings;
+  headerStrings << i18n("Id") << i18n("Title");
+  QTreeWidgetItem *header = new QTreeWidgetItem( headerStrings );
+  mGroupWidget->setHeaderItem( header );
+  topLayout->addWidget( mGroupWidget, 3, 1 );
+
+  QHBoxLayout *buttonLayout = new QHBoxLayout( page );
+  mAddGroupButton = new QPushButton( i18n("Add"), this );
+  connect( mAddGroupButton, SIGNAL(clicked()), SLOT(slotAddGroup()));
+  buttonLayout->addWidget( mAddGroupButton );
+  mEditGroupButton = new QPushButton( i18n("Edit"), this );
+  connect( mEditGroupButton, SIGNAL(clicked()), SLOT(slotEditGroup()));
+  buttonLayout->addWidget( mEditGroupButton );
+  mDeleteGroupButton = new QPushButton( i18n("Remove"), this );
+  connect( mDeleteGroupButton, SIGNAL(clicked()), SLOT(slotDeleteGroup()));
+  buttonLayout->addWidget( mDeleteGroupButton );
+  topLayout->addLayout( buttonLayout, 4, 1 );
+
+
   load();
 }
 
 void GlobalSettingsDialog::load()
 {
   GuiElement::Properties p( *mManager->defaultProperties() );
+  mGroups = mManager->currentGui()->groups();
 
   mAppearanceBox->setCurrentIndex( p.appearance );
   mReadOnlyCheckBox->setCheckState( p.readonly ? Qt::Checked : Qt::Unchecked );
   mStyleBox->setCurrentIndex( p.layoutStyle );
+
+  mGroupWidget->clear();
+  QList<QTreeWidgetItem *> items;
+  foreach( QString id, mGroups.keys() ) {
+    QStringList data;
+    data << id << mGroups[ id ];
+    items.append( new QTreeWidgetItem( data ) );
+  }
+  mGroupWidget->insertTopLevelItems(0, items);
 }
 
 void GlobalSettingsDialog::accept()
@@ -94,3 +175,38 @@ void GlobalSettingsDialog::accept()
 
   KDialog::accept();
 }
+
+void GlobalSettingsDialog::slotAddGroup()
+{
+  GroupDialog *dlg = new GroupDialog( i18n("Add Group"), QString(), QString(), this );
+  if( dlg->exec() == QDialog::Accepted ) {
+    QStringList data;
+    data << dlg->id() << dlg->title();
+    mGroupWidget->insertTopLevelItem( mGroupWidget->topLevelItemCount(), new QTreeWidgetItem( data ));
+  }
+  dlg->deleteLater();
+}
+
+void GlobalSettingsDialog::slotEditGroup()
+{
+  QTreeWidgetItem *item = mGroupWidget->currentItem();
+  if( !item )
+    return;
+
+  GroupDialog *dlg = new GroupDialog( i18n("Edit Group"), item->text(0), item->text(1), this );
+  if( dlg->exec() == QDialog::Accepted ) {
+    QStringList data;
+    data << dlg->id() << dlg->title();
+    mGroupWidget->insertTopLevelItem( mGroupWidget->indexOfTopLevelItem( item ), new QTreeWidgetItem( data ));
+    mGroupWidget->takeTopLevelItem( mGroupWidget->indexOfTopLevelItem( item ) );
+  }
+  dlg->deleteLater();
+}
+
+void GlobalSettingsDialog::slotDeleteGroup()
+{
+  if( mGroupWidget->currentItem() )
+    mGroupWidget->takeTopLevelItem( mGroupWidget->indexOfTopLevelItem( mGroupWidget->currentItem() ) );
+}
+
+#include "globalsettingsdlg.moc"

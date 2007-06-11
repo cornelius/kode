@@ -60,6 +60,8 @@ class FormGui : public QWidget
     void setLabelHidden( bool );
 
     GuiElement::List elements();
+
+    QMap< QString, QString > groups() { return mGroups; }
   signals:
     void editingFinished();
 

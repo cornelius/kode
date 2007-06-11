@@ -29,6 +29,7 @@
 
 class QComboBox;
 class QCheckBox;
+class QTreeWidget;
 
 namespace KXForms {
 
@@ -36,6 +37,7 @@ class Manager;
 
 class GlobalSettingsDialog : public KDialog
 {
+  Q_OBJECT
   public:
     GlobalSettingsDialog( Manager *manager, QWidget *parent );
 
@@ -47,6 +49,11 @@ class GlobalSettingsDialog : public KDialog
   private:
     void load();
 
+  private Q_SLOTS:
+    void slotAddGroup();
+    void slotEditGroup();
+    void slotDeleteGroup();
+
   private:
     GuiElement::Properties mDefaultProperties;
 
@@ -57,6 +64,12 @@ class GlobalSettingsDialog : public KDialog
     QComboBox *mAppearanceBox;
     QComboBox *mStyleBox;
     QCheckBox *mReadOnlyCheckBox;
+    QTreeWidget *mGroupWidget;
+    QPushButton *mAddGroupButton;
+    QPushButton *mEditGroupButton;
+    QPushButton *mDeleteGroupButton;
+
+    QMap< QString, QString > mGroups;
 };
 
 }

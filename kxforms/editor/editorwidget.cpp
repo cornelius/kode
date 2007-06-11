@@ -23,6 +23,7 @@
 #include "editor.h"
 #include "globalsettingsdlg.h"
 #include "../manager.h"
+#include "../formgui.h"
 
 #include <kdebug.h>
 #include <kpixmapeffect.h>
@@ -42,8 +43,8 @@
 
 using namespace KXForms;
 
-EditorWidget::EditorWidget( Editor *e, QWidget *parent )
-  : QWidget( parent ), mEditor( e ), mHoveredElement( 0 ), mActiveElement( 0 ),
+EditorWidget::EditorWidget( Editor *e, FormGui *parent )
+  : QWidget( parent ), mEditor( e ), mGui( parent ), mHoveredElement( 0 ), mActiveElement( 0 ),
     mEventLoop( new QEventLoop( this ) ), mInSelection( false ), mInEdit( false )
 {
   setMouseTracking( true );
