@@ -29,6 +29,7 @@
 #include <QCheckBox>
 #include <QTreeWidget>
 #include <QPushButton>
+#include <QSpinBox>
 
 #include <klocale.h>
 #include <klineedit.h>
@@ -120,8 +121,16 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   topLayout->addWidget( mReadOnlyCheckBox, 2, 1 );
 
 
+  QLabel *thresholdLabel = new QLabel( i18n("Size Threshold"), page );
+  topLayout->addWidget( thresholdLabel, 3, 0 );
+
+  mSizeThresholdSpin = new QSpinBox( this );
+  mSizeThresholdSpin->setRange( 0, 500 );
+  topLayout->addWidget( mSizeThresholdSpin, 3, 1 );
+
+
   QLabel *groupLabel = new QLabel( i18n("Groups"), page );
-  topLayout->addWidget( groupLabel, 3, 0, 2, 1, Qt::AlignTop );
+  topLayout->addWidget( groupLabel, 4, 0, 2, 1, Qt::AlignTop );
 
   mGroupWidget = new QTreeWidget( page );
   connect( mGroupWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), SLOT(slotEditGroup()));
@@ -129,7 +138,7 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   headerStrings << i18n("Id") << i18n("Title");
   QTreeWidgetItem *header = new QTreeWidgetItem( headerStrings );
   mGroupWidget->setHeaderItem( header );
-  topLayout->addWidget( mGroupWidget, 3, 1 );
+  topLayout->addWidget( mGroupWidget, 4, 1 );
 
   QHBoxLayout *buttonLayout = new QHBoxLayout( page );
   mAddGroupButton = new QPushButton( i18n("Add"), this );
@@ -141,7 +150,7 @@ GlobalSettingsDialog::GlobalSettingsDialog( Manager *manager, QWidget *parent )
   mDeleteGroupButton = new QPushButton( i18n("Remove"), this );
   connect( mDeleteGroupButton, SIGNAL(clicked()), SLOT(slotDeleteGroup()));
   buttonLayout->addWidget( mDeleteGroupButton );
-  topLayout->addLayout( buttonLayout, 4, 1 );
+  topLayout->addLayout( buttonLayout, 5, 1 );
 
 
   load();
@@ -155,6 +164,7 @@ void GlobalSettingsDialog::load()
   mAppearanceBox->setCurrentIndex( p.appearance );
   mReadOnlyCheckBox->setCheckState( p.readonly ? Qt::Checked : Qt::Unchecked );
   mStyleBox->setCurrentIndex( p.layoutStyle );
+  mSizeThresholdSpin->setValue( mManager->currentGui()->sizeThreshold() );
 
   mGroupWidget->clear();
   QList<QTreeWidgetItem *> items;
@@ -189,7 +199,9 @@ void GlobalSettingsDialog::accept()
     e.appendChild( t );
     formHint.addElement( Hint::Groups, e );
   }
+  formHint.setValue( Hint::FormSizeThreshold, QString::number( mSizeThresholdSpin->value() ) );
   mHints.insertHint( formHint );
+
 
   KDialog::accept();
 }

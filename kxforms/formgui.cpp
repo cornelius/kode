@@ -45,7 +45,7 @@ using namespace KXForms;
 
 
 FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
-  : QWidget( parent ), mManager( m ), mTabWidget( 0 ), mLabelHidden( false )
+  : QWidget( parent ), mManager( m ), mTabWidget( 0 ), mLabelHidden( false ), mSizeThreshold( 100 )
 {
   kDebug() << "FormGui()" << endl;
 
@@ -173,7 +173,9 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
   }
 
   QMap< QString, Layout >::iterator it;
-  int threshold = 100;
+  QString elemThreshold = element.attribute( "sizeThreshold" );
+  if( elemThreshold.length() > 0 ) 
+    mSizeThreshold = elemThreshold.toInt();
   int space = 0;
   bool grouped = false;
 
@@ -183,7 +185,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     totalSpace += it.value().space();
   }
 
-  if( (hasGroups( element ) || totalSpace > threshold) &&
+  if( (hasGroups( element ) || totalSpace > mSizeThreshold) &&
        layoutMap.size() > 1 ) {
     setupGroups( layout, element );
     layout = 0;
@@ -198,7 +200,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     int height = it.value().height();
     int width = it.value().width();
 
-    if( ( space > threshold && grouped ) || !layout ) {
+    if( ( space > mSizeThreshold && grouped ) || !layout ) {
       space = it.value().space();
       layout = mManager->getTopLayout();
       QWidget *w = new QWidget( mTabWidget );

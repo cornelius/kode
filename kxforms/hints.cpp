@@ -159,6 +159,8 @@ QString Hint::nameForType( Type t )
     case InputType:
       s = "type";
       break;
+    case FormSizeThreshold:
+      s = "formsizethreshold";
     default:
       s = "unknown";
   }
@@ -280,6 +282,8 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
       hint.setValue( Hint::ReadOnly, contentAsString( e ) );
     } else if (name.localName() == "type" ) {
       hint.setValue( Hint::InputType, contentAsString( e ) );
+    } else if (name.localName() == "formSizeThreshold" ) {
+      hint.setValue( Hint::FormSizeThreshold, contentAsString( e ) );
     } else {
       kDebug() << "Unknown hint type: " << name.localName() << endl;
     }

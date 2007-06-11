@@ -30,6 +30,7 @@
 class QComboBox;
 class QCheckBox;
 class QTreeWidget;
+class QSpinBox;
 
 namespace KXForms {
 
@@ -68,6 +69,7 @@ class GlobalSettingsDialog : public KDialog
     QPushButton *mAddGroupButton;
     QPushButton *mEditGroupButton;
     QPushButton *mDeleteGroupButton;
+    QSpinBox *mSizeThresholdSpin;
 
     QMap< QString, QString > mGroups;
 };

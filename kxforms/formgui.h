@@ -62,6 +62,9 @@ class FormGui : public QWidget
     GuiElement::List elements();
 
     QMap< QString, QString > groups() { return mGroups; }
+
+    int sizeThreshold() { return mSizeThreshold; }
+
   signals:
     void editingFinished();
 
@@ -92,6 +95,7 @@ class FormGui : public QWidget
     QMap< QString, QString > mGroups;
 
     bool mLabelHidden;
+    int mSizeThreshold;
 };
 
 }
