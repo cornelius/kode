@@ -160,7 +160,7 @@ QString Hint::nameForType( Type t )
       s = "type";
       break;
     case FormSizeThreshold:
-      s = "formsizethreshold";
+      s = "formSizeThreshold";
       break;
     default:
       s = "unknown";

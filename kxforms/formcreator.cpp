@@ -84,10 +84,11 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
         page->attribute( "id", e.attribute( "id") );
       }
     }
+  }
 
-    if( hint.hasValue( Hint::FormSizeThreshold ) ) {
-      form->attribute( "sizeThreshold", hint.value( Hint::FormSizeThreshold ) );
-    }
+  Hint hint2 = mHints.hint( Reference( "*" ) );
+  if( hint2.hasValue( Hint::FormSizeThreshold ) ) {
+    form->attribute( "sizeThreshold", hint2.value( Hint::FormSizeThreshold ) );
   }
 
   parseAttributes( element, form );
