@@ -71,57 +71,59 @@ void GuiHandler::addElement( QLayout *l, QWidget *label, QWidget *widget, int x,
     if( !gl )
       return;
 
-//     gl->setColumnStretch( (2*x)+1, 1 );
     if( label ) {
 //       kDebug() << k_funcinfo << "Adding label at: (" << y << "," << 2*x << ")" << endl;
-      gl->addWidget( label, y, (2*x), height, 1, Qt::AlignRight | Qt::AlignTop );
 //       kDebug() << k_funcinfo << "Adding widget at: (" << y << "," << (2*x)+1 << ") (" << height << "," << (2*width)-1  << ")" << endl;
+      gl->addWidget( label, y, (2*x), height, 1, Qt::AlignRight | Qt::AlignTop );
       if( indented ) {
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addSpacing( 40 );
         hbl->addWidget( widget );
-        gl->addLayout( hbl, y, (2*x)+1, 2*height, (2*width)-1 );
+        gl->addLayout( hbl, y, (2*x)+1, height, (2*width)-1 );
       }
       else
-        gl->addWidget( widget, y, (2*x)+1, 2*height, (2*width)-1 );
+        gl->addWidget( widget, y, (2*x)+1, height, (2*width)-1 );
     }
     else {
+//       kDebug() << k_funcinfo << "Adding widget at: (" << y << "," << 2*x << ") (" << height << "," << 2*width  << ")" << endl;
       if( indented ) {
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addSpacing( 40 );
         hbl->addWidget( widget );
-        gl->addLayout( hbl, y, (2*x), 2*height, 2*width );
+        gl->addLayout( hbl, y, (2*x), height, 2*width );
       }
-        gl->addWidget( widget, y, (2*x), 2*height, 2*width );
+        gl->addWidget( widget, y, (2*x), height, 2*width );
     }
   }
   else {
     QGridLayout *gl = dynamic_cast< QGridLayout *>( l );
     if( !gl )
       return;
+    QVBoxLayout *vbl = new QVBoxLayout();
 
-//     gl->setColumnStretch( x, 1 );
     if( label ) {
-//       kDebug() << k_funcinfo << "Adding label at: (" << 2*y << "," << x << ")" << endl;
-      gl->addWidget( label, 2*y, 2*x, 1, 2*width, Qt::AlignLeft | Qt::AlignTop );
-//       kDebug() << k_funcinfo << "Adding widget at: (" << (2*y)+1 << "," << x << ") (" << (2*height)-1 << "," << width  << ")" << endl;
+      vbl->addWidget( label );
       if( indented ) {
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addSpacing( 40 );
         hbl->addWidget( widget );
-        gl->addLayout( hbl, (2*y)+1, 2*x, (2*height)-1, 2*width );
+        vbl->addLayout( hbl );
       }
       else
-        gl->addWidget( widget, (2*y)+1, 2*x, (2*height)-1, 2*width );
+        vbl->addWidget( widget );
     }
     else {
       if( indented ) {
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addSpacing( 40 );
         hbl->addWidget( widget );
-        gl->addLayout( hbl, 2*y, 2*x, 2*height, 2*width );
+        vbl->addLayout( hbl );
       }
-        gl->addWidget( widget, 2*y, 2*x, 2*height, 2*width );
+      else
+        vbl->addWidget( widget );
     }
+
+//     kDebug() << k_funcinfo << "Adding block at: (" << y << "," << (2*x) << ") (" << height << "," << 2*width  << ")" << endl;
+    gl->addLayout( vbl, y, 2*x, height, 2*width );
   }
 }

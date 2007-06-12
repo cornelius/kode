@@ -104,10 +104,22 @@ void Layout::order()
           e->setLeft( refEntry );
           refEntry->setRight( e );
           mOrderedList.removeAt( mOrderedList.indexOf( e ) );
+          Element *child = e->belowElement();
+          while( child ) {
+            if( mOrderedList.contains( child ) )
+              mOrderedList.removeAt( mOrderedList.indexOf( child ) );
+            child = child->belowElement();
+          }
         } else if( pos.tagName() == "leftOf" ) {
           e->setRight( refEntry );
           refEntry->setLeft( e );
           mOrderedList.removeAt( mOrderedList.indexOf( refEntry ) );
+          Element *child = refEntry->belowElement();
+          while( child ) {
+            if( mOrderedList.contains( child ) )
+              mOrderedList.removeAt( mOrderedList.indexOf( child ) );
+            child = child->belowElement();
+          }
         } else if( pos.tagName() == "above" ) {
           e->setBelow( refEntry );
           refEntry->setAbove( e );
