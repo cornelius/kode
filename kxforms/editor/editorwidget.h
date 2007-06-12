@@ -65,6 +65,7 @@ class EditorWidget : public QWidget
     void printMessage( QPainter *p, const QRect &, const QString &msg );
     void drawGlobalInterface( QPainter *p );
     void drawGroups( QPainter *p );
+    void drawWidgetFrames( QPainter *p );
 
   private:
     Editor *mEditor;

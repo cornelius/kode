@@ -159,6 +159,7 @@ void EditorWidget::paintEvent( QPaintEvent *event )
   QPainter p( this );
 
   drawGroups( &p );
+  drawWidgetFrames( &p );
 
   if( mInSelection ) {
     if( mHoveredElement != mActiveElement ) {
@@ -243,6 +244,22 @@ void EditorWidget::drawGroups( QPainter *p )
     alreadyPaintedRects.append( mGroupMap[group] );
     p->restore();
   }
+  p->restore();
+}
+
+void EditorWidget::drawWidgetFrames( QPainter *p )
+{
+  p->save();
+
+  QPen pen;
+  pen.setColor( QColor(50,50,50,150) );
+  pen.setWidth( 1 );
+  p->setPen( pen );
+
+  foreach( QRect r, mElementMap.values() ) {
+    p->drawRect( r );
+  }
+
   p->restore();
 }
 
