@@ -41,10 +41,12 @@ Select::Select( Manager *m, const QString &label, QWidget *parent, Properties *p
   QWidget *w;
   if( mProperties->appearance == Full ) {
     w = new QWidget( parent );
+    w->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     w->setLayout( new QVBoxLayout( parent ) );
   } else {
     mListWidget = new QListWidget( parent );
     mListWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    mListWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     w = mListWidget;
   }
 

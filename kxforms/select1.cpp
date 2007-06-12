@@ -43,16 +43,18 @@ Select1::Select1( Manager *m, const QString &label, QWidget *parent, Properties 
   QWidget *w;
   if( mProperties->appearance == Full ) {
     w = new QWidget( parent );
+    w->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     w->setLayout( new QVBoxLayout( parent ) );
   } else if( mProperties->appearance == Compact ) {
     mListWidget = new QListWidget( parent );
     mListWidget->setSelectionMode( QAbstractItemView::SingleSelection );
+    mListWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     w = mListWidget;
   } else {
     mComboBox = new QComboBox( parent );
+    mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     w = mComboBox;
   }
-
   setWidget( w );
   applyProperties();
 }

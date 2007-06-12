@@ -39,6 +39,7 @@ TextArea::TextArea( Manager *m, const QString &label, QWidget *parent, Propertie
   mEdit = new QTextEdit( mParent );
 
   mEdit->setMinimumHeight( 40 );
+  mEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   setWidget( mEdit );
   applyProperties();

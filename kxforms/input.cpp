@@ -43,14 +43,17 @@ Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
   QWidget *w;
   if( mProperties->type == "xs:integer" ) {
     mSpinBox = new QSpinBox( mParent );
+    mSpinBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     w = mSpinBox;
     connect( mSpinBox, SIGNAL( valueChanged(int) ), SLOT( emitValueChanged() ) );
   } else if( mProperties->type == "xs:boolean" ) {
     mCheckBox = new QCheckBox( mParent );
+    mCheckBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     w = mCheckBox;
     connect( mCheckBox, SIGNAL( stateChanged(int) ), SLOT( emitValueChanged() ) );
   } else {
     mLineEdit = new KLineEdit( mParent );
+    mLineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     w = mLineEdit;
     connect( mLineEdit, SIGNAL( textChanged(QString) ), SLOT( emitValueChanged() ) );
     connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
