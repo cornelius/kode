@@ -53,7 +53,7 @@ void AppearanceAction::perform( GuiElement *e )
 
   int currentPosition = 0;
   if( e->properties() )
-     currentPosition =e->properties()->appearance - 1;
+     currentPosition = e->properties()->appearance;
 
   newStyle = KInputDialog::getItem( i18n("Select the appearance style"), i18n("Appearance style for %1:", e->ref().toString()),
       list, currentPosition, false, &ok );
