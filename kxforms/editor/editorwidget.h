@@ -64,11 +64,13 @@ class EditorWidget : public QWidget
     void targetElement( QPainter *p, const QRect &, GuiElement *e );
     void printMessage( QPainter *p, const QRect &, const QString &msg );
     void drawGlobalInterface( QPainter *p );
+    void drawGroups( QPainter *p );
 
   private:
     Editor *mEditor;
     FormGui *mGui;
     QMap< GuiElement *, QRect > mElementMap;
+    QMap< QString, QRect > mGroupMap;
 
     QWidget *mInterfaceWidget;
     QPushButton *mEditButton;

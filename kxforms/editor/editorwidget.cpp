@@ -108,6 +108,7 @@ void EditorWidget::setGuiElements( const GuiElement::List &list )
     r.moveLeft( qMin( widgetPos.x(), labelWidgetPos.x() ) );
 
     mElementMap[e] = r;
+    mGroupMap[e->properties()->group] |= r;
   }
 }
 
@@ -157,6 +158,8 @@ void EditorWidget::paintEvent( QPaintEvent *event )
 //   kDebug() << k_funcinfo << endl;
   QPainter p( this );
 
+  drawGroups( &p );
+
   if( mInSelection ) {
     if( mHoveredElement != mActiveElement ) {
       if( mHoveredElement && mActiveElement->properties()->group != mHoveredElement->properties()->group )
@@ -201,6 +204,45 @@ void EditorWidget::drawGlobalInterface( QPainter *p )
   p->setBrush( b );
   p->drawRoundRect( r );
 
+  p->restore();
+}
+
+void EditorWidget::drawGroups( QPainter *p )
+{
+  p->save();
+
+  QList<QRect> alreadyPaintedRects;
+
+  QBrush b( QColor(200,200,50,50) );
+  QPen pen;
+  pen.setColor( QColor(50,50,0,255) );
+  pen.setWidth( 3 );
+  p->setPen( pen );
+  p->setBrush( b );
+
+  QFont fnt;
+  fnt.setPointSize( 14 );
+  fnt.setBold( true );
+  p->setFont( fnt );
+
+  foreach( QString group, mGroupMap.keys() ) {
+    p->save();
+    QBrush b2 = b;
+    foreach( QRect otherRect, alreadyPaintedRects ) {
+      if( mGroupMap[group].intersects( otherRect ) ) {
+        b2 = QBrush( QColor(0,200,0,50) );
+        QPen pen2;
+        pen2.setColor( QColor(50,150,50,255) );
+        pen2.setWidth( 3 );
+        p->setPen( pen2 );
+        break;
+      }
+    }
+    p->fillRect( mGroupMap[group], b2 );
+    p->drawText( mGroupMap[group].center(), i18n("Group: %1", group ) );
+    alreadyPaintedRects.append( mGroupMap[group] );
+    p->restore();
+  }
   p->restore();
 }
 
