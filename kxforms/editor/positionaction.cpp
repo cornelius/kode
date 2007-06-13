@@ -55,7 +55,11 @@ void PositionAction::perform( GuiElement *e )
   }
   kDebug() << k_funcinfo << "Chosen element: " << chosenElement->ref().toString() << endl;
 
+  perform( e, chosenElement );
+}
 
+void PositionAction::perform( GuiElement *e, GuiElement *target )
+{
 
   QString position;
   QStringList list;
@@ -73,7 +77,7 @@ void PositionAction::perform( GuiElement *e )
   h.setRef( e->ref() );
   QDomDocument doc;
   QDomElement elem = doc.createElement( position );
-  QDomNode child = doc.createTextNode( chosenElement->ref().toString() );
+  QDomNode child = doc.createTextNode( target->ref().toString() );
   elem.appendChild( child );
   h.addElement( Hint::Position, elem );
   emit hintGenerated( h );

@@ -22,6 +22,7 @@
 #include "editorwidget.h"
 #include "editor.h"
 #include "globalsettingsdlg.h"
+#include "positionaction.h"
 #include "../manager.h"
 #include "../formgui.h"
 
@@ -40,12 +41,14 @@
 #include <QEventLoop>
 #include <QWhatsThis>
 #include <QVBoxLayout>
+#include <QApplication>
 
 using namespace KXForms;
 
 EditorWidget::EditorWidget( Editor *e, FormGui *parent )
   : QWidget( parent ), mEditor( e ), mGui( parent ), mHoveredElement( 0 ), mActiveElement( 0 ),
-    mEventLoop( new QEventLoop( this ) ), mInSelection( false ), mInEdit( false )
+    mEventLoop( new QEventLoop( this ) ), mInSelection( false ), mInEdit( false ),
+    mDraggedElement( 0 )
 {
   setMouseTracking( true );
   setGeometry( parent->geometry() );
@@ -124,7 +127,28 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 //   kDebug() << k_funcinfo << endl;
   GuiElement *newElement = 0;
   QPoint pos = event->pos();
-  foreach( QRect r, mElementMap.values() ) {
+  QRect r;
+
+
+  if( mInDrag && !mDraggedElement && ( mDragPoint - pos ).manhattanLength() > QApplication::startDragDistance() ) {
+    foreach( QRect dragR, mElementMap.values() ) {
+      if( dragR.contains( mDragPoint ) ) {
+        if( !mDraggedElement || 
+            mElementMap[ mDraggedElement ].width() > dragR.width() ||
+            mElementMap[ mDraggedElement ].height() > dragR.height() ) {
+          mDraggedElement = mElementMap.key( dragR );
+        }
+      }
+    }
+    QPixmap cursorPixmap = QPixmap::grabWidget( mGui, mElementMap[ mDraggedElement ] ).scaled( 300, 300, Qt::KeepAspectRatio );
+    QApplication::setOverrideCursor( QCursor( cursorPixmap ) );
+    mActiveElement = mDraggedElement;
+    mInEdit = true;
+    mInSelection = true;
+    mSelectionMode = Editor::SelectSameGroupOnly;
+  }
+
+  foreach( r, mElementMap.values() ) {
     if( r.contains( pos ) ) {
       if( !newElement || 
           mElementMap[ newElement ].width() > r.width() ||
@@ -139,10 +163,31 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
   }
 }
 
+void EditorWidget::mousePressEvent( QMouseEvent *event )
+{
+//   kDebug() << k_funcinfo << endl;
+  mDragPoint = event->pos();
+  mInDrag = true;
+}
+
 void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 {
   Q_UNUSED( event )
 //   kDebug() << k_funcinfo << endl;
+
+  if( mInDrag ) {
+    mInDrag = false;
+    QApplication::restoreOverrideCursor();
+    if( mDraggedElement && mHoveredElement && 
+        mDraggedElement != mHoveredElement &&
+        mHoveredElement->properties()->group == mActiveElement->properties()->group) {
+      PositionAction *a = dynamic_cast<PositionAction *>(mEditor->action( "edit_position" ));
+      if( a )
+        a->perform( mDraggedElement, mHoveredElement );
+    }
+  }
+  mDraggedElement = 0;
+
   if( !mInSelection )
     return;
 

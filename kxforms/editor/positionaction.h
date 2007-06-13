@@ -33,6 +33,7 @@ class PositionAction : public EditorAction
     ~PositionAction();
 
     void perform( GuiElement *e );
+    void perform( GuiElement *e, GuiElement *target );
 
   Q_SIGNALS:
     void hintGenerated( const Hint &hint );

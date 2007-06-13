@@ -70,6 +70,7 @@ class Editor : public QObject
     KActionMenu *actionMenu( GuiElement *e );
 
     void performAction( const QString &actionId, GuiElement *w );
+    EditorAction *action( const QString &actionId ) { return mActions[actionId]; }
 
     void addHints( const Hints &h ) { mHints.merge( h ); }
     Hints hints() const { return mHints; }

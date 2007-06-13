@@ -56,6 +56,7 @@ class EditorWidget : public QWidget
     void init();
 
     void mouseMoveEvent( QMouseEvent *event );
+    void mousePressEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
     void paintEvent( QPaintEvent *event );
 
@@ -89,6 +90,9 @@ class EditorWidget : public QWidget
     bool mInSelection;
     Editor::SelectionMode mSelectionMode;
     bool mInEdit;
+    bool mInDrag;
+    QPoint mDragPoint;
+    GuiElement *mDraggedElement;
 };
 
 }
