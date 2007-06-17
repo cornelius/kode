@@ -1,6 +1,4 @@
 
-if(KDE4_BUILD_TESTS)
-
 include_directories( ${CMAKE_SOURCE_DIR}/kode  )
 
 ########### next target ###############
@@ -10,7 +8,7 @@ kode_add_xml_parser(testfeatures_SRCS kde-features.rng)
 
 kde4_automoc(${testfeatures_SRCS})
 
-kde4_add_executable(testfeatures ${testfeatures_SRCS})
+kde4_add_test_executable(testfeatures ${testfeatures_SRCS})
 
 target_link_libraries(testfeatures  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
@@ -21,7 +19,7 @@ kode_add_xml_parser(testholidays_SRCS kde-holidays.rng)
 
 kde4_automoc(${testholidays_SRCS})
 
-kde4_add_executable(testholidays ${testholidays_SRCS})
+kde4_add_test_executable(testholidays ${testholidays_SRCS})
 
 target_link_libraries(testholidays  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
@@ -32,10 +30,8 @@ set(parsertest_SRCS parserxsdtest.cpp )
 
 kde4_automoc(${parsertest_SRCS})
 
-kde4_add_executable(parserxsdtest NOGUI RUN_UNINSTALLED ${parsertest_SRCS})
+kde4_add_test_executable(parserxsdtest  ${parsertest_SRCS})
 
 target_link_libraries(parserxsdtest kschema  ${QT_QTTEST_LIBRARY} )
-
-endif(KDE4_BUILD_TESTS)
 
 ########### install files ###############

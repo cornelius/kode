@@ -1,6 +1,4 @@
 
-if(KDE4_BUILD_TESTS)
-
 include_directories( ${CMAKE_SOURCE_DIR}/kode  )
 
 ########### next target ###############
@@ -49,11 +47,9 @@ kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 
 kde4_automoc(${kxformstest_SRCS})
 
-kde4_add_executable(kxformstest NOGUI RUN_UNINSTALLED ${kxformstest_SRCS})
+kde4_add_test_executable(kxformstest ${kxformstest_SRCS})
 
 target_link_libraries(kxformstest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS}  )
-
-endif(KDE4_BUILD_TESTS)
 
 
 ########### install files ###############

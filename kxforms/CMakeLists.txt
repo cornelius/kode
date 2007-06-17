@@ -56,16 +56,13 @@ install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
 
 ########### next target ###############
 
-if(KDE4_BUILD_TESTS)
 set(testreferences_SRCS testreferences.cpp reference.cpp )
 
 kde4_automoc(${testreferences_SRCS})
 
-kde4_add_executable(testreferences ${testreferences_SRCS})
+kde4_add_test_executable(testreferences ${testreferences_SRCS})
 
 target_link_libraries(testreferences  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
-
-endif(KDE4_BUILD_TESTS)
 
 ########### install files ###############
 
