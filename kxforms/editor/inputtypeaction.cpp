@@ -61,7 +61,7 @@ void InputTypeAction::perform( GuiElement *e )
   if( ok ) {
     kDebug() << k_funcinfo << "New Type: " << newType << endl;
     Hint h;
-    h.setRef( e->ref() );
+    h.setRef( e->id() );
     h.setValue( Hint::InputType, newType );
     emit hintGenerated( h );
   }

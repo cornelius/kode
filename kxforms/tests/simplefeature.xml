@@ -29,13 +29,39 @@ description</a>.</richtext>
       <new/>
     </status>
     <architecture legacyinfo="i386" />
+    <productid legacypriotype="" legacytype="" legacyinfo="" />
+    <name>#text</name>
+    <version/>
   </productcontext>
-  <productcontext>
+  <productcontext legacyinfo="info" >
     <product>
-      <productid>openSUSE 10.1</productid>
+      <productid legacypriotype="1" legacytype="2" legacyinfo="3" >openSUSE 10.1</productid>
       <name>openSUSE</name>
       <version>10.1</version>
     </product>
+    <architecture legacyinfo="x86" />
+    <architecture legacyinfo="i386" />
+    <priority>
+      <priority>
+        <important/>
+      </priority>
+      <owner>
+        <role>
+          <developer/>
+        </role>
+      </owner>
+    </priority>
+    <priority>
+      <important/>
+      <owner>
+        <role>
+          <interested/>
+        </role>
+      </owner>
+    </priority>
+    <status>
+      <rejected/>
+    </status>
   </productcontext>
   <productcontext>
     <product>
@@ -54,8 +80,52 @@ description</a>.</richtext>
       <version>10.3</version>
     </product>
   </productcontext>
+  <productcontext legacyinfo="info1" >
+    <architecture legacyinfo="i686" />
+    <product>
+      <productid legacypriotype="prio" legacytype="type" legacyinfo="info" >openSUSE 10.4</productid>
+      <name>openSUSE</name>
+      <version>10.4</version>
+    </product>
+    <status>
+      <new/>
+    </status>
+    <priority>
+      <mandatory/>
+      <owner>
+        <role>
+          <developer/>
+        </role>
+      </owner>
+    </priority>
+  </productcontext>
   <documentationstatus>
     <needinfo/>
     <implementation/>
+    <postponed>
+      <postponed/>
+    </postponed>
+    <documentationstatus>
+      <postponed/>
+    </documentationstatus>
   </documentationstatus>
+  <organization>orga</organization>
+  <externalid>external</externalid>
+  <partnerbenefit>
+    <richtext>pb</richtext>
+  </partnerbenefit>
+  <nda>
+    <expires>nda</expires>
+  </nda>
+  <actor>
+    <role>
+      <technicalcontact/>
+      <projectmanager>
+        <developer/>
+      </projectmanager>
+    </role>
+    <person>
+      <email>tgtest</email>
+    </person>
+  </actor>
 </feature>

@@ -327,7 +327,7 @@ void EditorWidget::targetElement( QPainter *p, const QRect &r, GuiElement *w )
     fnt.setPointSize( 14 );
     fnt.setBold( true );
     p->setFont( fnt );
-    p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->ref().toString() );
+    p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->id().toString() );
   }
 
   p->restore();
@@ -352,7 +352,7 @@ void EditorWidget::highlightElement( QPainter *p, const QRect &r, GuiElement *w 
   fnt.setPointSize( 14 );
   fnt.setBold( true );
   p->setFont( fnt );
-  p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->ref().toString() );
+  p->drawText( point + QPoint(0,QFontMetrics( fnt ).height() ), w->id().toString() );
 
   p->restore();
 }

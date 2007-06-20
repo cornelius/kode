@@ -61,7 +61,7 @@ void AppearanceAction::perform( GuiElement *e )
   if( ok ) {
     kDebug() << k_funcinfo << "New Style: " << newStyle << endl;
     Hint h;
-    h.setRef( e->ref() );
+    h.setRef( e->id() );
     h.setValue( Hint::Appearance, newStyle );
     emit hintGenerated( h );
   }

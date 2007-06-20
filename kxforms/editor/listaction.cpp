@@ -113,7 +113,7 @@ void ListAction::perform( GuiElement *e )
   if( dlg->exec() == QDialog::Accepted ) {
 
     Hint h;
-    h.setRef( e->ref() );
+    h.setRef( e->id() );
     h.setValue( Hint::ListShowHeader, dlg->showHeader() ? "true" : "false" );
     h.setValue( Hint::ListShowSearch, dlg->showFilter() ? "true" : "false" );
     emit hintGenerated( h );

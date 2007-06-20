@@ -65,7 +65,7 @@ void GroupAction::perform( GuiElement *e )
   if( ok ) {
     kDebug() << k_funcinfo << "New Group: " << newGroup << endl;
     Hint h;
-    h.setRef( e->ref() );
+    h.setRef( e->id() );
     h.setValue( Hint::GroupReference, newGroup );
     emit hintGenerated( h );
   }

@@ -74,7 +74,7 @@ void PositionAction::perform( GuiElement *e, GuiElement *target )
   }
 
   Hint h;
-  h.setRef( e->ref() );
+  h.setRef( e->id() );
   QDomDocument doc;
   QDomElement elem = doc.createElement( position );
   QDomNode child = doc.createTextNode( target->ref().toString() );

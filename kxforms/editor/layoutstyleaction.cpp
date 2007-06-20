@@ -61,7 +61,7 @@ void LayoutStyleAction::perform( GuiElement *e )
   }
 
   Hint h;
-  h.setRef( e->ref() );
+  h.setRef( e->id() );
   h.setValue( Hint::LayoutStyle, style );
   emit hintGenerated( h );
 

@@ -72,6 +72,9 @@ class List : public GuiElement
     void loadData();
     void saveData();
 
+    void setId( const Reference &id ) { mId = id; }
+    virtual Reference id() const { return mId; }
+
     int space() const { return 40; }
 
     ItemClass itemClass( const QString &ref );
@@ -105,6 +108,8 @@ class List : public GuiElement
 
     ListModel *mModel;
     ListProxyModel *mProxyModel;
+
+    Reference mId;
 };
 
 }

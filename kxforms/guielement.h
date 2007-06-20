@@ -65,6 +65,8 @@ class GuiElement : public QObject
     void setRef( const Reference & );
     Reference ref() const;
 
+    virtual Reference id() const { return mRef; }
+
     QDomElement context() const;
 
     QDomElement createElement( const Reference & );

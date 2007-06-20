@@ -173,8 +173,6 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     if(  element.elementRelations().size() <= 1 ) {
       section->attribute( "visible", "false" );
       section->attribute( "overrideLabel", getLabel( Reference( element.ref() ), element.name() ) );
-    } else {
-      path = Reference();
     }
   } else {
     section = xml;
@@ -324,7 +322,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         foreach( QString s, listTitles ) {
           listHeader->tag( "header", s );
         }
-        list->attribute( "ref", listRef );
+        list->attribute( "id", listRef );
 
  
         applyCommonHints( list, listRef );

@@ -108,8 +108,6 @@ void Select1::loadData()
   kDebug() << "Select1::loadData() " << ref().toString() << "  context: "
     << context().tagName() << endl;
 
-  Reference::Segment s = ref().segments().last();
-
   QString txt = ref().applyString( context() );
 
   int count = 0;
@@ -137,7 +135,9 @@ void Select1::saveData()
   kDebug() << "Select1::saveData()" << endl;
   kDebug() << ref().toString() << endl;
   kDebug() << "Context: " << context().nodeName() << endl;
-  Reference::Segment s = ref().segments().last();
+  Reference::Segment s;
+  if( ref().segments().size() > 0 )
+    s = ref().segments().last();
 
   QString txt;
   if( mProperties->appearance == Full ) {

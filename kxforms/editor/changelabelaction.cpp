@@ -62,7 +62,7 @@ void ChangeLabelAction::perform( GuiElement *e )
   if( ok ) {
     kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
     Hint h;
-    h.setRef( e->ref() );
+    h.setRef( e->id() );
     h.setValue( Hint::Label, newLabel );
     emit hintGenerated( h );
   }

@@ -61,7 +61,7 @@ void ReadOnlyAction::perform( GuiElement *e )
   if( ok ) {
     kDebug() << k_funcinfo << "New Mode: " << newRO << endl;
     Hint h;
-    h.setRef( e->ref() );
+    h.setRef( e->id() );
     h.setValue( Hint::ReadOnly, newRO );
     emit hintGenerated( h );
   }

@@ -94,7 +94,7 @@ int main(int argc, char **argv)
   Prefs::setDeveloperMode( args->isSet( "developer" ) );
   Prefs::setVerticalListButtons( args->isSet( "vertical-list-buttons" ) );
 
-#if 1
+#if 0
   // Hack: force a decent font
   QFont f( "Arial", 11 );
   QApplication::setFont( f );
