@@ -1,5 +1,5 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode  )
+include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kxforms  )
 
 ########### next target ###############
 
@@ -50,6 +50,16 @@ kde4_automoc(${kxformstest_SRCS})
 kde4_add_test_executable(kxformstest ${kxformstest_SRCS})
 
 target_link_libraries(kxformstest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS}  )
+
+########### next target ###############
+
+set(testreferences_SRCS testreferences.cpp ../reference.cpp )
+
+kde4_automoc(${testreferences_SRCS})
+
+kde4_add_test_executable(testreferences ${testreferences_SRCS})
+
+target_link_libraries(testreferences  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
 
 ########### install files ###############

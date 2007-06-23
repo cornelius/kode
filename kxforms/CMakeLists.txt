@@ -54,16 +54,6 @@ target_link_libraries(kxforms  ${KDE4_KIO_LIBS} kschema ${KDE4_KDE3SUPPORT_LIBS}
 
 install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
 
-########### next target ###############
-
-set(testreferences_SRCS testreferences.cpp reference.cpp )
-
-kde4_automoc(${testreferences_SRCS})
-
-kde4_add_test_executable(testreferences ${testreferences_SRCS})
-
-target_link_libraries(testreferences  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
-
 ########### install files ###############
 
 install( FILES  kxformsui.rc  DESTINATION ${DATA_INSTALL_DIR}/kxforms)
