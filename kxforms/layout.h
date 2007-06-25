@@ -60,7 +60,7 @@ public:
     QList< Element *> mChildren;
   };
 
-  Layout(): mOrdered( false ) {};
+  Layout(): mOrdered( false ) {}
   ~Layout();
 
   QList< Element * > orderedList() const;
