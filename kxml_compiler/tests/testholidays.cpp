@@ -31,18 +31,15 @@
 
 #include <iostream>
 
-static const KCmdLineOptions options[] =
-{
-  { "+holidayfile", "Name of holiday XML file", 0 },
-  { "output <file>", "Name of output file", 0 },
-  KCmdLineLastOption
-};
-
 int main( int argc, char **argv )
 {
-  KAboutData aboutData( "testholidays", "Dump holidays to stdout",
+  KAboutData aboutData( "testholidays", 0, ki18n("Dump holidays to stdout"),
                         "0.1" );
   KCmdLineArgs::init( argc, argv, &aboutData );
+
+  KCmdLineOptions options;
+  options.add("+holidayfile", ki18n("Name of holiday XML file"));
+  options.add("output <file>", ki18n("Name of output file"));
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -51,7 +48,7 @@ int main( int argc, char **argv )
     args->usage( "Wrong number of arguments." );
   }
 
-  QString filename = QFile::decodeName( args->arg( 0 ) );
+  QString filename = args->arg( 0 );
 
   HolidayCalendarParser parser;
 

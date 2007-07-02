@@ -35,27 +35,24 @@
 #include <QTimer>
 #include <QCoreApplication>
 
-static const KCmdLineOptions options[] =
-{
-  { "c", 0, 0 },
-  { "configfile <file>", I18N_NOOP( "Configuration file" ), "kwsdl.cfg" },
-  { "d", 0, 0 },
-  { "outputDirectory <dir>", I18N_NOOP( "Directory to generate files in" ), "." },
-  { "+wsdl", I18N_NOOP( "WSDL file" ), 0 },
-  KCmdLineLastOption
-};
-
 int main( int argc, char **argv )
 {
-  KAboutData aboutData( "kwsdl_compiler", I18N_NOOP( "KDE wsdl compiler" ), "0.1",
-                        I18N_NOOP( "KDE WSDL Compiler" ),
+  KAboutData aboutData( "kwsdl_compiler", 0, ki18n( "KDE wsdl compiler" ), "0.1",
+                        ki18n( "KDE WSDL Compiler" ),
                         KAboutData::License_LGPL );
 
-  aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
+  aboutData.addAuthor( ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org" );
 
   KComponentData wsdlInstance( &aboutData );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
+
+  KCmdLineOptions options;
+  options.add("c");
+  options.add("configfile <file>", ki18n( "Configuration file" ), "kwsdl.cfg");
+  options.add("d");
+  options.add("outputDirectory <dir>", ki18n( "Directory to generate files in" ), ".");
+  options.add("+wsdl", ki18n( "WSDL file" ));
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -67,7 +64,7 @@ int main( int argc, char **argv )
       return 1;
   } else {
     if ( args->count() != 1 ) {
-      KCmdLineArgs::usage( i18n( "Neither a config file nor a WSDL url is given." ) );
+      KCmdLineArgs::usageError( i18n( "Neither a config file nor a WSDL url is given." ) );
     }
   }
 

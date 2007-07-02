@@ -42,19 +42,6 @@
 static const char description[] =
     I18N_NOOP("XML Forms Editor");
 
-static KCmdLineOptions options[] =
-{
-  { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
-  { "kxform <URL>", I18N_NOOP( "KXForms description" ), 0 },
-  { "schema <URL>", I18N_NOOP( "XML Schema" ), 0 },
-  { "ugh <URL>", I18N_NOOP( "UI Generation Hints" ), 0 },
-  { "xml <URL>", I18N_NOOP( "XML file" ), 0 },
-  { "dialogs", I18N_NOOP( "Use dialogs" ), 0 },
-  { "developer", I18N_NOOP( "Use developer mode of user interface" ), 0 },
-  { "vertical-list-buttons", I18N_NOOP( "Use vertical list buttons" ), 0 },
-  KCmdLineLastOption
-};
-
 KUrl makeURL( const QString &arg )
 {
    if (!QDir::isRelativePath( arg ))
@@ -77,11 +64,21 @@ KUrl makeURL( const QString &arg )
 
 int main(int argc, char **argv)
 {
-  KAboutData about("kxforms", I18N_NOOP("KXForms"), "0.1", description,
-    KAboutData::License_GPL, "(C) 2005 Cornelius Schumacher", 0, 0,
+  KAboutData about("kxforms", 0, ki18n("KXForms"), "0.1", ki18n(description),
+    KAboutData::License_GPL, ki18n("(C) 2005 Cornelius Schumacher"), KLocalizedString(), 0,
     "schumacher@kde.org");
-  about.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
+  about.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
   KCmdLineArgs::init(argc, argv, &about);
+
+  KCmdLineOptions options;
+  options.add("+[URL]", ki18n( "Document to open" ));
+  options.add("kxform <URL>", ki18n( "KXForms description" ));
+  options.add("schema <URL>", ki18n( "XML Schema" ));
+  options.add("ugh <URL>", ki18n( "UI Generation Hints" ));
+  options.add("xml <URL>", ki18n( "XML file" ));
+  options.add("dialogs", ki18n( "Use dialogs" ));
+  options.add("developer", ki18n( "Use developer mode of user interface" ));
+  options.add("vertical-list-buttons", ki18n( "Use vertical list buttons" ));
   KCmdLineArgs::addCmdLineOptions(options);
 #if 1
   KApplication app;

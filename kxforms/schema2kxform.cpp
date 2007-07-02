@@ -42,24 +42,21 @@
 
 #include <iostream>
 
-static const KCmdLineOptions options[] =
-{
-  { "ugh <file>", I18N_NOOP("UI Generation Hints"), 0 },
-  { "+schema", I18N_NOOP("Schema of XML file"), 0 },
-  KCmdLineLastOption
-};
-
 int main(int argc, char **argv)
 {
   KApplication::disableAutoDcopRegistration();
 
-  KAboutData about("schema2kxform", I18N_NOOP("Schema to KXForms Converter"),
-    "0.1", I18N_NOOP("Schema to KXForms Converter"),
-    KAboutData::License_GPL, "(C) 2006 Cornelius Schumacher", 0, 0,
+  KAboutData about("schema2kxform", 0, ki18n("Schema to KXForms Converter"),
+    "0.1", ki18n("Schema to KXForms Converter"),
+    KAboutData::License_GPL, ki18n("(C) 2006 Cornelius Schumacher"), KLocalizedString(), 0,
     "schumacher@kde.org");
-  about.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
+  about.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
 
   KCmdLineArgs::init(argc, argv, &about);
+
+  KCmdLineOptions options;
+  options.add("ugh <file>", ki18n("UI Generation Hints"));
+  options.add("+schema", ki18n("Schema of XML file"));
   KCmdLineArgs::addCmdLineOptions(options);
 
   KApplication app( false );

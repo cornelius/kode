@@ -47,31 +47,27 @@
 
 #include <iostream>
 
-static const KCmdLineOptions options[] =
-{
-  { "d", 0, 0 },
-  { "directory <dir>", I18N_NOOP("Directory to generate files in"), "." },
-  { "v", 0, 0 },
-  { "verbose", I18N_NOOP("Generate debug output"), 0 },
-  { "+schema", I18N_NOOP("Schema of XML file"), 0 },
-  { "external-parser", I18N_NOOP("Generate parser in separate source file"),
-    0 },
-  { "custom-parser", I18N_NOOP("Generate parser customized for schema"), 0 },
-  { "xsd", I18N_NOOP("Schema is XML Schema"), 0 },
-  { "rng", I18N_NOOP("Schema is RelaxNG"), 0 },
-  KCmdLineLastOption
-};
-
 int main( int argc, char **argv )
 {
   QCoreApplication app( argc, argv );
-  KAboutData aboutData( "kxml_compiler", I18N_NOOP("KDE xml compiler"), "0.1",
-  	I18N_NOOP("KDE XML Compiler") , KAboutData::License_LGPL );
-  aboutData.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
+  KAboutData aboutData( "kxml_compiler", 0, ki18n("KDE xml compiler"), "0.1",
+  	ki18n("KDE XML Compiler") , KAboutData::License_LGPL );
+  aboutData.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
   KComponentData data( &aboutData );
   KGlobal::setActiveComponent( data );
 
   KCmdLineArgs::init( argc, argv, &aboutData, KCmdLineArgs::CmdLineArgNone );
+
+  KCmdLineOptions options;
+  options.add("d");
+  options.add("directory <dir>", ki18n("Directory to generate files in"), ".");
+  options.add("v");
+  options.add("verbose", ki18n("Generate debug output"));
+  options.add("+schema", ki18n("Schema of XML file"));
+  options.add("external-parser", ki18n("Generate parser in separate source file"));
+  options.add("custom-parser", ki18n("Generate parser customized for schema"));
+  options.add("xsd", ki18n("Schema is XML Schema"));
+  options.add("rng", ki18n("Schema is RelaxNG"));
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -86,7 +82,7 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  QString baseDir = QFile::decodeName( args->getOption( "directory" ) );
+  QString baseDir = args->getOption( "directory" );
   if ( !baseDir.endsWith( "/" ) ) baseDir.append( "/" );
 
   QString schemaFilename = args->url( 0 ).path();

@@ -46,33 +46,6 @@
 
 #include <iostream>
 
-static const KCmdLineOptions options[] =
-{
-  { "c", 0, 0 },
-  { "create-class", I18N_NOOP("Create class"), 0 },
-  { "d", 0, 0 },
-  { "create-dialog", I18N_NOOP("Create dialog"), 0 },
-  { "create-kioslave", I18N_NOOP("Create kioslave"), 0 },
-  { "create-main", I18N_NOOP("Create main function template"), 0 },
-  { "y", 0, 0 },
-  { "codify", I18N_NOOP("Create generator code for given source"), 0 },
-  { "add-property", I18N_NOOP("Add property to class"), 0 },
-  { "inplace", I18N_NOOP("Change file in place"), 0 },
-  { "author-email <name>", I18N_NOOP("Add author with given email address"), 0 },
-  { "project <name>", I18N_NOOP("Name of project"), 0 },
-  { "gpl", I18N_NOOP("Use GPL as license"), 0 },
-  { "lgpl", I18N_NOOP("Use LGPL as license"), 0 },
-  { "classname <name>", I18N_NOOP("Name of class"), 0 },
-  { "filename <name>", I18N_NOOP("Name of file"), 0 },
-  { "namespace <name>", I18N_NOOP("Namespace"), 0 },
-  { "warning", I18N_NOOP("Create warning about code generation"), 0 },
-  { "qt-exception", I18N_NOOP("Add Qt exception to GPL"), 0 },
-  { "singleton", I18N_NOOP("Create a singleton class"), 0 },
-  { "protocol", I18N_NOOP("kioslave protocol"), 0 },
-  { "+[filename]", I18N_NOOP("Source code file name"), 0 },
-  KCmdLineLastOption
-};
-
 void addPropertyFunctions( QString &out, const QString &type,
   const QString &name )
 {
@@ -399,21 +372,16 @@ int create( KCmdLineArgs *args )
     file.addInclude( "klocale" );
     file.addInclude( "kcmdlineargs" );
 
-    KODE::Code code;
-    code += "static const KCmdLineOptions options[] =";
-    code += '{';
-    code += "  { \"verbose\", \"Verbose output\", 0 },";
-    code += "  KCmdLineLastOption";
-    code += "};";
-    file.addFileCode( code );
-
     KODE::Function main( "main", "int" );
     main.addArgument( "int argc" );
     main.addArgument( "char **argv" );
 
-    code.clear();
-    code += "KAboutData aboutData(\"test\",\"Test\",\"0.1\");";
+    KODE::Code code;
+    code += "KAboutData aboutData(\"test\",0,ki18n(\"Test\"),\"0.1\");";
     code += "KCmdLineArgs::init(argc,argv,&aboutData);";
+    code += "";
+    code += "KCmdLineOptions options;";
+    code += "options.add(\"verbose\", ki18n(\"Verbose output\"));";
     code += "KCmdLineArgs::addCmdLineOptions( options );";
     code += "";
     code += "KApplication app;";
@@ -606,10 +574,34 @@ int create( KCmdLineArgs *args )
 
 int main(int argc,char **argv)
 {
-  KAboutData aboutData( "kode", I18N_NOOP("KDE Code Generator"), "0.1" );
-  aboutData.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
+  KAboutData aboutData( "kode", 0, ki18n("KDE Code Generator"), "0.1" );
+  aboutData.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
+
+  KCmdLineOptions options;
+  options.add("c");
+  options.add("create-class", ki18n("Create class"));
+  options.add("d");
+  options.add("create-dialog", ki18n("Create dialog"));
+  options.add("create-kioslave", ki18n("Create kioslave"));
+  options.add("create-main", ki18n("Create main function template"));
+  options.add("y");
+  options.add("codify", ki18n("Create generator code for given source"));
+  options.add("add-property", ki18n("Add property to class"));
+  options.add("inplace", ki18n("Change file in place"));
+  options.add("author-email <name>", ki18n("Add author with given email address"));
+  options.add("project <name>", ki18n("Name of project"));
+  options.add("gpl", ki18n("Use GPL as license"));
+  options.add("lgpl", ki18n("Use LGPL as license"));
+  options.add("classname <name>", ki18n("Name of class"));
+  options.add("filename <name>", ki18n("Name of file"));
+  options.add("namespace <name>", ki18n("Namespace"));
+  options.add("warning", ki18n("Create warning about code generation"));
+  options.add("qt-exception", ki18n("Add Qt exception to GPL"));
+  options.add("singleton", ki18n("Create a singleton class"));
+  options.add("protocol", ki18n("kioslave protocol"));
+  options.add("+[filename]", ki18n("Source code file name"));
   KCmdLineArgs::addCmdLineOptions( options );
 
   KApplication app;

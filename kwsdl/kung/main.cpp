@@ -29,21 +29,18 @@
 #include <kurl.h>
 #include "loader.h"
 
-static const KCmdLineOptions options[] =
-{
-  { "+wsdl", I18N_NOOP( "Location of WSDL file" ), 0 },
-  KCmdLineLastOption
-};
-
 int main( int argc, char **argv )
 {
-  KAboutData aboutData( "kung", I18N_NOOP( "KDE WSDL Interpreter" ), "0.1",
-                        I18N_NOOP( "KDE WSDL Interpreter" ),
+  KAboutData aboutData( "kung", 0, ki18n( "KDE WSDL Interpreter" ), "0.1",
+                        ki18n( "KDE WSDL Interpreter" ),
                         KAboutData::License_LGPL );
 
-  aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
+  aboutData.addAuthor( ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org" );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
+
+  KCmdLineOptions options;
+  options.add("+wsdl", ki18n( "Location of WSDL file" ));
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();

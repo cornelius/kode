@@ -49,11 +49,11 @@ static void checkReference( const QString &str )
 
 int main(int argc, char **argv)
 {
-  KAboutData about("testreferences", I18N_NOOP("TestReferences"), "0.1",
-    description,
-    KAboutData::License_GPL, "(C) 2005 Cornelius Schumacher", 0, 0,
+  KAboutData about("testreferences", 0, ki18n("TestReferences"), "0.1",
+    ki18n(description),
+    KAboutData::License_GPL, ki18n("(C) 2005 Cornelius Schumacher"), KLocalizedString(), 0,
     "schumacher@kde.org");
-  about.addAuthor( "Cornelius Schumacher", 0, "schumacher@kde.org" );
+  about.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
   KComponentData instance( &about );
   QCoreApplication app( argc, argv );
 
