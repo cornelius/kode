@@ -36,7 +36,6 @@
 #include <kmessagebox.h>
 #include <ksavefile.h>
 #include <kstandarddirs.h>
-#include <k3process.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
@@ -238,11 +237,9 @@ int addProperty( KCmdLineArgs *args )
   if ( args->isSet( "inplace" ) ) {
     QString headerFileNameOut = headerFileName + ".kodeorig" ;
 
-    K3Process proc;
-    proc << "cp" << QFile::encodeName( headerFileName ) <<
-      QFile::encodeName( headerFileNameOut );
-
-    if ( !proc.start( K3Process::Block ) ) {
+    // XXX Why copy instead of rename?
+    QFile::remove( headerFileNameOut );
+    if ( !QFile::copy( headerFileName, headerFileNameOut ) ) {
       kError() << "Copy failed" << endl;
     } else {
       kDebug() << "Write to original file." << endl;
