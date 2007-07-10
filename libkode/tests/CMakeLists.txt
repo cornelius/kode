@@ -2,7 +2,6 @@ include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/kode )
 
 set(nestedclasses_test_SRCS nestedclasses_test.cpp )
 
-kde4_automoc(${nestedclasses_test_SRCS})
 
 kde4_add_executable(nestedclasses_test RUN_UNINSTALLED ${nestedclasses_test_SRCS})
 

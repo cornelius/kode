@@ -13,7 +13,6 @@ add_subdirectory( kwsdl )
 
 set(kode_bin_SRCS kodemain.cpp )
 
-kde4_automoc(${kode_bin_SRCS})
 
 kde4_add_executable(kode_bin ${kode_bin_SRCS})
 set_target_properties(kode_bin PROPERTIES OUTPUT_NAME kode)

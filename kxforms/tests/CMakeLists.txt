@@ -45,7 +45,6 @@ set(kxformstest_SRCS
 
 kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 
-kde4_automoc(${kxformstest_SRCS})
 
 kde4_add_test_executable(kxformstest ${kxformstest_SRCS})
 
@@ -55,7 +54,6 @@ target_link_libraries(kxformstest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPO
 
 set(testreferences_SRCS testreferences.cpp ../reference.cpp )
 
-kde4_automoc(${testreferences_SRCS})
 
 kde4_add_test_executable(testreferences ${testreferences_SRCS})
 

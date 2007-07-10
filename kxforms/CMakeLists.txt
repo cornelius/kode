@@ -44,7 +44,6 @@ set(kxforms_SRCS
    editor/inputtypeaction.cpp
    editor/globalsettingsdlg.cpp )
 
-kde4_automoc(${kxforms_SRCS})
 
 kde4_add_kcfg_files(kxforms_SRCS prefs.kcfgc )
 

@@ -15,7 +15,6 @@ set(kode_LIB_SRCS
    statemachine.cpp 
    automakefile.cpp )
 
-kde4_automoc(${kode_LIB_SRCS})
 
 kde4_add_library(kode SHARED ${kode_LIB_SRCS})
 

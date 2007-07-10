@@ -17,7 +17,6 @@ set(schema_LIB_SRCS
    attributegroup.cpp 
 	compositor.cpp)
 
-kde4_automoc(${schema_LIB_SRCS})
 
 kde4_add_library(schema SHARED ${schema_LIB_SRCS})
 
@@ -31,7 +30,6 @@ install(TARGETS schema  DESTINATION ${LIB_INSTALL_DIR})
 
 set(schematest_SRCS schematest.cpp )
 
-kde4_automoc(${schematest_SRCS})
 
 kde4_add_executable(schematest NOGUI RUN_UNINSTALLED ${schematest_SRCS})
 
