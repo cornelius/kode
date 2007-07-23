@@ -36,4 +36,4 @@ install(TARGETS kwsdl_compiler  DESTINATION ${BIN_INSTALL_DIR} )
 
 ########### install files ###############
 
-install( FILES kwsdl_compiler.desktop  DESTINATION ${XDG_APPS_DIR})
+install( FILES kwsdl_compiler.desktop  DESTINATION ${XDG_APPS_INSTALL_DIR})
