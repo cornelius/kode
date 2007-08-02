@@ -41,9 +41,9 @@ static void checkReference( const QString &str )
   QString s = ref.toString();
 
   if ( s == str ) {
-    kDebug() << "OK  REF: " << str << endl;
+    kDebug() <<"OK  REF:" << str;
   } else {
-    kDebug() << "ERR REF: " << str << " GOT: " << s << endl;
+    kDebug() <<"ERR REF:" << str <<" GOT:" << s;
   }
 }
 
@@ -65,14 +65,14 @@ int main(int argc, char **argv)
   checkReference( "relative/more/more" );
 
   Reference r1 = "one";
-  kDebug() << "R1: " << r1.toString() << endl;
+  kDebug() <<"R1:" << r1.toString();
   Reference r2 = "two";
   Reference r3 = r1 + r2;
-  kDebug() << "R3: " << r3.toString() << endl;
+  kDebug() <<"R3:" << r3.toString();
   
   Reference r4 = "one/twox";
   
-  if ( r3 == r4 ) kDebug() << "YES" << endl;
-  else kDebug() << "NO" << endl;
+  if ( r3 == r4 ) kDebug() <<"YES";
+  else kDebug() <<"NO";
 }
 

@@ -76,7 +76,7 @@ void Reference::Segment::fromString( const QString &str )
     QString count = str.mid( pos1 + 1, pos2 - pos1 - 1 );
     bool ok;
     mCount = count.toInt( &ok );
-    if ( !ok ) kError() << "Illegal count in reference '" << str << "'" << endl;
+    if ( !ok ) kError() <<"Illegal count in reference '" << str <<"'";
   } else {
     mCount = 1;
   }
@@ -262,7 +262,7 @@ Reference &Reference::operator=( const char *str )
 
 bool Reference::matches( const Reference &ref, bool exact, bool pathOnly ) const
 {
-//   kDebug() << "Looking for " << ref.toString() << " in " << toString() << endl;
+//   kDebug() <<"Looking for" << ref.toString() <<" in" << toString();
   if( ref.segments().count() > mSegments.count() )
     return false;
 
@@ -272,8 +272,8 @@ bool Reference::matches( const Reference &ref, bool exact, bool pathOnly ) const
   Segment::List::ConstIterator it2 = list2.begin();
 
   while( it != mSegments.end() && it2 != list2.end() ) {
-//     kDebug() << "Matching: " << (*it).name() << ":" << (*it).isAttribute() << ":" << (*it).count() << endl;
-//     kDebug() << "With:     " << (*it2).name() << ":" << (*it2).isAttribute() << ":" << (*it2).count() << endl;
+//     kDebug() <<"Matching:" << (*it).name() <<":" << (*it).isAttribute() <<":" << (*it).count();
+//     kDebug() <<"With:" << (*it2).name() <<":" << (*it2).isAttribute() <<":" << (*it2).count();
     bool segmentsMatched = false;
     segmentsMatched = ((*it).name() == ( (*it2).name()) && ((*it).isAttribute() == (*it2).isAttribute()) );
 
@@ -307,12 +307,12 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
   for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
     Reference::Segment segment = *it;
     if ( result.isNull() ) {
-      kDebug() << "ROOT" << endl;
+      kDebug() <<"ROOT";
       if ( doc.documentElement().tagName() == segment.name() ) {
         result = doc.documentElement();
         continue;
       } else {
-        kError() << "Document element '" << doc.documentElement().tagName() <<
+        kError() <<"Document element '" << doc.documentElement().tagName() <<
            "' isn't '" << segment.name() << "'" << endl;
         return QDomElement();
       }
@@ -332,7 +332,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
       counts.insert( e.tagName(), ++count );
     }
     if ( n.isNull() ) {
-      kError() << "Reference::apply(): Unable to find element '" <<
+      kError() <<"Reference::apply(): Unable to find element '" <<
         segment.toString() << "'" << endl;
       return QDomElement();
     }
@@ -343,7 +343,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
 
 QDomElement Reference::applyElement( const QDomElement &context ) const
 {
-  kDebug() << "Reference::applyElement() " << toString() << " Context: "
+  kDebug() <<"Reference::applyElement()" << toString() <<" Context:"
     << context.tagName() << endl;
 
   QDomElement result = context;
@@ -354,7 +354,7 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
   for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
     Reference::Segment segment = *it;
 
-//     kDebug() << "  Segment: " << segment.toString() << " Count: " <<
+//     kDebug() <<"  Segment:" << segment.toString() <<" Count:" <<
 //       segment.count() << endl;
 
     QMap<QString, int> counts;
@@ -362,13 +362,13 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
     for( n = result.firstChild(); !n.isNull(); n = n.nextSibling() ) {
       QDomElement e = n.toElement();
 
-//       kDebug() << "  E: " << e.tagName() << endl;
+//       kDebug() <<"  E:" << e.tagName();
 
       int count = 1;
       QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
       if ( itCount != counts.end() ) count = itCount.value();
 
-//       kDebug() << "  COUNT: " << count << endl;
+//       kDebug() <<"  COUNT:" << count;
 
       if ( e.tagName() == segment.name() && count == segment.count() ) {
         result = e;
@@ -377,7 +377,7 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
       counts.insert( e.tagName(), ++count );
     }
     if ( n.isNull() ) {
-      kError() << "Reference::apply(): Unable to find element '" <<
+      kError() <<"Reference::apply(): Unable to find element '" <<
         segment.toString() << "'" << endl;
       return QDomElement();
     }

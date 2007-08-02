@@ -233,7 +233,7 @@ void MainWindow::changeCaption(const QString& text)
 
 void MainWindow::loadSchema( const KUrl &url )
 {
-  kDebug() << "MainWindow::loadSchema() " << url.prettyUrl() << endl;
+  kDebug() <<"MainWindow::loadSchema()" << url.prettyUrl();
 
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
@@ -288,7 +288,7 @@ void MainWindow::parseSchema()
 
 void MainWindow::loadHints( const KUrl &url )
 {
-  kDebug() << "MainWindow::loadHints() " << url.prettyUrl() << endl;
+  kDebug() <<"MainWindow::loadHints()" << url.prettyUrl();
 
   if ( !url.isValid() ) {
     KMessageBox::sorry( this, i18n("Invalid URL '%1'.",
@@ -332,7 +332,7 @@ void MainWindow::slotGetFormResult( bool ok )
 
 void MainWindow::parseForm( const QString &data )
 {
-  kDebug() << data << endl;
+  kDebug() << data;
   mKxformsDocument = data;
   if ( !mFormsManager.parseForms( data ) ) {
     KMessageBox::sorry( this, i18n("Unable to parse kxforms file '%1'.",
@@ -374,7 +374,7 @@ void MainWindow::slotPutDataResult( bool ok )
 
 void MainWindow::refresh( const Hints &h )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
 
   RNG::ParserXsd parser;
   parser.setVerbose( true );

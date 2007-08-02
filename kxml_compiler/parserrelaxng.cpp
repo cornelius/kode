@@ -80,7 +80,7 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
   QDomElement e1;
   for( e1 = docElement.firstChildElement(); !e1.isNull(); e1 = e1.nextSiblingElement() ) {
     if ( mVerbose ) {
-      kDebug() << "TOP LEVEL element " << e1.tagName() << endl;
+      kDebug() <<"TOP LEVEL element" << e1.tagName();
     }
     if ( e1.tagName() == "define" ) {
       Element *d = new Element;
@@ -98,7 +98,7 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
     } else if ( e1.isComment()  ) {
       // Ignore all comments for now!
     } else {
-      kDebug() << "parseGrammar: Unrecognized tag:  " << e1.tagName() << endl;
+      kDebug() <<"parseGrammar: Unrecognized tag:" << e1.tagName();
     }
   }
 
@@ -124,7 +124,7 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
                    Pattern pattern )
 {
   if ( mVerbose ) {
-    kDebug() << "parseElement " << e->name << endl;
+    kDebug() <<"parseElement" << e->name;
   }
 
   QDomNode n1;
@@ -141,7 +141,7 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
       a->name = e1.attribute( "name" );
       a->pattern = pattern;
       if ( mVerbose ) {
-        kDebug() << "ATTRIBUTE: " << a->name << " " << a->pattern.asString()
+        kDebug() <<"ATTRIBUTE:" << a->name <<"" << a->pattern.asString()
                  << endl;
       }
       parseAttribute( e1, a );
@@ -161,7 +161,7 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
       else if ( e1.tagName() == "oneOrMore" ) p.oneOrMore = true;
       else if ( e1.tagName() == "choice" ) p.choice = true;
       else {
-        kDebug() << "Unsupported pattern '" << e1.tagName() << "'" << endl;
+        kDebug() <<"Unsupported pattern '" << e1.tagName() <<"'";
       }
       parseElement( e1, e, p );
     }
@@ -173,23 +173,23 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
 void ParserRelaxng::substituteReferences( Element *s )
 {
   if ( mVerbose ) {
-    kDebug() << "substituteReferences for '" << s->name << "'" << endl;
+    kDebug() <<"substituteReferences for '" << s->name <<"'";
   }
   Reference::List::Iterator it = s->references.begin();
   while( it != s->references.end() ) {
     Reference *r = *it;
     if ( mVerbose ) {
-      kDebug() << "REF " << r->name << endl;
+      kDebug() <<"REF" << r->name;
     }
     if ( r->name == s->name ) {
       if ( mVerbose ) {
-        kDebug() << "Don't resolve self reference" << endl;
+        kDebug() <<"Don't resolve self reference";
       }
       return;
     }
     if ( r->substituted ) {
       if ( mVerbose ) {
-        kDebug() << "Already substituted." << endl;
+        kDebug() <<"Already substituted.";
       }
       ++it;
       continue;
@@ -221,7 +221,7 @@ void ParserRelaxng::substituteReferences( Element *s )
       }
       it = s->references.erase( it );
     } else {
-      kDebug() << "Reference not found" << endl;
+      kDebug() <<"Reference not found";
       ++it;
     }
   }

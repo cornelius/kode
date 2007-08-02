@@ -150,7 +150,7 @@ GuiHandlerFlat::GuiHandlerFlat( Manager *m )
 
 QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
 {
-  kDebug() << "GuiHandlerFlat::createRootGui()" << endl;
+  kDebug() <<"GuiHandlerFlat::createRootGui()";
 
   mMainWidget = new QWidget( parent );
 
@@ -183,7 +183,7 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
   gui->parseElement( f->element() );
 
   if ( manager()->hasData() ) {
-    kDebug() << "Manager::createGui() Load data on creation" << endl;
+    kDebug() <<"Manager::createGui() Load data on creation";
     manager()->loadData( gui );
   }
 
@@ -205,7 +205,7 @@ QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
 
 void GuiHandlerFlat::createGui( const Reference &ref, QWidget *parent )
 {
-  kDebug() << "GuiHandlerFlat::createGui() ref: '" << ref.toString() << "'" << endl;
+  kDebug() <<"GuiHandlerFlat::createGui() ref: '" << ref.toString() <<"'";
 
   if ( ref.isEmpty() ) {
     KMessageBox::sorry( parent, i18n("No reference.") );
@@ -235,7 +235,7 @@ void GuiHandlerFlat::createGui( const Reference &ref, QWidget *parent )
   mBackButton->setEnabled( true );
 
   if ( manager()->hasData() ) {
-    kDebug() << "Manager::createGui() Load data on creation" << endl;
+    kDebug() <<"Manager::createGui() Load data on creation";
     manager()->loadData( gui );
   }
 
@@ -245,11 +245,11 @@ void GuiHandlerFlat::createGui( const Reference &ref, QWidget *parent )
 FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
 {
   if ( !form ) {
-    kError() << "KXForms::Manager::createGui(): form is null." << endl;
+    kError() <<"KXForms::Manager::createGui(): form is null.";
     return 0;
   }
 
-  kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
+  kDebug() <<"Manager::createGui() form: '" << form->ref() <<"'";
 
   if( mStackWidget->currentWidget() )
     static_cast<FormGui *>(mStackWidget->currentWidget())->saveData();

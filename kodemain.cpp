@@ -105,7 +105,7 @@ int addProperty( KCmdLineArgs *args )
   QString type = args->arg( 1 );
   QString name = args->arg( 2 );
 
-  kDebug() << "Add property: class " << className << ": " << type << " " <<
+  kDebug() <<"Add property: class" << className <<":" << type <<"" <<
     name << endl;
 
   QString headerFileName = className.toLower() + ".h";
@@ -132,19 +132,19 @@ int addProperty( KCmdLineArgs *args )
 
   QString line;
   while ( !( line = in.readLine() ).isNull() ) {
-    kDebug() << int(state) << " LINE: " << line << endl;
+    kDebug() << int(state) <<" LINE:" << line;
     QString readAheadPrevious = readAhead;
     readAhead += line + '\n';
     switch( state ) {
       case FindClass:
         if ( line.indexOf( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
-          kDebug() << "  FOUND CLASS" << endl;
+          kDebug() <<"  FOUND CLASS";
           state = FindConstructor;
         }
         break;
       case FindConstructor:
         if ( line.indexOf( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
-          kDebug() << "  FOUND CONSTRUCTOR" << endl;
+          kDebug() <<"  FOUND CONSTRUCTOR";
           out += readAhead;
           readAhead.clear();
           state = FindProperties;
@@ -156,22 +156,22 @@ int addProperty( KCmdLineArgs *args )
           if ( re.indexIn( line ) >= 0 ) {
             QString function = re.cap( 1 ).toLower();
             if ( !function.isEmpty() ) {
-              kDebug() << "Function: " << function << endl;
+              kDebug() <<"Function:" << function;
               if ( function == className || function == '~' + className ) {
                 out += readAhead;
                 readAhead.clear();
               } else {
                 if ( function.startsWith( "set" ) ) {
                   mutator = function.mid( 3 );
-                  kDebug() << "MUTATOR: " << mutator << endl;
+                  kDebug() <<"MUTATOR:" << mutator;
                 } else {
                   if ( function == mutator ) {
                     accessor = function;
-                    kDebug() << "ACCESSOR: " << accessor << endl;
+                    kDebug() <<"ACCESSOR:" << accessor;
                     out += readAhead;
                     readAhead.clear();
                   } else {
-                    kDebug() << "CREATE PROPERTY" << endl;
+                    kDebug() <<"CREATE PROPERTY";
                     out += readAheadPrevious;
                     addPropertyFunctions( out, type, name );
                     out += '\n';
@@ -240,11 +240,11 @@ int addProperty( KCmdLineArgs *args )
     // XXX Why copy instead of rename?
     QFile::remove( headerFileNameOut );
     if ( !QFile::copy( headerFileName, headerFileNameOut ) ) {
-      kError() << "Copy failed" << endl;
+      kError() <<"Copy failed";
     } else {
-      kDebug() << "Write to original file." << endl;
+      kDebug() <<"Write to original file.";
       if ( !headerFile.open( QIODevice::WriteOnly ) ) {
-        kError() << "Unable to open file '" << headerFileName <<
+        kError() <<"Unable to open file '" << headerFileName <<
           "' for writing." << endl;
         return 1;
       }
@@ -269,7 +269,7 @@ int codify( KCmdLineArgs *args )
 
   QFile f( filename );
   if ( !f.open( QIODevice::ReadOnly ) ) {
-    kError() << "Unable to open file '" << filename << "'." << endl;
+    kError() <<"Unable to open file '" << filename <<"'.";
     return 1;
   } else {
     std::cout << "KODE::Code code;" << std::endl;
@@ -299,7 +299,7 @@ int create( KCmdLineArgs *args )
 
   if ( createMain ) {
     if ( filename.isEmpty() ) {
-      kError() << "Error: No file name given." << endl;
+      kError() <<"Error: No file name given.";
       return 1;
     }
 
@@ -308,7 +308,7 @@ int create( KCmdLineArgs *args )
     }
   } else {
     if ( !args->isSet( "classname" ) ) {
-      kError() << "Error: No class name given." << endl;
+      kError() <<"Error: No class name given.";
       return 1;
     }
   }
@@ -320,7 +320,7 @@ int create( KCmdLineArgs *args )
   if ( createKioslave ) {
     if ( !args->isSet( "protocol" ) ) {
       protocol = className.toLower();
-      kWarning() << "Warning: No protocol for kioslave given. Assuming '"
+      kWarning() <<"Warning: No protocol for kioslave given. Assuming '"
                   << protocol << "'" << endl;
     } else {
       protocol = args->getOption( "protocol" );
@@ -341,7 +341,7 @@ int create( KCmdLineArgs *args )
     KABC::Addressee::List as =
         KABC::StdAddressBook::self()->findByEmail( authorEmail );
     if ( as.isEmpty() ) {
-      kDebug() << "Unable to find '" << authorEmail << "' in address book."
+      kDebug() <<"Unable to find '" << authorEmail <<"' in address book."
                 << endl;
     } else {
       a = as.first();
@@ -413,13 +413,13 @@ int create( KCmdLineArgs *args )
 
     KODE::Code code;
 
-    code += "kDebug(7000) << \"" + className + "::get()\" << endl;";
-    code += "kDebug(7000) << \" URL: \" << url.url() << endl;";
+    code += "kDebug(7000) << \"" + className +"::get()\";";
+    code += "kDebug(7000) << \" URL: \" << url.url();";
     code += "#if 1";
-    code += "kDebug(7000) << \" Path: \" << url.path() << endl;";
-    code += "kDebug(7000) << \" Query: \" << url.query() << endl;";
-    code += "kDebug(7000) << \" Protocol: \" << url.protocol() << endl;";
-    code += "kDebug(7000) << \" Filename: \" << url.filename() << endl;";
+    code += "kDebug(7000) << \" Path: \" << url.path();";
+    code += "kDebug(7000) << \" Query: \" << url.query();";
+    code += "kDebug(7000) << \" Protocol: \" << url.protocol();";
+    code += "kDebug(7000) << \" Filename: \" << url.filename();";
     code += "#endif";
     code.newLine();
 
@@ -433,7 +433,7 @@ int create( KCmdLineArgs *args )
     code += "finished();";
     code.newLine();
 
-    code += "kDebug(7000) << \"" + className + "CgiProtocol::get() done\" << endl;";
+    code += "kDebug(7000) << \"" + className +"CgiProtocol::get() done\";";
 
     get.setBody( code );
 
@@ -454,7 +454,7 @@ int create( KCmdLineArgs *args )
 
     code += "KComponentData instance( \"kio_" + protocol + "\" );";
     code += "";
-    code += "kDebug(7000) << \"Starting kio_" + protocol + "(pid:  \" << getpid() << \")\" << endl;";
+    code += "kDebug(7000) << \"Starting kio_" + protocol +"(pid:  \" << getpid() << \")\";";
     code += "";
     code += "if (argc != 4) {";
     code.indent();

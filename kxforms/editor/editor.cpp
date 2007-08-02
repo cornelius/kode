@@ -180,13 +180,13 @@ KActionMenu *Editor::actionMenu( GuiElement *e )
 
 void Editor::registerElement( GuiElement *element )
 {
-  kDebug() << k_funcinfo << "Registered element " << element->ref().toString() << endl;
+  kDebug() << k_funcinfo <<"Registered element" << element->ref().toString();
   mElements.append( element );
 }
 
 void Editor::setEditMode( bool enabled )
 {
-  kDebug() << k_funcinfo << "Setting editmode to " << enabled << endl;
+  kDebug() << k_funcinfo <<"Setting editmode to" << enabled;
   mEditMode = enabled;
 
 
@@ -218,7 +218,7 @@ void Editor::actionTriggered()
 
 void Editor::performAction( const QString &actionId, GuiElement *e )
 {
-  kDebug() << k_funcinfo << "Performing action " << actionId << endl;
+  kDebug() << k_funcinfo <<"Performing action" << actionId;
 
   EditorAction *a = mActions[ actionId ];
   if( !a )
@@ -236,7 +236,7 @@ void Editor::applyHint( const Hint &h )
 
 void Editor::applyHints( const Hints &h )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
 
   mHints.dump();
   mHints.merge( h );
@@ -249,7 +249,7 @@ void Editor::applyHints( const Hints &h )
 
 GuiElement *Editor::selectWidget( SelectionMode sm )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   return mEditorWidget->selectElement( sm );
 }
 

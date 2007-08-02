@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 
   QFile schemaFile( schemaFilename );
   if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
-    kError() << "Unable to open '" << schemaFilename << "'" << endl;
+    kError() <<"Unable to open '" << schemaFilename <<"'";
     return 1;
   }
 
@@ -86,14 +86,14 @@ int main(int argc, char **argv)
     QString ughFileName = args->getOption( "ugh" );
     QFile ughFile( ughFileName );
     if ( !ughFile.open( QIODevice::ReadOnly ) ) {
-      kError() << "Unable to open '" << ughFileName << endl;
+      kError() <<"Unable to open '" << ughFileName;
       return 1;
     }
 
     hints.parseFile( ughFile );
 
     foreach( KXForms::Hint h, hints.hints() ) {
-      kDebug() << "Hint" << h.ref() << h.label() << endl;
+      kDebug() <<"Hint" << h.ref() << h.label();
     }
   }
 

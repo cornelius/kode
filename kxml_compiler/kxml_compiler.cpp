@@ -74,11 +74,11 @@ int main( int argc, char **argv )
   bool verbose = args->isSet("verbose");
 
   if ( args->count() < 1 ) {
-    kError() << "Too few arguments." << endl;
+    kError() <<"Too few arguments.";
     return 1;
   }
   if ( args->count() > 1 ) {
-    kError() << "Too many arguments." << endl;
+    kError() <<"Too many arguments.";
     return 1;
   }
 
@@ -94,12 +94,12 @@ int main( int argc, char **argv )
 
   QFile schemaFile( schemaFilename );
   if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
-    kError() << "Unable to open '" << schemaFilename << "'" << endl;
+    kError() <<"Unable to open '" << schemaFilename <<"'";
     return 1;
   }
 
   if ( verbose ) {
-    kDebug() << "Begin parsing" << endl;
+    kDebug() <<"Begin parsing";
   }
 
   Schema::Document schemaDocument;
@@ -112,7 +112,7 @@ int main( int argc, char **argv )
     schemaDocument = p.parse( schemaFile );
 
     if ( schemaDocument.isEmpty() ) {
-      kError() << "Error parsing schema '" << schemaFilename << "'" << endl;
+      kError() <<"Error parsing schema '" << schemaFilename <<"'";
       return 1;
     }
   } else if ( args->isSet( "rng" ) || fi.suffix() == "rng" ) {
@@ -120,7 +120,7 @@ int main( int argc, char **argv )
     int errorLine, errorCol;
     QDomDocument doc;
     if ( !doc.setContent( &schemaFile, false, &errorMsg, &errorLine, &errorCol ) ) {
-      kError() << errorMsg << " at " << errorLine << "," << errorCol << endl;
+      kError() << errorMsg <<" at" << errorLine <<"," << errorCol;
       return 1;
     }
 
@@ -128,7 +128,7 @@ int main( int argc, char **argv )
     p.setVerbose( verbose );
     RNG::Element *start = p.parse( doc.documentElement() );
     if ( !start ) {
-      kError() << "Could not find start element" << endl;
+      kError() <<"Could not find start element";
       return 1;
     }
 
@@ -149,7 +149,7 @@ int main( int argc, char **argv )
 
     schemaDocument = p.convertToSchema( start );
   } else {
-    kError() << "Unable to determine schema type." << endl;
+    kError() <<"Unable to determine schema type.";
     return 1;
   }
 
@@ -157,7 +157,7 @@ int main( int argc, char **argv )
     std::cout << "--- SCHEMA:" << std::endl;
     schemaDocument.dump();
 
-    kDebug() << "Begin creating code" << endl;
+    kDebug() <<"Begin creating code";
   }
 
   Creator::XmlParserType pt;
@@ -172,13 +172,13 @@ int main( int argc, char **argv )
   Creator c( schemaDocument, pt );
 
   if ( verbose ) {
-    kDebug() << "Create classes" << endl;
+    kDebug() <<"Create classes";
   }
   foreach( Schema::Element e, schemaDocument.usedElements() ) {
     c.createClass( e );
   }
   if ( verbose ) {
-    kDebug() << "Create parser" << endl;
+    kDebug() <<"Create parser";
   }
   Schema::Element startElement = schemaDocument.startElement();
   c.setExternalClassPrefix( c.upperFirst( startElement.name() ) );
@@ -189,7 +189,7 @@ int main( int argc, char **argv )
   c.createListTypedefs();
 
   if ( verbose ) {
-    kDebug() << "Begin printing code" << endl;
+    kDebug() <<"Begin printing code";
   }
   KODE::File &f = c.file();
 
@@ -204,6 +204,6 @@ int main( int argc, char **argv )
   c.printFiles( printer );
 
   if ( verbose ) {
-    kDebug() << "Finished." << endl;
+    kDebug() <<"Finished.";
   }
 }

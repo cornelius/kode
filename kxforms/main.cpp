@@ -108,7 +108,7 @@ int main(int argc, char **argv)
   mainWindow->show();
 
   if ( args->isSet( "schema" ) && args->isSet( "kxform" ) ) {
-    kWarning() << "KXForm will be generated from schema. Ignoring --kxform "
+    kWarning() <<"KXForm will be generated from schema. Ignoring --kxform"
       << "option" << endl;
   }
 

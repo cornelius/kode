@@ -189,7 +189,7 @@ void GlobalSettingsDialog::load()
 
 void GlobalSettingsDialog::accept()
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   mHints = Hints();
   Hint globalHint;
   globalHint.setRef( "*" );
@@ -204,7 +204,7 @@ void GlobalSettingsDialog::accept()
   formHint.setRef( Reference( mManager->currentGui()->ref().lastSegment().toString() ) );
   for( int i = 0; i < mGroupWidget->topLevelItemCount(); ++i ) {
     QTreeWidgetItem *item = mGroupWidget->topLevelItem( i );
-    kDebug() << item->text( 0 ) << item->text( 1 ) << endl;
+    kDebug() << item->text( 0 ) << item->text( 1 );
     QDomElement e = doc.createElement( "group" );
     QDomText t = doc.createTextNode( item->text( 1 ) );
     e.setAttribute( "id", item->text( 0 ) );

@@ -43,7 +43,7 @@ PositionAction::~PositionAction()
 
 void PositionAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   editor()->beginEdit();
 
   KMessageBox::information( e->widget(), i18n("Select the new neighbour of %1", e->ref().toString()), i18n("New Neighbour" ) );
@@ -53,7 +53,7 @@ void PositionAction::perform( GuiElement *e )
     editor()->finishEdit();
     return;
   }
-  kDebug() << k_funcinfo << "Chosen element: " << chosenElement->ref().toString() << endl;
+  kDebug() << k_funcinfo <<"Chosen element:" << chosenElement->ref().toString();
 
   perform( e, chosenElement );
 }

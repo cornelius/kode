@@ -56,7 +56,7 @@ void KXFormsTest::initTestCase()
   KXForms::FormCreator creator;
   creator.mergeHints( mHints );
   QString form = creator.create( doc );
-  kDebug() << form << endl;
+  kDebug() << form;
   if( !mDoc.setContent( form ) ) {
     QFAIL( "The generated kxforms-document is malformed" );
     return;

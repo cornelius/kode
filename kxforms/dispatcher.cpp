@@ -41,7 +41,7 @@ void Dispatcher::registerElement( QObject *element )
 
 void Dispatcher::slotValueChanged(const QString &ref, const QString &value )
 {
-  kDebug() << "Value changed: " << ref << " -> " << value << endl;
+  kDebug() <<"Value changed:" << ref <<" ->" << value;
 }
 
 #include "dispatcher.moc"

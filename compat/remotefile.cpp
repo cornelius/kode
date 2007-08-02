@@ -31,12 +31,12 @@ RemoteFile::RemoteFile( QWidget *parent )
 
 void RemoteFile::get( const KUrl & )
 {
-  kError() << "RemoteFile::get() not implemented" << endl;
+  kError() <<"RemoteFile::get() not implemented";
 }
 
 void RemoteFile::put( const KUrl &, const QString &data )
 {
-  kError() << "RemoteFile::put() not implemented" << endl;
+  kError() <<"RemoteFile::put() not implemented";
 }
 
 void RemoteFile::put( const QString &data )

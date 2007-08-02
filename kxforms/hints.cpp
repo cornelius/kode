@@ -176,7 +176,7 @@ Hints::Hints()
 
 bool Hints::parseFile( QFile &file )
 {
-  kDebug() << "---Hints::parseFile() " << file.fileName() << endl;
+  kDebug() <<"---Hints::parseFile()" << file.fileName();
 
   QDomDocument doc;
   doc.setContent( &file );
@@ -186,7 +186,7 @@ bool Hints::parseFile( QFile &file )
 
 bool Hints::parseString( const QString &data )
 {
-  kDebug() << "---Hints::parseString() " << endl;
+  kDebug() <<"---Hints::parseString()";
 
   QDomDocument doc;
   doc.setContent( data );
@@ -203,22 +203,22 @@ bool Hints::parse( const QDomDocument &doc )
     parseHint( e );
   }
 
-  kDebug() << "---Hints::parse() done" << endl;
+  kDebug() <<"---Hints::parse() done";
 
   return true;
 }
 
 void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
 {
-//  kDebug() << "Hints::parseHint()" << element.tagName() << refPrefix << endl;
+//  kDebug() <<"Hints::parseHint()" << element.tagName() << refPrefix;
 
   Reference ref( element.attribute( "ref" ) );
 
-//  kDebug() << "  REF:" << ref << endl;
+//  kDebug() <<"  REF:" << ref;
 
   if ( ref.isEmpty() ) ref = refPrefix;
   if ( ref.isEmpty() ) {
-    kDebug() << "Error: No reference attribute in hint tag." << endl;
+    kDebug() <<"Error: No reference attribute in hint tag.";
     return;
   }
   if ( !refPrefix.isEmpty() && ref.isRelative() ) {
@@ -227,7 +227,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
   
   Hint hint( ref );
 
-//  kDebug() << "Hints::parseHint()" << ref << endl;
+//  kDebug() <<"Hints::parseHint()" << ref;
 
   QDomNode n;
   for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
@@ -286,7 +286,7 @@ void Hints::parseHint( const QDomElement &element, const Reference &refPrefix )
     } else if (name.localName() == "formSizeThreshold" ) {
       hint.setValue( Hint::FormSizeThreshold, contentAsString( e ) );
     } else {
-      kDebug() << "Unknown hint type: " << name.localName() << endl;
+      kDebug() <<"Unknown hint type:" << name.localName();
     }
   }
 
@@ -328,7 +328,7 @@ QString Hints::toXml()
 
   xml.append( "<ugh>" );
 
-  kDebug() << k_funcinfo << xml << endl;
+  kDebug() << k_funcinfo << xml;
 
   return xml;
 }
@@ -451,9 +451,9 @@ QString Hints::toRichText() const
 
 void Hints::dump() const
 {
-  kDebug() << "---Hints::dump()" << endl;
+  kDebug() <<"---Hints::dump()";
   foreach( Hint h, mHints ) {
-    kDebug() << "HINT:" << h.ref().toString() << endl;
+    kDebug() <<"HINT:" << h.ref().toString();
   }
-  kDebug() << "---Hints::dump() done" << endl << endl;
+  kDebug() <<"---Hints::dump() done";
 }

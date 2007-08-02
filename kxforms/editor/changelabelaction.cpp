@@ -45,7 +45,7 @@ ChangeLabelAction::~ChangeLabelAction()
 
 void ChangeLabelAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   editor()->beginEdit();
 
   QString newLabel;
@@ -60,7 +60,7 @@ void ChangeLabelAction::perform( GuiElement *e )
       currentLabel, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo << "New Label: " << newLabel << endl;
+    kDebug() << k_funcinfo <<"New Label:" << newLabel;
     Hint h;
     h.setRef( e->id() );
     h.setValue( Hint::Label, newLabel );

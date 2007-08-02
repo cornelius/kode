@@ -67,7 +67,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
   code.indent();
-  code += "kError() << \"Expected '" + e.name() + "', got '\" << " +
+  code += "kError() << \"Expected '" + e.name() +"', got '\" <<" +
           "element.tagName() << \"'.\" << endl;";
   code += "if ( ok ) *ok = false;";
   code += "return " + c.name() + "();";
@@ -145,7 +145,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
 void ParserCreatorDom::createFileParser( const Schema::Element &element )
 {
-//   kDebug() << "Creator::createFileParserDom()" << endl;
+//   kDebug() <<"Creator::createFileParserDom()";
 
   QString className = creator()->upperFirst( element.name() );
 
@@ -171,7 +171,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  kError() << \"Unable to open file '\" << filename << \"'\";";
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
   code += '}';
@@ -180,12 +180,12 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "int errorLine, errorCol;";
   code += "QDomDocument doc;";
   code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
-  code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol << endl;";
+  code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
   code += '}';
   code += "";
-  code += "kDebug() << \"CONTENT:\" << doc.toString() << endl;";
+  code += "kDebug() << \"CONTENT:\" << doc.toString();";
 
   code.newLine();
 

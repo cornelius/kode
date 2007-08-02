@@ -295,7 +295,7 @@ KODE::Code ParserCreatorCustom::createAttributeScanner( const Schema::Attribute 
 
 void ParserCreatorCustom::createFileParser( const Schema::Element &element )
 {
-  kDebug() << "Creator::createFileParserCustom()" << endl;
+  kDebug() <<"Creator::createFileParserCustom()";
 
   QString className = creator()->upperFirst( element.name() );
 
@@ -316,7 +316,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  kError() << \"Unable to open file '\" << filename << \"'\";";
   code += "  return " + className + "();";
   code += '}';
   code += "";

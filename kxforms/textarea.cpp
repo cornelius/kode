@@ -64,7 +64,7 @@ void TextArea::loadData()
 
 void TextArea::saveData()
 {
-  kDebug() << "TextArea::saveData()" << endl;
+  kDebug() <<"TextArea::saveData()";
 
   QDomElement e = ref().applyElement( context() );
 
@@ -80,17 +80,17 @@ void TextArea::saveData()
 
   QString xml = '<' + tag + '>' + mEdit->toPlainText() + "</" + tag + '>';
 
-  kDebug() << "XML: " << xml << endl;
+  kDebug() <<"XML:" << xml;
 
   QDomDocument doc;
   doc.setContent( xml );
 
-  kDebug() << "DOC: " << doc.toString( 2 ) << "END OF DOC" << endl;
+  kDebug() <<"DOC:" << doc.toString( 2 ) <<"END OF DOC";
 
   QDomElement docElement = doc.documentElement();
   QDomNode n;
   for( n = docElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    kDebug() << "TAG: " << n.toElement().tagName() << endl;
+    kDebug() <<"TAG:" << n.toElement().tagName();
     e.appendChild( n.cloneNode() );
   }
 }

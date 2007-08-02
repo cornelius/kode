@@ -204,7 +204,7 @@ Qt::ItemFlags ListModel::flags(const QModelIndex &index) const
 
 ListItem *ListModel::addItem( ListItem *parent, const QStringList &labels, const Reference &ref )
 {
-  kDebug() << k_funcinfo << labels << endl;
+  kDebug() << k_funcinfo << labels;
   ListItem *parentItem = parent ? parent : rootItem;
   beginInsertRows( QModelIndex(), parentItem->childCount(), parentItem->childCount() );
 

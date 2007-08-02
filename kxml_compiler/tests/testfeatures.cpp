@@ -81,7 +81,7 @@ int main( int argc, char **argv )
   Features features = parser.parseFile( filename, &ok );
 
   if ( !ok ) {
-    kError() << "Parse error" << endl;
+    kError() <<"Parse error";
   } else {
     Category::List categories = features.categoryList();
     displayCategory( categories );
@@ -90,7 +90,7 @@ int main( int argc, char **argv )
   if ( args->isSet( "output" ) ) {
     QString out = args->getOption( "output" );
     if ( !features.writeFile( out ) ) {
-      kError() << "Write error" << endl;
+      kError() <<"Write error";
     }
   }
   return 0;

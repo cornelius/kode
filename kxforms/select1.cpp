@@ -105,7 +105,7 @@ void Select1::parseElement( const QDomElement &formElement )
 
 void Select1::loadData()
 {
-  kDebug() << "Select1::loadData() " << ref().toString() << "  context: "
+  kDebug() <<"Select1::loadData()" << ref().toString() <<"  context:"
     << context().tagName() << endl;
 
   QString txt = ref().applyString( context() );
@@ -126,15 +126,15 @@ void Select1::loadData()
       mComboBox->setCurrentIndex( count );
     }
   } else {
-    kWarning() << "Select1::loadData() unknown value: " << txt << endl;
+    kWarning() <<"Select1::loadData() unknown value:" << txt;
   }
 }
 
 void Select1::saveData()
 {
-  kDebug() << "Select1::saveData()" << endl;
-  kDebug() << ref().toString() << endl;
-  kDebug() << "Context: " << context().nodeName() << endl;
+  kDebug() <<"Select1::saveData()";
+  kDebug() << ref().toString();
+  kDebug() <<"Context:" << context().nodeName();
   Reference::Segment s;
   if( ref().segments().size() > 0 )
     s = ref().segments().last();

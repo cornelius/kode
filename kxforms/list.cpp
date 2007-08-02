@@ -47,7 +47,7 @@ List::List( Manager *m, const QString &label, QWidget *parent, Properties *p )
   mManager->dispatcher()->registerElement( this );
   setActionTypes( Editor::CommonActions | Editor::ListActions );
 
-  kDebug() << "List() " << label << endl;
+  kDebug() <<"List()" << label;
   QWidget *w = new QWidget( mParent );
   mLabel = new QLabel( label );
 
@@ -275,7 +275,7 @@ void List::parseElement( const QDomElement &element )
 
 void List::loadData()
 {
-  kDebug() << "List::loadData() ref: " << ref().toString() << endl;
+  kDebug() <<"List::loadData() ref:" << ref().toString();
 
   mModel->clear();
 
@@ -285,7 +285,7 @@ void List::loadData()
     QDomElement e = n.toElement();
 
     loadElement( e, 0, counts );
-//    kDebug() << "E: " << e.tagName() << endl;
+//    kDebug() <<"E:" << e.tagName();
   }
 
   QTimer::singleShot( 0, this, SLOT( resizeColumns() ) );
@@ -306,7 +306,7 @@ void List::loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &co
     else
       r = ref() + s;
     QStringList il = itemLabels( ic, e );
-//   kDebug() << "item label: " << il << endl;
+//   kDebug() <<"item label:" << il;
     ListItem *item = mModel->addItem( parent, il, r );
 
     if( ic.isList() ) {
@@ -335,7 +335,7 @@ QStringList List::itemLabels( const ItemClass &itemClass,
     } else if ( n.isElement() ) {
       QDomElement e2 = n.toElement();
       if ( e2.tagName() != "itemLabelArg" ) {
-        kWarning() << "Illegal tag in itemlabel element: " << e2.tagName()
+        kWarning() <<"Illegal tag in itemlabel element:" << e2.tagName()
           << endl;
       } else {
         Reference ref( e2.attribute( "ref" ) );
@@ -345,7 +345,7 @@ QStringList List::itemLabels( const ItemClass &itemClass,
           bool ok;
           int newLen = truncate.toInt( &ok );
           if ( !ok ) {
-            kError() << "Illegal truncate value: '" << truncate << "'"
+            kError() <<"Illegal truncate value: '" << truncate <<"'"
               << endl;
           } else {
             if ( int( txt.length() ) > newLen ) {
@@ -370,7 +370,7 @@ void List::resizeColumns()
 
 void List::saveData()
 {
-  kDebug() << "List::saveData()" << endl;
+  kDebug() <<"List::saveData()";
 }
 
 List::ItemClass List::itemClass( const QString &ref )

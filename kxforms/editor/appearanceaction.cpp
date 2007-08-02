@@ -43,7 +43,7 @@ AppearanceAction::~AppearanceAction()
 
 void AppearanceAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   editor()->beginEdit();
 
   QString newStyle;
@@ -59,7 +59,7 @@ void AppearanceAction::perform( GuiElement *e )
       list, currentPosition, false, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo << "New Style: " << newStyle << endl;
+    kDebug() << k_funcinfo <<"New Style:" << newStyle;
     Hint h;
     h.setRef( e->id() );
     h.setValue( Hint::Appearance, newStyle );

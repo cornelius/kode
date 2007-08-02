@@ -37,7 +37,7 @@ void Transport::query( const QString &xml )
   
   KIO::TransferJob* job = KIO::http_post( KUrl( mUrl ), postData, false );
   if ( !job ) {
-    kWarning() << "Unable to create KIO job for " << mUrl << endl;
+    kWarning() <<"Unable to create KIO job for" << mUrl;
     return;
   }
   

@@ -111,7 +111,7 @@ QString KResult::message() const
       }
   }
 
-  kError() << "KResult::message(): Unhandled case" << endl;
+  kError() <<"KResult::message(): Unhandled case";
   return QString();
 }
 

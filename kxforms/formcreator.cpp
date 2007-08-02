@@ -33,7 +33,7 @@ FormCreator::FormCreator()
 
 QString FormCreator::create( const Schema::Document &schemaDocument )
 {
-  kDebug() << "---FormCreator::create()" << endl;
+  kDebug() <<"---FormCreator::create()";
 
   mDocument = schemaDocument;
 
@@ -51,7 +51,7 @@ QString FormCreator::create( const Schema::Document &schemaDocument )
     }
   }
 
-  kDebug() << "---FormCreator::create() done" << endl;
+  kDebug() <<"---FormCreator::create() done";
 
   return xml.print();
 }
@@ -69,7 +69,7 @@ void FormCreator::createForm( XmlBuilder *xml, const Schema::Element &element )
 {
   if ( mCollapsedForms.contains( element.name() ) ) return;
 
-  kDebug() << "ELEMENT" << element.name() << endl;
+  kDebug() <<"ELEMENT" << element.name();
   XmlBuilder *form = xml->tag( "form" )->attribute( "ref", element.name() );
 
   form->tag( "xf:label", humanizeString( element.name() ) );
@@ -109,7 +109,7 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
       ref.prepend( '@' );
     ref = (path + Reference( ref )).toString();
 
-    kDebug() << "  ATTRIBUTE: " << a.identifier() << endl;
+    kDebug() <<"  ATTRIBUTE:" << a.identifier();
 
     if ( a.type() == Schema::Attribute::String ) {
       XmlBuilder *input = attributes->tag( "xf:input" );
@@ -131,7 +131,7 @@ void FormCreator::parseAttributes( const Schema::Element &element, XmlBuilder *x
         item->tag( "xf:value", value );
       }
     } else {
-      kDebug() << "Unsupported type: " << a.type() << endl;
+      kDebug() <<"Unsupported type:" << a.type();
     }
   }
 }
@@ -152,7 +152,7 @@ void FormCreator::parseElement( const Schema::Element &element, XmlBuilder *xml 
   } else if ( element.type() == Schema::Node::ComplexType ) {
     parseComplexType( element, xml, true, Reference() );
   } else {
-    kDebug() << "Unsupported type: " << element.type() << endl;
+    kDebug() <<"Unsupported type:" << element.type();
   }
 }
 
@@ -160,9 +160,9 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
 {
   XmlBuilder *section;
 
-  kDebug() << path.segments().size() << endl;
-  kDebug() << path.toString() << endl;
-  kDebug() << element.name() << endl;
+  kDebug() << path.segments().size();
+  kDebug() << path.toString();
+  kDebug() << element.name();
   if( !topLevel && 
       !element.mixed() && 
       !choiceOnly( element )) {
@@ -186,8 +186,8 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
   XmlBuilder *choice = 0;
   QString currentChoice;
 
-      kDebug() << "    element: " << Reference(element.name()).toString() << endl;
-      kDebug() << "    path:    " << path.toString() << endl;
+      kDebug() <<"    element:" << Reference(element.name()).toString();
+      kDebug() <<"    path:" << path.toString();
   Reference fullRef = path.matches( Reference(element.name()), false ) ? path : path + Reference( element.name() );
 
   if( element.text() ) {
@@ -214,8 +214,8 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
     Schema::Relation::List relations = element.elementRelations();
     for( int i = 0; i < relations.size(); ++i ) {
       Schema::Relation r = relations[i];
-      kDebug() << "  CHILD ELEMENT" << r.target() << endl;
-      kDebug() << "    CHOICE" << r.choice() << endl;
+      kDebug() <<"  CHILD ELEMENT" << r.target();
+      kDebug() <<"    CHOICE" << r.choice();
 
       fullRef = (Reference(r.target()) == path ) ? path : path + Reference( r.target() );
 
@@ -317,7 +317,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         currentChoice = r.choice();
 
       if( list && ( (i == relations.size()-1) || listItemClassCount == r.choice().count( '+' )+1 || ( i < relations.size()-1 && (relations[i+1].choice() != r.choice() || !relations[i+1].isList() ) ) ) ) {
-        kDebug() << k_funcinfo << r.target() << " " << r.choice() << " " << listRef << endl;
+        kDebug() << k_funcinfo << r.target() <<"" << r.choice() <<"" << listRef;
         XmlBuilder *listHeader = list->tag( "headers" );
         foreach( QString s, listTitles ) {
           listHeader->tag( "header", s );
@@ -521,7 +521,7 @@ QList< Reference > FormCreator::collectSubElements( const Schema::Element &eleme
 QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
   bool pluralize )
 {
-//   kDebug() << k_funcinfo << ref.toString() << endl;
+//   kDebug() << k_funcinfo << ref.toString();
 
   QString label;
 
@@ -537,7 +537,7 @@ QString FormCreator::getLabel( const Reference &ref, const QString &fallback,
 void FormCreator::applyCommonHints( XmlBuilder *xml, const Reference &ref )
 {
   Hint hint = mHints.hint( ref );
-//   kDebug() << ref.toString() << endl;
+//   kDebug() << ref.toString();
   if( !hint.isValid() )
     return;
 

@@ -87,7 +87,7 @@ void Select::parseElement( const QDomElement &formElement )
 
 void Select::loadData()
 {
-  kDebug() << k_funcinfo << ref().toString() << "  context: "
+  kDebug() << k_funcinfo << ref().toString() <<"  context:"
     << context().tagName() << endl;
 
   Reference::Segment s = ref().segments().last();
@@ -111,16 +111,16 @@ void Select::loadData()
         mListWidget->item( count )->setSelected( true );
       }
     } else {
-      kWarning() << "Select::loadData() unknown value: " << s << endl;
+      kWarning() <<"Select::loadData() unknown value:" << s;
     }
   }
 }
 
 void Select::saveData()
 {
-  kDebug() << "Select::saveData()" << endl;
-  kDebug() << ref().toString() << endl;
-  kDebug() << "Context: " << context().nodeName() << endl;
+  kDebug() <<"Select::saveData()";
+  kDebug() << ref().toString();
+  kDebug() <<"Context:" << context().nodeName();
   Reference::Segment s = ref().segments().last();
 
   QStringList values;

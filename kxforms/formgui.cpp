@@ -47,7 +47,7 @@ using namespace KXForms;
 FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
   : QWidget( parent ), mManager( m ), mTabWidget( 0 ), mLabelHidden( false ), mSizeThreshold( 100 )
 {
-  kDebug() << "FormGui()" << endl;
+  kDebug() <<"FormGui()";
 
   mTopLayout = mManager->getTopLayout();
   setLayout( mTopLayout );
@@ -102,8 +102,8 @@ void FormGui::setLabelHidden( bool hidden )
 
 void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString &overrideLabel, Layout *overrideGroup )
 {
-  kDebug() << "FormGui::parseElement()" << endl;
-  kDebug() << k_funcinfo << element.tagName() << element.attribute("ref") << endl;
+  kDebug() <<"FormGui::parseElement()";
+  kDebug() << k_funcinfo << element.tagName() << element.attribute("ref");
   QMap< QString, Layout > layoutMap;
 
   bool hasList = false;
@@ -113,7 +113,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
   for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
     QDomElement e = n.toElement();
     QString tag = e.tagName();
-    kDebug() << "  Found element '" << tag << "'" << endl;
+    kDebug() <<"  Found element '" << tag <<"'";
 
     XFormsCommon c = XFormsCommon::parseElement( e );
     if( !overrideLabel.isEmpty() )
@@ -158,7 +158,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     } else if ( tag == "attributes" ) {
       parseElement( e, layout, QString(), &layoutMap[properties->group] );
     } else {
-      kWarning() << "  Unsupported element: " << tag << endl;
+      kWarning() <<"  Unsupported element:" << tag;
       delete properties;
     }
     if( guiElement ) {
@@ -186,7 +186,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     totalSpace += it.value().space();
   }
 
-  kDebug() << hasGroups( element ) << endl;
+  kDebug() << hasGroups( element );
   if( (hasGroups( element ) || totalSpace > mSizeThreshold) &&
        layoutMap.size() > 1 ) {
     setupGroups( layout, element );
@@ -234,7 +234,7 @@ void FormGui::parseElement( const QDomElement &element, QLayout *l, const QStrin
     }
   }
 
-  kDebug() << "FormGui::parseElement() done" << endl;
+  kDebug() <<"FormGui::parseElement() done";
 }
 
 
@@ -256,7 +256,7 @@ void FormGui::parseAttributeElements( GuiElement *parent, QDomElement &e )
       GuiElement::parseProperties( e2, properties );
       GuiElement *guiElement = 0;
 
-      kDebug() << "Got an attribute element: " << tag << " label: " << c.label() << endl;
+      kDebug() <<"Got an attribute element:" << tag <<" label:" << c.label();
 
       if ( tag == "list" ) {
         guiElement = new KXForms::List( mManager, c.label(), this, properties );
@@ -270,7 +270,7 @@ void FormGui::parseAttributeElements( GuiElement *parent, QDomElement &e )
         guiElement = new Select1( mManager, c.label(), this, properties );
         guiElement->setRef( e2.attribute( "ref" ) );
       } else {
-        kWarning() << "  Unsupported element: " << tag << endl;
+        kWarning() <<"  Unsupported element:" << tag;
         delete properties;
       }
 
@@ -288,7 +288,7 @@ QDomElement FormGui::findContextElement( const QDomDocument &doc )
 
 void FormGui::loadData( const QDomDocument &doc )
 {
-  kDebug() << "FormGui::loadData() " << ref().toString() << endl;
+  kDebug() <<"FormGui::loadData()" << ref().toString();
 
   QDomElement contextElement = findContextElement( doc );
 
@@ -315,7 +315,7 @@ void FormGui::saveData()
       (*itGui)->save();
     }
   } else {
-    kDebug() << k_funcinfo << "Not all elements were valid" << endl;
+    kDebug() << k_funcinfo <<"Not all elements were valid";
     KMessageBox::error( this, i18n( "There were elements not matching their constraint:\n" ) + invalidElements );
   }
 }
@@ -343,7 +343,7 @@ void FormGui::setupGroups( QLayout *l, const QDomElement &element )
   QDomElement e = element.firstChildElement( "groups" ).firstChild().toElement();
   while( !e.isNull() ) {
     if( e.tagName() == "group" ) {
-      kDebug() << k_funcinfo << "Adding group: " << e.attribute( "id" ) <<endl;
+      kDebug() << k_funcinfo <<"Adding group:" << e.attribute("id" );
     }
     e = e.nextSibling().toElement();
   }

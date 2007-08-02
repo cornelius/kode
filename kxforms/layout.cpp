@@ -97,7 +97,7 @@ void Layout::order()
 
   foreach( Element *e, mOrderedList ) {
     foreach( QDomElement pos, e->element()->properties()->positions ) {
-      kDebug() << e->element()->ref().toString() << " : " << pos.text() << endl;
+      kDebug() << e->element()->ref().toString() <<" :" << pos.text();
       Element *refEntry = findElement( Reference( pos.text() ) );
       if( refEntry ) {
         if( pos.tagName() == "rightOf" ) {
@@ -142,7 +142,7 @@ Layout::Element *Layout::findElement( const Reference &ref ) const
 {
   Element *found = 0;
   foreach( Element *e, mOrderedList ) {
-    kDebug() << e->element()->ref().toString() << " : " << ref.toString() << endl;
+    kDebug() << e->element()->ref().toString() <<" :" << ref.toString();
     found = findElement( e, ref );
     if( found )
       return found;
@@ -156,7 +156,7 @@ Layout::Element *Layout::findElement( Layout::Element *e, const Reference &ref )
   if( e->element()->ref().matches( ref, false ) )
       return e;
   foreach( Element *e, e->children() ) {
-    kDebug() << e->element()->ref().toString() << " : " << ref.toString() << endl;
+    kDebug() << e->element()->ref().toString() <<" :" << ref.toString();
     if( e->element()->ref().matches( ref, false ) )
       return e;
   }

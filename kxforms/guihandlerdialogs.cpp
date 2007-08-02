@@ -54,7 +54,7 @@ void FormDialog::setGui( FormGui *gui )
 
 void FormDialog::slotOk()
 {
-  kDebug() << "FormDialog::slotOk()" << endl;
+  kDebug() <<"FormDialog::slotOk()";
 
   mFormGui->saveData();
 
@@ -73,7 +73,7 @@ GuiHandlerDialogs::GuiHandlerDialogs( Manager *m )
 
 QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
 {
-  kDebug() << "GuiHandlerDialogs::createRootGui()" << endl;
+  kDebug() <<"GuiHandlerDialogs::createRootGui()";
 
   Form *f = manager()->rootForm();
 
@@ -88,7 +88,7 @@ QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
   gui->parseElement( f->element() );
 
   if ( manager()->hasData() ) {
-    kDebug() << "Manager::createGui() Load data on creation" << endl;
+    kDebug() <<"Manager::createGui() Load data on creation";
     manager()->loadData( gui );
   }
 
@@ -99,7 +99,7 @@ QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
 
 void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
 {
-  kDebug() << "GuiHandlerDialogs::createGui() ref: '" << ref.toString() << "'" << endl;
+  kDebug() <<"GuiHandlerDialogs::createGui() ref: '" << ref.toString() <<"'";
 
   if ( ref.isEmpty() ) {
     KMessageBox::sorry( parent, i18n("No reference.") );
@@ -131,7 +131,7 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
   dlg.setGui( gui );
 
   if ( manager()->hasData() ) {
-    kDebug() << "Manager::createGui() Load data on creation" << endl;
+    kDebug() <<"Manager::createGui() Load data on creation";
     manager()->loadData( gui );
   }
 
@@ -142,11 +142,11 @@ void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
 FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
 {
   if ( !form ) {
-    kError() << "KXForms::Manager::createGui(): form is null." << endl;
+    kError() <<"KXForms::Manager::createGui(): form is null.";
     return 0;
   }
 
-  kDebug() << "Manager::createGui() form: '" << form->ref() << "'" << endl;
+  kDebug() <<"Manager::createGui() form: '" << form->ref() <<"'";
 
   if( mRootGui )
     mRootGui->saveData();

@@ -109,9 +109,9 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
 {
 #if 0
   if ( mVerbose ) {
-    kDebug() << "Creator::createElementFunctions()" << endl;
-    kDebug() << "ELEMENT " << e.identifier() << endl;
-    kDebug() << "RELATION: " << r.asString() << endl;
+    kDebug() <<"Creator::createElementFunctions()";
+    kDebug() <<"ELEMENT" << e.identifier();
+    kDebug() <<"RELATION:" << r.asString();
   }
 #endif
 
@@ -160,7 +160,7 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
 void Creator::createClass( const Schema::Element &element )
 {
   if ( mVerbose ) {
-    kDebug() << "Creator::createClass() " << element.identifier() << endl;
+    kDebug() <<"Creator::createClass()" << element.identifier();
   }
 
   QString className = upperFirst( element.name() );
@@ -328,7 +328,7 @@ void Creator::createFileWriter( const Schema::Element &element )
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::WriteOnly ) ) {";
-  code += "  kError() << \"Unable to open file '\" << filename << \"'\" << endl;";
+  code += "  kError() << \"Unable to open file '\" << filename << \"'\";";
   code += "  return false;";
   code += '}';
   code += "";
@@ -382,19 +382,19 @@ void Creator::printFiles( KODE::Printer &printer )
     parserFile.insertClass( mParserClass );
 
     if ( mVerbose ) {
-      kDebug() << "Print external parser." << endl;
+      kDebug() <<"Print external parser.";
     }
     printer.printHeader( parserFile );
     printer.printImplementation( parserFile );
   }
 
   if ( mVerbose ) {
-    kDebug() << "Print header" << endl;
+    kDebug() <<"Print header";
   }
   printer.printHeader( file() );
 
   if ( mVerbose ) {
-    kDebug() << "Print implementation" << endl;
+    kDebug() <<"Print implementation";
   }
   printer.printImplementation( file() );
 

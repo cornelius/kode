@@ -43,7 +43,7 @@ ReadOnlyAction::~ReadOnlyAction()
 
 void ReadOnlyAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   editor()->beginEdit();
 
   QString newRO;
@@ -59,7 +59,7 @@ void ReadOnlyAction::perform( GuiElement *e )
       list, currentRO, false, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo << "New Mode: " << newRO << endl;
+    kDebug() << k_funcinfo <<"New Mode:" << newRO;
     Hint h;
     h.setRef( e->id() );
     h.setValue( Hint::ReadOnly, newRO );

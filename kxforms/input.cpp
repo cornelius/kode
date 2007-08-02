@@ -65,7 +65,7 @@ Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
 
 void Input::loadData()
 {
-  kDebug() << "Input::loadData() " << ref().toString() << "  context: "
+  kDebug() <<"Input::loadData()" << ref().toString() <<"  context:"
     << context().tagName() << endl;
   if( mProperties->type == "xs:integer" ) {
     QString txt = ref().applyString( context() );
@@ -85,7 +85,7 @@ void Input::loadData()
 
 void Input::saveData()
 {
-  kDebug() << "Input::saveData()" << endl;
+  kDebug() <<"Input::saveData()";
 
   Reference::Segment s = ref().segments().last();
 
@@ -113,7 +113,7 @@ void Input::emitValueChanged()
 
 bool Input::isValid() const
 {
-  kDebug() << k_funcinfo << mProperties->constraint << " : " << value() << endl;
+  kDebug() << k_funcinfo << mProperties->constraint <<" :" << value();
   if( mProperties->constraint.isEmpty() )
     return true;
 

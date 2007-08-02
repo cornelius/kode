@@ -47,7 +47,7 @@ GroupAction::~GroupAction()
 
 void GroupAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo;
   editor()->beginEdit();
 
   bool ok;
@@ -55,7 +55,7 @@ void GroupAction::perform( GuiElement *e )
   QStringList groups;
   foreach( QString s, editor()->manager()->currentGui()->groups().keys() )
     groups << s;
-  kDebug() << editor()->manager()->currentGui()->ref().toString() << " : " << editor()->manager()->currentGui()->groups().keys() << endl;
+  kDebug() << editor()->manager()->currentGui()->ref().toString() <<" :" << editor()->manager()->currentGui()->groups().keys();
   int currentGroup = groups.indexOf( e->properties()->group );
   QString newGroup;
 
@@ -63,7 +63,7 @@ void GroupAction::perform( GuiElement *e )
       groups, currentGroup, false, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo << "New Group: " << newGroup << endl;
+    kDebug() << k_funcinfo <<"New Group:" << newGroup;
     Hint h;
     h.setRef( e->id() );
     h.setValue( Hint::GroupReference, newGroup );

@@ -56,7 +56,7 @@ int main( int argc, char **argv )
   HolidayCalendar holidays = parser.parseFile( filename, &ok );
 
   if ( !ok ) {
-    kError() << "Parse error" << endl;
+    kError() <<"Parse error";
   } else {
     // TODO: Print data to stdout
   }
@@ -64,7 +64,7 @@ int main( int argc, char **argv )
   if ( args->isSet( "output" ) ) {
     QString out = args->getOption( "output" );
     if ( !holidays.writeFile( out ) ) {
-      kError() << "Write error" << endl;
+      kError() <<"Write error";
     }
   }
 }

@@ -51,7 +51,7 @@ void Manager::setGuiHandler( GuiHandler *handler )
 
 bool Manager::parseForms( const QString &xml )
 {
-  kDebug() << "Manager::parseForms()" << endl;
+  kDebug() <<"Manager::parseForms()";
 
   clearForms();
 
@@ -61,7 +61,7 @@ bool Manager::parseForms( const QString &xml )
   QDomElement docElement = doc.documentElement();
 
   if ( docElement.tagName() != "kxforms" ) {
-    kError() << "Top element is '" << docElement.tagName() <<
+    kError() <<"Top element is '" << docElement.tagName() <<
       "'. Expected 'kxforms'." << endl;
     return false;
   }
@@ -74,10 +74,10 @@ bool Manager::parseForms( const QString &xml )
       if ( !form ) return false;
       mForms.append( form );
     } else if( e.tagName() == "defaults" ) {
-      kDebug() << "Found a defaults-element" << endl;
+      kDebug() <<"Found a defaults-element";
       GuiElement::parseProperties( e, mDefaultProperties );
     } else {
-      kError() << "Expected 'form' or 'defaults' element. Got '" << e.tagName() << "'" << endl;
+      kError() <<"Expected 'form' or 'defaults' element. Got '" << e.tagName() <<"'";
       return false;
     }
   }
@@ -90,7 +90,7 @@ bool Manager::parseForms( const QString &xml )
 Form *Manager::parseForm( const QDomElement &element )
 {
   QString ref = element.attribute( "ref" );
-  kDebug() << "Manager::parseForm() ref '" << ref << "'" << endl;
+  kDebug() <<"Manager::parseForm() ref '" << ref <<"'";
   if ( ref.isEmpty() ) return 0;
 
   Form *form = new Form( this );
@@ -103,7 +103,7 @@ Form *Manager::parseForm( const QDomElement &element )
 Form *Manager::rootForm()
 {
   if ( mForms.isEmpty() ) {
-    kError() << "No forms." << endl;
+    kError() <<"No forms.";
     return 0;
   }
 
@@ -121,10 +121,10 @@ Form *Manager::form( const QString &ref )
 
 KResult Manager::loadData( const QString &xml )
 {
-  kDebug() << "Manager::loadData()" << endl;
+  kDebug() <<"Manager::loadData()";
 
   if ( mForms.isEmpty() ) {
-    kDebug() << "No Forms" << endl;
+    kDebug() <<"No Forms";
   }
 
   QXmlInputSource source;
@@ -176,7 +176,7 @@ void Manager::loadData()
 
 KResult Manager::saveData( QString &xml )
 {
-  kDebug() << "Manager::saveData()" << endl;
+  kDebug() <<"Manager::saveData()";
   
   if ( !mDataLoaded ) return KResultError( i18n("No data loaded.") );
 
@@ -203,7 +203,7 @@ void Manager::clearForms()
 QWidget *Manager::createRootGui( QWidget *parent )
 {
   if ( !mGuiHandler ) {
-    kError() << "Manager::createRootGui(): No GuiHandler" << endl;
+    kError() <<"Manager::createRootGui(): No GuiHandler";
     return 0;
   }
 
@@ -213,7 +213,7 @@ QWidget *Manager::createRootGui( QWidget *parent )
 void Manager::createGui( const Reference &ref, GuiElement *parent )
 {
   if ( !mGuiHandler ) {
-    kError() << "Manager::createGui(): No GuiHandler" << endl;
+    kError() <<"Manager::createGui(): No GuiHandler";
     return;
   }
 
@@ -278,7 +278,7 @@ void Manager::addElementRowElement( QLayout *l, Layout::Element *e, int totalWid
   int width = e->rightElement() ? 1 : totalWidth - xPosition;
   int height = e->belowElement() ? 1 : totalHeight - e->element()->attributeElements().size();
 
-//   kDebug() << e->element()->ref().toString() << ": " << xPosition << " " << yPosition << " " << width << " " << height << " " << totalWidth << " " << totalHeight << endl;
+//   kDebug() << e->element()->ref().toString() <<":" << xPosition <<"" << yPosition <<"" << width <<"" << height <<"" << totalWidth <<"" << totalHeight;
   mGuiHandler->addElement( l, e->element()->labelWidget(), e->element()->widget(), xPosition,yPosition, width, height, e->element()->properties() );
 
   foreach( GuiElement *a, e->element()->attributeElements() ) {

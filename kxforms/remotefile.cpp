@@ -32,7 +32,7 @@ RemoteFile::RemoteFile( QWidget *parent )
 
 void RemoteFile::get( const KUrl &url )
 {
-  kDebug() << "RemoteFile::get() " << url << endl;
+  kDebug() <<"RemoteFile::get()" << url;
 
   mUrl = url;
   mLoaded = false;
@@ -91,7 +91,7 @@ KUrl RemoteFile::url() const
 
 void RemoteFile::slotJobResultGet( KJob *job )
 {
-  kDebug() << "RemoteFile::slotJobResultGet()" << endl;
+  kDebug() <<"RemoteFile::slotJobResultGet()";
 
   if ( job->error() ) {
     static_cast<KIO::Job*>(job)->ui()->showErrorMessage();
@@ -126,7 +126,7 @@ void RemoteFile::slotJobDataPut( KIO::Job *, const QByteArray &data )
 
 void RemoteFile::slotJobResultPut( KJob *job )
 {
-  kDebug() << "RemoteFile::slotJobResultPut()" << endl;
+  kDebug() <<"RemoteFile::slotJobResultPut()";
 
   if ( job->error() ) {
     static_cast<KIO::Job*>(job)->ui()->showErrorMessage();
