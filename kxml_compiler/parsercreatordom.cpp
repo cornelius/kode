@@ -68,7 +68,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
   code.indent();
   code += "kError() << \"Expected '" + e.name() +"', got '\" <<" +
-          "element.tagName() << \"'.\" << endl;";
+          "element.tagName() << \"'.\";";
   code += "if ( ok ) *ok = false;";
   code += "return " + c.name() + "();";
   code.unindent();

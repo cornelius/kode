@@ -105,8 +105,8 @@ void Select1::parseElement( const QDomElement &formElement )
 
 void Select1::loadData()
 {
-  kDebug() <<"Select1::loadData()" << ref().toString() <<"  context:"
-    << context().tagName() << endl;
+  kDebug() <<"Select1::loadData()" << ref().toString() <<"context:"
+    << context().tagName();
 
   QString txt = ref().applyString( context() );
 

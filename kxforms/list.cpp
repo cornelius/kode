@@ -335,8 +335,7 @@ QStringList List::itemLabels( const ItemClass &itemClass,
     } else if ( n.isElement() ) {
       QDomElement e2 = n.toElement();
       if ( e2.tagName() != "itemLabelArg" ) {
-        kWarning() <<"Illegal tag in itemlabel element:" << e2.tagName()
-          << endl;
+        kWarning() <<"Illegal tag in itemlabel element:" << e2.tagName();
       } else {
         Reference ref( e2.attribute( "ref" ) );
         QString txt = ref.applyString( itemElement );
@@ -345,8 +344,7 @@ QStringList List::itemLabels( const ItemClass &itemClass,
           bool ok;
           int newLen = truncate.toInt( &ok );
           if ( !ok ) {
-            kError() <<"Illegal truncate value: '" << truncate <<"'"
-              << endl;
+            kError() <<"Illegal truncate value: '" << truncate <<"'";
           } else {
             if ( int( txt.length() ) > newLen ) {
               txt.truncate( newLen );

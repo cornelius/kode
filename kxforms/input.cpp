@@ -65,8 +65,8 @@ Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
 
 void Input::loadData()
 {
-  kDebug() <<"Input::loadData()" << ref().toString() <<"  context:"
-    << context().tagName() << endl;
+  kDebug() <<"Input::loadData()" << ref().toString() <<"context:"
+    << context().tagName();
   if( mProperties->type == "xs:integer" ) {
     QString txt = ref().applyString( context() );
     bool ok;

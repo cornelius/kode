@@ -62,7 +62,7 @@ bool Manager::parseForms( const QString &xml )
 
   if ( docElement.tagName() != "kxforms" ) {
     kError() <<"Top element is '" << docElement.tagName() <<
-      "'. Expected 'kxforms'." << endl;
+      "'. Expected 'kxforms'.";
     return false;
   }
 
@@ -278,7 +278,7 @@ void Manager::addElementRowElement( QLayout *l, Layout::Element *e, int totalWid
   int width = e->rightElement() ? 1 : totalWidth - xPosition;
   int height = e->belowElement() ? 1 : totalHeight - e->element()->attributeElements().size();
 
-//   kDebug() << e->element()->ref().toString() <<":" << xPosition <<"" << yPosition <<"" << width <<"" << height <<"" << totalWidth <<"" << totalHeight;
+//   kDebug() << e->element()->ref().toString() <<":" << xPosition << yPosition << width << height << totalWidth << totalHeight;
   mGuiHandler->addElement( l, e->element()->labelWidget(), e->element()->widget(), xPosition,yPosition, width, height, e->element()->properties() );
 
   foreach( GuiElement *a, e->element()->attributeElements() ) {

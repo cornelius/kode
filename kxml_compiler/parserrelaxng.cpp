@@ -141,8 +141,7 @@ bool ParserRelaxng::parseElement( const QDomElement &elementElement, Element *e,
       a->name = e1.attribute( "name" );
       a->pattern = pattern;
       if ( mVerbose ) {
-        kDebug() <<"ATTRIBUTE:" << a->name <<"" << a->pattern.asString()
-                 << endl;
+        kDebug() <<"ATTRIBUTE:" << a->name << a->pattern.asString();
       }
       parseAttribute( e1, a );
       e->attributes.append( a );

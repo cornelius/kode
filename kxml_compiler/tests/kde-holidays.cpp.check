@@ -276,7 +276,7 @@ bool HolidayCalendar::writeFile( const QString &filename )
 {
   QFile file( filename );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-    kError() << "Unable to open file '" << filename << "'" << endl;
+    kError() << "Unable to open file '" << filename << "'";
     return false;
   }
 

@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 
   if ( args->isSet( "schema" ) && args->isSet( "kxform" ) ) {
     kWarning() <<"KXForm will be generated from schema. Ignoring --kxform"
-      << "option" << endl;
+      << "option";
   }
 
   if ( args->isSet( "ugh" ) ) {

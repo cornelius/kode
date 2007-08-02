@@ -313,7 +313,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
         continue;
       } else {
         kError() <<"Document element '" << doc.documentElement().tagName() <<
-           "' isn't '" << segment.name() << "'" << endl;
+           "' isn't '" << segment.name() << "'";
         return QDomElement();
       }
     }
@@ -333,7 +333,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
     }
     if ( n.isNull() ) {
       kError() <<"Reference::apply(): Unable to find element '" <<
-        segment.toString() << "'" << endl;
+        segment.toString() << "'";
       return QDomElement();
     }
   }
@@ -343,8 +343,8 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
 
 QDomElement Reference::applyElement( const QDomElement &context ) const
 {
-  kDebug() <<"Reference::applyElement()" << toString() <<" Context:"
-    << context.tagName() << endl;
+  kDebug() <<"Reference::applyElement()" << toString() <<"Context:"
+    << context.tagName();
 
   QDomElement result = context;
 
@@ -354,8 +354,8 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
   for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
     Reference::Segment segment = *it;
 
-//     kDebug() <<"  Segment:" << segment.toString() <<" Count:" <<
-//       segment.count() << endl;
+//     kDebug() <<"  Segment:" << segment.toString() <<"Count:" <<
+//       segment.count();
 
     QMap<QString, int> counts;
     QDomNode n;
@@ -378,7 +378,7 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
     }
     if ( n.isNull() ) {
       kError() <<"Reference::apply(): Unable to find element '" <<
-        segment.toString() << "'" << endl;
+        segment.toString() << "'";
       return QDomElement();
     }
   }

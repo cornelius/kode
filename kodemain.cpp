@@ -105,8 +105,7 @@ int addProperty( KCmdLineArgs *args )
   QString type = args->arg( 1 );
   QString name = args->arg( 2 );
 
-  kDebug() <<"Add property: class" << className <<":" << type <<"" <<
-    name << endl;
+  kDebug() <<"Add property: class" << className <<":" << type << name;
 
   QString headerFileName = className.toLower() + ".h";
 
@@ -245,7 +244,7 @@ int addProperty( KCmdLineArgs *args )
       kDebug() <<"Write to original file.";
       if ( !headerFile.open( QIODevice::WriteOnly ) ) {
         kError() <<"Unable to open file '" << headerFileName <<
-          "' for writing." << endl;
+          "' for writing.";
         return 1;
       }
       QTextStream o( &headerFile );
@@ -321,7 +320,7 @@ int create( KCmdLineArgs *args )
     if ( !args->isSet( "protocol" ) ) {
       protocol = className.toLower();
       kWarning() <<"Warning: No protocol for kioslave given. Assuming '"
-                  << protocol << "'" << endl;
+                  << protocol << "'";
     } else {
       protocol = args->getOption( "protocol" );
     }
@@ -341,8 +340,7 @@ int create( KCmdLineArgs *args )
     KABC::Addressee::List as =
         KABC::StdAddressBook::self()->findByEmail( authorEmail );
     if ( as.isEmpty() ) {
-      kDebug() <<"Unable to find '" << authorEmail <<"' in address book."
-                << endl;
+      kDebug() <<"Unable to find '" << authorEmail <<"' in address book.";
     } else {
       a = as.first();
     }

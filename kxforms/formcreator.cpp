@@ -317,7 +317,7 @@ void FormCreator::parseComplexType( const Schema::Element &element, XmlBuilder *
         currentChoice = r.choice();
 
       if( list && ( (i == relations.size()-1) || listItemClassCount == r.choice().count( '+' )+1 || ( i < relations.size()-1 && (relations[i+1].choice() != r.choice() || !relations[i+1].isList() ) ) ) ) {
-        kDebug() << k_funcinfo << r.target() <<"" << r.choice() <<"" << listRef;
+        kDebug() << k_funcinfo << r.target() << r.choice() << listRef;
         XmlBuilder *listHeader = list->tag( "headers" );
         foreach( QString s, listTitles ) {
           listHeader->tag( "header", s );
