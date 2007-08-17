@@ -251,7 +251,7 @@ class KResultError : public KResult
       Create KResult object of type Error with given error type and optionally
       a detailed error message.
     */
-    KResultError( ErrorType error, const QString &details = QString::null )
+    KResultError( ErrorType error, const QString &details = QString::null )	//krazy:exclude=nullstrassign for old broken gcc
       : KResult( error, details ) {}
     /**
       Create KResult object of type Error with given detailed error message.
