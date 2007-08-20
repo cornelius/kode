@@ -328,7 +328,7 @@ QString Hints::toXml()
 
   xml.append( "<ugh>" );
 
-  kDebug() << k_funcinfo << xml;
+  kDebug() << xml;
 
   return xml;
 }

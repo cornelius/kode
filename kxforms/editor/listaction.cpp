@@ -100,7 +100,7 @@ ListAction::~ListAction()
 
 void ListAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo;
+  kDebug() ;
   editor()->beginEdit();
 
   List::ListProperties prop;

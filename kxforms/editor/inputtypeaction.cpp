@@ -43,7 +43,7 @@ InputTypeAction::~InputTypeAction()
 
 void InputTypeAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo;
+  kDebug() ;
   editor()->beginEdit();
 
   QString newType;
@@ -59,7 +59,7 @@ void InputTypeAction::perform( GuiElement *e )
       list, currentPosition, true, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo <<"New Type:" << newType;
+    kDebug() <<"New Type:" << newType;
     Hint h;
     h.setRef( e->id() );
     h.setValue( Hint::InputType, newType );

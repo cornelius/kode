@@ -124,7 +124,7 @@ void EditorWidget::setInEdit( bool b )
 
 void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 {
-//   kDebug() << k_funcinfo;
+//   kDebug() ;
   GuiElement *newElement = 0;
   QPoint pos = event->pos();
   QRect r;
@@ -165,7 +165,7 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 
 void EditorWidget::mousePressEvent( QMouseEvent *event )
 {
-//   kDebug() << k_funcinfo;
+//   kDebug() ;
   mDragPoint = event->pos();
   mInDrag = true;
 }
@@ -173,7 +173,7 @@ void EditorWidget::mousePressEvent( QMouseEvent *event )
 void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 {
   Q_UNUSED( event )
-//   kDebug() << k_funcinfo;
+//   kDebug() ;
 
   if( mInDrag ) {
     mInDrag = false;
@@ -200,7 +200,7 @@ void EditorWidget::mouseReleaseEvent( QMouseEvent *event )
 void EditorWidget::paintEvent( QPaintEvent *event )
 {
   Q_UNUSED( event )
-//   kDebug() << k_funcinfo;
+//   kDebug() ;
   QPainter p( this );
 
   drawGroups( &p );

@@ -374,7 +374,7 @@ void MainWindow::slotPutDataResult( bool ok )
 
 void MainWindow::refresh( const Hints &h )
 {
-  kDebug() << k_funcinfo;
+  kDebug() ;
 
   RNG::ParserXsd parser;
   parser.setVerbose( true );

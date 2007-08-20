@@ -189,7 +189,7 @@ void GlobalSettingsDialog::load()
 
 void GlobalSettingsDialog::accept()
 {
-  kDebug() << k_funcinfo;
+  kDebug() ;
   mHints = Hints();
   Hint globalHint;
   globalHint.setRef( "*" );

@@ -103,7 +103,7 @@ void FormGui::setLabelHidden( bool hidden )
 void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString &overrideLabel, Layout *overrideGroup )
 {
   kDebug() <<"FormGui::parseElement()";
-  kDebug() << k_funcinfo << element.tagName() << element.attribute("ref");
+  kDebug() << element.tagName() << element.attribute("ref");
   QMap< QString, Layout > layoutMap;
 
   bool hasList = false;
@@ -315,7 +315,7 @@ void FormGui::saveData()
       (*itGui)->save();
     }
   } else {
-    kDebug() << k_funcinfo <<"Not all elements were valid";
+    kDebug() <<"Not all elements were valid";
     KMessageBox::error( this, i18n( "There were elements not matching their constraint:\n" ) + invalidElements );
   }
 }
@@ -343,7 +343,7 @@ void FormGui::setupGroups( QLayout *l, const QDomElement &element )
   QDomElement e = element.firstChildElement( "groups" ).firstChild().toElement();
   while( !e.isNull() ) {
     if( e.tagName() == "group" ) {
-      kDebug() << k_funcinfo <<"Adding group:" << e.attribute("id" );
+      kDebug() <<"Adding group:" << e.attribute("id" );
     }
     e = e.nextSibling().toElement();
   }

@@ -47,7 +47,7 @@ GroupAction::~GroupAction()
 
 void GroupAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo;
+  kDebug() ;
   editor()->beginEdit();
 
   bool ok;
@@ -63,7 +63,7 @@ void GroupAction::perform( GuiElement *e )
       groups, currentGroup, false, &ok );
 
   if( ok ) {
-    kDebug() << k_funcinfo <<"New Group:" << newGroup;
+    kDebug() <<"New Group:" << newGroup;
     Hint h;
     h.setRef( e->id() );
     h.setValue( Hint::GroupReference, newGroup );

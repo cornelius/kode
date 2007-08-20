@@ -113,7 +113,7 @@ void Input::emitValueChanged()
 
 bool Input::isValid() const
 {
-  kDebug() << k_funcinfo << mProperties->constraint <<" :" << value();
+  kDebug() << mProperties->constraint <<" :" << value();
   if( mProperties->constraint.isEmpty() )
     return true;
 

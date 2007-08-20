@@ -87,7 +87,7 @@ void Select::parseElement( const QDomElement &formElement )
 
 void Select::loadData()
 {
-  kDebug() << k_funcinfo << ref().toString() <<"context:"
+  kDebug() << ref().toString() <<"context:"
     << context().tagName();
 
   Reference::Segment s = ref().segments().last();

@@ -44,7 +44,7 @@ LayoutStyleAction::~LayoutStyleAction()
 
 void LayoutStyleAction::perform( GuiElement *e )
 {
-  kDebug() << k_funcinfo;
+  kDebug() ;
   editor()->beginEdit();
 
   QString style;
