@@ -497,10 +497,10 @@ int create( KCmdLineArgs *args )
     c.addMemberVariable( selfVar );
 
     KODE::Variable staticDeleter( "selfDeleter",
-                                  "KStaticDeleter<" + className + '>',
+                                  "K3StaticDeleter<" + className + '>',
                                   true );
     file.addFileVariable( staticDeleter );
-    file.addInclude( "kstaticdeleter.h" );
+    file.addInclude( "k3staticdeleter.h" );
   }
 
   if ( createKioslave ) {

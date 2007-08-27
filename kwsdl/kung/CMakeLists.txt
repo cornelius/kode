@@ -25,7 +25,7 @@ set(kschemawidgets_LIB_SRCS
 kde4_add_library(kschemawidgets SHARED ${kschemawidgets_LIB_SRCS})
 
 # FIXME: kwsdl only needed for pageinputfield!
-target_link_libraries(kschemawidgets  ${KDE4_KPARTS_LIBS} schema wsdl )
+target_link_libraries(kschemawidgets  ${KDE4_KPARTS_LIBS} ${KDE4_KDE3SUPPORT_LIBRARY} schema wsdl )
 
 # FIXME: Versioning like libtool?
 set_target_properties(kschemawidgets PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )

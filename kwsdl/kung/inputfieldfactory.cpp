@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 
 #include <schema/types.h>
 
@@ -38,7 +38,7 @@
 #include "inputfieldfactory.h"
 
 InputFieldFactory *InputFieldFactory::mSelf = 0;
-static KStaticDeleter<InputFieldFactory> inputFieldFactoryDeleter;
+static K3StaticDeleter<InputFieldFactory> inputFieldFactoryDeleter;
 
 InputFieldFactory::InputFieldFactory()
 {

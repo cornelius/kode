@@ -23,13 +23,13 @@
 #include <QDomDocument>
 #include <QFile>
 
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 
 #include "settings.h"
 
 Settings *Settings::mSelf = 0;
 
-static KStaticDeleter<Settings> settingsDeleter;
+static K3StaticDeleter<Settings> settingsDeleter;
 
 Settings::Settings()
   : mTransport( KDETransport )
