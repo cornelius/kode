@@ -274,7 +274,7 @@ void Editor::saveHints()
   } else {
     QFile file( mHintsUrl.path() );
     if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) {
-      KMessageBox::sorry( mEditorWidget, i18n("Can't open '%1'.",
+      KMessageBox::sorry( mEditorWidget, i18n("Can not open '%1'.",
         mHintsUrl.prettyUrl() ) );
       return;
     }
