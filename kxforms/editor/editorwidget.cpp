@@ -27,7 +27,6 @@
 #include "../formgui.h"
 
 #include <kdebug.h>
-#include <kpixmapeffect.h>
 #include <kactionmenu.h>
 #include <kmenu.h>
 #include <klocale.h>
