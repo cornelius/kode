@@ -67,13 +67,12 @@ void BinaryInputField::xmlData( QDomDocument &document, QDomElement &parent )
 
 void BinaryInputField::setData( const QString &data )
 {
-  KCodecs::base64Decode( data.toUtf8(), mValue );
+  mValue = QByteArray::fromBase64( data.toLatin1() );
 }
 
 QString BinaryInputField::data() const
 {
-  QByteArray data = KCodecs::base64Encode( mValue, false );
-  return QString::fromUtf8( data.data(), data.size() );
+  return QString::fromLatin1( mValue.toBase64() );
 }
 
 QWidget *BinaryInputField::createWidget( QWidget *parent )
