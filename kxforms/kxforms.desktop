@@ -1,7 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=KXForms
-Name[ne]=केएक्स फाराम
 Name[sv]=Kxforms
 Name[x-test]=xxKXFormsxx
 Exec=kxforms %i -caption "%c"
@@ -14,7 +13,8 @@ GenericName[es]=Editor de formulario XML
 GenericName[it]=Editor di moduli XML
 GenericName[ja]=XML フォームエディタ
 GenericName[kk]=XML пішін өңдегіші
-GenericName[ne]=एक्सएमएल फाराम सम्पादक
+GenericName[ko]=XML 폼 편집기
+GenericName[ne]=XML फाराम सम्पादक
 GenericName[nl]=XML-formuliereditor
 GenericName[pa]=XML ਫਾਰਮ ਸੰਪਾਦਕ
 GenericName[pt]=Editor de Formulários em XML
