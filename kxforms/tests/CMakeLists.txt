@@ -1,3 +1,4 @@
+set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
 include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kxforms  )
 
@@ -46,7 +47,7 @@ set(kxformstest_SRCS
 kde4_add_kcfg_files(kxformstest_SRCS ../prefs.kcfgc )
 
 
-kde4_add_test_executable(kxformstest ${kxformstest_SRCS})
+kde4_add_executable(kxformstest TEST ${kxformstest_SRCS})
 
 target_link_libraries(kxformstest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS}  )
 
@@ -55,7 +56,7 @@ target_link_libraries(kxformstest kschema  ${QT_QTTEST_LIBRARY} ${KDE4_KDE3SUPPO
 set(testreferences_SRCS testreferences.cpp ../reference.cpp )
 
 
-kde4_add_test_executable(testreferences ${testreferences_SRCS})
+kde4_add_executable(testreferences TEST ${testreferences_SRCS})
 
 target_link_libraries(testreferences  ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 
