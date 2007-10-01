@@ -61,38 +61,38 @@ void EditorWidget::init()
   vbl->setMargin( 0 );
 
   mShowHintsButton = new QPushButton( mInterfaceWidget );
-  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "list", K3Icon::NoGroup, 32 ) );
+  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "list", KIconLoader::NoGroup, 32 ) );
   mShowHintsButton->setToolTip( i18n("Show hints") );
   connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
   vbl->addWidget( mShowHintsButton );
 
 
   mSaveHintsButton = new QPushButton( mInterfaceWidget );
-  mSaveHintsButton->setIcon( KIconLoader::global()->loadIcon( "document-save", K3Icon::NoGroup, 32 ) );
+  mSaveHintsButton->setIcon( KIconLoader::global()->loadIcon( "document-save", KIconLoader::NoGroup, 32 ) );
   mSaveHintsButton->setToolTip( i18n("Save hints") );
   connect( mSaveHintsButton, SIGNAL(clicked()), mEditor, SLOT(saveHints()) );
   vbl->addWidget( mSaveHintsButton );
 
   mSaveHintsAsButton = new QPushButton( mInterfaceWidget );
-  mSaveHintsAsButton->setIcon( KIconLoader::global()->loadIcon( "document-save-as", K3Icon::NoGroup, 32 ) );
+  mSaveHintsAsButton->setIcon( KIconLoader::global()->loadIcon( "document-save-as", KIconLoader::NoGroup, 32 ) );
   mSaveHintsAsButton->setToolTip( i18n("Save hints as...") );
   connect( mSaveHintsAsButton, SIGNAL(clicked()), mEditor, SLOT(saveHintsAs()) );
   vbl->addWidget( mSaveHintsAsButton );
 
   mEditDefaultsButton = new QPushButton( mInterfaceWidget );
-  mEditDefaultsButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
+  mEditDefaultsButton->setIcon( KIconLoader::global()->loadIcon( "edit", KIconLoader::NoGroup, 32 ) );
   mEditDefaultsButton->setToolTip( i18n("Edit global settings") );
   connect( mEditDefaultsButton, SIGNAL(clicked()), SLOT(editDefaults()) );
   vbl->addWidget( mEditDefaultsButton );
 
   mExitButton = new QPushButton( this );
-  mExitButton->setIcon( KIconLoader::global()->loadIcon( "dialog-cancel", K3Icon::NoGroup, 32 ) );
+  mExitButton->setIcon( KIconLoader::global()->loadIcon( "dialog-cancel", KIconLoader::NoGroup, 32 ) );
   mExitButton->setToolTip( i18n("Quit edit mode") );
   connect( mExitButton, SIGNAL(clicked()), mEditor, SLOT(toggleEditMode()) );
   vbl->addWidget( mExitButton );
 
   mEditButton = new QPushButton( this );
-  mEditButton->setIcon( KIconLoader::global()->loadIcon( "edit", K3Icon::NoGroup, 32 ) );
+  mEditButton->setIcon( KIconLoader::global()->loadIcon( "edit", KIconLoader::NoGroup, 32 ) );
   mEditButton->hide();
   mEditButton->setToolTip( i18n("Edit element") );
   connect( mEditButton, SIGNAL(clicked()), SLOT(showActionMenu()) );
