@@ -37,7 +37,7 @@ void RemoteFile::get( const KUrl &url )
   mUrl = url;
   mLoaded = false;
 
-  mGetJob = KIO::get( mUrl, false, false );
+  mGetJob = KIO::get( mUrl, KIO::NoReload, KIO::HideProgressInfo );
   mGetJob->ui()->setWindow( mParent );
 
   connect( mGetJob, SIGNAL( result( KJob * ) ),
@@ -54,7 +54,7 @@ void RemoteFile::put( const KUrl &url, const QString &data )
   mPutData = mData;
   mPutResult.clear();
 
-  mPutJob = KIO::put( mUrl, -1, true, false, true );
+  mPutJob = KIO::put( mUrl, -1, KIO::Overwrite );
   mPutJob->ui()->setWindow( mParent );
   connect( mPutJob, SIGNAL( dataReq( KIO::Job *, QByteArray & ) ),
     SLOT( slotDataReq( KIO::Job *, QByteArray & ) ) );

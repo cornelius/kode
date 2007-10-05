@@ -35,7 +35,7 @@ void Transport::query( const QString &xml )
   QDataStream stream( &postData, QIODevice::WriteOnly );
   stream.writeRawData( xml.toUtf8(), xml.toUtf8().length() );
   
-  KIO::TransferJob* job = KIO::http_post( KUrl( mUrl ), postData, false );
+  KIO::TransferJob* job = KIO::http_post( KUrl( mUrl ), postData, KIO::HideProgressInfo );
   if ( !job ) {
     kWarning() <<"Unable to create KIO job for" << mUrl;
     return;
