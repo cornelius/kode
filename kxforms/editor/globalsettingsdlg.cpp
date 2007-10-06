@@ -31,6 +31,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 
+#include <kdebug.h>
 #include <klocale.h>
 #include <klineedit.h>
 #include <ktabwidget.h>
