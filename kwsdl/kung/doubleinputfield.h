@@ -26,7 +26,7 @@
 
 #include "inputfield.h"
 
-class KDoubleSpinBox;
+class QDoubleSpinBox;
 
 class DoubleInputField : public SimpleInputField
 {
@@ -47,7 +47,7 @@ class DoubleInputField : public SimpleInputField
     void inputChanged( double );
 
   private:
-    KDoubleSpinBox *mInputWidget;
+    QDoubleSpinBox *mInputWidget;
     double mValue;
     QString mTypeName;
 };

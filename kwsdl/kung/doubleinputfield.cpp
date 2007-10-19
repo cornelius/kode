@@ -64,7 +64,7 @@ QString DoubleInputField::data() const
 
 QWidget *DoubleInputField::createWidget( QWidget *parent )
 {
-  mInputWidget = new KDoubleSpinBox( parent );
+  mInputWidget = new QDoubleSpinBox( parent );
 
   if ( mType ) {
     if ( mType->facetType() & XSD::SimpleType::MININC )
