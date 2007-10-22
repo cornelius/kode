@@ -61,7 +61,7 @@ void EditorWidget::init()
   vbl->setMargin( 0 );
 
   mShowHintsButton = new QPushButton( mInterfaceWidget );
-  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "list", KIconLoader::NoGroup, 32 ) );
+  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "view-calendar-list", KIconLoader::NoGroup, 32 ) );
   mShowHintsButton->setToolTip( i18n("Show hints") );
   connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
   vbl->addWidget( mShowHintsButton );
