@@ -552,7 +552,7 @@ int create( KCmdLineArgs *args )
 
     QFile::remove( protocolFilename );
 
-    KConfig protocolFile( protocolFilename, KConfig::OnlyLocal);
+    KConfig protocolFile( protocolFilename, KConfig::SimpleConfig);
 
     KConfigGroup group( &protocolFile, "Protocol" );
     group.writeEntry( "exec", "kio_" + protocol );
