@@ -151,7 +151,7 @@ void MainWindow::setupActions()
   KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
   KAction *editAction = new KAction("toggle_editmode", this);
-  editAction->setIcon(KIcon("edit"));
+  editAction->setIcon(KIcon("object-edit"));
   editAction->setText(i18n("Toggle Edit mode"));
   connect(editAction, SIGNAL(triggered(bool)), mFormsManager.editor(), SLOT(toggleEditMode()));
   actionCollection()->addAction( "toggle_editmode", editAction );
