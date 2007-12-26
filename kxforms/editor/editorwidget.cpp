@@ -61,7 +61,7 @@ void EditorWidget::init()
   vbl->setMargin( 0 );
 
   mShowHintsButton = new QPushButton( mInterfaceWidget );
-  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "view-calendar-list", KIconLoader::NoGroup, 32 ) );
+  mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "document-preview", KIconLoader::NoGroup, 32 ) );
   mShowHintsButton->setToolTip( i18n("Show hints") );
   connect( mShowHintsButton, SIGNAL(clicked()), SLOT(showHints()) );
   vbl->addWidget( mShowHintsButton );
@@ -92,7 +92,7 @@ void EditorWidget::init()
   vbl->addWidget( mExitButton );
 
   mEditButton = new QPushButton( this );
-  mEditButton->setIcon( KIconLoader::global()->loadIcon( "object-edit", KIconLoader::NoGroup, 32 ) );
+  mEditButton->setIcon( KIconLoader::global()->loadIcon( "document-properties", KIconLoader::NoGroup, 32 ) );
   mEditButton->hide();
   mEditButton->setToolTip( i18n("Edit element") );
   connect( mEditButton, SIGNAL(clicked()), SLOT(showActionMenu()) );
