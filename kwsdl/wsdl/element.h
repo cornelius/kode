@@ -24,9 +24,11 @@
 
 #include <QString>
 
+#include <kode_export.h>
+
 namespace KWSDL {
 
-class Element
+class KWSDL_EXPORT Element
 {
   public:
     Element();
