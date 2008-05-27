@@ -19,4 +19,4 @@ set_target_properties(kode_bin PROPERTIES OUTPUT_NAME kode)
 
 target_link_libraries(kode_bin  ${KDE4_KDEUI_LIBS} kode ${KDE4_KABC_LIBS} )
 
-install(TARGETS kode_bin  DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS kode_bin  ${INSTALL_TARGETS_DEFAULT_ARGS} )

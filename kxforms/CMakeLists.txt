@@ -51,7 +51,7 @@ kde4_add_executable(kxforms ${kxforms_SRCS})
 
 target_link_libraries(kxforms  ${KDE4_KIO_LIBS} kschema ${KDE4_KDE3SUPPORT_LIBS} )
 
-install(TARGETS kxforms  DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS kxforms  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 ########### install files ###############
 

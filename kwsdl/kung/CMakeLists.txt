@@ -46,4 +46,4 @@ kde4_add_executable(kung ${kung_SRCS})
 
 target_link_libraries(kung  ${KDE4_KDECORE_LIBS} kschemawidgets wscl wsdl )
 
-install(TARGETS kung  DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS kung  ${INSTALL_TARGETS_DEFAULT_ARGS} )

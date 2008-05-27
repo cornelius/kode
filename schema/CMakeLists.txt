@@ -35,4 +35,4 @@ kde4_add_executable(schematest NOGUI RUN_UNINSTALLED ${schematest_SRCS})
 
 target_link_libraries(schematest  ${KDE4_KDECORE_LIBS} schema )
 
-install(TARGETS schematest  DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS schematest  ${INSTALL_TARGETS_DEFAULT_ARGS} )

@@ -33,5 +33,5 @@ kde4_add_executable(kxml_compiler NOGUI RUN_UNINSTALLED ${kxml_compiler_SRCS})
 
 target_link_libraries(kxml_compiler  ${KDE4_KDECORE_LIBS} kode kschema )
 
-install(TARGETS kxml_compiler  DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS kxml_compiler  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
