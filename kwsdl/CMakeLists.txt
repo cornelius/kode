@@ -1,5 +1,5 @@
 
-add_subdirectory( doc ) 
+macro_optional_add_subdirectory( doc ) 
 add_subdirectory( wsdl ) 
 add_subdirectory( wscl ) 
 add_subdirectory( kung ) 
