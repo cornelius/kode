@@ -15,7 +15,7 @@ set(kschema_LIB_SRCS
 
 kde4_add_library(kschema SHARED ${kschema_LIB_SRCS})
 
-target_link_libraries(kschema ${KDE4_KDECORE_LIBS} schema )
+target_link_libraries(kschema ${KDE4_KDECORE_LIBS} schema kxmlcommon ${QT_QTXML_LIBRARY})
 
 set_target_properties(kschema PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 install(TARGETS kschema  DESTINATION ${LIB_INSTALL_DIR})
