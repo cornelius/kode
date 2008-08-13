@@ -29,7 +29,7 @@ target_link_libraries(kschemawidgets  ${KDE4_KPARTS_LIBS} ${KDE4_KDE3SUPPORT_LIB
 
 # FIXME: Versioning like libtool?
 set_target_properties(kschemawidgets PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
-install(TARGETS kschemawidgets  DESTINATION ${LIB_INSTALL_DIR})
+install(TARGETS kschemawidgets  ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### next target ###############
 
@@ -44,6 +44,6 @@ set(kung_SRCS
 
 kde4_add_executable(kung ${kung_SRCS})
 
-target_link_libraries(kung  ${KDE4_KDECORE_LIBS} kschemawidgets wscl wsdl )
+target_link_libraries(kung  ${KDE4_KIO_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} kschemawidgets wscl wsdl )
 
 install(TARGETS kung  ${INSTALL_TARGETS_DEFAULT_ARGS} )

@@ -29,7 +29,7 @@ set(kwsdl_compiler_SRCS
 
 kde4_add_executable(kwsdl_compiler ${kwsdl_compiler_SRCS})
 
-target_link_libraries(kwsdl_compiler  ${KDE4_KDECORE_LIBS} ${KDE4_KDE3SUPPORT_LIBRARY} kode wsdl )
+target_link_libraries(kwsdl_compiler  ${KDE4_KDECORE_LIBS} ${KDE4_KDE3SUPPORT_LIBRARY} kode wsdl schema)
 
 install(TARGETS kwsdl_compiler  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
