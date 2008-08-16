@@ -30,6 +30,6 @@ set(parsertest_SRCS parserxsdtest.cpp )
 
 kde4_add_executable(parserxsdtest TEST  ${parsertest_SRCS})
 
-target_link_libraries(parserxsdtest kschema  ${QT_QTTEST_LIBRARY} )
+target_link_libraries(parserxsdtest kschema  ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
 ########### install files ###############
