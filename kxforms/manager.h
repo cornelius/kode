@@ -24,6 +24,7 @@
 #include "form.h"
 #include "formgui.h"
 #include "kresult.h"
+#include "guielement.h"
 #include "guihandler.h"
 #include "dispatcher.h"
 #include "editor/editor.h"
@@ -31,8 +32,6 @@
 #include <QDomElement>
 
 namespace KXForms {
-
-struct GuiElement::Properties;
 
 class Manager
 {
