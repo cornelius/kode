@@ -420,7 +420,7 @@ GuiElement *EditorWidget::selectElement( Editor::SelectionMode sm )
   mInSelection = true;
   mSelectionMode = sm;
   mEventLoop->exec();
-  if( !mHoveredElement | !mActiveElement || mHoveredElement->properties()->group !=
+  if( !mHoveredElement || !mActiveElement || mHoveredElement->properties()->group !=
       mActiveElement->properties()->group )
     mHoveredElement = 0;
   return mHoveredElement;

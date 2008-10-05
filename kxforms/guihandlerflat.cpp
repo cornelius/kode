@@ -86,8 +86,9 @@ FormGui *BreadCrumbNavigator::pop()
 
   updateLabel();
 
-  result->saveData();
-
+  if ( result ) {
+    result->saveData();
+  }
   return result;
 }
 
