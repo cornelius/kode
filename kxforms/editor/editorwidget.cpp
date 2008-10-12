@@ -126,11 +126,10 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
 //   kDebug() ;
   GuiElement *newElement = 0;
   QPoint pos = event->pos();
-  QRect r;
 
 
   if( mInDrag && !mDraggedElement && ( mDragPoint - pos ).manhattanLength() > QApplication::startDragDistance() ) {
-    foreach( QRect dragR, mElementMap.values() ) {
+    foreach( const QRect &dragR, mElementMap ) {
       if( dragR.contains( mDragPoint ) ) {
         if( !mDraggedElement || 
             mElementMap[ mDraggedElement ].width() > dragR.width() ||
@@ -147,7 +146,7 @@ void EditorWidget::mouseMoveEvent( QMouseEvent *event )
     mSelectionMode = Editor::SelectSameGroupOnly;
   }
 
-  foreach( r, mElementMap.values() ) {
+  foreach( const QRect &r, mElementMap ) {
     if( r.contains( pos ) ) {
       if( !newElement || 
           mElementMap[ newElement ].width() > r.width() ||
@@ -300,7 +299,7 @@ void EditorWidget::drawWidgetFrames( QPainter *p )
   pen.setWidth( 1 );
   p->setPen( pen );
 
-  foreach( QRect r, mElementMap.values() ) {
+  foreach( const QRect &r, mElementMap ) {
     p->drawRect( r );
   }
 

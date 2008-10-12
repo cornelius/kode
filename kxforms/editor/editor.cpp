@@ -56,9 +56,7 @@ Editor::Editor( Manager *m)
 
 Editor::~Editor()
 {
-  foreach( EditorAction *a, mActions.values() ) {
-    delete a;
-  }
+  qDeleteAll(mActions);
 }
 
 void Editor::setupActions()
