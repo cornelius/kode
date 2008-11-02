@@ -21,4 +21,4 @@ kde4_add_library(kode SHARED ${kode_LIB_SRCS})
 target_link_libraries(kode  ${QT_QTCORE_LIBRARY} )
 
 set_target_properties(kode PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
-install(TARGETS kode  DESTINATION ${LIB_INSTALL_DIR})
+install(TARGETS kode ${INSTALL_TARGETS_DEFAULT_ARGS})
