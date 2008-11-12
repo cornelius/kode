@@ -293,7 +293,7 @@ void FormGui::loadData( const QDomDocument &doc )
   QDomElement contextElement = findContextElement( doc );
 
   GuiElement::List::ConstIterator itGui;
-  for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
+  for( itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui ) {
     (*itGui)->loadData( contextElement );
   }
 }
@@ -304,14 +304,14 @@ void FormGui::saveData()
   QString invalidElements;
 
   bool valid = true;
-  for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
+  for( itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui ) {
     if( !(*itGui)->isValid() ) {
       valid = false;
       invalidElements += QString( " - %1 (constraint: %2)\n" ).arg( (*itGui)->ref().path(), (*itGui)->properties()->constraint  );
     }
   }
   if( valid ) {
-    for( itGui = mGuiElements.begin(); itGui != mGuiElements.end(); ++itGui ) {
+    for( itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui ) {
       (*itGui)->save();
     }
   } else {

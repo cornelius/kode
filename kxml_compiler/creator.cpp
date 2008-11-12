@@ -273,7 +273,7 @@ void Creator::registerListTypedef( const QString &type )
 void Creator::createListTypedefs()
 {
   QStringList::ConstIterator it;
-  for( it = mListTypedefs.begin(); it != mListTypedefs.end(); ++it ) {
+  for( it = mListTypedefs.constBegin(); it != mListTypedefs.constEnd(); ++it ) {
     KODE::Class c = mFile.findClass( *it );
     if ( !c.isValid() ) continue;
     c.addTypedef( KODE::Typedef( "QList<" + *it + '>', "List" ) );

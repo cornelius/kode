@@ -55,7 +55,7 @@ Binding WSDL::findBinding( const QName &bindingName ) const
 {
   const Binding::List list = mDefinitions.bindings();
   Binding::List::ConstIterator it;
-  for ( it = list.begin(); it != list.end(); ++it ) {
+  for ( it = list.constBegin(); it != list.constEnd(); ++it ) {
     if ( (*it).name() == bindingName.localName() && (*it).nameSpace() == bindingName.nameSpace() ) {
       return *it;
     }
@@ -68,7 +68,7 @@ BindingOperation WSDL::findBindingOperation( const Binding &binding, const QStri
 {
   BindingOperation::List list = binding.operations();
   BindingOperation::List::ConstIterator it;
-  for ( it = list.begin(); it != list.end(); ++it ) {
+  for ( it = list.constBegin(); it != list.constEnd(); ++it ) {
     if ( (*it).name() == operationName ) {
       return *it;
     }
@@ -96,7 +96,7 @@ Message WSDL::findMessage( const QName &messageName ) const
 {
   const Message::List list = mDefinitions.messages();
   Message::List::ConstIterator it;
-  for ( it = list.begin(); it != list.end(); ++it ) {
+  for ( it = list.constBegin(); it != list.constEnd(); ++it ) {
     if ( (*it).name() == messageName.localName() && (*it).nameSpace() == messageName.nameSpace() ) {
       return *it;
     }

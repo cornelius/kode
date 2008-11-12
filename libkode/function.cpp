@@ -109,9 +109,9 @@ void Function::setArgumentString( const QString &argumentString )
 {
   d->mArguments.clear();
 
-  QStringList arguments = argumentString.split( "," );
+  const QStringList arguments = argumentString.split( "," );
   QStringList::ConstIterator it;
-  for ( it = arguments.begin(); it != arguments.end(); ++it )
+  for ( it = arguments.constBegin(); it != arguments.constEnd(); ++it )
     addArgument( *it );
 }
 

@@ -210,7 +210,7 @@ QString AutoMakefile::text() const
   QString out;
 
   QStringList::ConstIterator it;
-  for ( it = d->mEntries.begin(); it != d->mEntries.end(); ++it ) {
+  for ( it = d->mEntries.constBegin(); it != d->mEntries.constEnd(); ++it ) {
     QString variable = *it;
     if ( variable.isEmpty() ) {
       out += '\n';
@@ -220,13 +220,13 @@ QString AutoMakefile::text() const
   }
   out += '\n';
 
-  for ( it = d->mTargetTypes.begin(); it != d->mTargetTypes.end(); ++it ) {
+  for ( it = d->mTargetTypes.constBegin(); it != d->mTargetTypes.constEnd(); ++it ) {
     QString targetType = *it;
 
     out += targetType + " = ";
 
     Target::List::ConstIterator it2;
-    for ( it2 = d->mTargets.begin(); it2 != d->mTargets.end(); ++it2 ) {
+    for ( it2 = d->mTargets.constBegin(); it2 != d->mTargets.constEnd(); ++it2 ) {
       Target target = *it2;
       if ( target.type() != targetType ) continue;
 
@@ -234,7 +234,7 @@ QString AutoMakefile::text() const
     }
     out += "\n\n";
 
-    for ( it2 = d->mTargets.begin(); it2 != d->mTargets.end(); ++it2 ) {
+    for ( it2 = d->mTargets.constBegin(); it2 != d->mTargets.constEnd(); ++it2 ) {
       Target target = *it2;
       if ( target.type() != targetType ) continue;
 

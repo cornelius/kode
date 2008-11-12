@@ -160,7 +160,7 @@ void Class::addHeaderInclude( const QString &include )
 void Class::addHeaderIncludes( const QStringList &includes )
 {
   QStringList::ConstIterator it;
-  for ( it = includes.begin(); it != includes.end(); ++it )
+  for ( it = includes.constBegin(); it != includes.constEnd(); ++it )
     addHeaderInclude( *it );
 }
 
@@ -227,7 +227,7 @@ bool Class::isValid() const
 bool Class::hasFunction( const QString &functionName ) const
 {
   Function::List::ConstIterator it;
-  for ( it = d->mFunctions.begin(); it != d->mFunctions.end(); ++it ) {
+  for ( it = d->mFunctions.constBegin(); it != d->mFunctions.constEnd(); ++it ) {
     if ( (*it).name() == functionName )
       return true;
   }
@@ -238,7 +238,7 @@ bool Class::hasFunction( const QString &functionName ) const
 bool Class::isQObject() const
 {
   Function::List::ConstIterator it;
-  for ( it = d->mFunctions.begin(); it != d->mFunctions.end(); ++it ) {
+  for ( it = d->mFunctions.constBegin(); it != d->mFunctions.constEnd(); ++it ) {
     if ( (*it).access() & Function::Signal || (*it).access() & Function::Slot )
       return true;
   }

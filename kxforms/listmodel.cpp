@@ -267,8 +267,8 @@ void ListModel::recalculateSegmentCounts( ListItem *parent )
     ListItem *item = parent->child( i );
     int count = 1;
     Reference::Segment segment = item->ref().segments().last();
-    QMap<QString, int>::ConstIterator it = counts.find( segment.name() );
-    if ( it != counts.end() ) count = it.value();
+    QMap<QString, int>::ConstIterator it = counts.constFind( segment.name() );
+    if ( it != counts.constEnd() ) count = it.value();
 
     if ( count != segment.count() ) {
       item->ref().lastSegment().setCount( count );

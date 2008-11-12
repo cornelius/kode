@@ -137,7 +137,7 @@ void Code::addBlock( const QString &block )
     lines.pop_back();
   }
   QStringList::ConstIterator it;
-  for ( it = lines.begin(); it != lines.end(); ++it ) {
+  for ( it = lines.constBegin(); it != lines.constEnd(); ++it ) {
     if ( !(*it).isEmpty() )
       d->mText += spaces( d->mIndent );
 
@@ -179,7 +179,7 @@ void Code::addFormattedText( const QString &text )
   const QStringList words = text.split( ' ', QString::SkipEmptyParts );
 
   QStringList::ConstIterator it;
-  for ( it = words.begin(); it != words.end(); ++it ) {
+  for ( it = words.constBegin(); it != words.constEnd(); ++it ) {
     if ( (int)(*it).length() + lineLength >= maxWidth ) {
       line = line.trimmed();
       addLine( line );

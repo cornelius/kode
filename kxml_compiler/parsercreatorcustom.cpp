@@ -200,9 +200,9 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
       stateCode += '}';
 
       Schema::Relation::List::ConstIterator it2;
-      for( it2 = attributeRelations.begin(); it2 != attributeRelations.end();
+      for( it2 = attributeRelations.constBegin(); it2 != attributeRelations.constEnd();
         ++it2 ) {
-        bool first = it2 == attributeRelations.begin();
+        bool first = it2 == attributeRelations.constBegin();
         Schema::Attribute a = creator()->document().attribute( *it2 );
         stateCode.addBlock( createAttributeScanner( a, first ) );
       }
@@ -243,11 +243,11 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
     Schema::Relation::List attributeRelations = e.attributeRelations();
     if ( !attributeRelations.isEmpty() ) {
       Schema::Relation::List::ConstIterator it2;
-      for( it2 = attributeRelations.begin(); it2 != attributeRelations.end();
+      for( it2 = attributeRelations.constBegin(); it2 != attributeRelations.constEnd();
         ++it2 ) {
         Schema::Attribute a = creator()->document().attribute( *it2 );
         code.addBlock( createAttributeScanner( a,
-          it2 == attributeRelations.begin() ) );
+          it2 == attributeRelations.constBegin() ) );
       }
       code += '}';
     }

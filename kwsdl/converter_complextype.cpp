@@ -143,7 +143,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   // attributes
   XSD::Attribute::List attributes = type->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
+  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     QString typeName;
 
     bool isArray = !(*attrIt).arrayType().isEmpty();
@@ -328,7 +328,7 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
   // attributes
   XSD::Attribute::List attributes = type->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
+  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     QString upperName = upperlize( (*attrIt).name() );
     QString lowerName = lowerlize( (*attrIt).name() );
 

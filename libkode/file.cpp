@@ -174,18 +174,18 @@ Class::List File::classes() const
 bool File::hasClass( const QString &name )
 {
   Class::List::ConstIterator it;
-  for ( it = d->mClasses.begin(); it != d->mClasses.end(); ++it ) {
+  for ( it = d->mClasses.constBegin(); it != d->mClasses.constEnd(); ++it ) {
     if ( (*it).name() == name )
       break;
   }
 
-  return it != d->mClasses.end();
+  return it != d->mClasses.constEnd();
 }
 
 Class File::findClass( const QString &name )
 {
   Class::List::ConstIterator it;
-  for ( it = d->mClasses.begin(); it != d->mClasses.end(); ++it ) {
+  for ( it = d->mClasses.constBegin(); it != d->mClasses.constEnd(); ++it ) {
     if ( (*it).name() == name )
       return *it;
   }

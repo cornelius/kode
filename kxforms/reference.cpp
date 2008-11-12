@@ -135,7 +135,7 @@ Reference &Reference::append( const Reference &ref )
 {
   Segment::List segments = ref.segments();
   Segment::List::ConstIterator it;
-  for( it = segments.begin(); it != segments.end(); ++it ) {
+  for( it = segments.constBegin(); it != segments.constEnd(); ++it ) {
     mSegments.append( *it );
   }
 
@@ -184,9 +184,9 @@ void Reference::fromString( const QString &str )
 
   mSegments.clear();
 
-  QStringList s = str.split( "/" );
+  const QStringList s = str.split( "/" );
   QStringList::ConstIterator it;
-  for( it = s.begin(); it != s.end(); ++it ) {
+  for( it = s.constBegin(); it != s.constEnd(); ++it ) {
     if( (*it).isEmpty() )
       continue;
     mSegments.append( Segment( *it ) );
@@ -197,7 +197,7 @@ QString Reference::toString() const
 {
   QString str;
   Segment::List::ConstIterator it;
-  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+  for( it = mSegments.constBegin(); it != mSegments.constEnd(); ++it ) {
     if ( !str.isEmpty() ) str += '/';
     str += (*it).toString();
   }
@@ -209,7 +209,7 @@ QString Reference::path() const
 {
   QString str;
   Segment::List::ConstIterator it;
-  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+  for( it = mSegments.constBegin(); it != mSegments.constEnd(); ++it ) {
     if ( !str.isEmpty() ) str += '/';
     str += (*it).name();
   }
@@ -231,8 +231,8 @@ bool Reference::operator==( const Reference &ref ) const
 {
   if ( mAbsolute != ref.mAbsolute ) return false;
 
-  Segment::List::ConstIterator it = mSegments.begin();
-  Segment::List::ConstIterator it2 = ref.mSegments.begin();
+  Segment::List::ConstIterator it = mSegments.constBegin();
+  Segment::List::ConstIterator it2 = ref.mSegments.constBegin();
   while( it != mSegments.end() && it2 != ref.mSegments.end() ) {
     if ( *it != *it2 ) return false;
     ++it;
@@ -267,11 +267,11 @@ bool Reference::matches( const Reference &ref, bool exact, bool pathOnly ) const
     return false;
 
   bool inMatch = false;
-  Segment::List::ConstIterator it = mSegments.begin();
+  Segment::List::ConstIterator it = mSegments.constBegin();
   Segment::List list2 = ref.segments();
-  Segment::List::ConstIterator it2 = list2.begin();
+  Segment::List::ConstIterator it2 = list2.constBegin();
 
-  while( it != mSegments.end() && it2 != list2.end() ) {
+  while( it != mSegments.constEnd() && it2 != list2.constEnd() ) {
 //     kDebug() <<"Matching:" << (*it).name() <<":" << (*it).isAttribute() <<":" << (*it).count();
 //     kDebug() <<"With:" << (*it2).name() <<":" << (*it2).isAttribute() <<":" << (*it2).count();
     bool segmentsMatched = false;
@@ -304,7 +304,7 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
   QDomElement result;
 
   Reference::Segment::List::ConstIterator it;
-  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+  for( it = mSegments.constBegin(); it != mSegments.constEnd(); ++it ) {
     Reference::Segment segment = *it;
     if ( result.isNull() ) {
       kDebug() <<"ROOT";
@@ -323,8 +323,8 @@ QDomElement Reference::apply( const QDomDocument &doc ) const
     for( n = result.firstChild(); !n.isNull(); n = n.nextSibling() ) {
       QDomElement e = n.toElement();
       int count = 1;
-      QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
-      if ( itCount != counts.end() ) count = itCount.value();
+      QMap<QString, int>::ConstIterator itCount = counts.constFind( e.tagName() );
+      if ( itCount != counts.constEnd() ) count = itCount.value();
       if ( e.tagName() == segment.name() && count == segment.count() ) {
         result = e;
         break;
@@ -351,7 +351,7 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
   if ( mSegments.count() == 1 && lastSegment().name() == "." ) return result;
 
   Reference::Segment::List::ConstIterator it;
-  for( it = mSegments.begin(); it != mSegments.end(); ++it ) {
+  for( it = mSegments.constBegin(); it != mSegments.constEnd(); ++it ) {
     Reference::Segment segment = *it;
 
 //     kDebug() <<"  Segment:" << segment.toString() <<"Count:" <<
@@ -365,8 +365,8 @@ QDomElement Reference::applyElement( const QDomElement &context ) const
 //       kDebug() <<"  E:" << e.tagName();
 
       int count = 1;
-      QMap<QString, int>::ConstIterator itCount = counts.find( e.tagName() );
-      if ( itCount != counts.end() ) count = itCount.value();
+      QMap<QString, int>::ConstIterator itCount = counts.constFind( e.tagName() );
+      if ( itCount != counts.constEnd() ) count = itCount.value();
 
 //       kDebug() <<"  COUNT:" << count;
 
@@ -392,7 +392,7 @@ QDomElement Reference::applyAttributeContext( const QDomElement &context ) const
     return context;
   } else {
     Reference r;
-    Segment::List::ConstIterator it = mSegments.begin();
+    Segment::List::ConstIterator it = mSegments.constBegin();
     do {
       r.append( *it );
       ++it;

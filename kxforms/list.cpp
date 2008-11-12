@@ -126,7 +126,7 @@ void List::newItem()
   } else if ( mItemClasses.count() > 1 ) {
     QStringList items;
     ItemClass::List::ConstIterator it;
-    for( it = mItemClasses.begin(); it != mItemClasses.end(); ++it ) {
+    for( it = mItemClasses.constBegin(); it != mItemClasses.constEnd(); ++it ) {
       items.append( (*it).refName() );
     }
     formRef = KInputDialog::getItem( i18n("Select item class"),
@@ -374,7 +374,7 @@ void List::saveData()
 List::ItemClass List::itemClass( const QString &ref )
 {
   ItemClass::List::ConstIterator it;
-  for( it = mItemClasses.begin(); it != mItemClasses.end(); ++it ) {
+  for( it = mItemClasses.constBegin(); it != mItemClasses.constEnd(); ++it ) {
     if ( (*it).refName() == ref ) return *it;
   }
   return ItemClass();

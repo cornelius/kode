@@ -78,7 +78,7 @@ Code StateMachine::stateDefinition() const
 
   QStringList states;
   QMap<QString,Code>::ConstIterator it;
-  for ( it = d->mStateMap.begin(); it != d->mStateMap.end(); ++it ) {
+  for ( it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it ) {
     states.append( it.key() );
   }
 
@@ -96,7 +96,7 @@ Code StateMachine::transitionLogic() const
   code.indent();
 
   QMap<QString,Code>::ConstIterator it;
-  for ( it = d->mStateMap.begin(); it != d->mStateMap.end(); ++it ) {
+  for ( it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it ) {
     code += "case " + it.key() + ':';
     code.indent();
     code.addBlock( it.value() );

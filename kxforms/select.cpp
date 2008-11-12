@@ -99,10 +99,10 @@ void Select::loadData()
     QString s = e.tagName();
     int count = 0;
     QStringList::ConstIterator it;
-    for( it = mValues.begin(); it != mValues.end(); ++it, ++count ) {
+    for( it = mValues.constBegin(); it != mValues.constEnd(); ++it, ++count ) {
       if ( *it == s ) break;
     } 
-    if ( it != mValues.end() ) {
+    if ( it != mValues.constEnd() ) {
       if( mProperties->appearance == Full ) {
         QCheckBox *chk = mCheckBoxes[count];
         if( chk )

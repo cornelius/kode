@@ -77,14 +77,14 @@ QString Enum::declaration() const
   QString retval( "enum " + d->mName + " {" );
   uint value = 0;
   QStringList::ConstIterator it;
-  for ( it = d->mEnums.begin(); it != d->mEnums.end(); ++it, ++value ) {
+  for ( it = d->mEnums.constBegin(); it != d->mEnums.constEnd(); ++it, ++value ) {
     if ( d->mCombinable ) {
-      if ( it == d->mEnums.begin() )
+      if ( it == d->mEnums.constBegin() )
         retval += QString( " %1 = %2" ).arg( *it ).arg( 1 << value );
       else
         retval += QString( ", %1 = %2" ).arg( *it ).arg( 1 << value );
     } else {
-      if ( it == d->mEnums.begin() )
+      if ( it == d->mEnums.constBegin() )
         retval += ' ' + *it;
       else
         retval += ", " + *it;

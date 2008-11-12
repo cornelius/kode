@@ -70,10 +70,10 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   if ( !baseClasses.isEmpty() ) {
     txt += " : ";
     Class::List::ConstIterator it;
-    for ( it = baseClasses.begin(); it != baseClasses.end(); ++it ) {
+    for ( it = baseClasses.constBegin(); it != baseClasses.constEnd(); ++it ) {
       Class bc = *it;
 
-      if ( it != baseClasses.begin() )
+      if ( it != baseClasses.constBegin() )
         txt +=", ";
 
       txt += "public ";
@@ -120,7 +120,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code.indent();
 
     Typedef::List::ConstIterator it;
-    for ( it = typedefs.begin(); it != typedefs.end(); ++it )
+    for ( it = typedefs.constBegin(); it != typedefs.constEnd(); ++it )
       code += (*it).declaration();
 
     code.unindent();
@@ -133,7 +133,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code.indent();
 
     Enum::List::ConstIterator it;
-    for ( it = enums.begin(); it != enums.end(); ++it )
+    for ( it = enums.constBegin(); it != enums.constEnd(); ++it )
       code += (*it).declaration();
 
     code.unindent();
@@ -161,14 +161,14 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   if ( !classObject.memberVariables().isEmpty() ) {
     Function::List::ConstIterator it;
-    for ( it = functions.begin(); it != functions.end(); ++it ) {
+    for ( it = functions.constBegin(); it != functions.constEnd(); ++it ) {
       if ( (*it).access() == Function::Private )
         break;
     }
 
     if ( publicMembers )
       code += "public:";
-    else if ( it == functions.end() )
+    else if ( it == functions.constEnd() )
       code += "private:";
 
     code.indent();
@@ -179,7 +179,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     } else {
       MemberVariable::List variables = classObject.memberVariables();
       MemberVariable::List::ConstIterator it2;
-      for ( it2 = variables.begin(); it2 != variables.end(); ++it2 ) {
+      for ( it2 = variables.constBegin(); it2 != variables.constEnd(); ++it2 ) {
         MemberVariable v = *it2;
 
         QString decl;
@@ -220,14 +220,14 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     Class privateClass( functionClassName + "::PrivateDPtr" );
     MemberVariable::List vars = classObject.memberVariables();
     MemberVariable::List::ConstIterator it;
-    for ( it = vars.begin(); it != vars.end(); ++it )
+    for ( it = vars.constBegin(); it != vars.constEnd(); ++it )
       privateClass.addMemberVariable( *it );
     code += classHeader( privateClass, true );
   }
 
   MemberVariable::List vars = classObject.memberVariables();
   MemberVariable::List::ConstIterator itV;
-  for ( itV = vars.begin(); itV != vars.end(); ++itV ) {
+  for ( itV = vars.constBegin(); itV != vars.constEnd(); ++itV ) {
     MemberVariable v = *itV;
     if ( !v.isStatic() )
       continue;
@@ -242,7 +242,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
 
   Function::List functions = classObject.functions();
   Function::List::ConstIterator it;
-  for ( it = functions.begin(); it != functions.end(); ++it ) {
+  for ( it = functions.constBegin(); it != functions.constEnd(); ++it ) {
     Function f = *it;
 
     // Omit signals
@@ -350,7 +350,7 @@ Code Printer::Private::functionHeaders( const Function::List &functions,
   Code code;
 
   Function::List::ConstIterator it;
-  for ( it = functions.begin(); it != functions.end(); ++it ) {
+  for ( it = functions.constBegin(); it != functions.constEnd(); ++it ) {
     Function f = *it;
     if ( f.access() == access ) {
       if ( !hasAccess ) {
@@ -537,10 +537,10 @@ void Printer::printHeader( const File &file )
   QStringList processed;
   Class::List classes = file.classes();
   Class::List::ConstIterator it;
-  for ( it = classes.begin(); it != classes.end(); ++it ) {
+  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     QStringList includes = (*it).headerIncludes();
     QStringList::ConstIterator it2;
-    for ( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
+    for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
         out += "#include <" + *it2 + '>';
         processed.append( *it2 );
@@ -554,17 +554,17 @@ void Printer::printHeader( const File &file )
   // Create enums
   Enum::List enums = file.fileEnums();
   Enum::List::ConstIterator enumIt;
-  for ( enumIt = enums.begin(); enumIt != enums.end(); ++enumIt ) {
+  for ( enumIt = enums.constBegin(); enumIt != enums.constEnd(); ++enumIt ) {
     out += (*enumIt).declaration();
     out.newLine();
   }
 
   // Create forward declarations
   processed.clear();
-  for ( it = classes.begin(); it != classes.end(); ++it ) {
+  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     QStringList decls = (*it).forwardDeclarations();
     QStringList::ConstIterator it2;
-    for ( it2 = decls.begin(); it2 != decls.end(); ++it2 ) {
+    for ( it2 = decls.constBegin(); it2 != decls.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
         out += "class " + *it2 + ';';
         processed.append( *it2 );
@@ -582,7 +582,7 @@ void Printer::printHeader( const File &file )
   }
 
   // Create content
-  for ( it = classes.begin(); it != classes.end(); ++it ) {
+  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     out.addBlock( d->classHeader( *it, false ) );
     out.newLine();
   }
@@ -636,7 +636,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
 
   QStringList includes = file.includes();
   QStringList::ConstIterator it2;
-  for ( it2 = includes.begin(); it2 != includes.end(); ++it2 )
+  for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 )
     out += "#include <" + *it2 + '>';
 
   if ( !includes.isEmpty() )
@@ -646,10 +646,10 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   QStringList processed;
   Class::List classes = file.classes();
   Class::List::ConstIterator it;
-  for ( it = classes.begin(); it != classes.end(); ++it ) {
+  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     QStringList includes = (*it).includes();
     QStringList::ConstIterator it2;
-    for ( it2 = includes.begin(); it2 != includes.end(); ++it2 ) {
+    for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
         out += "#include <" + *it2 + '>';
         processed.append( *it2 );
@@ -666,11 +666,11 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   }
 
   // 'extern "C"' declarations
-  QStringList externCDeclarations = file.externCDeclarations();
+  const QStringList externCDeclarations = file.externCDeclarations();
   if ( !externCDeclarations.isEmpty() ) {
     out += "extern \"C\" {";
     QStringList::ConstIterator it;
-    for ( it = externCDeclarations.begin(); it != externCDeclarations.end();
+    for ( it = externCDeclarations.constBegin(); it != externCDeclarations.constEnd();
          ++it ) {
       out += *it + ';';
     }
@@ -681,7 +681,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   // File variables
   Variable::List vars = file.fileVariables();
   Variable::List::ConstIterator itV;
-  for ( itV = vars.begin(); itV != vars.end(); ++itV ) {
+  for ( itV = vars.constBegin(); itV != vars.constEnd(); ++itV ) {
     Variable v = *itV;
     QString str;
     if ( v.isStatic() )
@@ -702,7 +702,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   // File functions
   Function::List funcs = file.fileFunctions();
   Function::List::ConstIterator itF;
-  for ( itF = funcs.begin(); itF != funcs.end(); ++itF ) {
+  for ( itF = funcs.constBegin(); itF != funcs.constEnd(); ++itF ) {
     Function f = *itF;
     out += functionSignature( f );
     out += '{';
@@ -713,7 +713,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
 
   // Classes
   bool containsQObject = false;
-  for ( it = classes.begin(); it != classes.end(); ++it ) {
+  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     if ( (*it).isQObject() )
       containsQObject = true;
 

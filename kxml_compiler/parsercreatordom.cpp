@@ -86,9 +86,9 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   Schema::Relation::List elementRelations = e.elementRelations();
   Schema::Relation::List::ConstIterator it;
-  for( it = elementRelations.begin(); it != elementRelations.end(); ++it ) {
+  for( it = elementRelations.constBegin(); it != elementRelations.constEnd(); ++it ) {
     QString condition;
-    if ( it != elementRelations.begin() ) condition = "else ";
+    if ( it != elementRelations.constBegin() ) condition = "else ";
     condition += "if";
 
     code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";

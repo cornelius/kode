@@ -113,7 +113,7 @@ Form *Manager::rootForm()
 Form *Manager::form( const QString &ref )
 {
   Form::List::ConstIterator it;
-  for( it = mForms.begin(); it != mForms.end(); ++it ) {
+  for( it = mForms.constBegin(); it != mForms.constEnd(); ++it ) {
     if ( (*it)->ref() == ref ) return *it;
   }
   return 0;
@@ -169,7 +169,7 @@ KResult Manager::loadData( const QString &xml )
 void Manager::loadData()
 {
   FormGui::List::ConstIterator it;
-  for( it = mGuis.begin(); it != mGuis.end(); ++it ) {
+  for( it = mGuis.constBegin(); it != mGuis.constEnd(); ++it ) {
     (*it)->loadData( mData );
   }
 }
@@ -181,7 +181,7 @@ KResult Manager::saveData( QString &xml )
   if ( !mDataLoaded ) return KResultError( i18n("No data loaded.") );
 
   FormGui::List::ConstIterator it;
-  for( it = mGuis.begin(); it != mGuis.end(); ++it ) {
+  for( it = mGuis.constBegin(); it != mGuis.constEnd(); ++it ) {
     (*it)->saveData();
   }
   
@@ -194,7 +194,7 @@ KResult Manager::saveData( QString &xml )
 void Manager::clearForms()
 {
   Form::List::ConstIterator it;
-  for( it = mForms.begin(); it != mForms.end(); ++it ) {
+  for( it = mForms.constBegin(); it != mForms.constEnd(); ++it ) {
     delete *it;
   }
   mForms.clear();

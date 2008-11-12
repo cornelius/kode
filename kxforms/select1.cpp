@@ -112,10 +112,10 @@ void Select1::loadData()
 
   int count = 0;
   QStringList::ConstIterator it;
-  for( it = mValues.begin(); it != mValues.end(); ++it, ++count ) {
+  for( it = mValues.constBegin(); it != mValues.constEnd(); ++it, ++count ) {
     if ( *it == txt ) break;
   }
-  if ( it != mValues.end() ) {
+  if ( it != mValues.constEnd() ) {
     if( mProperties->appearance == Full ) {
       QRadioButton *radio = mRadioButtons[count];
       if( radio )

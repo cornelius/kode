@@ -88,8 +88,8 @@ Element *ParserRelaxng::parse( const QDomElement &docElement )
       parseElement( e1, d, Pattern() );
       Element::List definitions;
       QMap<QString,Element::List >::ConstIterator it;
-      it = mDefinitionMap.find( d->name );
-      if ( it != mDefinitionMap.end() ) definitions = *it;
+      it = mDefinitionMap.constFind( d->name );
+      if ( it != mDefinitionMap.constEnd() ) definitions = *it;
       definitions.append( d );
       mDefinitionMap.insert( d->name, definitions );
     } else if ( e1.tagName() == "start" ) {
@@ -196,22 +196,22 @@ void ParserRelaxng::substituteReferences( Element *s )
       r->substituted = true;
     }
     QMap<QString,Element::List >::ConstIterator it1;
-    it1 = mDefinitionMap.find( r->name );
-    if ( it1 != mDefinitionMap.end() ) {
+    it1 = mDefinitionMap.constFind( r->name );
+    if ( it1 != mDefinitionMap.constEnd() ) {
       Element::List elements = *it1;
       Element::List::ConstIterator it4;
-      for( it4 = elements.begin(); it4 != elements.end(); ++it4 ) {
+      for( it4 = elements.constBegin(); it4 != elements.constEnd(); ++it4 ) {
         Element *d = *it4;
         substituteReferences( d );
         Element::List::ConstIterator it2;
-        for( it2 = d->elements.begin(); it2 != d->elements.end(); ++it2 ) {
+        for( it2 = d->elements.constBegin(); it2 != d->elements.constEnd(); ++it2 ) {
           Element *e = *it2;
           e->pattern.merge( r->pattern );
           substituteReferences( e );
           s->elements.append( e );
         }
         Attribute::List::ConstIterator it3;
-        for( it3 = d->attributes.begin(); it3 != d->attributes.end();
+        for( it3 = d->attributes.constBegin(); it3 != d->attributes.constEnd();
              ++it3 ) {
           Attribute *a = *it3;
           a->pattern.merge( r->pattern );
@@ -239,7 +239,7 @@ void ParserRelaxng::dumpPattern( Pattern pattern )
 void ParserRelaxng::dumpReferences( const Reference::List &references, int indent )
 {
   Reference::List::ConstIterator it;
-  for( it = references.begin(); it != references.end(); ++it ) {
+  for( it = references.constBegin(); it != references.constEnd(); ++it ) {
     Reference *r = *it;
     doIndent( indent );
     std::cout << "REFERENCE " << r->name.toLocal8Bit().data();
@@ -251,7 +251,7 @@ void ParserRelaxng::dumpReferences( const Reference::List &references, int inden
 void ParserRelaxng::dumpAttributes( const Attribute::List &attributes, int indent )
 {
   Attribute::List::ConstIterator it;
-  for( it = attributes.begin(); it != attributes.end(); ++it ) {
+  for( it = attributes.constBegin(); it != attributes.constEnd(); ++it ) {
     Attribute *a = *it;
     doIndent( indent );
     std::cout << "ATTRIBUTE " << a->name.toLocal8Bit().data();
@@ -263,7 +263,7 @@ void ParserRelaxng::dumpAttributes( const Attribute::List &attributes, int inden
 void ParserRelaxng::dumpElements( const Element::List &elements, int indent )
 {
   Element::List::ConstIterator it;
-  for( it = elements.begin(); it != elements.end(); ++it ) {
+  for( it = elements.constBegin(); it != elements.constEnd(); ++it ) {
     Element *e = *it;
     dumpElement( e, indent );
   }
@@ -297,7 +297,7 @@ void ParserRelaxng::dumpDefinitionMap()
 {
   std::cout << "DEFINITION MAP" << std::endl;
   QMap<QString,Element::List >::ConstIterator it;
-  for( it = mDefinitionMap.begin(); it != mDefinitionMap.end(); ++it ) {
+  for( it = mDefinitionMap.constBegin(); it != mDefinitionMap.constEnd(); ++it ) {
     dumpElements( *it, 2 );
   }
 }
