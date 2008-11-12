@@ -26,11 +26,11 @@ GeneralConversationManager::GeneralConversationManager( const KWSDL::WSDL &wsdl 
 {
   KWSDL::PortType::List porttypes = mWSDL.definitions().portTypes();
   KWSDL::PortType::List::ConstIterator it;
-  for ( it = porttypes.begin(); it != porttypes.end(); ++it ) {
+  for ( it = porttypes.constBegin(); it != porttypes.constEnd(); ++it ) {
     KWSDL::PortType porttype = (*it);
     const KWSDL::Operation::List operations = porttype.operations();
     KWSDL::Operation::List::ConstIterator opIt;
-    for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
+    for ( opIt = operations.constBegin(); opIt != operations.constEnd(); ++opIt ) {
       mInputMessages.append( mWSDL.findMessage( (*opIt).input().message() ) );
       mOutputMessages.append( mWSDL.findMessage( (*opIt).output().message() ) );
     }
@@ -42,7 +42,7 @@ QStringList GeneralConversationManager::nextActions( const QString&, const QStri
   QStringList actions;
 
   KWSDL::Message::List::ConstIterator it;
-  for ( it = mInputMessages.begin(); it != mInputMessages.end(); ++it )
+  for ( it = mInputMessages.constBegin(); it != mInputMessages.constEnd(); ++it )
     actions.append( (*it).name() );
 
   return actions;

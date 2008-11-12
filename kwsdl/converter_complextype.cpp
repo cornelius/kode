@@ -274,7 +274,7 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
   // elements
   XSD::Element::List elements = type->elements();
   XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     const QString typeName = mTypeMap.localType( (*elemIt).type() );
 
     QString upperName = upperlize( (*elemIt).name() );

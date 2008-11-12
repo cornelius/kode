@@ -262,7 +262,7 @@ void TypeMap::setNSManager( NSManager *manager )
 bool TypeMap::isBasicType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.begin(); it != mTypeMap.end(); ++it ) {
+  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).basicType;
   }
@@ -273,7 +273,7 @@ bool TypeMap::isBasicType( const QName &typeName )
 bool TypeMap::isBuildinType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.begin(); it != mTypeMap.end(); ++it ) {
+  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).buildinType;
   }
@@ -284,7 +284,7 @@ bool TypeMap::isBuildinType( const QName &typeName )
 QString TypeMap::localType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.begin(); it != mTypeMap.end(); ++it ) {
+  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() ) {
       return (*it).localType;
     }
@@ -296,7 +296,7 @@ QString TypeMap::localType( const QName &typeName )
 QStringList TypeMap::headers( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.begin(); it != mTypeMap.end(); ++it ) {
+  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).headers;
   }
@@ -307,7 +307,7 @@ QStringList TypeMap::headers( const QName &typeName )
 QStringList TypeMap::forwardDeclarations( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.begin(); it != mTypeMap.end(); ++it ) {
+  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).forwardDeclarations;
   }
@@ -318,7 +318,7 @@ QStringList TypeMap::forwardDeclarations( const QName &typeName )
 QString TypeMap::localTypeForAttribute( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mAttributeMap.begin(); it != mAttributeMap.end(); ++it ) {
+  for ( it = mAttributeMap.constBegin(); it != mAttributeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).localType;
   }
@@ -329,7 +329,7 @@ QString TypeMap::localTypeForAttribute( const QName &typeName )
 QStringList TypeMap::headersForAttribute( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mAttributeMap.begin(); it != mAttributeMap.end(); ++it ) {
+  for ( it = mAttributeMap.constBegin(); it != mAttributeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).headers;
   }
@@ -340,7 +340,7 @@ QStringList TypeMap::headersForAttribute( const QName &typeName )
 QStringList TypeMap::forwardDeclarationsForAttribute( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mAttributeMap.begin(); it != mAttributeMap.end(); ++it ) {
+  for ( it = mAttributeMap.constBegin(); it != mAttributeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).forwardDeclarations;
   }
@@ -351,7 +351,7 @@ QStringList TypeMap::forwardDeclarationsForAttribute( const QName &typeName )
 QString TypeMap::localTypeForElement( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mElementMap.begin(); it != mElementMap.end(); ++it ) {
+  for ( it = mElementMap.constBegin(); it != mElementMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).localType;
   }
@@ -362,7 +362,7 @@ QString TypeMap::localTypeForElement( const QName &typeName )
 QStringList TypeMap::headersForElement( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mElementMap.begin(); it != mElementMap.end(); ++it ) {
+  for ( it = mElementMap.constBegin(); it != mElementMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).headers;
   }
@@ -373,7 +373,7 @@ QStringList TypeMap::headersForElement( const QName &typeName )
 QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
-  for ( it = mElementMap.begin(); it != mElementMap.end(); ++it ) {
+  for ( it = mElementMap.constBegin(); it != mElementMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
       return (*it).forwardDeclarations;
   }
@@ -387,7 +387,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
 
   XSD::SimpleType::List simpleTypes = types.simpleTypes();
   XSD::SimpleType::List::ConstIterator simpleIt;
-  for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt ) {
+  for ( simpleIt = simpleTypes.constBegin(); simpleIt != simpleTypes.constEnd(); ++simpleIt ) {
     Entry entry;
     entry.basicType = false;
     entry.buildinType = false;
@@ -402,7 +402,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
 
   XSD::ComplexType::List complexTypes = types.complexTypes();
   XSD::ComplexType::List::ConstIterator complexIt;
-  for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
+  for ( complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt ) {
     Entry entry;
     entry.basicType = false;
     entry.buildinType = false;
@@ -417,7 +417,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
 
   XSD::Attribute::List attributes = types.attributes();
   XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
+  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     Entry entry;
     entry.basicType = false;
     entry.buildinType = false;
@@ -432,7 +432,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
 
   XSD::Element::List elements = types.elements();
   XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     Entry entry;
     entry.basicType = false;
     entry.buildinType = false;

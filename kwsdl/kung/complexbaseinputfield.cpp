@@ -36,7 +36,7 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const XSD::Co
 {
   XSD::Element::List elements = type->elements();
   XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     bool isList = ((*elemIt).maxOccurs() == XSD::Parser::UNBOUNDED);
     InputField *field = InputFieldFactory::self()->createField( (*elemIt).name(), (*elemIt).type().qname(), isList );
     if ( !field ) {
@@ -48,7 +48,7 @@ ComplexBaseInputField::ComplexBaseInputField( const QString &name, const XSD::Co
 
   XSD::Attribute::List attributes = type->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
+  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     InputField *field = InputFieldFactory::self()->createField( (*attrIt).name(), (*attrIt).type().qname() );
     if ( !field ) {
       qDebug( "ComplexBaseInputField: Unable to create field of type %s", qPrintable( type->baseTypeName().qname() ) );
@@ -107,7 +107,7 @@ void ComplexBaseInputField::xmlData( QDomDocument &document, QDomElement &parent
 
   XSD::Element::List elements = mType->elements();
   XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.begin(); elemIt != elements.end(); ++elemIt ) {
+  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     InputField *field = childField( (*elemIt).name() );
     if ( !field ) {
       qDebug( "ComplexBaseInputField: No child found" );
@@ -118,7 +118,7 @@ void ComplexBaseInputField::xmlData( QDomDocument &document, QDomElement &parent
 
   XSD::Attribute::List attributes = mType->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.begin(); attrIt != attributes.end(); ++attrIt ) {
+  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     InputField *field = childField( (*attrIt).name() );
     if ( !field ) {
       qDebug( "ComplexBaseInputField: No child found" );

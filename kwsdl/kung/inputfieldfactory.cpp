@@ -57,7 +57,7 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
 {
   XSD::SimpleType::List simpleTypes = mTypes.simpleTypes();
   XSD::SimpleType::List::ConstIterator simpleIt;
-  for ( simpleIt = simpleTypes.begin(); simpleIt != simpleTypes.end(); ++simpleIt ) {
+  for ( simpleIt = simpleTypes.constBegin(); simpleIt != simpleTypes.constEnd(); ++simpleIt ) {
     if ( (*simpleIt).name() == typeName ) {
       if ( isList )
         return new ListInputField( name, typeName, 0 );
@@ -68,7 +68,7 @@ InputField *InputFieldFactory::createField( const QString &name, const QString &
 
   XSD::ComplexType::List complexTypes = mTypes.complexTypes();
   XSD::ComplexType::List::ConstIterator complexIt;
-  for ( complexIt = complexTypes.begin(); complexIt != complexTypes.end(); ++complexIt ) {
+  for ( complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt ) {
     if ( (*complexIt).name() == typeName ) {
       if ( isList )
         return new ListInputField( name, typeName, 0 );

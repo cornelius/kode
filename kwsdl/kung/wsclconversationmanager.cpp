@@ -37,9 +37,9 @@ void WSCLConversationManager::setConversation( const WSCL::Conversation &convers
 
 QStringList WSCLConversationManager::nextActions( const QString &currentAction, const QString &condition )
 {
-  WSCL::Transition::List transitions = mConversation.transitions();
+  const WSCL::Transition::List transitions = mConversation.transitions();
   WSCL::Transition::List::ConstIterator it;
-  for ( it = transitions.begin(); it != transitions.end(); ++it ) {
+  for ( it = transitions.constBegin(); it != transitions.constEnd(); ++it ) {
     if ( (*it).sourceInteraction() == currentAction ) {
       if ( (*it).sourceInteractionCondition() == condition )
         return QStringList( (*it).destinationInteraction() );

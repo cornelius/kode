@@ -84,14 +84,14 @@ void Creator::create( const KODE::Class::List &list )
   printer.setGenerator( QLatin1String( "kwsdl_compiler" ) );
   printer.setSourceFile( Settings::self()->wsdlFileName() );
 
-  KODE::Class::List classes = sortByBaseClass( list );
+  const KODE::Class::List classes = sortByBaseClass( list );
 
   KODE::File file;
 
   file.setFilename( Settings::self()->outputFileName() );
 
   KODE::Class::List::ConstIterator it;
-  for ( it = classes.begin(); it != classes.end(); ++it ) {
+  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     file.insertClass( *it );
   }
 

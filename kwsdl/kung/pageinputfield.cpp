@@ -31,9 +31,9 @@ PageInputField::PageInputField( const QString &name, const KWSDL::Message &messa
  : InputField( name ),
    mMessage( message )
 {
-  KWSDL::Part::List parts = message.parts();
+  const KWSDL::Part::List parts = message.parts();
   KWSDL::Part::List::ConstIterator it;
-  for ( it = parts.begin(); it != parts.end(); ++it ) {
+  for ( it = parts.constBegin(); it != parts.constEnd(); ++it ) {
     InputField *field = InputFieldFactory::self()->createField( (*it).name(), (*it).type().qname() );
     if ( !field ) {
       qDebug( "PageInputField: Unable to create input field for %s (%s)", qPrintable( (*it).name() ), qPrintable( (*it).type().qname() ) );
