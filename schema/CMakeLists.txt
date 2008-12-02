@@ -21,10 +21,10 @@ set(schema_LIB_SRCS
 kde4_add_library(schema SHARED ${schema_LIB_SRCS})
 
 target_link_libraries(schema  ${KDE4_KIO_LIBS} kxmlcommon )
+target_link_libraries(schema  LINK_INTERFACE_LIBRARIES kxmlcommon )
 
 set_target_properties(schema PROPERTIES VERSION ${GENERIC_LIB_VERSION} 
-                                        SOVERSION ${GENERIC_LIB_SOVERSION}
-                                        ${KDE4_DISABLE_PROPERTY_}LINK_INTERFACE_LIBRARIES "kxmlcommon;${QT_QTXML_LIBRARY}" )
+                                        SOVERSION ${GENERIC_LIB_SOVERSION} )
 
 
 install(TARGETS schema  ${INSTALL_TARGETS_DEFAULT_ARGS})
