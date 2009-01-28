@@ -8,6 +8,7 @@ Type=Application
 X-DocPath=kxforms/kxforms.html
 GenericName=XML Form Editor
 GenericName[ca]=Editor de formularis XML
+GenericName[cs]=Editor formulářů XML
 GenericName[da]=XML formeditor
 GenericName[de]=XML-Formular-Editor
 GenericName[el]=Επεξεργαστής φόρμας XML
