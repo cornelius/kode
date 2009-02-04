@@ -36,7 +36,6 @@
 #include <kmessagebox.h>
 #include <ksavefile.h>
 #include <kstandarddirs.h>
-#include <kconfiggroup.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
