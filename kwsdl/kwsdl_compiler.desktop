@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=KWSDL Compiler
+Name[et]=KWSDL kompilaator
+Name[ga]=Tiomsaitheoir KWSDL
+Name[gl]=Compilador de KWSDL
+Name[sv]=KWSDL-kompilator
+Name[uk]=Компілятор KWSDL
 Exec=kdialog --sorry "kwsdl_compiler is a command-line only program.  Please read the handbook at help:/kwsdl_compiler for more info."
 Icon=gear
 Type=Application
