@@ -1,15 +1,27 @@
 project( kode )
 
+find_package(KDE4 REQUIRED)
+find_package(KdepimLibs REQUIRED)
+include(KDE4Defaults)
+
 add_definitions(-DKDE_DEFAULT_DEBUG_AREA=5295)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/libkode  ${CMAKE_CURRENT_SOURCE_DIR}/common/ )
+include_directories(
+    ${KDE4_INCLUDES}
+    ${KDEPIMLIBS_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/libkode
+    ${CMAKE_CURRENT_SOURCE_DIR}/kwsdl
+)
 
 add_subdirectory( libkode ) 
 add_subdirectory( common ) 
 add_subdirectory( schema ) 
 add_subdirectory( kxml_compiler ) 
-add_subdirectory(kxforms)
+add_subdirectory( kxforms )
 add_subdirectory( kwsdl )
+add_subdirectory( cmake )
 
 ########### next target ###############
 

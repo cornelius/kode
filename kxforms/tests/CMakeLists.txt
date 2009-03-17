@@ -1,6 +1,6 @@
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kxforms  )
+include_directories( ${CMAKE_SOURCE_DIR}/kxforms  )
 
 ########### next target ###############
 

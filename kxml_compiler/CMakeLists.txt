@@ -1,8 +1,5 @@
 
-add_subdirectory( tests ) 
-
-include_directories( ${CMAKE_SOURCE_DIR}/kode/libkode ${CMAKE_SOURCE_DIR}/kode  )
-
+# add_subdirectory( tests )
 
 ########### next target ###############
 

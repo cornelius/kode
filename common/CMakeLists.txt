@@ -1,7 +1,4 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode  )
-
-
 ########### next target ###############
 
 set(kxmlcommon_LIB_SRCS 

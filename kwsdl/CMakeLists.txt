@@ -4,8 +4,6 @@ add_subdirectory( wsdl )
 add_subdirectory( wscl ) 
 add_subdirectory( kung ) 
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode  )
-
 
 ########### next target ###############
 
