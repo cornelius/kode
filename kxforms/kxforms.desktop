@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=KXForms
 Name[sv]=KX-formulär
+Name[x-test]=xxKXFormsxx
 Exec=kxforms %i -caption "%c"
 Icon=kxforms
 Type=Application
@@ -13,4 +14,5 @@ GenericName[pt]=Editor de Formulários em XML
 GenericName[pt_BR]=Editor de Formulários em XML
 GenericName[sv]=XML-formuläreditor
 GenericName[uk]=Редактор форм XML
+GenericName[x-test]=xxXML Form Editorxx
 Terminal=false
