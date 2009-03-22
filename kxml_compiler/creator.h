@@ -56,6 +56,9 @@ class Creator
              XmlWriterType w = XmlWriterCustom );
     void setVerbose( bool verbose );
 
+    void setUseKde( bool useKde );
+    bool useKde() const;
+
     void setExternalClassPrefix( const QString & );
 
     bool externalParser() const;
@@ -68,9 +71,8 @@ class Creator
 
     const Schema::Document &document() const;
 
-    QString upperFirst( const QString &str );
-    QString lowerFirst( const QString &str );
-    
+    void create();
+
     void createProperty( KODE::Class &c, const QString &type,
                          const QString &name );
     void createElementFunctions( KODE::Class &c, const Schema::Element &e,
@@ -89,6 +91,15 @@ class Creator
 
     void printFiles( KODE::Printer & );
 
+    QString errorStream() const;
+    QString debugStream() const;
+
+    QString getClassName( const Schema::Element & ) const;
+    QString getClassName( const QString & ) const;
+
+    QString getAccessor( const Schema::Element & ) const;
+    QString getAccessor( const QString & ) const;
+
   protected:
     void setExternalClassNames();
 
@@ -98,6 +109,9 @@ class Creator
 
     void createIndenter( KODE::File & );
 
+    QString upperFirst( const QString &str ) const;
+    QString lowerFirst( const QString &str ) const;
+    
   private:
     Schema::Document mDocument;
   
@@ -113,6 +127,7 @@ class Creator
 
     QString mDtd;
     bool mVerbose;
+    bool mUseKde;
 };
 
 class ParserCreator

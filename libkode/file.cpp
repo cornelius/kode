@@ -91,6 +91,16 @@ QString File::filename() const
   return QString();
 }
 
+QString File::filenameHeader() const
+{
+  return filename() + ".h";
+}
+
+QString File::filenameImplementation() const
+{
+  return filename() + ".cpp";
+}
+
 void File::setNameSpace( const QString &nameSpace )
 {
   d->mNameSpace = nameSpace;

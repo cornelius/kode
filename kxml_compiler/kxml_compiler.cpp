@@ -21,6 +21,7 @@
 
 #include "parserrelaxng.h"
 #include "parserxsd.h"
+#include "parserxml.h"
 #include "creator.h"
 #include "schema.h"
 
@@ -47,6 +48,8 @@
 
 #include <iostream>
 
+using namespace KXML;
+
 int main( int argc, char **argv )
 {
   QCoreApplication app( argc, argv );
@@ -61,13 +64,14 @@ int main( int argc, char **argv )
   KCmdLineOptions options;
   options.add("d");
   options.add("directory <dir>", ki18n("Directory to generate files in"), ".");
-  options.add("v");
   options.add("verbose", ki18n("Generate debug output"));
   options.add("+schema", ki18n("Schema of XML file"));
   options.add("external-parser", ki18n("Generate parser in separate source file"));
   options.add("custom-parser", ki18n("Generate parser customized for schema"));
   options.add("xsd", ki18n("Schema is XML Schema"));
   options.add("rng", ki18n("Schema is RelaxNG"));
+  options.add("xml", ki18n("Schema is example XML"));
+  options.add("use-kde", ki18n("Use KDE classes"));
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -90,6 +94,7 @@ int main( int argc, char **argv )
   QString baseName = args->url( 0 ).fileName();
   int pos = baseName.lastIndexOf( '.' );
   if ( pos > 0 ) baseName = baseName.left( pos );
+  baseName.remove( "_" );
 
 
   QFile schemaFile( schemaFilename );
@@ -148,6 +153,10 @@ int main( int argc, char **argv )
   #endif
 
     schemaDocument = p.convertToSchema( start );
+  } else if ( args->isSet( "xml" ) || fi.suffix() == "xml" ) {
+    ParserXml schemaParser;
+    schemaParser.setVerbose( verbose );
+    schemaDocument = schemaParser.parse( schemaFile );
   } else {
     kError() <<"Unable to determine schema type.";
     return 1;
@@ -170,23 +179,21 @@ int main( int argc, char **argv )
   }
 
   Creator c( schemaDocument, pt );
+  c.setVerbose( verbose );
+  c.setUseKde( args->isSet( "use-kde" ) );
 
   if ( verbose ) {
     kDebug() <<"Create classes";
   }
   foreach( Schema::Element e, schemaDocument.usedElements() ) {
-    c.createClass( e );
+    if ( !e.text() ) {
+      c.createClass( e );
+    }
   }
   if ( verbose ) {
     kDebug() <<"Create parser";
   }
-  Schema::Element startElement = schemaDocument.startElement();
-  c.setExternalClassPrefix( c.upperFirst( startElement.name() ) );
-  c.createFileParser( startElement );
-//  c.setDtd( schemaFilename.replace( "rng", "dtd" ) );
-  c.createFileWriter( startElement );
-
-  c.createListTypedefs();
+  c.create();
 
   if ( verbose ) {
     kDebug() <<"Begin printing code";

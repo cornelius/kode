@@ -70,6 +70,16 @@ class KODE_EXPORT File
     QString filename() const;
 
     /**
+      Return filename of header file.
+    */
+    QString filenameHeader() const;
+
+    /**
+      Return filename of implementation file.
+    */
+    QString filenameImplementation() const;
+    
+    /**
      * Sets the name space of the file.
      */
     void setNameSpace( const QString &nameSpace );

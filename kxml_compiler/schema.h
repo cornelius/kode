@@ -36,6 +36,7 @@ class KSCHEMA_EXPORT Relation
     
     enum { Unbounded = -1 };
 
+    Relation();
     Relation( const QString &targetName );
   
     void setMinOccurs( int );
@@ -88,7 +89,8 @@ class KSCHEMA_EXPORT Annotatable
 class KSCHEMA_EXPORT Node : public Annotatable
 {
   public:
-    enum Type { None, String, NormalizedString, Token, Enumeration, ComplexType };
+    enum Type { None, String, NormalizedString, Token, Integer, Date,
+      Enumeration, ComplexType };
     Node();
     virtual ~Node();
 
@@ -135,6 +137,8 @@ class KSCHEMA_EXPORT Element : public Node
     bool text() const;
 
     void addElementRelation( const Relation & );
+    bool hasElementRelation( const Element & );
+    Relation &elementRelation( const Element & );
     Relation::List elementRelations() const;
 
     void addAttributeRelation( const Relation & );
@@ -147,6 +151,8 @@ class KSCHEMA_EXPORT Element : public Node
 
     Relation::List mElementRelations;
     Relation::List mAttributeRelations;
+
+    Relation mNullRelation;
 };
 
 class KSCHEMA_EXPORT Attribute : public Node
@@ -169,6 +175,7 @@ class KSCHEMA_EXPORT Document : public Annotatable
 
     void addElement( const Element & );
     Element::List elements() const;
+    bool hasElement( const Element & );
     Element element( const QString &identifier ) const;
     Element element( const Relation & ) const;
 

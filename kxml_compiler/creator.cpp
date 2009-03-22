@@ -49,7 +49,8 @@
 
 Creator::Creator( const Schema::Document &document, XmlParserType p,
   XmlWriterType w )
-  : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w ), mVerbose( false )
+  : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w ),
+    mVerbose( false ), mUseKde( false )
 {
   setExternalClassNames();
 }
@@ -57,6 +58,16 @@ Creator::Creator( const Schema::Document &document, XmlParserType p,
 void Creator::setVerbose( bool verbose ) 
 {
   mVerbose = verbose;
+}
+
+void Creator::setUseKde( bool useKde )
+{
+  mUseKde = useKde;
+}
+
+bool Creator::useKde() const
+{
+  return mUseKde;
 }
 
 void Creator::setExternalClassPrefix( const QString &prefix )
@@ -77,12 +88,12 @@ KODE::File &Creator::file()
   return mFile;
 }
 
-QString Creator::upperFirst( const QString &str )
+QString Creator::upperFirst( const QString &str ) const
 {
   return KODE::Style::upperFirst( str );
 }
 
-QString Creator::lowerFirst( const QString &str )
+QString Creator::lowerFirst( const QString &str ) const
 {
   return KODE::Style::lowerFirst( str );
 }
@@ -94,11 +105,15 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
   c.addMemberVariable( v );
 
   KODE::Function mutator( "set" + upperFirst( name ), "void" );
-  mutator.addArgument( "const " + type + " &v" );
+  if ( type == "int" ) {
+    mutator.addArgument( type + " v" );
+  } else {
+    mutator.addArgument( "const " + type + " &v" );
+  }
   mutator.addBodyLine( v.name() + " = v;" );
   c.addFunction( mutator );
 
-  KODE::Function accessor( name, type );
+  KODE::Function accessor( getAccessor( name ), type );
   accessor.setConst( true );
   accessor.addBodyLine( "return " + v.name() + ';' );
   c.addFunction( accessor );
@@ -118,29 +133,37 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
   Schema::Element targetElement = mDocument.element( r );
 
   if ( targetElement.text() ) {
-    createProperty( c, "QString", targetElement.name() );
-    c.addHeaderInclude( "QString" );
-    if ( mXmlParserType == XmlParserCustomExternal ) {
-      ParserCreatorCustom parserCreatorCustom( this );
-      parserCreatorCustom.createTextElementParser( c, targetElement );
+    if ( targetElement.type() == Schema::Element::Integer ) {
+      createProperty( c, "int", getClassName( targetElement ) );
+    } else if ( targetElement.type() == Schema::Element::Date ) {
+      createProperty( c, "QDate", getClassName( targetElement ) );
+      c.addHeaderInclude( "QDate" );
+    } else {
+      createProperty( c, "QString", getClassName( targetElement ) );
+      c.addHeaderInclude( "QString" );
+      if ( mXmlParserType == XmlParserCustomExternal ) {
+        ParserCreatorCustom parserCreatorCustom( this );
+        parserCreatorCustom.createTextElementParser( c, targetElement );
+      }
     }
     return;
   }
 
-  QString type = upperFirst( targetElement.name() );
+  QString type = getClassName( targetElement );
 
   if ( !mFile.hasClass( type ) ) {
     createClass( e );
   }
 
-  QString name = lowerFirst( targetElement.name() );
+  QString name = lowerFirst( type );
 
   if ( r.isList() ) {
     registerListTypedef( type );
 
+    QString className = type;
+    type = type += "::List";
+
     c.addHeaderInclude( "QList" );
-    type = type + "::List";
-    QString className = upperFirst( name );
     name = name + "List";
 
     KODE::Function adder( "add" + className, "void" );
@@ -159,11 +182,11 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
 
 void Creator::createClass( const Schema::Element &element )
 {
-  if ( mVerbose ) {
-    kDebug() <<"Creator::createClass()" << element.identifier();
-  }
+  QString className = getClassName( element  );
 
-  QString className = upperFirst( element.name() );
+  if ( mVerbose ) {
+    kDebug() <<"Creator::createClass()" << element.identifier() << className;
+  }
 
   if ( mProcessedClasses.contains( className ) )
     return;
@@ -216,18 +239,28 @@ void Creator::createElementWriter( KODE::Class &c,
     code += "indent( 2 );";
 
     foreach( Schema::Relation r, element.elementRelations() ) {
-      QString type = upperFirst( r.target() );
+      QString type = getClassName( r.target() );
       if ( r.isList() ) {
-        code += "foreach( " + type + " e, " + r.target() + "List() ) {";
+        code += "foreach( " + type + " e, " + getAccessor( r.target() ) + "List() ) {";
         code.indent();
         code += "xml += e.writeElement();";
         code.unindent();
         code += '}';
       } else {
         Schema::Element e = mDocument.element( r );
+        QString data;
+        QString accessor = getAccessor( e ) + "()";
+        if ( e.type() == Schema::Element::Integer ) {
+          data = "QString::number( " + accessor + " )";
+        } else if ( e.type() == Schema::Element::Date ) {
+          data = accessor + ".toString( Qt::ISODate )";
+        } else {
+          data = accessor;
+        }
         if ( e.text() ) {
-          code += "xml += indent() + \"<" + e.name() + ">\" + " + e.name() +
-            "() + \"</" + e.name() + ">\\n\";";
+          code += "xml += indent() + \"<" + e.name() + ">\" + " +
+            data +
+            " + \"</" + e.name() + ">\\n\";";
         } else {
           code += "xml += " + type + "().writeElement();";
         }
@@ -305,13 +338,12 @@ void Creator::setDtd( const QString &dtd )
 
 void Creator::createFileWriter( const Schema::Element &element )
 {
-  QString className = upperFirst( element.name() );
+  QString className = getClassName( element );
 
   KODE::Class c = mFile.findClass( className );
 
-  c.addInclude( "kdebug.h" );
-  c.addInclude( "qtextstream.h" );
-  c.addInclude( "qfile.h" );
+  c.addInclude( "QTextStream" );
+  c.addInclude( "QFile" );
 
   if ( !externalWriter() ) {
     createIndenter( mFile );
@@ -321,14 +353,11 @@ void Creator::createFileWriter( const Schema::Element &element )
 
   writer.addArgument( "const QString &filename" );
 
-  c.addInclude( "qfile.h" );
-  c.addInclude( "QTextStream" );
-
   KODE::Code code;
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::WriteOnly ) ) {";
-  code += "  kError() << \"Unable to open file '\" << filename << \"'\";";
+  code += "  " + errorStream() + " << \"Unable to open file '\" << filename << \"'\";";
   code += "  return false;";
   code += '}';
   code += "";
@@ -382,19 +411,23 @@ void Creator::printFiles( KODE::Printer &printer )
     parserFile.insertClass( mParserClass );
 
     if ( mVerbose ) {
-      kDebug() <<"Print external parser.";
+      kDebug() <<"Print external parser header" << parserFile.filenameHeader();
     }
     printer.printHeader( parserFile );
+    if ( mVerbose ) {
+      kDebug() <<"Print external parser implementation"
+        << parserFile.filenameImplementation();
+    }
     printer.printImplementation( parserFile );
   }
 
   if ( mVerbose ) {
-    kDebug() <<"Print header";
+    kDebug() <<"Print header" << file().filenameHeader();
   }
   printer.printHeader( file() );
 
   if ( mVerbose ) {
-    kDebug() <<"Print implementation";
+    kDebug() <<"Print implementation" << file().filenameImplementation();
   }
   printer.printImplementation( file() );
 
@@ -426,6 +459,60 @@ KODE::Class &Creator::parserClass()
   return mParserClass;
 }
 
+QString Creator::errorStream() const
+{
+  if ( useKde() ) {
+    return "kError()";
+  } else {
+    return "qCritical()";
+  }
+}
+
+QString Creator::debugStream() const
+{
+  if ( useKde() ) {
+    return "kDebug()";
+  } else {
+    return "qDebug()";
+  }
+}
+
+QString Creator::getClassName( const Schema::Element &element ) const
+{
+  return getClassName( element.name() );
+}
+
+QString Creator::getClassName( const QString &elementName ) const
+{
+  QString name;
+  QStringList parts = elementName.split( "_" );
+  foreach( QString part, parts ) {
+    name += upperFirst( part );
+  }
+  return name;
+}
+
+QString Creator::getAccessor( const Schema::Element &element ) const
+{
+  return getAccessor( element.name() );
+}
+
+QString Creator::getAccessor( const QString &elementName ) const
+{
+  return lowerFirst( getClassName( elementName ) );
+}
+
+void Creator::create()
+{
+  Schema::Element startElement = mDocument.startElement();
+  setExternalClassPrefix( upperFirst( startElement.name() ) );
+  createFileParser( startElement );
+//  setDtd( schemaFilename.replace( "rng", "dtd" ) );
+  createFileWriter( startElement );
+
+  createListTypedefs();
+}
+
 
 ParserCreator::ParserCreator( Creator *c )
   : mCreator( c )
@@ -440,3 +527,4 @@ Creator *ParserCreator::creator() const
 {
   return mCreator;
 }
+

@@ -6,6 +6,7 @@ add_subdirectory( tests )
 set(kschema_LIB_SRCS
 	parserrelaxng.cpp
 	parserxsd.cpp
+        parserxml.cpp
 	schema.cpp
 	)
 

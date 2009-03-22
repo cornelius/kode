@@ -60,6 +60,8 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   parser.setStatic( true );
   parser.setDocs( "Parse XML object from DOM element." );
 
+  c.addHeaderInclude( "QDomElement" );
+
   parser.addArgument( "const QDomElement &element" );
   parser.addArgument( "bool *ok" );
 
@@ -67,7 +69,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
   code.indent();
-  code += "kError() << \"Expected '" + e.name() +"', got '\" <<" +
+  code += creator()->errorStream() +" << \"Expected '" + e.name() +"', got '\" <<" +
           "element.tagName() << \"'.\";";
   code += "if ( ok ) *ok = false;";
   code += "return " + c.name() + "();";
@@ -94,13 +96,21 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
     code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
     code.indent();
 
-    QString className = creator()->upperFirst( (*it).target() );
+    QString className = creator()->getClassName( (*it).target() );
 
     Schema::Element targetElement =
       creator()->document().element( (*it).target() );
 
     if ( targetElement.text() ) {
-      code += "result.set" + className + "( e.text() );";
+      QString data;
+      if ( targetElement.type() == Schema::Element::Integer ) {
+        data = "e.text().toInt()";
+      } else if ( targetElement.type() == Schema::Element::Date ) {
+        data = "QDate::fromString( e.text(), Qt::ISODate )";
+      } else {
+        data = "e.text()";
+      }
+      code += "result.set" + className + "( " + data + " );";
     } else {
       code += "bool ok;";
       QString line = className + " o = ";
@@ -125,7 +135,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
-    code += "result.set" + creator()->upperFirst( a.name() ) +
+    code += "result.set" + creator()->getClassName( a.name() ) +
             "( element.attribute( \"" + a.name() + "\" ) );";
   }
   code.newLine();
@@ -147,7 +157,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 {
 //   kDebug() <<"Creator::createFileParserDom()";
 
-  QString className = creator()->upperFirst( element.name() );
+  QString className = creator()->getClassName( element );
 
   KODE::Class c;
 
@@ -157,21 +167,26 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
     c = creator()->file().findClass( className );
   }
 
+  if ( creator()->useKde() ) {
+    c.addInclude( "kdebug.h" );
+  } else {
+    c.addInclude( "QtDebug" );
+  } 
+
   KODE::Function parser( "parseFile", className );
   parser.setStatic( true );
 
   parser.addArgument( "const QString &filename" );
   parser.addArgument( "bool *ok" );
 
-  c.addInclude( "qfile.h" );
-  c.addInclude( "qdom.h" );
-  c.addInclude( "kdebug.h" );
+  c.addInclude( "QFile" );
+  c.addInclude( "QDomDocument" );
 
   KODE::Code code;
 
   code += "QFile file( filename );";
   code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  kError() << \"Unable to open file '\" << filename << \"'\";";
+  code += "  " + creator()->errorStream() + " << \"Unable to open file '\" << filename << \"'\";";
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
   code += '}';
@@ -180,12 +195,12 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "int errorLine, errorCol;";
   code += "QDomDocument doc;";
   code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
-  code += "  kError() << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
+  code += "  " + creator()->errorStream() + " << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
   code += '}';
   code += "";
-  code += "kDebug() << \"CONTENT:\" << doc.toString();";
+  code += creator()->debugStream() + " << \"CONTENT:\" << doc.toString();";
 
   code.newLine();
 

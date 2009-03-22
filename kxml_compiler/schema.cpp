@@ -51,6 +51,14 @@ Element::List Document::elements() const
   return mElements;
 }
 
+bool Document::hasElement( const Element &element )
+{
+  foreach( Element e, mElements ) {
+    if ( e.identifier() == element.identifier() ) return true;
+  }
+  return false;
+}
+
 Element Document::element( const QString &identifier ) const
 {
   foreach( Element e, mElements ) {
@@ -131,9 +139,9 @@ bool Document::isEmpty() const
 void Document::dump() const
 {
   foreach( Element e, mElements ) {
-    qDebug() << "ELEMENT " << e.identifier() << ": " << e.name();
-    if ( e.text() ) qDebug() << "  TEXT";
-    if ( e.mixed() ) qDebug() << "  MIXED";
+    qDebug() << "ELEMENT" << e.identifier() << ":" << e.name() << e.type();
+    if ( e.text() ) qDebug() << " TEXT";
+    if ( e.mixed() ) qDebug() << " MIXED";
     foreach( Relation r, e.elementRelations() ) {
       qDebug() << r.asString( "ELEMENT" );
     }
@@ -144,6 +152,11 @@ void Document::dump() const
   foreach( Attribute a, mAttributes ) {
     qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name();
   }
+}
+
+Relation::Relation()
+  : mMinOccurs( 1 ), mMaxOccurs( 1 )
+{
 }
 
 Relation::Relation( const QString &target )
@@ -320,6 +333,24 @@ QString Element::ref() const
 void Element::addElementRelation( const Relation &r )
 {
   mElementRelations.append( r );
+}
+
+bool Element::hasElementRelation( const Element &element )
+{
+  Relation::List::Iterator it;
+  for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
+    if ( (*it).target() == element.identifier() ) return true;
+  }
+  return false;
+}
+
+Relation &Element::elementRelation( const Element &element )
+{
+  Relation::List::Iterator it;
+  for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
+    if ( (*it).target() == element.identifier() ) return *it;
+  }
+  return mNullRelation;
 }
 
 Relation::List Element::elementRelations() const

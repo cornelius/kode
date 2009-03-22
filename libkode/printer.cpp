@@ -504,7 +504,7 @@ QString Printer::licenseHeader( const File &file ) const
   code.addBlock( file.license().text() );
 
   code.setIndent( 0 );
-  code += " */";
+  code += "*/";
 
   return code.text();
 }
@@ -597,7 +597,7 @@ void Printer::printHeader( const File &file )
 
 
   // Print to file
-  QString filename = file.filename() + ".h";
+  QString filename = file.filenameHeader();
 
   if ( !d->mOutputDirectory.isEmpty() )
     filename.prepend( d->mOutputDirectory + '/' );
@@ -728,7 +728,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   }
 
   // Print to file
-  QString filename = file.filename() + ".cpp";
+  QString filename = file.filenameImplementation();
 
   if ( !d->mOutputDirectory.isEmpty() )
     filename.prepend( d->mOutputDirectory + '/' );
