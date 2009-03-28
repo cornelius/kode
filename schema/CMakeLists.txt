@@ -1,5 +1,5 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode  )
+include_directories( ${CMAKE_SOURCE_DIR}  )
 
 
 ########### next target ###############

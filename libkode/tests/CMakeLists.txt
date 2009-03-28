@@ -1,4 +1,4 @@
-include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/kode )
+include_directories( ${CMAKE_SOURCE_DIR} )
 
 set(nestedclasses_test_SRCS nestedclasses_test.cpp )
 

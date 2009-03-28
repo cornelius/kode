@@ -1,5 +1,5 @@
 
-include_directories( ${CMAKE_SOURCE_DIR}/kode ${CMAKE_SOURCE_DIR}/kode/kwsdl ${CMAKE_SOURCE_DIR}/libkdepim  )
+include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/kwsdl )
 
 ########### next target ###############
 
