@@ -342,8 +342,9 @@ void Creator::createFileWriter( const Schema::Element &element )
 
   KODE::Class c = mFile.findClass( className );
 
-  c.addInclude( "QTextStream" );
-  c.addInclude( "QFile" );
+  c.addInclude( "QtCore/QTextStream" );
+  c.addInclude( "QtCore/QtDebug" );
+  c.addInclude( "QtCore/QFile" );
 
   if ( !externalWriter() ) {
     createIndenter( mFile );
