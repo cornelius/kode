@@ -8,6 +8,7 @@ Name[nds]=KWSDL-Kompilerer
 Name[pt]=Compilador de KWSDL
 Name[pt_BR]=Compilador KWSDL
 Name[sv]=KWSDL-kompilator
+Name[tr]=KWSDL Derleyici
 Name[uk]=Компілятор KWSDL
 Name[x-test]=xxKWSDL Compilerxx
 Exec=kdialog --sorry "kwsdl_compiler is a command-line only program.  Please read the handbook at help:/kwsdl_compiler for more info."
