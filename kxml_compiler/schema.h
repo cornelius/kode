@@ -181,6 +181,7 @@ class KSCHEMA_EXPORT Document : public Annotatable
 
     void addAttribute( const Attribute & );
     Attribute::List attributes() const;
+    bool hasAttribute( const Attribute & );
     Attribute attribute( const QString &identifier ) const;
     Attribute attribute( const Relation & ) const;
 

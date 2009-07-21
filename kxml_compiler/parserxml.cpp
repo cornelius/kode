@@ -70,6 +70,8 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
   
   QString elementName = xml.name().toString();
 
+//  qDebug() << "PARSE ELEMENT" << elementName;
+
   element.setIdentifier( elementName );
   element.setName( elementName );
       
@@ -77,6 +79,11 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
     xml.readNext();
 
     if ( xml.isStartElement() ) {
+//      qDebug() << "  ELEMENT" << element.identifier();
+//      qDebug() << "  START ELEMENT" << xml.name();
+    
+      QXmlStreamAttributes attributes = xml.attributes();
+
       Schema::Element childElement = parseElement( xml );
 
       if ( element.hasElementRelation( childElement ) ) {
@@ -85,6 +92,22 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
       } else {
         Schema::Relation relation( childElement.identifier() );
         element.addElementRelation( relation );
+
+        foreach( QXmlStreamAttribute attribute, attributes ) {
+//          qDebug() << "  ATTRIBUTE" << attribute.name();
+          Schema::Attribute a;
+          a.setType( Schema::Node::String );
+          a.setIdentifier( attribute.name().toString() );
+          a.setName( attribute.name().toString() );
+
+          Schema::Relation relation( a.identifier() );
+//          qDebug() << "  ADD" << a.identifier() << childElement.identifier();
+          childElement.addAttributeRelation( relation );
+
+          if ( !mDocument.hasAttribute( a ) ) {
+            mDocument.addAttribute( a );
+          }
+        }
 
         if ( !mDocument.hasElement( childElement ) ) {
           mDocument.addElement( childElement );

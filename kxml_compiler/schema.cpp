@@ -118,6 +118,14 @@ Attribute::List Document::attributes() const
   return mAttributes;
 }
 
+bool Document::hasAttribute( const Attribute &attribute )
+{
+  foreach( Attribute a, mAttributes ) {
+    if ( a.identifier() == attribute.identifier() ) return true;
+  }
+  return false;
+}
+
 Attribute Document::attribute( const QString &identifier ) const
 {
   foreach( Attribute a, mAttributes ) {
