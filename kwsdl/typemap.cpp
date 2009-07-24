@@ -244,6 +244,15 @@ TypeMap::TypeMap()
     entry.basicType = true;
     entry.buildinType = true;
     entry.nameSpace = XMLSchemaURI;
+    entry.typeName = "unsignedLong";
+    entry.localType = "unsigned long";
+    mTypeMap.append( entry );
+  }  
+  {
+    Entry entry;
+    entry.basicType = true;
+    entry.buildinType = true;
+    entry.nameSpace = XMLSchemaURI;
     entry.typeName = "positiveInteger";
     entry.localType = "unsigned int";
     mTypeMap.append( entry );
