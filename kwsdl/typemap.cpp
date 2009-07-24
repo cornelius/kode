@@ -247,7 +247,7 @@ TypeMap::TypeMap()
     entry.typeName = "unsignedLong";
     entry.localType = "unsigned long";
     mTypeMap.append( entry );
-  }  
+  }
   {
     Entry entry;
     entry.basicType = true;
@@ -255,6 +255,16 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "positiveInteger";
     entry.localType = "unsigned int";
+    mTypeMap.append( entry );
+  }
+  {
+    Entry entry;
+    entry.basicType = true;
+    entry.buildinType = true;
+    entry.nameSpace = XMLSchemaURI;
+    entry.typeName = "token";
+    entry.headers << "QString";
+    entry.localType = "QString";
     mTypeMap.append( entry );
    }
 }
