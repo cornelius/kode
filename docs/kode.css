@@ -158,7 +158,8 @@ div#footer {
   border-top: 1px solid grey;
   width: 100%;
   background-color: #4A62C1;
-  padding: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   color: white;
 }
 
