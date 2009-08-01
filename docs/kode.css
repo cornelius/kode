@@ -155,6 +155,10 @@ div.sidebar h2 {
   font-weight: bold;
 }
 
+div.vertical-spacer {
+  padding-top: 300px;
+}
+
 div#footer {
   margin-left: auto;
   margin-right: auto;
