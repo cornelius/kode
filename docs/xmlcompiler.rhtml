@@ -5,6 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />    
   <title>Kode - XML Compiler</title>   
   <link rel="stylesheet" href="kode.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="highlight.css" type="text/css" media="screen" />
 </head>
 
 <body>
@@ -26,12 +27,90 @@
 
 <div id="container">
 
+  <div class="sidebar">
+    <p>kxml_compiler can be found in the KDE source code repository at
+    playground/pim/kode/kxml_compiler.</p>
+  </div>
+
   <div class="content">
 
     <div class="introduction">
       <p>A central part of Kode is kxml_compiler. This is a tool for creating
       C++ classes to access XML data from a schema definition.</p>
     </div>
+
+    <h2>Motivation</h2>
+    
+      <p>Accessing XML data from C++ is simple, but involves writing a lot of
+      trivial repetitive code. This code usually follows the structure of the
+      XML data, and doesn't involve a lot of creativity. Most of it follows
+      directly from the schema of the XML document. Automatically generating the
+      XML handling code from the schema eliminates the boring task to write the
+      code manually.</p>
+
+    <h2>Goal</h2>
+
+      <p>For handling XML data in an application it usually needs three
+      components, a representation of the XML data in C++, a parser for reading
+      the data into this representation, and a writer to write the data back to
+      XML. The goal of the XML compiler is to generate these three components
+      automatically from the schema of the XML.</p>
+      
+      <p>Automatically generating the code not only eliminates the boring work
+      of writing the code manually, but also gives some additional flexibility.
+      General improvements in parsing XML or for the data representation classes
+      can be implemented centrally in the code generator and applied to a all
+      generated code at once, without manual intervention. So lots of code can
+      benefit of improvements at a central place.</p>
+
+    <h2>kxml_compiler</h2>
+    
+      <p>kxml_compiler implements the code generation from a XML schemas. It
+      generates C++ classes representing the data structure with a native Qt
+      based API. It also generates the parser and writer needed to read the XML
+      data into these classes and write it back to XML.</p>
+      
+      <p>Three schema representations are currently supported: W3C XML Schema,
+      Relax NG, and example XML. There are two variants of parsers, which can be
+      generated, one based on QDom, and a custom one, optimized for speed on
+      parsing the specific schema. Both parsers can be generated as part of the
+      data classes or as external classes. The XML writer is a simple writer
+      based on QTextStream. For the future, an implementation using
+      QXmlStreamReader and QXmlStreamWriter would be desirable.</p>
+
+      <h3>Example</h3>
+      
+      <p>In this section the code generation for a very simple case of XML is
+      demonstrated. It uses the QDom parser as part of the data classes. The
+      schema is provided as example XML.</p>
+
+      <h4>XML Schema</h4>
+      
+      <p>The following XML serves as schema for the XML compiler. At the same
+      time it is an example of the data which can be parsed and written by the
+      generated code.</p>
+<pre>
+<%= `highlight <simple.xml --syntax=xml --fragment` %>
+</pre>
+      
+      <h4>Generated Code</h4>
+      
+      <p>For generating the code the following invocation of the XML compiler is
+      used:</p>
+<pre>
+kxml_compiler simple.xml
+</pre>
+
+      <p>Generated header file:</p>
+<pre>
+<%= `highlight <simple.h --syntax=c --fragment` %>
+</pre>
+
+     <p>Generated implementation:</p>
+
+<pre>
+<%= `highlight <simple.cpp --syntax=c --fragment` %>
+</pre>
 
   </div>
 

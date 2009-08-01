@@ -1,0 +1,10 @@
+<simple>
+  <food>
+    <name>Cake</name>
+    <taste>yummy</taste>
+  </food>
+  <food>
+    <name>Zwieback</name>
+    <taste>soso</taste>
+  </food>
+</simple>
