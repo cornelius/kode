@@ -3,6 +3,10 @@
   padding: 0;    
 }
 
+html {
+  overflow: -moz-scrollbars-vertical;
+}
+
 body {
   margin-bottom: 1em;
 
