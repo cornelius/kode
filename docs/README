@@ -1,0 +1,2 @@
+To create the docs run the script create_html.rb. It requires the "highlight"
+tool to be installed. You can get it at http://www.andre-simon.de.

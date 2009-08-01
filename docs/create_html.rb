@@ -5,3 +5,4 @@
 `erb xmlcompiler.rhtml >xmlcompiler.html`
 `erb kxforms.rhtml >kxforms.html`
 `erb webservices.rhtml >webservices.html`
+`erb libkode.rhtml >libkode.html`

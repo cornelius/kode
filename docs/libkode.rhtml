@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">   
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />    
+  <title>Kode - libkode</title>   
+  <link rel="stylesheet" href="kode.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="highlight.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="header">
+  <h1>libkode</h1>
+
+  <div id="navigation">
+      <ul id="navMain">
+        <li class="first-child"><a href="index.html">Home</a></li>
+        <li><a href="schemaparser.html">Schema Parser</a></li>
+        <li><a href="xmlcompiler.html">XML Compiler</a></li>
+        <li><a href="kxforms.html">KXForms</a></li>
+        <li><a href="webservices.html">Web Services</a></li>
+        <li class="current-page">libkode</li>
+      </ul>
+  </div>
+</div>
+
+<div id="container">
+
+  <div class="content">
+
+    <div class="introduction">
+      <p>libkode is a library for generating C++ code. It contains classes to
+      represent the different element of code like files, classes, functions,
+      etc. and helpers to write them to nicely formatted C++ source code. This
+      makes writing C++ code generators a lot more easy. It also comes with a
+      command line tool, which provides some code generation utilities.</p>
+    </div>
+
+    <h2>Code Generation Library</h2>
+
+      <p>The goal of libkode is to provide an abstraction for generating code,
+      which makes it easy to write code generators, and takes away the confusion
+      code generating code usually inherently contains.</p>
+      
+      <p>Of course it's possible to write code generating code just by using
+      some string output functions, but this usually results in code snippets
+      embedded in code, and long-winded if-else cascades which make it hard to
+      see the structure of the generated code. libkode goal is to remove this
+      confusion by providing a clean abstraction layer representing the
+      structure of the generated code.</p>
+
+  </div>
+
+  <div class="sidebar">
+    <p>libkode can be found in the libkode subdirectory of the kode repository.
+    Include the headers by <tt>#include &ltkode/xxx.h&gt;</tt> and link to it
+    with <tt>-lkode</tt>.</p>
+  </div>
+
+  <div class="content">
+    
+      <p>libkode provides classes to represent C++ classes, functions, header
+      and implementation files, and the elements which are used there, e.g.
+      function parameters, license headers, or namespace declarations. It also
+      provides helper functions to generate properly indented code, and write
+      nicely formatted C++ code to the required files.</p>
+
+      <h3>Example</h2>
+        <p class="code">
+<pre>
+<%= `highlight <libkode-example.cpp --syntax=c --fragment` %>
+</pre>
+        </p>
+      
+    <h2>kode command line tool</h2>
+    
+  </div>
+
+  <div class="sidebar">
+    <p>kode automatically inserts your name and email into the headers of the
+    generated files, if you have set up an <em>that's me</em> entry in the KDE
+    addressbook.</p>
+  </div>
+
+  <div class="content">    
+      
+      <p>The kode command line tool provides some utilities for generating code.
+      It for example can generate skeletons for a class to be filled in with
+      actual code, it can generate a complete kioslave skeleton.</p>
+
+      <p>It can also convert a snippet of code into code creating this code.
+      This is useful when writing code generators. The generated code makes use
+      of libkode for maximum readability of the code generating code. This kind
+      of code can be mind-twisting, so it helps to have support tools at
+      hand.</p>
+      
+      <h3>kode command line options</h3>
+        <p class="code">
+<pre>
+Usage: kode [options] [filename]
+
+Options:
+  -c, --create-class        Create class
+  -d, --create-dialog       Create dialog
+  --create-kioslave         Create kioslave
+  --create-main             Create main function template
+  -y, --codify              Create generator code for given source
+  --add-property            Add property to class
+  --inplace                 Change file in place
+  --author-email <name>     Add author with given email address
+  --project <name>          Name of project
+  --gpl                     Use GPL as license
+  --lgpl                    Use LGPL as license
+  --classname <name>        Name of class
+  --filename <name>         Name of file
+  --namespace <name>        Namespace
+  --warning                 Create warning about code generation
+  --qt-exception            Add Qt exception to GPL
+  --singleton               Create a singleton class
+  --protocol                kioslave protocol
+
+Arguments:
+  filename                  Source code file name
+</pre>
+        </p>    
+  </div>
+
+</div>
+
+<div id="footer">
+  <a href="libkode.html">Go back to top</a>
+</div>
+
+</body>
+</html>
