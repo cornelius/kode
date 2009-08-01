@@ -26,12 +26,86 @@
 
 <div id="container">
 
+  <div class="sidebar">
+    <p class="sbquote">"There are currently no perfect XML Schema languages."
+    </p>
+
+    <p class="sbquoteattr">&mdash;Eric van der Vlist, 2001</p>
+  </div>
+
   <div class="content">
 
     <div class="introduction">
       <p>Kode contains parsers for XML Schema and RelaxNG. It also has a
       schema language indepent API for representing schema information.</p>
     </div>
+
+    <h2>Representing the structure of XML documents</h2>
+
+      <p>One of the challenges when handling XML documents is to represent their
+      structure in a machine-readable form, in a schema. If there is a schema
+      for an XML document it allows to automatically check documents for their
+      validity, but there are also more advanced use cases.</p>
+      
+      <p>In the context of
+      the kode project XML schemas are used to generate code to represent, read
+      and write XML documents in C++ (see <a href="xmlcompiler.html">XML
+      Compiler</a>, and to generate user interfaces to handle data available in
+      XML (see <a href="kxforms.html">KXForms</a>).</p>
+
+      <p>As there are different ways to specify XML schemas, kode also contains
+      a schema abstraction. This makes it possible to plug in different schema
+      representations into the tools making use of XML schema information.</p>
+
+      <p>The schema representations, which are use by kode are W3C's XML Schema,
+      Relax NG, and example XML.</p>
+
+    <h2>Schema Parser</h2>
+    
+      <h3>W3C XML Schema</h3>
+    
+        <p>kode includes a basic parser for  <a
+        href="http://www.w3.org/XML/Schema">W3C's XML Schema</a> written by
+        Tobias 
+        K&ouml;nig. It's passed on a C++ port of the wsdlpull parser by Viviek
+        Krishna doen by Michaël Larouche.</p>
+        
+        <p>The parser is pretty limited. Qt 4.6 will include a XML Schema
+        implementation, which is much more advanced and complete. Once this is
+        released, we should investigate in making use of that instead of the own
+        implementation in kode.</p>
+        
+      <h3>Relax NG</h3>
+      
+        <p>kode also includes a <a href="http://www.relaxng.org">Relax NG</a>
+        parser. It's even more limited than the 
+        XML Schema parser. It would need a lot of work to be ready for
+        production use.</p>
+        
+      <h3>Example XML</h3>
+
+  </div>
+  
+  <div class="sidebar">
+    <h2>Examplotron</h2>
+    <p>One attempt to formalize using example XML as schema definition is <a
+    href="http://examplotron.org">Examplotron</a>.</p>
+  </div>
+  
+  <div class="content">
+          
+        <p>Often XML data is used, but no formal schema definition exists. There
+        are ad-hoc implementations and documentation simply providing example
+        documents to explain how the XML data is used. While this might be an
+        unsatisfying aproach from a systematic point of view, it's a pragmatic
+        way to quickly implement functionality, and it has proven to be a
+        surprisingly good way to handle XML data.</p>
+        
+        <p>To accommodate to this situation kode is able to create a XML schema
+        representation from example XML files. This for example make it possible
+        to just take some response data from an XML based REST service and
+        create C++ classes for handling this data. This results in very little
+        overhead for using XML to exchange data.</p>
 
   </div>
 
