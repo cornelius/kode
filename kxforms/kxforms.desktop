@@ -7,6 +7,7 @@ Icon=kxforms
 Type=Application
 X-DocPath=kxforms/kxforms.html
 GenericName=XML Form Editor
+GenericName[bg]=Редакрот на XML форми
 GenericName[de]=XML-Formular-Editor
 GenericName[et]=XML-vormide redaktor
 GenericName[fr]=Éditeur de formulaire XML
