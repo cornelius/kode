@@ -1,6 +1,19 @@
 [Desktop Entry]
 Name=KXForms
+Name[bg]=KXForms
+Name[de]=KXForms
+Name[en_GB]=KXForms
+Name[et]=KXForms
+Name[fr]=KXForms
+Name[ga]=KXForms
+Name[gl]=KXForms
+Name[km]=KXForms
+Name[nds]=KXForms
+Name[pt]=KXForms
+Name[pt_BR]=KXForms
 Name[sv]=KX-formulär
+Name[tr]=KXForms
+Name[uk]=KXForms
 Name[x-test]=xxKXFormsxx
 Exec=kxforms %i -caption "%c"
 Icon=kxforms
@@ -9,6 +22,7 @@ X-DocPath=kxforms/kxforms.html
 GenericName=XML Form Editor
 GenericName[bg]=Редакрот на XML форми
 GenericName[de]=XML-Formular-Editor
+GenericName[en_GB]=XML Form Editor
 GenericName[et]=XML-vormide redaktor
 GenericName[fr]=Éditeur de formulaire XML
 GenericName[ga]=Eagarthóir Foirmeacha XML
