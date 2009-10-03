@@ -366,6 +366,11 @@ Relation::List Element::elementRelations() const
   return mElementRelations;
 }
 
+bool Element::hasElementRelations() const
+{
+  return !mElementRelations.isEmpty();
+}
+
 void Element::addAttributeRelation( const Relation &r )
 {
   mAttributeRelations.append( r );
@@ -374,6 +379,11 @@ void Element::addAttributeRelation( const Relation &r )
 Relation::List Element::attributeRelations() const
 {
   return mAttributeRelations;
+}
+
+bool Element::hasAttributeRelations() const
+{
+  return !mAttributeRelations.isEmpty();
 }
 
 bool Element::mixed() const

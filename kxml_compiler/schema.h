@@ -140,9 +140,11 @@ class KSCHEMA_EXPORT Element : public Node
     bool hasElementRelation( const Element & );
     Relation &elementRelation( const Element & );
     Relation::List elementRelations() const;
+    bool hasElementRelations() const;
 
     void addAttributeRelation( const Relation & );
     Relation::List attributeRelations() const;
+    bool hasAttributeRelations() const;
 
     bool isEmpty() const;
 

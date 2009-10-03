@@ -122,17 +122,24 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
 void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
   const Schema::Relation &r )
 {
-#if 0
+  Schema::Element targetElement = mDocument.element( r );
+
+#if 1
   if ( mVerbose ) {
     kDebug() <<"Creator::createElementFunctions()";
     kDebug() <<"ELEMENT" << e.identifier();
     kDebug() <<"RELATION:" << r.asString();
+    kDebug() << "TARGETELEMENT" << targetElement.name();
+    foreach( Schema::Relation r, targetElement.attributeRelations() ) {
+      kDebug() << "  ATTR" << r.target();
+    }
   }
 #endif
 
-  Schema::Element targetElement = mDocument.element( r );
-
-  if ( targetElement.text() ) {
+  if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
+    if ( mVerbose ) {
+      kDebug() << "  FLATTEN";
+    }
     if ( targetElement.type() == Schema::Element::Integer ) {
       createProperty( c, "int", getClassName( targetElement ) );
     } else if ( targetElement.type() == Schema::Element::Date ) {
@@ -152,7 +159,8 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
   QString type = getClassName( targetElement );
 
   if ( !mFile.hasClass( type ) ) {
-    createClass( e );
+    createClass( targetElement );
+  } else {
   }
 
   QString name = lowerFirst( type );
@@ -186,10 +194,17 @@ void Creator::createClass( const Schema::Element &element )
 
   if ( mVerbose ) {
     kDebug() <<"Creator::createClass()" << element.identifier() << className;
+    foreach( Schema::Relation r, element.elementRelations() ) {
+      kDebug() << "  SUBELEMENTS" << r.target();
+    }  
   }
 
-  if ( mProcessedClasses.contains( className ) )
+  if ( mProcessedClasses.contains( className ) ) {
+    if ( mVerbose ) {
+      kDebug() << "  ALREADY DONE";
+    }
     return;
+  }
 
   KODE::Class c( className );
 
@@ -198,6 +213,10 @@ void Creator::createClass( const Schema::Element &element )
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
     createProperty( c, "QString", a.name() );
+  }
+
+  if ( element.text() ) {
+    createProperty( c, "QString", "text" );
   }
 
   foreach( Schema::Relation r, element.elementRelations() ) {
@@ -232,11 +251,17 @@ void Creator::createElementWriter( KODE::Class &c,
     tag += '/';
   }
 
-  tag += ">\\n";
+  tag += ">";
 
-  code += "xml += indent() + \"" + tag + "\";";
-
-  if ( !element.isEmpty() ) {
+  if ( element.isEmpty() ) {
+    code += "xml += indent() + \"" + tag + "\\n\";";
+  } else if ( element.text() ) {
+    code += "if ( !text().isEmpty() ) {";
+    code += "  xml += indent() + \"" + tag + "\" + text() + \"</" +
+      element.name() + ">\\n\";";
+    code += "}";
+  } else {
+    code += "xml += indent() + \"" + tag + "\\n\";";
     code += "indent( 2 );";
 
     foreach( Schema::Relation r, element.elementRelations() ) {
@@ -258,12 +283,20 @@ void Creator::createElementWriter( KODE::Class &c,
         } else {
           data = accessor;
         }
-        if ( e.text() ) {
+        if ( e.text() && !e.hasAttributeRelations() ) {
+          if ( e.type() == Schema::Element::String ) {
+            code += "if ( !" + data + ".isEmpty() ) {";
+            code.indent();
+          }
           code += "xml += indent() + \"<" + e.name() + ">\" + " +
             data +
             " + \"</" + e.name() + ">\\n\";";
+          if ( e.type() == Schema::Element::String ) {
+            code.unindent();
+            code += "}";
+          }
         } else {
-          code += "xml += " + type + "().writeElement();";
+          code += "xml += " + getAccessor( r.target() ) + "().writeElement();";
         }
       }
     }

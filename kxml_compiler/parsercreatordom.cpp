@@ -80,62 +80,68 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   code += c.name() + " result = " + c.name() + "();";
   code.newLine();
 
-  code += "QDomNode n;";
-  code += "for( n = element.firstChild(); !n.isNull();"
-              " n = n.nextSibling() ) {";
-  code.indent();
-  code += "QDomElement e = n.toElement();";
-
-  Schema::Relation::List elementRelations = e.elementRelations();
-  Schema::Relation::List::ConstIterator it;
-  for( it = elementRelations.constBegin(); it != elementRelations.constEnd(); ++it ) {
-    QString condition;
-    if ( it != elementRelations.constBegin() ) condition = "else ";
-    condition += "if";
-
-    code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
+  if ( e.hasElementRelations() ) {
+    code += "QDomNode n;";
+    code += "for( n = element.firstChild(); !n.isNull();"
+                " n = n.nextSibling() ) {";
     code.indent();
+    code += "QDomElement e = n.toElement();";
 
-    QString className = creator()->getClassName( (*it).target() );
+    Schema::Relation::List elementRelations = e.elementRelations();
+    Schema::Relation::List::ConstIterator it;
+    for( it = elementRelations.constBegin(); it != elementRelations.constEnd(); ++it ) {
+      QString condition;
+      if ( it != elementRelations.constBegin() ) condition = "else ";
+      condition += "if";
 
-    Schema::Element targetElement =
-      creator()->document().element( (*it).target() );
+      code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
+      code.indent();
 
-    if ( targetElement.text() ) {
-      QString data;
-      if ( targetElement.type() == Schema::Element::Integer ) {
-        data = "e.text().toInt()";
-      } else if ( targetElement.type() == Schema::Element::Date ) {
-        data = "QDate::fromString( e.text(), Qt::ISODate )";
+      QString className = creator()->getClassName( (*it).target() );
+
+      Schema::Element targetElement =
+        creator()->document().element( (*it).target() );
+
+      if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
+        QString data;
+        if ( targetElement.type() == Schema::Element::Integer ) {
+          data = "e.text().toInt()";
+        } else if ( targetElement.type() == Schema::Element::Date ) {
+          data = "QDate::fromString( e.text(), Qt::ISODate )";
+        } else {
+          data = "e.text()";
+        }
+        code += "result.set" + className + "( " + data + " );";
       } else {
-        data = "e.text()";
-      }
-      code += "result.set" + className + "( " + data + " );";
-    } else {
-      code += "bool ok;";
-      QString line = className + " o = ";
-      if ( creator()->externalParser() ) {
-        line += "parseElement" + className;
-      } else {
-        line += className + "::parseElement";
-      }
-      line += "( e, &ok );";
-      code += line;
+        code += "bool ok;";
+        QString line = className + " o = ";
+        if ( creator()->externalParser() ) {
+          line += "parseElement" + className;
+        } else {
+          line += className + "::parseElement";
+        }
+        line += "( e, &ok );";
+        code += line;
 
-      if ( (*it).isList() ) {
-        code += "if ( ok ) result.add" + className + "( o );";
-      } else {
-        code += "if ( ok ) result.set" + className + "( o );";
+        if ( (*it).isList() ) {
+          code += "if ( ok ) result.add" + className + "( o );";
+        } else {
+          code += "if ( ok ) result.set" + className + "( o );";
+        }
       }
+
+      code.unindent();
+      code += '}';
     }
 
     code.unindent();
     code += '}';
+    code.newLine();
   }
-
-  code.unindent();
-  code += '}';
-  code.newLine();
+  
+  if ( e.text() ) {
+    code += "result.setText( element.text() );";
+  }
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
