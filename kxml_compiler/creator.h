@@ -95,10 +95,16 @@ class Creator
     QString debugStream() const;
 
     QString getClassName( const Schema::Element & ) const;
+    QString getClassName( const Schema::Attribute & ) const;
     QString getClassName( const QString & ) const;
 
     QString getAccessor( const Schema::Element & ) const;
+    QString getAccessor( const Schema::Attribute & ) const;
     QString getAccessor( const QString & ) const;
+
+    QString getMutator( const Schema::Element & ) const;
+    QString getMutator( const Schema::Attribute & ) const;
+    QString getMutator( const QString & ) const;
 
   protected:
     void setExternalClassNames();

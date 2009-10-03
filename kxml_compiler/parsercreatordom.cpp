@@ -69,8 +69,8 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
   code.indent();
-  code += creator()->errorStream() +" << \"Expected '" + e.name() +"', got '\" <<" +
-          "element.tagName() << \"'.\";";
+  code += creator()->errorStream() + " << \"Expected '" + e.name() +
+    "', got '\" << element.tagName() << \"'.\";";
   code += "if ( ok ) *ok = false;";
   code += "return " + c.name() + "();";
   code.unindent();
@@ -122,7 +122,11 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
       line += "( e, &ok );";
       code += line;
 
-      code += "if ( ok ) result.add" + className + "( o );";
+      if ( (*it).isList() ) {
+        code += "if ( ok ) result.add" + className + "( o );";
+      } else {
+        code += "if ( ok ) result.set" + className + "( o );";
+      }
     }
 
     code.unindent();

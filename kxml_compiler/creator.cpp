@@ -101,10 +101,10 @@ QString Creator::lowerFirst( const QString &str ) const
 void Creator::createProperty( KODE::Class &c, const QString &type,
   const QString &name )
 {
-  KODE::MemberVariable v( name, type );
+  KODE::MemberVariable v( getClassName( name ), type );
   c.addMemberVariable( v );
 
-  KODE::Function mutator( "set" + upperFirst( name ), "void" );
+  KODE::Function mutator( getMutator( name ), "void" );
   if ( type == "int" ) {
     mutator.addArgument( type + " v" );
   } else {
@@ -224,7 +224,8 @@ void Creator::createElementWriter( KODE::Class &c,
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
 
-    tag += " " + a.name() + "=\\\"\" + " + a.name() + "() + \"\\\"";
+    tag += " " + a.name() + "=\\\"\" + " + getAccessor( a ) +
+      "() + \"\\\"";
   }
 
   if ( element.isEmpty() ) {
@@ -478,6 +479,11 @@ QString Creator::debugStream() const
   }
 }
 
+QString Creator::getClassName( const Schema::Attribute &attribute ) const
+{
+  return getClassName( attribute.name() );
+}
+
 QString Creator::getClassName( const Schema::Element &element ) const
 {
   return getClassName( element.name() );
@@ -498,9 +504,29 @@ QString Creator::getAccessor( const Schema::Element &element ) const
   return getAccessor( element.name() );
 }
 
+QString Creator::getAccessor( const Schema::Attribute &attribute ) const
+{
+  return getAccessor( attribute.name() );
+}
+
 QString Creator::getAccessor( const QString &elementName ) const
 {
   return lowerFirst( getClassName( elementName ) );
+}
+
+QString Creator::getMutator( const Schema::Element &element ) const
+{
+  return getMutator( element.name() );
+}
+
+QString Creator::getMutator( const Schema::Attribute &attribute ) const
+{
+  return getMutator( attribute.name() );
+}
+
+QString Creator::getMutator( const QString &elementName ) const
+{
+  return "set" + getClassName( elementName );
 }
 
 void Creator::create()
