@@ -1,7 +1,4 @@
 
-include_directories( ${kode_SOURCE_DIR}/libkdepim )
-
-
 ########### next target ###############
 
 set( wscl_LIB_SRCS
