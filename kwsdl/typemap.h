@@ -44,7 +44,7 @@ class TypeMap
     void setNSManager( NSManager *manager );
 
     bool isBasicType( const QName &typeName );
-    bool isBuildinType( const QName &typeName );
+    bool isBuiltinType( const QName &typeName );
 
     QString localType( const QName &typeName );
     QStringList headers( const QName &typeName );

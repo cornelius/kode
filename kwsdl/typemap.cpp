@@ -69,7 +69,7 @@ TypeMap::TypeMap()
     entry.typeName = "base64Binary";
     entry.localType = "QByteArray";
     entry.headers << "QByteArray";
-    entry.forwardDeclarations << "QString";
+    entry.forwardDeclarations << "QByteArray"; // was QString ?!
     mTypeMap.append( entry );
   }
   {
@@ -289,7 +289,7 @@ bool TypeMap::isBasicType( const QName &typeName )
   return false;
 }
 
-bool TypeMap::isBuildinType( const QName &typeName )
+bool TypeMap::isBuiltinType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
   for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {

@@ -30,7 +30,7 @@ void Converter::convertElement( const XSD::Element *element )
 
   newClass.addInclude( QString(), "Serializer" );
 
-  if ( mTypeMap.isBuildinType( element->type() ) ) {
+  if ( mTypeMap.isBuiltinType( element->type() ) ) {
     QString typeName = mTypeMap.localType( element->type() );
 
     KODE::Code ctorCode;
@@ -138,7 +138,7 @@ void Converter::createElementSerializer( const XSD::Element *element )
   demarshalCode.newLine();
 
   QString typeName = mTypeMap.localType( element->type() );
-  if ( mTypeMap.isBuildinType( element->type() ) ) {
+  if ( mTypeMap.isBuiltinType( element->type() ) ) {
     marshalCode += "QDomElement element = doc.createElement( name );";
     marshalCode += "parent.appendChild( element );";
     marshalCode.newLine();

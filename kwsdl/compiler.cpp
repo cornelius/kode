@@ -21,6 +21,7 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QDebug>
 
 #include <common/fileprovider.h>
 #include <common/messagehandler.h>
@@ -54,20 +55,21 @@ void Compiler::download()
     if ( !file.open( QIODevice::ReadOnly ) ) {
       qDebug( "Unable to download schema file %s", qPrintable( Settings::self()->wsdlUrl() ) );
       provider.cleanUp();
+      QCoreApplication::exit( 1 );
       return;
     }
 
+    //qDebug() << "parsing" << fileName;
     QXmlInputSource source( &file );
     QXmlSimpleReader reader;
     reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
-
-    QDomDocument document( "KWSDL" );
 
     QString errorMsg;
     int errorLine, errorCol;
     QDomDocument doc;
     if ( !doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
       qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
+      QCoreApplication::exit( 2 );
       return;
     }
 
