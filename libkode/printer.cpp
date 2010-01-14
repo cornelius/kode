@@ -2,7 +2,7 @@
     This file is part of kdepim.
 
     Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
-    Copyright (c) 2010 David Faure <faure@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -42,6 +42,7 @@ class Printer::Private
     Code functionHeaders( const Function::List &functions,
                           const QString &className,
                           int access );
+    QString formatType( const QString& type ) const;
 
     Printer *mParent;
     Style mStyle;
@@ -50,6 +51,20 @@ class Printer::Private
     QString mOutputDirectory;
     QString mSourceFile;
 };
+
+QString Printer::Private::formatType( const QString& type ) const
+{
+  QString s = type;
+  if ( s.endsWith( '*' ) || s.endsWith( '&' ) ) {
+      if ( s.at( s.length() - 2 ) != ' ' ) {
+          // Turn "Foo*" into "Foo *" for readability
+          s.insert( s.length() - 1, ' ' );
+      }
+  } else {
+      s += ' ';
+  }
+  return s;
+}
 
 QString Printer::Private::classHeader( const Class &classObject, bool publicMembers, bool nestedClass )
 {
@@ -101,8 +116,6 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code.newLine();
   }
 
-  Function::List functions = classObject.functions();
-
   Class::List nestedClasses = classObject.nestedClasses();
   // Generate nestedclasses
   if ( !classObject.nestedClasses().isEmpty() ) {
@@ -141,6 +154,8 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code.unindent();
     code.newLine();
   }
+
+  Function::List functions = classObject.functions();
 
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Public ) );
 
@@ -196,10 +211,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
         if ( v.isStatic() )
           decl += "static ";
 
-        decl += v.type();
-
-        if ( v.type().right( 1 ) != "*" && v.type().right( 1 ) != "&" )
-          decl += ' ';
+        decl += formatType( v.type() );
 
         decl += v.name() + ';';
 
@@ -230,9 +242,21 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     Class privateClass( functionClassName + "::PrivateDPtr" );
     MemberVariable::List vars = classObject.memberVariables();
     MemberVariable::List::ConstIterator it;
-    for ( it = vars.constBegin(); it != vars.constEnd(); ++it )
-      privateClass.addMemberVariable( *it );
-    code += classHeader( privateClass, true );
+    Function ctor("PrivateDPtr");
+    bool hasInitializers = false;
+    for ( it = vars.constBegin(); it != vars.constEnd(); ++it ) {
+        MemberVariable v = *it;
+        privateClass.addMemberVariable( v );
+        if ( !v.initializer().isEmpty() ) {
+            ctor.addInitializer( v.name() + '(' + v.initializer() + ')' );
+            hasInitializers = true;
+        }
+    }
+    if (hasInitializers)
+        privateClass.addFunction(ctor);
+    code += classHeader( privateClass, true /*publicMembers*/ );
+    if (hasInitializers)
+        code += classImplementation( privateClass );
   }
 
   MemberVariable::List vars = classObject.memberVariables();
@@ -460,10 +484,7 @@ QString Printer::functionSignature( const Function &function,
 
   QString ret = function.returnType();
   if ( !ret.isEmpty() ) {
-    s += ret;
-    if ( ret.right( 1 ) != "*" && ret.right( 1 ) != "&" ) {
-      s += ' ';
-    }
+    s += d->formatType( ret );
   }
 
   if ( forImplementation )

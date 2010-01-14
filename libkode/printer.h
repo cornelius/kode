@@ -21,7 +21,6 @@
 #ifndef KODE_PRINTER_H
 #define KODE_PRINTER_H
 
-#include "automakefile.h"
 #include "code.h"
 #include "file.h"
 #include "style.h"
