@@ -179,6 +179,7 @@ QStringList File::includes() const
 
 void File::insertClass( const Class &newClass )
 {
+  Q_ASSERT(!newClass.name().isEmpty());
   Class::List::Iterator it;
   for ( it = d->mClasses.begin(); it != d->mClasses.end(); ++it ) {
     if ( (*it).name() == newClass.name() ) {

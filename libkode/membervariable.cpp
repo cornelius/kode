@@ -52,6 +52,8 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
   } else if ( name.length() >= 2  && name[ 0 ] == QChar( 'm' ) &&
               ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
     n = name;
+  } else if ( name == "q" || name == "d" ) {
+    n = name;
   } else {
     n = "m";
     n += name[ 0 ].toUpper();
