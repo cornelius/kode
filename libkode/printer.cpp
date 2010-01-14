@@ -252,10 +252,10 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
             hasInitializers = true;
         }
     }
-    if (hasInitializers)
-        privateClass.addFunction(ctor);
+    if ( hasInitializers )
+        privateClass.addFunction( ctor );
     code += classHeader( privateClass, true /*publicMembers*/ );
-    if (hasInitializers)
+    if ( hasInitializers )
         code += classImplementation( privateClass );
   }
 
