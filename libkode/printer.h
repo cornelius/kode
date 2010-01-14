@@ -106,7 +106,7 @@ class KODE_EXPORT Printer
     /**
      * Prints a automake file as defined by @param autoMakefile.
      */
-    void printAutoMakefile( const AutoMakefile &autoMakefile );
+    //void printAutoMakefile( const AutoMakefile &autoMakefile );
 
     /**
      * Returns the function signature for the given @param function

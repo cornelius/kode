@@ -772,6 +772,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   implementation.close();
 }
 
+#if 0 // TODO: port to cmake
 void Printer::printAutoMakefile( const AutoMakefile &am )
 {
   QString filename = "Makefile.am";
@@ -791,3 +792,4 @@ void Printer::printAutoMakefile( const AutoMakefile &am )
 
   ts << am.text();
 }
+#endif
