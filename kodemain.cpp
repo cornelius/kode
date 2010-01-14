@@ -388,7 +388,7 @@ int create( KCmdLineArgs *args )
 
     file.addFileFunction( main );
 
-    file.setFilename( filename );
+    file.setImplementationFilename( filename );
 
     p.printImplementation( file, false );
 

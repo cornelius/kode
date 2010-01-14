@@ -438,11 +438,11 @@ void Creator::printFiles( KODE::Printer &printer )
 {
   if ( externalParser() ) {
     KODE::File parserFile( file() );
-    parserFile.setFilename( file().filename() + "_parser" );
+    parserFile.setFilename( mBaseName + "_parser" );
 
     parserFile.clearCode();
 
-    mParserClass.addHeaderInclude( file().filename() + ".h" );
+    mParserClass.addHeaderInclude( file().filenameHeader() );
     parserFile.insertClass( mParserClass );
 
     if ( mVerbose ) {
@@ -573,6 +573,12 @@ void Creator::create()
   createListTypedefs();
 }
 
+void Creator::setFilename( const QString& baseName )
+{
+  mFile.setFilename( baseName );
+  mBaseName = baseName;
+}
+
 
 ParserCreator::ParserCreator( Creator *c )
   : mCreator( c )
@@ -587,4 +593,3 @@ Creator *ParserCreator::creator() const
 {
   return mCreator;
 }
-

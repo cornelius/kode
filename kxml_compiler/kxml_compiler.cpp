@@ -198,9 +198,7 @@ int main( int argc, char **argv )
   if ( verbose ) {
     kDebug() <<"Begin printing code";
   }
-  KODE::File &f = c.file();
-
-  f.setFilename( baseName );
+  c.setFilename( baseName );
 
   KODE::Printer printer;
   printer.setCreationWarning( true );

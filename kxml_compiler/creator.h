@@ -65,6 +65,7 @@ class Creator
     bool externalWriter() const;
 
     KODE::File &file();
+    void setFilename( const QString& baseName );
 
     void setParserClass( const KODE::Class & );
     KODE::Class &parserClass();
@@ -131,6 +132,7 @@ class Creator
     QStringList mProcessedClasses;
     QStringList mListTypedefs;
 
+    QString mBaseName;
     QString mDtd;
     bool mVerbose;
     bool mUseKde;
