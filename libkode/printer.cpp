@@ -262,7 +262,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     code += mParent->functionSignature( f, functionClassName, true );
 
     if ( !f.initializers().isEmpty() ) {
+      code.indent();
       code += ": " + f.initializers().join( ", " );
+      code.unindent();
     }
 
     code += '{';
