@@ -518,6 +518,7 @@ int create( KCmdLineArgs *args )
   p.printImplementation( file );
 
   if ( createKioslave ) {
+#if 0 // TODO: port to CMake
     // Write automake Makefile
     KODE::AutoMakefile am;
 
@@ -539,7 +540,7 @@ int create( KCmdLineArgs *args )
     am.addTarget( t );
 
     p.printAutoMakefile( am );
-
+#endif
 
     // Write protocol file
     QString protocolFilename = protocol + ".protocol";
