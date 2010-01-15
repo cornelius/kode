@@ -21,6 +21,7 @@
 
 #include <common/nsmanager.h>
 
+#include <QDebug>
 #include "typemap.h"
 
 using namespace KWSDL;
@@ -47,7 +48,7 @@ TypeMap::TypeMap()
     entry.typeName = "any";
     entry.localType = "QString";
     entry.headers << "QString";
-    entry.forwardDeclarations << "QString";
+    entry.headerIncludes << "QString";
     mTypeMap.append( entry );
   }
   {
@@ -58,7 +59,7 @@ TypeMap::TypeMap()
     entry.typeName = "anyURI";
     entry.localType = "QString";
     entry.headers << "QString";
-    entry.forwardDeclarations << "QString";
+    entry.headerIncludes << "QString";
     mTypeMap.append( entry );
   }
   {
@@ -69,7 +70,7 @@ TypeMap::TypeMap()
     entry.typeName = "base64Binary";
     entry.localType = "QByteArray";
     entry.headers << "QByteArray";
-    entry.forwardDeclarations << "QByteArray"; // was QString ?!
+    entry.headerIncludes << "QByteArray";
     mTypeMap.append( entry );
   }
   {
@@ -80,7 +81,7 @@ TypeMap::TypeMap()
     entry.typeName = "binary";
     entry.localType = "QByteArray";
     entry.headers << "QByteArray";
-    entry.forwardDeclarations << "QByteArray";
+    entry.headerIncludes << "QByteArray";
     mTypeMap.append( entry );
   }
   {
@@ -109,7 +110,7 @@ TypeMap::TypeMap()
     entry.typeName = "date";
     entry.localType = "QDate";
     entry.headers << "QDate";
-    entry.forwardDeclarations << "QDate";
+    entry.headerIncludes << "QDate";
     mTypeMap.append( entry );
   }
   {
@@ -120,7 +121,7 @@ TypeMap::TypeMap()
     entry.typeName = "dateTime";
     entry.localType = "QDateTime";
     entry.headers << "QDateTime";
-    entry.forwardDeclarations << "QDateTime";
+    entry.headerIncludes << "QDateTime";
     mTypeMap.append( entry );
   }
   {
@@ -149,7 +150,7 @@ TypeMap::TypeMap()
     entry.typeName = "duration";
     entry.localType = "QString";
     entry.headers << "QString";
-    entry.forwardDeclarations << "QString";
+    entry.headerIncludes << "QString";
     mTypeMap.append( entry );
   }
   {
@@ -169,14 +170,11 @@ TypeMap::TypeMap()
     entry.typeName = "integer";
     entry.localType = "int";
     mTypeMap.append( entry );
-  }
-  {
-    Entry entry;
-    entry.basicType = true;
-    entry.buildinType = true;
-    entry.nameSpace = XMLSchemaURI;
+
     entry.typeName = "int";
-    entry.localType = "int";
+    mTypeMap.append( entry );
+
+    entry.typeName = "nonPositiveInteger";
     mTypeMap.append( entry );
   }
   {
@@ -187,7 +185,7 @@ TypeMap::TypeMap()
     entry.typeName = "language";
     entry.localType = "QString";
     entry.headers << "QString";
-    entry.forwardDeclarations << "QString";
+    entry.headerIncludes << "QString";
     mTypeMap.append( entry );
   }
   {
@@ -207,7 +205,7 @@ TypeMap::TypeMap()
     entry.typeName = "string";
     entry.localType = "QString";
     entry.headers << "QString";
-    entry.forwardDeclarations << "QString";
+    entry.headerIncludes << "QString";
     mTypeMap.append( entry );
   }
   {
@@ -218,7 +216,7 @@ TypeMap::TypeMap()
     entry.typeName = "time";
     entry.localType = "QTime";
     entry.headers << "QTime";
-    entry.forwardDeclarations << "QTime";
+    entry.headerIncludes << "QTime";
     mTypeMap.append( entry );
   }
   {
@@ -228,15 +226,6 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "unsignedByte";
     entry.localType = "unsigned char";
-    mTypeMap.append( entry );
-  }
-  {
-    Entry entry;
-    entry.basicType = true;
-    entry.buildinType = true;
-    entry.nameSpace = XMLSchemaURI;
-    entry.typeName = "unsignedInt";
-    entry.localType = "unsigned int";
     mTypeMap.append( entry );
   }
   {
@@ -255,6 +244,12 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "positiveInteger";
     entry.localType = "unsigned int";
+    mTypeMap.append( entry );
+
+    entry.typeName = "nonNegativeInteger";
+    mTypeMap.append( entry );
+
+    entry.typeName = "unsignedInt";
     mTypeMap.append( entry );
   }
   {
@@ -278,61 +273,58 @@ void TypeMap::setNSManager( NSManager *manager )
   mNSManager = manager;
 }
 
+
+QList<TypeMap::Entry>::ConstIterator TypeMap::typeEntry( const QName &typeName ) const
+{
+    QList<Entry>::ConstIterator it;
+    for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
+      if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
+        break;
+    }
+    return it;
+}
+
 bool TypeMap::isBasicType( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
-      return (*it).basicType;
-  }
-
-  return false;
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  return it != mTypeMap.constEnd() ? (*it).basicType : false;
 }
 
 bool TypeMap::isBuiltinType( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
-      return (*it).buildinType;
-  }
-
-  return false;
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  return it != mTypeMap.constEnd() ? (*it).buildinType : false;
 }
 
 QString TypeMap::localType( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() ) {
-      return (*it).localType;
-    }
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  if ( it == mTypeMap.constEnd() ) {
+      qDebug() << "basic type not found:" << typeName.qname();
+      return QString();
   }
-
-  return QString();
+  return (*it).localType;
 }
 
 QStringList TypeMap::headers( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
-      return (*it).headers;
-  }
-
-  return QStringList();
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  return it != mTypeMap.constEnd() ? (*it).headers : QStringList();
 }
 
 QStringList TypeMap::forwardDeclarations( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
-      return (*it).forwardDeclarations;
-  }
-
-  return QStringList();
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  return it != mTypeMap.constEnd() ? (*it).forwardDeclarations : QStringList();
 }
+
+QStringList TypeMap::headerIncludes( const QName &typeName )
+{
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  return it != mTypeMap.constEnd() ? (*it).headerIncludes : QStringList();
+}
+
+
 
 QString TypeMap::localTypeForAttribute( const QName &typeName )
 {
@@ -367,37 +359,37 @@ QStringList TypeMap::forwardDeclarationsForAttribute( const QName &typeName )
   return QStringList();
 }
 
-QString TypeMap::localTypeForElement( const QName &typeName )
+QList<TypeMap::Entry>::ConstIterator TypeMap::elementEntry( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it;
   for ( it = mElementMap.constBegin(); it != mElementMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
+      break;
+  }
+  return it;
+}
+
+QString TypeMap::localTypeForElement( const QName &typeName )
+{
+  QList<Entry>::ConstIterator it = elementEntry( typeName );
+  if ( it != mElementMap.constEnd() ) {
       return (*it).localType;
   }
 
+  qDebug() << "TypeMap::localTypeForElement: unknown type" << typeName.qname();
   return QString();
 }
 
 QStringList TypeMap::headersForElement( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mElementMap.constBegin(); it != mElementMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
-      return (*it).headers;
-  }
-
-  return QStringList();
+  QList<Entry>::ConstIterator it = elementEntry( typeName );
+  return it != mElementMap.constEnd() ? (*it).headers : QStringList();
 }
 
 QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName )
 {
-  QList<Entry>::ConstIterator it;
-  for ( it = mElementMap.constBegin(); it != mElementMap.constEnd(); ++it ) {
-    if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() )
-      return (*it).forwardDeclarations;
-  }
-
-  return QStringList();
+  QList<Entry>::ConstIterator it = elementEntry( typeName );
+  return it != mElementMap.constEnd() ? (*it).forwardDeclarations : QStringList();
 }
 
 void TypeMap::addSchemaTypes( const XSD::Types &types )
@@ -465,18 +457,27 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   }
 }
 
+QString TypeMap::inputType( const QString &localType, bool isElement ) const
+{
+    QString type = localType;
+    if ( type.startsWith('Q') || isElement ) {
+        type = "const " + type + "&";
+    }
+    return type;
+}
+
 void TypeMap::dump()
 {
   qDebug( "--------------------------------" );
   qDebug( "Types:" );
   for ( int i = 0; i < mTypeMap.count(); ++i ) {
     qDebug( "%s\t%s\t%s\t%s\t%s\t%s",
-            ( mTypeMap[ i ].basicType ? "yes" : "no" ),
+            ( mTypeMap[ i ].basicType ? "basic" : "not basic" ),
               qPrintable( mTypeMap[ i ].nameSpace ),
               qPrintable( mTypeMap[ i ].typeName ),
               qPrintable( mTypeMap[ i ].localType ),
               qPrintable( mTypeMap[ i ].headers.join( "," ) ),
-              qPrintable( mTypeMap[ i ].forwardDeclarations.join( "," ) ) );
+              qPrintable( mTypeMap[ i ].headerIncludes.join( "," ) ) );
   }
 
   qDebug( "--------------------------------" );
@@ -488,7 +489,7 @@ void TypeMap::dump()
               qPrintable( mAttributeMap[ i ].typeName ),
               qPrintable( mAttributeMap[ i ].localType ),
               qPrintable( mAttributeMap[ i ].headers.join( "," ) ),
-              qPrintable( mAttributeMap[ i ].forwardDeclarations.join( "," ) ) );
+              qPrintable( mAttributeMap[ i ].headerIncludes.join( "," ) ) );
   }
 
   qDebug( "--------------------------------" );
@@ -500,6 +501,6 @@ void TypeMap::dump()
               qPrintable( mElementMap[ i ].typeName ),
               qPrintable( mElementMap[ i ].localType ),
               qPrintable( mElementMap[ i ].headers.join( "," ) ),
-              qPrintable( mElementMap[ i ].forwardDeclarations.join( "," ) ) );
+              qPrintable( mElementMap[ i ].headerIncludes.join( "," ) ) );
   }
 }
