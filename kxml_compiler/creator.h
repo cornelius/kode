@@ -48,6 +48,18 @@
 class Creator
 {
   public:
+    class ClassFlags {
+      public:
+        ClassFlags( const Schema::Element &element );
+      
+        bool hasUpdatedTimestamp() const;
+        bool hasId() const;
+
+      private:
+        bool m_hasUpdatedTimestamp;
+        bool m_hasId;
+    };
+  
     enum XmlParserType { XmlParserDom, XmlParserDomExternal,
                          XmlParserCustomExternal };
     enum XmlWriterType { XmlWriterCustom, XmlWriterCustomExternal };
@@ -58,6 +70,8 @@ class Creator
 
     void setUseKde( bool useKde );
     bool useKde() const;
+
+    void setLicense( const KODE::License & );
 
     void setExternalClassPrefix( const QString & );
 
@@ -74,6 +88,7 @@ class Creator
 
     void create();
 
+    void createCrudFunctions( KODE::Class &c, const QString &type );
     void createProperty( KODE::Class &c, const QString &type,
                          const QString &name );
     void createElementFunctions( KODE::Class &c, const Schema::Element &e,

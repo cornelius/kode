@@ -438,7 +438,7 @@ void Printer::Private::addFunctionHeaders( Code& code,
         code.unindent();
         code += " */";
       }
-      code += mParent->functionSignature( *it, className ) + ';';
+      code += mParent->functionSignature( *it, className, false, true ) + ';';
       if ( mLabelsDefineIndent )
         code.unindent();
       needNewLine = true;
@@ -517,11 +517,12 @@ void Printer::setIndentLabels( bool b )
 
 QString Printer::functionSignature( const Function &function,
                                     const QString &className,
-                                    bool forImplementation )
+                                    bool includeClassQualifier,
+                                    bool includeDefaultArguments )
 {
   QString s;
 
-  if ( function.isStatic() && !forImplementation ) {
+  if ( function.isStatic() && !includeClassQualifier ) {
     s += "static ";
   }
 
@@ -530,7 +531,7 @@ QString Printer::functionSignature( const Function &function,
     s += d->formatType( ret );
   }
 
-  if ( forImplementation )
+  if ( includeClassQualifier )
     s += d->mStyle.className( className ) + "::";
 
   if ( className == function.name() ) {
@@ -541,8 +542,17 @@ QString Printer::functionSignature( const Function &function,
   }
 
   s += '(';
-  if ( function.hasArguments() )
-    s += ' ' + function.arguments( forImplementation ).join( ", " ) + ' ';
+  if ( function.hasArguments() ) {
+    QStringList arguments;
+    foreach( Function::Argument argument, function.arguments() ) {
+      if ( includeDefaultArguments ) {
+        arguments.append( argument.headerDeclaration() );
+      } else {
+        arguments.append( argument.bodyDeclaration() );
+      }
+    }
+    s += ' ' + arguments.join( ", " ) + ' ';
+  }
   s += ')';
 
   if ( function.isConst() )

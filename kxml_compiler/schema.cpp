@@ -338,16 +338,30 @@ QString Element::ref() const
   return name();
 }
 
+bool Element::hasRelation( const QString &identifier ) const
+{
+  return hasElementRelation( identifier ) || hasAttributeRelation( identifier );
+}
+
 void Element::addElementRelation( const Relation &r )
 {
   mElementRelations.append( r );
 }
 
-bool Element::hasElementRelation( const Element &element )
+bool Element::hasElementRelation( const Element &element ) const
 {
-  Relation::List::Iterator it;
+  Relation::List::ConstIterator it;
   for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
     if ( (*it).target() == element.identifier() ) return true;
+  }
+  return false;
+}
+
+bool Element::hasElementRelation( const QString &identifier ) const
+{
+  Relation::List::ConstIterator it;
+  for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
+    if ( (*it).target() == identifier ) return true;
   }
   return false;
 }
@@ -374,6 +388,24 @@ bool Element::hasElementRelations() const
 void Element::addAttributeRelation( const Relation &r )
 {
   mAttributeRelations.append( r );
+}
+
+bool Element::hasAttributeRelation( const Attribute &attribute ) const
+{
+  Relation::List::ConstIterator it;
+  for( it = mAttributeRelations.begin(); it != mAttributeRelations.end(); ++it ) {
+    if ( (*it).target() == attribute.identifier() ) return true;
+  }
+  return false;
+}
+
+bool Element::hasAttributeRelation( const QString &identifier ) const
+{
+  Relation::List::ConstIterator it;
+  for( it = mAttributeRelations.begin(); it != mAttributeRelations.end(); ++it ) {
+    if ( (*it).target() == identifier ) return true;
+  }
+  return false;
 }
 
 Relation::List Element::attributeRelations() const

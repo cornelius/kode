@@ -47,6 +47,23 @@
 
 #include <iostream>
 
+Creator::ClassFlags::ClassFlags( const Schema::Element &element )
+{
+  m_hasId = element.hasRelation( "id" );
+  m_hasUpdatedTimestamp = element.hasRelation( "updated_at" );
+}
+    
+bool Creator::ClassFlags::hasUpdatedTimestamp() const
+{
+  return m_hasUpdatedTimestamp;
+}
+
+bool Creator::ClassFlags::hasId() const
+{
+  return m_hasId;
+}
+
+
 Creator::Creator( const Schema::Document &document, XmlParserType p,
   XmlWriterType w )
   : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w ),
@@ -68,6 +85,11 @@ void Creator::setUseKde( bool useKde )
 bool Creator::useKde() const
 {
   return mUseKde;
+}
+
+void Creator::setLicense( const KODE::License &l )
+{
+  mFile.setLicense( l );
 }
 
 void Creator::setExternalClassPrefix( const QString &prefix )
@@ -153,6 +175,16 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
         parserCreatorCustom.createTextElementParser( c, targetElement );
       }
     }
+
+    if ( targetElement.name() == "id" ) {
+      KODE::Function isValid( "isValid", "bool" );
+      isValid.setConst( true );
+      KODE::Code code;
+      code += "return !mId.isEmpty();";
+      isValid.setBody( code );
+      c.addFunction( isValid );
+    }
+
     return;
   }
 
@@ -168,14 +200,11 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
   if ( r.isList() ) {
     registerListTypedef( type );
 
-    QString className = type;
-    type = type += "::List";
-
     c.addHeaderInclude( "QList" );
     name = name + "List";
 
-    KODE::Function adder( "add" + className, "void" );
-    adder.addArgument( "const " + className + " &v" );
+    KODE::Function adder( "add" + type, "void" );
+    adder.addArgument( "const " + type + " &v" );
 
     KODE::Code code;
     code += 'm' + upperFirst( name ) + ".append( v );";
@@ -183,9 +212,90 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     adder.setBody( code );
 
     c.addFunction( adder );
+
+    createProperty( c, type + "::List", name );
+
+    ClassFlags targetClassFlags( targetElement );
+
+    if ( targetClassFlags.hasId() ) {
+      createCrudFunctions( c, type );
+    }
+  } else {
+    createProperty( c, type, name );
+  }
+}
+
+void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
+{
+  if ( !c.hasEnum( "Flags" ) ) {
+    QStringList enumValues;
+    enumValues << "None" << "AutoCreate";
+    KODE::Enum flags( "Flags", enumValues );
+    c.addEnum( flags );
   }
 
-  createProperty( c, type, name );
+  KODE::Function finder( "find" + type, type );
+
+  finder.addArgument( "const QString &id" );
+  finder.addArgument( KODE::Function::Argument( "Flags flags", "None" ) );
+
+  QString listMember = "m" + type + "List";
+
+  KODE::Code code;
+  code += "foreach( " + type + " v, " + listMember + " ) {";
+  code += "  if ( v.id() == id ) return v;";
+  code += "}";
+  code += type + " v;";
+  code += "if ( flags == AutoCreate ) {";
+  code += "  v.setId( id );";
+  code += "}";
+  code += "return v;";
+
+  finder.setBody( code );
+
+  c.addFunction( finder );
+
+  KODE::Function inserter( "insert", "bool" );
+
+  inserter.addArgument( "const " + type + " &v" );
+
+  code.clear();
+
+  code += "int i = 0;";
+  code += "for( ; i < " + listMember + ".size(); ++i ) {";
+  code += "  if ( " + listMember + "[i].id() == v.id() ) {";
+  code += "    " + listMember + "[i] = v;";
+  code += "    return true;";
+  code += "  }";
+  code += "}";
+  code += "if ( i == " + listMember + ".size() ) {";
+  code += "  add" + type + "( v );";
+  code += "}";
+  code += "return true;";
+
+  inserter.setBody( code );
+
+  c.addFunction( inserter );
+
+  KODE::Function remover( "remove", "bool" );
+
+  remover.addArgument( "const " + type + " &v" );
+
+  code.clear();
+
+  code += type + "::List::Iterator it;";
+  code += "for( it = " + listMember + ".begin(); it != " + listMember +
+    ".end(); ++it ) {";
+  code += "  if ( (*it).id() == v.id() ) break;";
+  code += "}";
+  code += "if ( it != " + listMember + ".end() ) {";
+  code += "  " + listMember + ".erase( it );";
+  code += "}";
+  code += "return true;";
+
+  remover.setBody( code );
+
+  c.addFunction( remover );
 }
 
 void Creator::createClass( const Schema::Element &element )

@@ -240,6 +240,12 @@ class KODE_EXPORT Class
     Enum::List enums() const;
 
     /**
+     * Returns true, if the enum with the given name already exists. Returns
+     * false, if not.
+     */
+    bool hasEnum( const QString &name ) const;
+
+    /**
      * Sets the @param documentation of the class object.
      */
     void setDocs( const QString &documentation );

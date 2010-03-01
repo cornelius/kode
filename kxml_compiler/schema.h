@@ -122,6 +122,16 @@ class KSCHEMA_EXPORT Node : public Annotatable
     QStringList mEnumerationValues;
 };
 
+class KSCHEMA_EXPORT Attribute : public Node
+{
+  public:
+    typedef QList<Attribute> List;
+
+    Attribute();
+
+    QString ref() const;
+};
+
 class KSCHEMA_EXPORT Element : public Node
 {
   public:
@@ -136,13 +146,18 @@ class KSCHEMA_EXPORT Element : public Node
     void setText( bool );
     bool text() const;
 
+    bool hasRelation( const QString &identifier ) const;
+
     void addElementRelation( const Relation & );
-    bool hasElementRelation( const Element & );
+    bool hasElementRelation( const Element & ) const;
+    bool hasElementRelation( const QString &identifier ) const;
     Relation &elementRelation( const Element & );
     Relation::List elementRelations() const;
     bool hasElementRelations() const;
 
     void addAttributeRelation( const Relation & );
+    bool hasAttributeRelation( const Attribute & ) const;
+    bool hasAttributeRelation( const QString &identifier ) const;
     Relation::List attributeRelations() const;
     bool hasAttributeRelations() const;
 
@@ -155,16 +170,6 @@ class KSCHEMA_EXPORT Element : public Node
     Relation::List mAttributeRelations;
 
     Relation mNullRelation;
-};
-
-class KSCHEMA_EXPORT Attribute : public Node
-{
-  public:
-    typedef QList<Attribute> List;
-
-    Attribute();
-
-    QString ref() const;
 };
 
 class KSCHEMA_EXPORT Document : public Annotatable

@@ -72,6 +72,8 @@ int main( int argc, char **argv )
   options.add("rng", ki18n("Schema is RelaxNG"));
   options.add("xml", ki18n("Schema is example XML"));
   options.add("use-kde", ki18n("Use KDE classes"));
+  options.add("license <license_id>", ki18n("License of generated files"),
+    "gpl" );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -181,6 +183,17 @@ int main( int argc, char **argv )
   Creator c( schemaDocument, pt );
   c.setVerbose( verbose );
   c.setUseKde( args->isSet( "use-kde" ) );
+
+  if ( args->isSet( "license" ) ) {
+    QString l = args->getOption( "license" );
+    if ( l == "gpl" ) {
+      c.setLicense( KODE::License( KODE::License::GPL ) );
+    } else if ( l == "bsd" ) {
+      c.setLicense( KODE::License( KODE::License::BSD ) );
+    } else if ( l == "lgpl" ) {
+      c.setLicense( KODE::License( KODE::License::LGPL ) );
+    }
+  }
 
   if ( verbose ) {
     kDebug() <<"Create classes";

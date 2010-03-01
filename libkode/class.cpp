@@ -252,6 +252,14 @@ Enum::List Class::enums() const
   return d->mEnums;
 }
 
+bool Class::hasEnum( const QString &name ) const
+{
+  foreach( Enum e, d->mEnums ) {
+    if ( e.name() == name ) return true;
+  }
+  return false;
+}
+
 bool Class::isValid() const
 {
   return !d->mName.isEmpty();
