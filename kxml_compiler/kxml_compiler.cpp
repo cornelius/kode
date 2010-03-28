@@ -74,6 +74,7 @@ int main( int argc, char **argv )
   options.add("use-kde", ki18n("Use KDE classes"));
   options.add("license <license_id>", ki18n("License of generated files"),
     "gpl" );
+  options.add("namespace <name>", ki18n("Namespace for generated classes") );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -183,6 +184,9 @@ int main( int argc, char **argv )
   Creator c( schemaDocument, pt );
   c.setVerbose( verbose );
   c.setUseKde( args->isSet( "use-kde" ) );
+  if ( args->isSet( "namespace" ) ) {
+    c.file().setNameSpace( args->getOption( "namespace" ) );
+  }
 
   if ( args->isSet( "license" ) ) {
     QString l = args->getOption( "license" );

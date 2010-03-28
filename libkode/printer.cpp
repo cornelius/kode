@@ -760,7 +760,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
     out.newLine();
 
   if ( !file.nameSpace().isEmpty() ) {
-    out += "using namespace " + file.nameSpace() + ';';
+    out += "namespace " + file.nameSpace() + " {";
     out.newLine();
   }
 
@@ -819,6 +819,11 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
     QString str = d->classImplementation( *it );
     if ( !str.isEmpty() )
       out += d->classImplementation( *it );
+  }
+
+  if ( !file.nameSpace().isEmpty() ) {
+    out += "}";
+    out.newLine();
   }
 
   // KDAB: removed; 1) for removing .filename(), and 2) qmake would want moc_foo.cpp anyway
