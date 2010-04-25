@@ -73,6 +73,8 @@ class Creator
 
     void setLicense( const KODE::License & );
 
+    void setExportDeclaration( const QString &name );
+
     void setExternalClassPrefix( const QString & );
 
     bool externalParser() const;
@@ -151,6 +153,7 @@ class Creator
     QString mDtd;
     bool mVerbose;
     bool mUseKde;
+    QString mExportDeclaration;
 };
 
 class ParserCreator

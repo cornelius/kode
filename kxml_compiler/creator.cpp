@@ -92,6 +92,11 @@ void Creator::setLicense( const KODE::License &l )
   mFile.setLicense( l );
 }
 
+void Creator::setExportDeclaration( const QString &name )
+{
+  mExportDeclaration = name;
+}
+
 void Creator::setExternalClassPrefix( const QString &prefix )
 {
   mExternalClassPrefix = prefix;
@@ -317,6 +322,10 @@ void Creator::createClass( const Schema::Element &element )
   }
 
   KODE::Class c( className );
+
+  if ( !mExportDeclaration.isEmpty() ) {
+    c.setExportDeclaration( mExportDeclaration );
+  }
 
   mProcessedClasses.append( className );
 

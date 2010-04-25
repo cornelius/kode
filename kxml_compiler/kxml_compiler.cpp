@@ -75,6 +75,7 @@ int main( int argc, char **argv )
   options.add("license <license_id>", ki18n("License of generated files"),
     "gpl" );
   options.add("namespace <name>", ki18n("Namespace for generated classes") );
+  options.add("export <name>", ki18n("Export declaration for generated classes") );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -186,6 +187,9 @@ int main( int argc, char **argv )
   c.setUseKde( args->isSet( "use-kde" ) );
   if ( args->isSet( "namespace" ) ) {
     c.file().setNameSpace( args->getOption( "namespace" ) );
+  }
+  if ( args->isSet( "export" ) ) {
+    c.setExportDeclaration( args->getOption( "export" ) );
   }
 
   if ( args->isSet( "license" ) ) {

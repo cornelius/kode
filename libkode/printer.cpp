@@ -98,7 +98,11 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code += " */";
   }
 
-  QString txt = "class " + mStyle.className( classObject.name() );
+  QString txt = "class ";
+  if ( !classObject.exportDeclaration().isEmpty() ) {
+    txt += classObject.exportDeclaration().toUpper() + "_EXPORT ";
+  }
+  txt += mStyle.className( classObject.name() );
 
   Class::List baseClasses = classObject.baseClasses();
   if ( !baseClasses.isEmpty() ) {

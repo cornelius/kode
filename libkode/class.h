@@ -98,6 +98,17 @@ class KODE_EXPORT Class
     QString nameSpace() const;
 
     /**
+      Set export declaration with given name. This adds an include of a file
+      name_export.h and a prefix to class declaration of NAME_EXPORT.
+    */
+    void setExportDeclaration( const QString &name );
+    
+    /**
+      Return name of export declaration.
+    */
+    QString exportDeclaration() const;
+
+    /**
      * Sets whether the class object shall use a d-pointer to store
      * its member variables.
      */
