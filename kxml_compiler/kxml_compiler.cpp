@@ -76,6 +76,7 @@ int main( int argc, char **argv )
     "gpl" );
   options.add("namespace <name>", ki18n("Namespace for generated classes") );
   options.add("export <name>", ki18n("Export declaration for generated classes") );
+  options.add("create-crud-functions", ki18n("Create functions for dealing with data suitable for CRUD model") );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -185,6 +186,7 @@ int main( int argc, char **argv )
   Creator c( schemaDocument, pt );
   c.setVerbose( verbose );
   c.setUseKde( args->isSet( "use-kde" ) );
+  c.setCreateCrudFunctions( args->isSet( "create-crud-functions" ) );
   if ( args->isSet( "namespace" ) ) {
     c.file().setNameSpace( args->getOption( "namespace" ) );
   }

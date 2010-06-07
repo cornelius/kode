@@ -99,7 +99,8 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
     if ( xml.isStartElement() ) {
 //      qDebug() << "  ELEMENT" << element.identifier();
 //      qDebug() << "  START ELEMENT" << xml.name();
-    
+
+      bool isArray = xml.attributes().value( "type" ) == "array";    
 
       Schema::Element childElement = parseElement( xml );
 
@@ -108,6 +109,9 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
         relation.setMaxOccurs( Schema::Relation::Unbounded );
       } else {
         Schema::Relation relation( childElement.identifier() );
+        if ( isArray ) {
+          relation.setMaxOccurs( Schema::Relation::Unbounded );
+        }
         element.addElementRelation( relation );
 
         if ( !mDocument.hasElement( childElement ) ) {

@@ -71,6 +71,8 @@ class Creator
     void setUseKde( bool useKde );
     bool useKde() const;
 
+    void setCreateCrudFunctions( bool createCrud );
+
     void setLicense( const KODE::License & );
 
     void setExportDeclaration( const QString &name );
@@ -153,6 +155,7 @@ class Creator
     QString mDtd;
     bool mVerbose;
     bool mUseKde;
+    bool mCreateCrudFunctions;
     QString mExportDeclaration;
 };
 

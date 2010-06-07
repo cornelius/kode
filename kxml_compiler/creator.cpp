@@ -72,6 +72,8 @@ Creator::Creator( const Schema::Document &document, XmlParserType p,
   setExternalClassNames();
 }
 
+// FIXME: Handle creation options via flags enum.
+
 void Creator::setVerbose( bool verbose ) 
 {
   mVerbose = verbose;
@@ -85,6 +87,11 @@ void Creator::setUseKde( bool useKde )
 bool Creator::useKde() const
 {
   return mUseKde;
+}
+
+void Creator::setCreateCrudFunctions( bool enabled )
+{
+  mCreateCrudFunctions = enabled;
 }
 
 void Creator::setLicense( const KODE::License &l )
@@ -181,7 +188,7 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
       }
     }
 
-    if ( targetElement.name() == "id" ) {
+    if ( mCreateCrudFunctions && targetElement.name() == "id" ) {
       KODE::Function isValid( "isValid", "bool" );
       isValid.setConst( true );
       KODE::Code code;
@@ -222,7 +229,7 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
 
     ClassFlags targetClassFlags( targetElement );
 
-    if ( targetClassFlags.hasId() ) {
+    if ( mCreateCrudFunctions && targetClassFlags.hasId() ) {
       createCrudFunctions( c, type );
     }
   } else {
