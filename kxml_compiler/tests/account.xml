@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<account>
+  <username>uexample</username>
+  <displayname>User Example</displayname>
+  <email>user@example.com</email>
+  <created_at>2009-05-14 14:51:07 UTC</created_at>
+  <openid_urls>
+    <openid_url>http://user.example.com/</openid_url>
+  </openid_urls>
+  <disk_quota>
+    <available>15GB</available>
+    <used>4%</used>
+  </disk_quota>
+</account>
