@@ -3,6 +3,5 @@
 - Remove custom parser
 - Move XML writing functions to own class
 - Use Qt stream parser and writer
-- Add support for putting generated code in a namespace
-- Add support for setting license and project
+- Add support for setting project
 - Add tests for XML example schema parser.
