@@ -64,7 +64,7 @@ Schema::Document ParserXml::parse( QFile &file )
   return mDocument;
 }
 
-Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
+Schema::Element ParserXml::parseElement( QXmlStreamReader &xml, bool isArray )
 {
   Schema::Element element;
   
@@ -100,9 +100,9 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml )
 //      qDebug() << "  ELEMENT" << element.identifier();
 //      qDebug() << "  START ELEMENT" << xml.name();
 
-      bool isArray = xml.attributes().value( "type" ) == "array";    
+      bool childIsArray = xml.attributes().value( "type" ) == "array";    
 
-      Schema::Element childElement = parseElement( xml );
+      Schema::Element childElement = parseElement( xml, childIsArray );
 
       if ( element.hasElementRelation( childElement ) ) {
         Schema::Relation &relation = element.elementRelation( childElement );

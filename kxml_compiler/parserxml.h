@@ -41,7 +41,7 @@ class KSCHEMA_EXPORT ParserXml
     void setVerbose( bool verbose );
 
   protected:
-    Schema::Element parseElement( QXmlStreamReader & );
+    Schema::Element parseElement( QXmlStreamReader &, bool isArray = false );
 
   private:
     Schema::Document mDocument;
