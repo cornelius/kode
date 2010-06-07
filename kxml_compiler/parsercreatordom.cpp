@@ -235,3 +235,67 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
     creator()->file().insertClass( c );
   }
 }
+
+void ParserCreatorDom::createStringParser( const Schema::Element &element )
+{
+  QString className = creator()->getClassName( element );
+
+  KODE::Class c;
+
+  if ( creator()->externalParser() ) {
+    c = creator()->parserClass();
+  } else {
+    c = creator()->file().findClass( className );
+  }
+
+  if ( creator()->useKde() ) {
+    c.addInclude( "kdebug.h" );
+  } else {
+    c.addInclude( "QtDebug" );
+  } 
+
+  KODE::Function parser( "parseString", className );
+  parser.setStatic( true );
+
+  parser.addArgument( "const QString &xml" );
+  parser.addArgument( "bool *ok" );
+
+  c.addInclude( "QFile" );
+  c.addInclude( "QDomDocument" );
+
+  KODE::Code code;
+
+  code += "QString errorMsg;";
+  code += "int errorLine, errorCol;";
+  code += "QDomDocument doc;";
+  code += "if ( !doc.setContent( xml, false, &errorMsg, &errorLine, &errorCol ) ) {";
+  code += "  " + creator()->errorStream() + " << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
+  code += "  if ( ok ) *ok = false;";
+  code += "  return " + className + "();";
+  code += '}';
+  code += "";
+  code += creator()->debugStream() + " << \"CONTENT:\" << doc.toString();";
+
+  code.newLine();
+
+  code += "bool documentOk;";
+  QString line = className + " c = parseElement";
+  if ( creator()->externalParser() ) line += className;
+  line += "( doc.documentElement(), &documentOk );";
+  code += line;
+
+  code += "if ( ok ) {";
+  code += "  *ok = documentOk;";
+  code += '}';
+  code += "return c;";
+
+  parser.setBody( code );
+
+  c.addFunction( parser );
+
+  if ( creator()->externalParser() ) {
+    creator()->setParserClass( c );
+  } else {
+    creator()->file().insertClass( c );
+  }
+}

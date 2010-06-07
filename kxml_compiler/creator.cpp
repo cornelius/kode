@@ -549,6 +549,7 @@ void Creator::createFileParser( const Schema::Element &element )
   }
 
   parserCreator->createFileParser( element );
+  parserCreator->createStringParser( element );
 
   delete parserCreator;
 }

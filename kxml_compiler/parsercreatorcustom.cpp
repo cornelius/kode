@@ -293,6 +293,11 @@ KODE::Code ParserCreatorCustom::createAttributeScanner( const Schema::Attribute 
   return code;
 }
 
+void ParserCreatorCustom::createStringParser( const Schema::Element & )
+{
+  kWarning() << "ParserCreaterCustom::createStringParser() not implemented";
+}
+
 void ParserCreatorCustom::createFileParser( const Schema::Element &element )
 {
   kDebug() <<"Creator::createFileParserCustom()";

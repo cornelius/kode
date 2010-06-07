@@ -165,6 +165,7 @@ class ParserCreator
     Creator *creator() const;
 
     virtual void createFileParser( const Schema::Element &element ) = 0;
+    virtual void createStringParser( const Schema::Element &element ) = 0;
     virtual void createElementParser( KODE::Class &c,
       const Schema::Element &e ) = 0;
   

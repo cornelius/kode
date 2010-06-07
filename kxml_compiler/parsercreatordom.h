@@ -33,6 +33,7 @@ class ParserCreatorDom : public ParserCreator
     ParserCreatorDom( Creator * );
   
     void createFileParser( const Schema::Element &element );
+    void createStringParser( const Schema::Element &element );
     void createElementParser( KODE::Class &c, const Schema::Element &e );
 };
 
