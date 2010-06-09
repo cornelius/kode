@@ -27,17 +27,13 @@ WriterCreator::WriterCreator( KODE::File &file, Schema::Document &document,
 {
 }
 
-void WriterCreator::createFileWriter( const QString &className, bool externalWriter, const QString &errorStream )
+void WriterCreator::createFileWriter( const QString &className, const QString &errorStream )
 {
   KODE::Class c = mFile.findClass( className );
 
-  c.addInclude( "QtCore/QTextStream" );
+  c.addHeaderInclude( "QtXml/QXmlStreamWriter" );
   c.addInclude( "QtCore/QtDebug" );
   c.addInclude( "QtCore/QFile" );
-
-  if ( externalWriter ) {
-    createIndenter( mFile );
-  }
 
   KODE::Function writer( "writeFile", "bool" );
 
@@ -51,14 +47,18 @@ void WriterCreator::createFileWriter( const QString &className, bool externalWri
   code += "  return false;";
   code += '}';
   code += "";
-  code += "QTextStream ts( &file );";
 
-  code += "ts << \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\\n\";";
+  code += "QXmlStreamWriter xml( &file );";
+  code += "xml.setAutoFormatting( true );";
+  code += "xml.setAutoFormattingIndent( 2 );";
+
+  code += "xml.writeStartDocument( \"1.0\" );";
   if ( !mDtd.isEmpty() ) {
-    code += "ts << \"<!DOCTYPE features SYSTEM \\\"" + mDtd + "\\\">\\n\";";
+    code += "xml.writeDTD( \\\"" + mDtd + "\\\" );";
   }
 
-  code += "ts << writeElement();";
+  code += "writeElement( xml );";
+  code += "xml.writeEndDocument();";
   code += "file.close();";
   code += "";
   code += "return true;";
@@ -73,37 +73,35 @@ void WriterCreator::createFileWriter( const QString &className, bool externalWri
 void WriterCreator::createElementWriter( KODE::Class &c,
   const Schema::Element &element )
 {
-  KODE::Function writer( "writeElement", "QString" );
+  KODE::Function writer( "writeElement", "void" );
+
+  writer.addArgument( "QXmlStreamWriter &xml" );
 
   KODE::Code code;
 
-  code += "QString xml;";
-
-  QString tag = '<' + element.name();
-
-  foreach( Schema::Relation r, element.attributeRelations() ) {
-    Schema::Attribute a = mDocument.attribute( r );
-
-    tag += " " + a.name() + "=\\\"\" + " + Namer::getAccessor( a ) +
-      "() + \"\\\"";
-  }
+  QString tag = element.name();
 
   if ( element.isEmpty() ) {
-    tag += '/';
-  }
-
-  tag += ">";
-
-  if ( element.isEmpty() ) {
-    code += "xml += indent() + \"" + tag + "\\n\";";
+    code += "xml.writeEmptyElement( \"" + tag + "\" );";
   } else if ( element.text() ) {
     code += "if ( !text().isEmpty() ) {";
-    code += "  xml += indent() + \"" + tag + "\" + text() + \"</" +
-      element.name() + ">\\n\";";
+    code += "  xml.writeStartElement( \"" + tag + "\" );";
+    foreach( Schema::Relation r, element.attributeRelations() ) {
+      Schema::Attribute a = mDocument.attribute( r );
+      code += "  xml.writeAttribute( \"" + a.name() + "\", " +
+        Namer::getAccessor( a ) + "() );";
+    }
+    code += "  xml.writeCharacters( text() );";
+    code += "  xml.writeEndElement();";
     code += "}";
   } else {
-    code += "xml += indent() + \"" + tag + "\\n\";";
-    code += "indent( 2 );";
+    code += "xml.writeStartElement( \"" + tag + "\" );";
+
+    foreach( Schema::Relation r, element.attributeRelations() ) {
+      Schema::Attribute a = mDocument.attribute( r );
+      code += "xml.writeAttribute( \"" + a.name() + "\", " +
+        Namer::getAccessor( a ) + "() );";
+    }
 
     foreach( Schema::Relation r, element.elementRelations() ) {
       QString type = Namer::getClassName( r.target() );
@@ -111,7 +109,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
         code += "foreach( " + type + " e, " +
           Namer::getAccessor( r.target() ) + "List() ) {";
         code.indent();
-        code += "xml += e.writeElement();";
+        code += "e.writeElement( xml );";
         code.unindent();
         code += '}';
       } else {
@@ -130,46 +128,21 @@ void WriterCreator::createElementWriter( KODE::Class &c,
             code += "if ( !" + data + ".isEmpty() ) {";
             code.indent();
           }
-          code += "xml += indent() + \"<" + e.name() + ">\" + " +
-            data +
-            " + \"</" + e.name() + ">\\n\";";
+          code += "xml.writeTextElement(  \"" + e.name() + "\", " + data +
+            " );";
           if ( e.type() == Schema::Element::String ) {
             code.unindent();
             code += "}";
           }
         } else {
-          code += "xml += " + Namer::getAccessor( r.target() ) +
-            "().writeElement();";
+          code += Namer::getAccessor( r.target() ) + "().writeElement( xml );";
         }
       }
     }
-
-    code += "indent( -2 );";
-
-    code += "xml += indent() + \"</" + element.name() + ">\\n\";";
+    code += "xml.writeEndElement();";
   }
-
-  code += "return xml;";
 
   writer.setBody( code );
 
   c.addFunction( writer );
 }
-
-void WriterCreator::createIndenter( KODE::File &file )
-{
-  KODE::Function indenter( "indent", "QString" );
-  indenter.addArgument( "int n = 0" );
-
-  KODE::Code code;
-
-  code += "static int i = 0;";
-  code += "i += n;";
-  code += "QString space;";
-  code += "return space.fill( ' ', i );";
-
-  indenter.setBody( code );
-
-  file.addFileFunction( indenter );
-}
-

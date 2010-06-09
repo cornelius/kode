@@ -393,7 +393,7 @@ void Creator::setDtd( const QString &dtd )
 void Creator::createFileWriter( const Schema::Element &element )
 {
   WriterCreator writerCreator( mFile, mDocument, mDtd );
-  writerCreator.createFileWriter( Namer::getClassName( element ), externalWriter(),
+  writerCreator.createFileWriter( Namer::getClassName( element ),
     errorStream() );
 }
 

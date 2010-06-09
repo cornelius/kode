@@ -29,7 +29,7 @@ class WriterCreator
     WriterCreator( KODE::File &, Schema::Document &document, const QString &dtd );
 
     void createFileWriter( const QString &className,
-      bool externalWriter, const QString &errorStream );
+      const QString &errorStream );
 
     void createElementWriter( KODE::Class &c, const Schema::Element &e );
 

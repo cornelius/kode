@@ -1,7 +1,7 @@
 - Default values for int attributes.
 - Code generation hints (e.g. names of classes and functions)
 - Remove custom parser
-- Use Qt stream parser and writer
+- Use Qt stream parser
 - Add support for setting project
 - Add tests for XML example schema parser.
 - Move Namer functions to KODE::Style ?

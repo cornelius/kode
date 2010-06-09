@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <account>
-  <username>uexample</username>
+  <username id="xkj">uexample</username>
   <displayname>User Example</displayname>
   <email>user@example.com</email>
+  <number>123</number>
+  <empty_element/>
   <created_at>2009-05-14 14:51:07 UTC</created_at>
-  <openid_urls>
-    <openid_url>http://user.example.com/</openid_url>
-  </openid_urls>
+  <xpenid_urls updated_at="today">
+    <openid_url>http://user1.example.com/</openid_url>
+  </xpenid_urls>
   <disk_quota>
     <available>15GB</available>
     <used>4%</used>
