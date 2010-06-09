@@ -21,6 +21,8 @@
 
 #include "parsercreatordom.h"
 
+#include "namer.h"
+
 #include <libkode/code.h>
 #include <libkode/printer.h>
 #include <libkode/typedef.h>
@@ -97,7 +99,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
       code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
       code.indent();
 
-      QString className = creator()->getClassName( (*it).target() );
+      QString className = Namer::getClassName( (*it).target() );
 
       Schema::Element targetElement =
         creator()->document().element( (*it).target() );
@@ -145,7 +147,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
-    code += "result.set" + creator()->getClassName( a.name() ) +
+    code += "result.set" + Namer::getClassName( a.name() ) +
             "( element.attribute( \"" + a.name() + "\" ) );";
   }
   code.newLine();
@@ -167,7 +169,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 {
 //   kDebug() <<"Creator::createFileParserDom()";
 
-  QString className = creator()->getClassName( element );
+  QString className = Namer::getClassName( element );
 
   KODE::Class c;
 
@@ -238,7 +240,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 
 void ParserCreatorDom::createStringParser( const Schema::Element &element )
 {
-  QString className = creator()->getClassName( element );
+  QString className = Namer::getClassName( element );
 
   KODE::Class c;
 

@@ -21,6 +21,8 @@
 
 #include "parsercreatorcustom.h"
 
+#include "namer.h"
+
 #include <libkode/code.h>
 #include <libkode/printer.h>
 #include <libkode/typedef.h>
@@ -52,7 +54,7 @@ ParserCreatorCustom::ParserCreatorCustom( Creator *c )
 void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   const Schema::Element &e )
 {
-  KODE::Function parser( "parseElement" + creator()->getClassName( e ),
+  KODE::Function parser( "parseElement" + Namer::getClassName( e ),
     "QString" );
 
   KODE::Code code;
@@ -100,7 +102,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
   stateCode += "if ( c == '>' ) {";
   stateCode += "  state = TEXT;";
   stateCode += "  result += mBuffer.mid( tagStart, mRunning - tagStart + 1 );";
-  stateCode += "} else if ( foundText" + creator()->getClassName( e ) +
+  stateCode += "} else if ( foundText" + Namer::getClassName( e ) +
     "() ) {";
   stateCode += "  return result;";
   stateCode += '}';
@@ -132,7 +134,7 @@ void ParserCreatorCustom::createTextElementParser( KODE::Class &,
 void ParserCreatorCustom::createElementParser( KODE::Class &c,
   const Schema::Element &e )
 {
-  KODE::Function parser( "parseElement" + creator()->getClassName( e ),
+  KODE::Function parser( "parseElement" + Namer::getClassName( e ),
                          c.name() );
 
   KODE::Code code;
@@ -170,7 +172,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
       Schema::Element element = creator()->document().element( r );
       createFoundTextFunction( element.name() );
 
-      QString eName = creator()->getClassName( element );
+      QString eName = Namer::getClassName( element );
       stateCode += "} else if ( foundText" + eName + "() ) {";
       QString line = "  result.";
       if ( element.text() ) line += "set";
@@ -224,7 +226,7 @@ void ParserCreatorCustom::createElementParser( KODE::Class &c,
   if ( !e.attributeRelations().isEmpty() ) {
     foreach( Schema::Relation r, e.attributeRelations() ) {
       Schema::Attribute a = creator()->document().attribute( r );
-      code += "bool found" + creator()->getClassName( a.name() ) + " = false;";
+      code += "bool found" + Namer::getClassName( a.name() ) + " = false;";
     }
     code.newLine();
     code += "int attrValueStart = -1;";
@@ -271,7 +273,7 @@ KODE::Code ParserCreatorCustom::createAttributeScanner( const Schema::Attribute 
 {
   KODE::Code code;
 
-  QString aName = creator()->getClassName( a.name() );
+  QString aName = Namer::getClassName( a.name() );
 
   createFoundTextFunction( a.name() );
 
@@ -302,7 +304,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
 {
   kDebug() <<"Creator::createFileParserCustom()";
 
-  QString className = creator()->getClassName( element );
+  QString className = Namer::getClassName( element );
 
   KODE::Function parser( "parseFile", className );
 
@@ -376,7 +378,7 @@ void ParserCreatorCustom::createFileParser( const Schema::Element &element )
 
 void ParserCreatorCustom::createFoundTextFunction( const QString &text )
 {
-  QString functionName = "foundText" + creator()->getClassName( text );
+  QString functionName = "foundText" + Namer::getClassName( text );
 
   if ( creator()->parserClass().hasFunction( functionName ) ) return;
 

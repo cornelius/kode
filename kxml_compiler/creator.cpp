@@ -21,8 +21,11 @@
 
 #include "creator.h"
 
+#include "namer.h"
+
 #include "parsercreatordom.h"
 #include "parsercreatorcustom.h"
+#include "writercreator.h"
 
 #include <libkode/code.h>
 #include <libkode/printer.h>
@@ -122,23 +125,13 @@ KODE::File &Creator::file()
   return mFile;
 }
 
-QString Creator::upperFirst( const QString &str ) const
-{
-  return KODE::Style::upperFirst( str );
-}
-
-QString Creator::lowerFirst( const QString &str ) const
-{
-  return KODE::Style::lowerFirst( str );
-}
-
 void Creator::createProperty( KODE::Class &c, const QString &type,
   const QString &name )
 {
-  KODE::MemberVariable v( getClassName( name ), type );
+  KODE::MemberVariable v( Namer::getClassName( name ), type );
   c.addMemberVariable( v );
 
-  KODE::Function mutator( getMutator( name ), "void" );
+  KODE::Function mutator( Namer::getMutator( name ), "void" );
   if ( type == "int" ) {
     mutator.addArgument( type + " v" );
   } else {
@@ -147,7 +140,7 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
   mutator.addBodyLine( v.name() + " = v;" );
   c.addFunction( mutator );
 
-  KODE::Function accessor( getAccessor( name ), type );
+  KODE::Function accessor( Namer::getAccessor( name ), type );
   accessor.setConst( true );
   accessor.addBodyLine( "return " + v.name() + ';' );
   c.addFunction( accessor );
@@ -157,6 +150,8 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
   const Schema::Relation &r )
 {
   Schema::Element targetElement = mDocument.element( r );
+
+  QString className = Namer::getClassName( targetElement );
 
 #if 1
   if ( mVerbose ) {
@@ -175,12 +170,12 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
       kDebug() << "  FLATTEN";
     }
     if ( targetElement.type() == Schema::Element::Integer ) {
-      createProperty( c, "int", getClassName( targetElement ) );
+      createProperty( c, "int", className );
     } else if ( targetElement.type() == Schema::Element::Date ) {
-      createProperty( c, "QDate", getClassName( targetElement ) );
+      createProperty( c, "QDate", className );
       c.addHeaderInclude( "QDate" );
     } else {
-      createProperty( c, "QString", getClassName( targetElement ) );
+      createProperty( c, "QString", className );
       c.addHeaderInclude( "QString" );
       if ( mXmlParserType == XmlParserCustomExternal ) {
         ParserCreatorCustom parserCreatorCustom( this );
@@ -200,40 +195,38 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     return;
   }
 
-  QString type = getClassName( targetElement );
-
-  if ( !mFile.hasClass( type ) ) {
+  if ( !mFile.hasClass( className ) ) {
     createClass( targetElement );
   } else {
   }
 
-  QString name = lowerFirst( type );
+  QString name = KODE::Style::lowerFirst( className );
 
   if ( r.isList() ) {
-    registerListTypedef( type );
+    registerListTypedef( className );
 
     c.addHeaderInclude( "QList" );
     name = name + "List";
 
-    KODE::Function adder( "add" + type, "void" );
-    adder.addArgument( "const " + type + " &v" );
+    KODE::Function adder( "add" + className, "void" );
+    adder.addArgument( "const " + className + " &v" );
 
     KODE::Code code;
-    code += 'm' + upperFirst( name ) + ".append( v );";
+    code += 'm' + KODE::Style::upperFirst( name ) + ".append( v );";
 
     adder.setBody( code );
 
     c.addFunction( adder );
 
-    createProperty( c, type + "::List", name );
+    createProperty( c, className + "::List", name );
 
     ClassFlags targetClassFlags( targetElement );
 
     if ( mCreateCrudFunctions && targetClassFlags.hasId() ) {
-      createCrudFunctions( c, type );
+      createCrudFunctions( c, className );
     }
   } else {
-    createProperty( c, type, name );
+    createProperty( c, className, name );
   }
 }
 
@@ -312,7 +305,7 @@ void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
 
 void Creator::createClass( const Schema::Element &element )
 {
-  QString className = getClassName( element  );
+  QString className = Namer::getClassName( element  );
 
   if ( mVerbose ) {
     kDebug() <<"Creator::createClass()" << element.identifier() << className;
@@ -350,93 +343,11 @@ void Creator::createClass( const Schema::Element &element )
   }
 
   createElementParser( c, element );
-  createElementWriter( c, element );
+  
+  WriterCreator writerCreator( mFile, mDocument, mDtd );
+  writerCreator.createElementWriter( c, element );
 
   mFile.insertClass( c );
-}
-
-void Creator::createElementWriter( KODE::Class &c,
-  const Schema::Element &element )
-{
-  KODE::Function writer( "writeElement", "QString" );
-
-  KODE::Code code;
-
-  code += "QString xml;";
-
-  QString tag = '<' + element.name();
-
-  foreach( Schema::Relation r, element.attributeRelations() ) {
-    Schema::Attribute a = mDocument.attribute( r );
-
-    tag += " " + a.name() + "=\\\"\" + " + getAccessor( a ) +
-      "() + \"\\\"";
-  }
-
-  if ( element.isEmpty() ) {
-    tag += '/';
-  }
-
-  tag += ">";
-
-  if ( element.isEmpty() ) {
-    code += "xml += indent() + \"" + tag + "\\n\";";
-  } else if ( element.text() ) {
-    code += "if ( !text().isEmpty() ) {";
-    code += "  xml += indent() + \"" + tag + "\" + text() + \"</" +
-      element.name() + ">\\n\";";
-    code += "}";
-  } else {
-    code += "xml += indent() + \"" + tag + "\\n\";";
-    code += "indent( 2 );";
-
-    foreach( Schema::Relation r, element.elementRelations() ) {
-      QString type = getClassName( r.target() );
-      if ( r.isList() ) {
-        code += "foreach( " + type + " e, " + getAccessor( r.target() ) + "List() ) {";
-        code.indent();
-        code += "xml += e.writeElement();";
-        code.unindent();
-        code += '}';
-      } else {
-        Schema::Element e = mDocument.element( r );
-        QString data;
-        QString accessor = getAccessor( e ) + "()";
-        if ( e.type() == Schema::Element::Integer ) {
-          data = "QString::number( " + accessor + " )";
-        } else if ( e.type() == Schema::Element::Date ) {
-          data = accessor + ".toString( Qt::ISODate )";
-        } else {
-          data = accessor;
-        }
-        if ( e.text() && !e.hasAttributeRelations() ) {
-          if ( e.type() == Schema::Element::String ) {
-            code += "if ( !" + data + ".isEmpty() ) {";
-            code.indent();
-          }
-          code += "xml += indent() + \"<" + e.name() + ">\" + " +
-            data +
-            " + \"</" + e.name() + ">\\n\";";
-          if ( e.type() == Schema::Element::String ) {
-            code.unindent();
-            code += "}";
-          }
-        } else {
-          code += "xml += " + getAccessor( r.target() ) + "().writeElement();";
-        }
-      }
-    }
-
-    code += "indent( -2 );";
-
-    code += "xml += indent() + \"</" + element.name() + ">\\n\";";
-  }
-
-  code += "return xml;";
-
-  writer.setBody( code );
-
-  c.addFunction( writer );
 }
 
 void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
@@ -474,23 +385,6 @@ void Creator::createListTypedefs()
   }
 }
 
-void Creator::createIndenter( KODE::File &file )
-{
-  KODE::Function indenter( "indent", "QString" );
-  indenter.addArgument( "int n = 0" );
-
-  KODE::Code code;
-
-  code += "static int i = 0;";
-  code += "i += n;";
-  code += "QString space;";
-  code += "return space.fill( ' ', i );";
-
-  indenter.setBody( code );
-
-  file.addFileFunction( indenter );
-}
-
 void Creator::setDtd( const QString &dtd )
 {
   mDtd = dtd;
@@ -498,47 +392,9 @@ void Creator::setDtd( const QString &dtd )
 
 void Creator::createFileWriter( const Schema::Element &element )
 {
-  QString className = getClassName( element );
-
-  KODE::Class c = mFile.findClass( className );
-
-  c.addInclude( "QtCore/QTextStream" );
-  c.addInclude( "QtCore/QtDebug" );
-  c.addInclude( "QtCore/QFile" );
-
-  if ( !externalWriter() ) {
-    createIndenter( mFile );
-  }
-
-  KODE::Function writer( "writeFile", "bool" );
-
-  writer.addArgument( "const QString &filename" );
-
-  KODE::Code code;
-
-  code += "QFile file( filename );";
-  code += "if ( !file.open( QIODevice::WriteOnly ) ) {";
-  code += "  " + errorStream() + " << \"Unable to open file '\" << filename << \"'\";";
-  code += "  return false;";
-  code += '}';
-  code += "";
-  code += "QTextStream ts( &file );";
-
-  code += "ts << \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\\n\";";
-  if ( !mDtd.isEmpty() ) {
-    code += "ts << \"<!DOCTYPE features SYSTEM \\\"" + mDtd + "\\\">\\n\";";
-  }
-
-  code += "ts << writeElement();";
-  code += "file.close();";
-  code += "";
-  code += "return true;";
-
-  writer.setBody( code );
-
-  c.addFunction( writer );
-
-  mFile.insertClass( c );
+  WriterCreator writerCreator( mFile, mDocument, mDtd );
+  writerCreator.createFileWriter( Namer::getClassName( element ), externalWriter(),
+    errorStream() );
 }
 
 void Creator::createFileParser( const Schema::Element &element )
@@ -639,60 +495,10 @@ QString Creator::debugStream() const
   }
 }
 
-QString Creator::getClassName( const Schema::Attribute &attribute ) const
-{
-  return getClassName( attribute.name() );
-}
-
-QString Creator::getClassName( const Schema::Element &element ) const
-{
-  return getClassName( element.name() );
-}
-
-QString Creator::getClassName( const QString &elementName ) const
-{
-  QString name;
-  QStringList parts = elementName.split( "_" );
-  foreach( QString part, parts ) {
-    name += upperFirst( part );
-  }
-  return name;
-}
-
-QString Creator::getAccessor( const Schema::Element &element ) const
-{
-  return getAccessor( element.name() );
-}
-
-QString Creator::getAccessor( const Schema::Attribute &attribute ) const
-{
-  return getAccessor( attribute.name() );
-}
-
-QString Creator::getAccessor( const QString &elementName ) const
-{
-  return lowerFirst( getClassName( elementName ) );
-}
-
-QString Creator::getMutator( const Schema::Element &element ) const
-{
-  return getMutator( element.name() );
-}
-
-QString Creator::getMutator( const Schema::Attribute &attribute ) const
-{
-  return getMutator( attribute.name() );
-}
-
-QString Creator::getMutator( const QString &elementName ) const
-{
-  return "set" + getClassName( elementName );
-}
-
 void Creator::create()
 {
   Schema::Element startElement = mDocument.startElement();
-  setExternalClassPrefix( upperFirst( startElement.name() ) );
+  setExternalClassPrefix( KODE::Style::upperFirst( startElement.name() ) );
   createFileParser( startElement );
 //  setDtd( schemaFilename.replace( "rng", "dtd" ) );
   createFileWriter( startElement );
