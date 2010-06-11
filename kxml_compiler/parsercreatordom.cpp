@@ -211,8 +211,6 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
   code += '}';
-  code += "";
-  code += creator()->debugStream() + " << \"CONTENT:\" << doc.toString();";
 
   code.newLine();
 
@@ -275,8 +273,6 @@ void ParserCreatorDom::createStringParser( const Schema::Element &element )
   code += "  if ( ok ) *ok = false;";
   code += "  return " + className + "();";
   code += '}';
-  code += "";
-  code += creator()->debugStream() + " << \"CONTENT:\" << doc.toString();";
 
   code.newLine();
 
