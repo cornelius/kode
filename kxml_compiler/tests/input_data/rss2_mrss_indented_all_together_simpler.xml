@@ -1,0 +1,161 @@
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"
+  xmlns:georss="http://www.georss.org/georss"
+  xmlns:gml="http://www.opengis.net/gml"
+  xmlns:dcterms="http://purl.org/dc/terms/" 
+  xmlns:gm="http://www.google.com/schemas/gm/1.1">
+    
+    <channel>
+        <title>Song Site</title>
+        <description>Media RSS example with new fields added in v1.5.0</description>
+        <link>http://www.foo.com</link>
+        <language>en-us</language>
+        <copyright>Copyright Smogrock all rights limited</copyright>
+        <managingEditor>smogzer@gmail.com</managingEditor>
+        <webMaster>smogzer@gmail.com</webMaster>
+        <pubDate>2010-06-10</pubDate>
+        <lastBuildDate>2010-06-10</lastBuildDate>
+        <category>interaction</category>
+        <generator>smogrock feed generator</generator>
+        <docs>http://smogrock.com</docs>
+        <cloud domain="rpc.sys.com" port="80" path="/RPC2" registerProcedure="pingMe" protocol="soap"/>
+        <ttl>60</ttl>
+        <image>
+            <url>http://smogrock.com/logo.png</url><title>Smogrock logo</title><link>http://smogrock.com/</link>
+            <width>88</width><height>31</height>
+            <!--		Maximum value for width is 144, default value is 88.
+		Maximum value for height is 400, default value is 31.-->
+        </image>
+        <rating>all</rating>
+        <textInput>
+            <title>seach smogrock components</title><description>search for components</description><name>search</name>
+            <link>http://smogrock.com/search/</link>
+        </textInput>
+        <skipHours>23</skipHours>
+        <skipDays>59</skipDays>
+        <item>
+            <title>great site</title>
+            <link>http://smogrock.com</link>
+            <description>smog rock item</description>
+            <author>smogzer@gmail.com</author>
+	    <category domain="http://www.fool.com/cusips">MSFT</category>
+	    <!--<comments>http://smogrock.com/comments</comments>-->
+	    <enclosure url="http://www.scripting.com/mp3s/weatherReportSuite.mp3" length="12216320" type="audio/mpeg"/>
+	    <guid isPermaLink="true">http://inessential.com/2002/09/01.php#a2</guid>
+            <pubDate>2008-10-25</pubDate>
+	    <source url="http://static.userland.com/tomalak/links2.xml">Tomalak's Realm</source>
+            <media:content
+  url="http://www.foo.com/movie.mov"
+  fileSize="12216320"
+  type="video/quicktime"
+  medium="video"
+  isDefault="true"
+  expression="full"
+  bitrate="128"
+  framerate="25"
+  samplingrate="44.1"
+  channels="2"
+  duration="185"
+  height="200"
+  width="300"
+  lang="en">
+                <media:rating scheme="urn:simple">adult</media:rating>
+                <media:title type="plain">The Judy's -- The Moo Song</media:title>
+                <media:description type="plain">This was some really bizarre band I listened to as a young lad.</media:description>
+                <media:keywords>kitty, cat, big dog, yarn, fluffy</media:keywords>
+                <media:thumbnail url="http://www.foo.com/keyframe.jpg" width="75" height="50" time="12:05:01.123" />
+		<!--<media:category scheme="http://search.yahoo.com/mrss/category_ schema">music/artist/album/song</media:category>-->
+                <media:hash algo="md5">dfdec888b72151965a34b4b59031290a</media:hash>
+                <media:copyright url="http://blah.com/additional-info.html">2005 FooBar Media</media:copyright>
+                <media:text type="plain" lang="en" start="00:00:03.000" end="00:00:10.000"> Oh, say, can you see</media:text>
+                <media:restriction relationship="allow" type="country">au us</media:restriction>
+                <media:price type="package" info="http://www.dummy.jp/package_info.html" price="19.99" currency="EUR" />
+                <media:subTitle type="application/smil" lang="en-us" href="http://www.example.org/subtitle.smil" />
+                <media:location description="My house" start="00:01" end="01:00">
+                    <dcterms:valid>start=2006-05-19T00:00+01:00; end=2006-06-19T00:00+01:00; scheme=W3C-DTF;</dcterms:valid>
+                        <georss:where>
+                            <gml:Point>
+                                <gml:pos>35.669998 139.770004</gml:pos>
+                            </gml:Point>
+                        </georss:where>
+                    </media:location>
+                <media:player url="http://www.foo.com/player?id=1111" height="200" width="400" />
+                <media:hash algo="md5">dfdec888b72151965a34b4b59031290a</media:hash>
+                <media:credit role="producer">producer's name</media:credit>
+                <media:credit role="artist">artist's name</media:credit>
+                <dcterms:valid>
+                    start=2002-10-13T09:00+01:00;
+                    end=2002-10-17T17:00+01:00;
+                    scheme=W3C-DTF
+                </dcterms:valid>
+            </media:content>
+            <media:community>
+                <media:starRating average="3.5" count="20" min="1" max="10" />
+                <media:statistics views="5" favorites="5" />
+                <media:tags>news: 5, abc:3</media:tags>
+            </media:community>
+	    <!--            <media:comments>
+                <media:comment>comment1</media:comment>
+                <media:comment>comment2</media:comment>
+	</media:comments>-->
+            <media:embed url="http://www.foo.com/player.swf" width="512" height="323">
+                <media:param name="type">application/x-shockwave-flash</media:param>
+                <media:param name="width">512</media:param>
+                <media:param name="height">323</media:param>
+                <media:param name="allowFullScreen">true</media:param>
+                <media:param name="flashVars">
+                    id=12345&amp;vid=678912i&amp;lang=en-us&amp;intl=us&amp;thumbUrl=http://www.foo.com/thumbnail.jpg
+                </media:param>
+            </media:embed>
+	    <!--<media:responses>
+                <media:response>http://www.response1.com</media:response>
+                <media:response>http://www.response2.com</media:response>
+	</media:responses>
+	-->
+	    <!--            <media:backLinks>
+                <media:backLink>http://www.backlink1.com</media:backLink>
+                <media:backLink>http://www.backlink2.com</media:backLink>
+	</media:backLinks>
+	-->
+            <media:status state="active" />
+            <media:price type="rent" price="19.99" currency="EUR" />
+            <media:license type="text/html" href="http://www.licensehost.com/license"> Sample license for a video</media:license>
+            <media:subTitle type="application/smil" lang="en-us" href="http://www.foo.org/subtitle.smil" />
+            <media:peerLink type="application/x-bittorrent " href="http://www.foo.org/sampleFile.torrent" />
+            <media:restriction type="sharing" relationship="deny" />
+            <media:scenes>
+                <media:scene>
+                    <sceneTitle>sceneTitle1</sceneTitle>
+                    <sceneDescription>sceneDesc1</sceneDescription>
+                    <sceneStartTime>00:15</sceneStartTime>
+                    <sceneEndTime>00:45</sceneEndTime>
+                </media:scene>
+            </media:scenes>
+            <media:group>
+                <media:content url="http://www.foo.com/song64kbps.mp3"
+          fileSize="1000" bitrate="64" type="audio/mpeg"
+          isDefault="true" expression="full" />
+                
+                <media:content url="http://www.foo.com/song128kbps.mp3"
+          fileSize="2000" bitrate="128" type="audio/mpeg"
+          expression="full" />
+                
+                <media:content url="http://www.foo.com/song256kbps.mp3"
+          fileSize="4000" bitrate="256" type="audio/mpeg"
+          expression="full" />
+                
+                <media:content url="http://www.foo.com/song512kbps.mp3.torrent"
+          fileSize="8000" type="application/x-bittorrent;enclosed=audio/mpeg"
+          expression="full" />
+                <media:content url="http://www.foo.com/song.wav" fileSize="16000" type="audio/x-wav" expression="full" />
+                <media:credit role="musician">band member 1</media:credit>
+                <media:credit role="musician">band member 2</media:credit>
+                <media:category>music/artist name/album/song</media:category>
+                <media:rating>nonadult</media:rating>
+            </media:group>
+            <media:content url="http://www.foo.com/trailer.mov" fileSize="12216320" type="video/quicktime" expression="sample" />
+        </item>
+	<item></item>
+    </channel>
+</rss>
+
+
