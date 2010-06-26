@@ -1,0 +1,7 @@
+This directory contains the sources for kxml_compiler, a tool, which generates
+C++ code from XML descriptions, either RelaxNG or W3C schemas, or an example XML
+file.
+
+The tests directory contains some unit tests. Please run them by setting
+KDE4_BUILD_TESTS to ON, and running "make test" after the make to create the
+kxml_compiler executable.

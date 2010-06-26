@@ -20,7 +20,6 @@
 */
 
 #include "kde-holidays.h"
-#include "kde-holidays_parser.h"
 
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
@@ -50,10 +49,8 @@ int main( int argc, char **argv )
 
   QString filename = args->arg( 0 );
 
-  HolidayCalendarParser parser;
-
   bool ok;
-  HolidayCalendar holidays = parser.parseFile( filename, &ok );
+  HolidayCalendar holidays = HolidayCalendar::parseFile( filename, &ok );
 
   if ( !ok ) {
     kError() <<"Parse error";

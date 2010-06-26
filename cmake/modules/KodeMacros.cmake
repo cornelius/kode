@@ -11,17 +11,15 @@ MACRO (KODE_ADD_XML_PARSER _sources)
 
     set( _source_cpp ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.cpp )
     set( _source_h   ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.h )
-    set( _parser_cpp ${CMAKE_CURRENT_BINARY_DIR}/${_basename}_parser.cpp )
-    set( _parser_h   ${CMAKE_CURRENT_BINARY_DIR}/${_basename}_parser.h )
 
     add_custom_command(
-      OUTPUT ${_source_cpp} ${_source_h} ${_parser_cpp} ${_parser_h}
+      OUTPUT ${_source_cpp} ${_source_h}
       COMMAND ${KODE_XML_COMPILER_EXECUTABLE}
       ARGS --external-parser ${_schema}
       MAIN_DEPENDENCY ${_schema}
       DEPENDS ${_KODE_XML_COMPILER_DEP}
     )
 
-    set( ${_sources} ${${_sources}} ${_source_cpp} ${_parser_cpp} )
+    set( ${_sources} ${${_sources}} ${_source_cpp} )
   endforeach (_current_file)
 ENDMACRO (KODE_ADD_XML_PARSER)

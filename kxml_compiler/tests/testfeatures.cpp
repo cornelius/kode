@@ -20,7 +20,6 @@
 */
 
 #include "kde-features.h"
-#include "kde-features_parser.h"
 
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
@@ -75,10 +74,8 @@ int main( int argc, char **argv )
 
   QString filename = args->arg( 0 );
 
-  FeaturesParser parser;
-
   bool ok;
-  Features features = parser.parseFile( filename, &ok );
+  Features features = Features::parseFile( filename, &ok );
 
   if ( !ok ) {
     kError() <<"Parse error";
