@@ -1,7 +1,5 @@
 #include "testparser.h"
 
-#include "account.h"
-
 #include "qtest_kde.h"
 
 QTEST_KDEMAIN_CORE( TestParser )

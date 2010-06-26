@@ -1,5 +1,4 @@
 #include "account.h"
-#include "account_parser.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -24,7 +23,7 @@ int main( int argc, char **argv )
   QString filename = args->arg( 0 );
 
   bool ok;
-  Account account = AccountParser::parseFile( filename, &ok );
+  Account account = Account::parseFile( filename, &ok );
   
   if ( !ok ) {
     kError() <<"Parse error";
