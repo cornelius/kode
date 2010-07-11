@@ -126,14 +126,7 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml, bool isArray )
 
         QString text = xml.text().toString();
 
-        QRegExp dateR( "\\d{8}" );
-        if ( dateR.exactMatch( text ) ) {
-          element.setType( Schema::Element::Date );
-        } else {
-          bool ok;
-          text.toInt( &ok );
-          if ( ok ) element.setType( Schema::Element::Integer );
-        }
+        element.setType( detectType( text ) );
       } else {
         element.setType( Schema::Element::ComplexType );
       }
@@ -142,4 +135,20 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml, bool isArray )
   }
 
   return element;
+}
+
+Schema::Node::Type ParserXml::detectType( const QString &text )
+{
+  Schema::Node::Type type = Schema::Node::String;
+
+  QRegExp dateR( "\\d{8}" );
+  if ( dateR.exactMatch( text ) ) {
+    type = Schema::Node::Date;
+  } else {
+    bool ok;
+    text.toInt( &ok );
+    if ( ok ) type = Schema::Node::Integer;
+  }
+  
+  return type;
 }

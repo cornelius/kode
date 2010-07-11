@@ -43,6 +43,8 @@ class KSCHEMA_EXPORT ParserXml
   protected:
     Schema::Element parseElement( QXmlStreamReader &, bool isArray = false );
 
+    Schema::Node::Type detectType( const QString &text );
+
   private:
     Schema::Document mDocument;
     bool mVerbose;
