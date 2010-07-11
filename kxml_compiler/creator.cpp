@@ -335,7 +335,11 @@ void Creator::createClass( const Schema::Element &element )
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
-    createProperty( c, "QString", a.name() );
+    if ( a.type() == Schema::Element::DateTime ) {
+      createProperty( c, "QDateTime", a.name() );
+    } else {
+      createProperty( c, "QString", a.name() );
+    }
   }
 
   if ( element.text() ) {

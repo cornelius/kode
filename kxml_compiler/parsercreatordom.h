@@ -35,6 +35,9 @@ class ParserCreatorDom : public ParserCreator
     void createFileParser( const Schema::Element &element );
     void createStringParser( const Schema::Element &element );
     void createElementParser( KODE::Class &c, const Schema::Element &e );
+
+  protected:
+    QString dataToStringConverter( const QString &data, Schema::Node::Type );
 };
 
 #endif

@@ -80,7 +80,7 @@ Schema::Element ParserXml::parseElement( QXmlStreamReader &xml, bool isArray )
   foreach( QXmlStreamAttribute attribute, attributes ) {
 //          qDebug() << "  ATTRIBUTE" << attribute.name();
     Schema::Attribute a;
-    a.setType( Schema::Node::String );
+    a.setType( detectType( attribute.value().toString() ) );
     a.setIdentifier( attribute.name().toString() );
     a.setName( attribute.name().toString() );
 
@@ -142,8 +142,12 @@ Schema::Node::Type ParserXml::detectType( const QString &text )
   Schema::Node::Type type = Schema::Node::String;
 
   QRegExp dateR( "\\d{8}" );
+  QRegExp dateTimeR( "\\d{8}T\\d{6}Z" );
+
   if ( dateR.exactMatch( text ) ) {
     type = Schema::Node::Date;
+  } else if ( dateTimeR.exactMatch( text ) ) {
+    type = Schema::Node::DateTime; 
   } else {
     bool ok;
     text.toInt( &ok );

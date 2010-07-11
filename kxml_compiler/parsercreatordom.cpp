@@ -105,14 +105,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
         creator()->document().element( (*it).target() );
 
       if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
-        QString data;
-        if ( targetElement.type() == Schema::Element::Integer ) {
-          data = "e.text().toInt()";
-        } else if ( targetElement.type() == Schema::Element::Date ) {
-          data = "QDate::fromString( e.text(), Qt::ISODate )";
-        } else {
-          data = "e.text()";
-        }
+        QString data = dataToStringConverter( "e.text()", targetElement.type() );
         code += "result.set" + className + "( " + data + " );";
       } else {
         code += "bool ok;";
@@ -152,8 +145,11 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
+
+    QString data = dataToStringConverter( "element.attribute( \"" + a.name() + "\" )", a.type() );
+
     code += "result.set" + Namer::getClassName( a.name() ) +
-            "( element.attribute( \"" + a.name() + "\" ) );";
+            "( " + data + " );";
   }
   code.newLine();
 
@@ -301,4 +297,20 @@ void ParserCreatorDom::createStringParser( const Schema::Element &element )
   } else {
     creator()->file().insertClass( c );
   }
+}
+
+QString ParserCreatorDom::dataToStringConverter( const QString &data,
+  Schema::Node::Type type )
+{
+  QString converter;
+  if ( type == Schema::Element::Integer ) {
+    converter = data + ".toInt()";
+  } else if ( type == Schema::Element::Date ) {
+    converter = "QDate::fromString( " + data + ", Qt::ISODate )";
+  } else if ( type == Schema::Element::DateTime ) {
+    converter = "QDateTime::fromString( " + data + ", \"yyyyMMddThhmmssZ\" )";
+  } else {
+    converter = data;
+  }
+  return converter;
 }

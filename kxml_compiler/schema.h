@@ -90,7 +90,7 @@ class KSCHEMA_EXPORT Node : public Annotatable
 {
   public:
     enum Type { None, String, NormalizedString, Token, Integer, Date,
-      Enumeration, ComplexType };
+      Enumeration, ComplexType, DateTime };
     Node();
     virtual ~Node();
 

@@ -32,10 +32,8 @@ int main( int argc, char **argv )
     kDebug() << "DISPLAY NAME" << account.displayname();
     QDate date = account.creationDate().date();
     kDebug() << date;
-#if 0
     QDateTime dateTime = account.email().updatedAt();
     kDebug() << dateTime;
-#endif
     account.writeFile( "account.out.xml" );
     int exitCode = system( QString( "diff %1 account.out.xml" ).arg( filename ).toUtf8() );
     if ( exitCode != 0 ) exit( 1 );

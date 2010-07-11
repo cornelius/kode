@@ -21,6 +21,8 @@
 
 #include "namer.h"
 
+#include <QDebug>
+
 WriterCreator::WriterCreator( KODE::File &file, Schema::Document &document,
   const QString &dtd )
   : mFile( file ), mDocument( document ), mDtd( dtd )
@@ -92,8 +94,14 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     code += "  xml.writeStartElement( \"" + tag + "\" );";
     foreach( Schema::Relation r, element.attributeRelations() ) {
       Schema::Attribute a = mDocument.attribute( r );
+
+      QString data = Namer::getAccessor( a ) + "()";
+      if ( a.type() == Schema::Node::DateTime ) {
+        data = data + ".toString( \"yyyyMMddThhmmssZ\" )";
+      }      
+    
       code += "  xml.writeAttribute( \"" + a.name() + "\", " +
-        Namer::getAccessor( a ) + "() );";
+        data + " );";
     }
     if ( element.type() == Schema::Element::Date ) {
       code += "  xml.writeCharacters( date().toString( \"yyyyMMdd\" ) );";
@@ -107,8 +115,15 @@ void WriterCreator::createElementWriter( KODE::Class &c,
 
     foreach( Schema::Relation r, element.attributeRelations() ) {
       Schema::Attribute a = mDocument.attribute( r );
+      
+      // FIXME:: extract method
+      QString data = Namer::getAccessor( a ) + "()";
+      if ( a.type() == Schema::Node::DateTime ) {
+        data = data + ".toString( \"yyyyMMddThhmmssZ\" )";
+      }
+      
       code += "xml.writeAttribute( \"" + a.name() + "\", " +
-        Namer::getAccessor( a ) + "() );";
+        data + " );";
     }
 
     foreach( Schema::Relation r, element.elementRelations() ) {
@@ -127,6 +142,8 @@ void WriterCreator::createElementWriter( KODE::Class &c,
         if ( e.type() == Schema::Element::Integer ) {
           data = "QString::number( " + accessor + " )";
         } else if ( e.type() == Schema::Element::Date ) {
+          data = accessor + ".toString( Qt::ISODate )";
+        } else if ( e.type() == Schema::Element::DateTime ) {
           data = accessor + ".toString( Qt::ISODate )";
         } else {
           data = accessor;

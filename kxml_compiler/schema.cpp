@@ -158,7 +158,7 @@ void Document::dump() const
     }
   }
   foreach( Attribute a, mAttributes ) {
-    qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name();
+    qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name() << a.type();
   }
 }
 
