@@ -142,7 +142,12 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   }
   
   if ( e.text() ) {
-    code += "result.setText( element.text() );";
+    if ( e.type() == Schema::Element::Date ) {
+      code += "qDebug() << element.text() << QDate::fromString( element.text(), \"yyyyMMdd\" );";
+      code += "result.setDate( QDate::fromString( element.text(), \"yyyyMMdd\" ) );";
+    } else {
+      code += "result.setText( element.text() );";
+    }
   }
 
   foreach( Schema::Relation r, e.attributeRelations() ) {

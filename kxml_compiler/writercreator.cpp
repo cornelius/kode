@@ -84,14 +84,22 @@ void WriterCreator::createElementWriter( KODE::Class &c,
   if ( element.isEmpty() ) {
     code += "xml.writeEmptyElement( \"" + tag + "\" );";
   } else if ( element.text() ) {
-    code += "if ( !text().isEmpty() ) {";
+    if ( element.type() == Schema::Element::Date ) {
+      code += "if ( date().isValid() ) {";
+    } else {
+      code += "if ( !text().isEmpty() ) {";
+    }
     code += "  xml.writeStartElement( \"" + tag + "\" );";
     foreach( Schema::Relation r, element.attributeRelations() ) {
       Schema::Attribute a = mDocument.attribute( r );
       code += "  xml.writeAttribute( \"" + a.name() + "\", " +
         Namer::getAccessor( a ) + "() );";
     }
-    code += "  xml.writeCharacters( text() );";
+    if ( element.type() == Schema::Element::Date ) {
+      code += "  xml.writeCharacters( date().toString( \"yyyyMMdd\" ) );";
+    } else {
+      code += "  xml.writeCharacters( text() );";
+    }
     code += "  xml.writeEndElement();";
     code += "}";
   } else {

@@ -128,6 +128,10 @@ KODE::File &Creator::file()
 void Creator::createProperty( KODE::Class &c, const QString &type,
   const QString &name )
 {
+  if ( type.startsWith( "Q" ) ) {
+    c.addHeaderInclude( type );
+  }
+
   KODE::MemberVariable v( Namer::getClassName( name ), type );
   c.addMemberVariable( v );
 
@@ -335,7 +339,11 @@ void Creator::createClass( const Schema::Element &element )
   }
 
   if ( element.text() ) {
-    createProperty( c, "QString", "text" );
+    if ( element.type() == Schema::Element::Date ) {
+      createProperty( c, "QDate", "date" );
+    } else {
+      createProperty( c, "QString", "text" );
+    }
   }
 
   foreach( Schema::Relation r, element.elementRelations() ) {
