@@ -30,7 +30,7 @@ int main( int argc, char **argv )
     return 1;
   } else {
     kDebug() << "DISPLAY NAME" << account.displayname();
-    QDate date = account.creationDate().date();
+    QDate date = account.creationDate().value();
     kDebug() << date;
     QDateTime dateTime = account.email().updatedAt();
     kDebug() << dateTime;

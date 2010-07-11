@@ -87,27 +87,21 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     code += "xml.writeEmptyElement( \"" + tag + "\" );";
   } else if ( element.text() ) {
     if ( element.type() == Schema::Element::Date ) {
-      code += "if ( date().isValid() ) {";
+      code += "if ( value().isValid() ) {";
     } else {
-      code += "if ( !text().isEmpty() ) {";
+      code += "if ( !value().isEmpty() ) {";
     }
     code += "  xml.writeStartElement( \"" + tag + "\" );";
     foreach( Schema::Relation r, element.attributeRelations() ) {
       Schema::Attribute a = mDocument.attribute( r );
 
       QString data = Namer::getAccessor( a ) + "()";
-      if ( a.type() == Schema::Node::DateTime ) {
-        data = data + ".toString( \"yyyyMMddThhmmssZ\" )";
-      }      
     
       code += "  xml.writeAttribute( \"" + a.name() + "\", " +
-        data + " );";
+        dataToStringConverter( data, a.type() ) + " );";
     }
-    if ( element.type() == Schema::Element::Date ) {
-      code += "  xml.writeCharacters( date().toString( \"yyyyMMdd\" ) );";
-    } else {
-      code += "  xml.writeCharacters( text() );";
-    }
+    QString data = dataToStringConverter( "value()", element.type() );
+    code += "  xml.writeCharacters( " + data + " );";
     code += "  xml.writeEndElement();";
     code += "}";
   } else {
@@ -116,14 +110,10 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     foreach( Schema::Relation r, element.attributeRelations() ) {
       Schema::Attribute a = mDocument.attribute( r );
       
-      // FIXME:: extract method
       QString data = Namer::getAccessor( a ) + "()";
-      if ( a.type() == Schema::Node::DateTime ) {
-        data = data + ".toString( \"yyyyMMddThhmmssZ\" )";
-      }
       
       code += "xml.writeAttribute( \"" + a.name() + "\", " +
-        data + " );";
+        dataToStringConverter( data, a.type() ) + " );";
     }
 
     foreach( Schema::Relation r, element.elementRelations() ) {
@@ -137,17 +127,8 @@ void WriterCreator::createElementWriter( KODE::Class &c,
         code += '}';
       } else {
         Schema::Element e = mDocument.element( r );
-        QString data;
         QString accessor = Namer::getAccessor( e ) + "()";
-        if ( e.type() == Schema::Element::Integer ) {
-          data = "QString::number( " + accessor + " )";
-        } else if ( e.type() == Schema::Element::Date ) {
-          data = accessor + ".toString( Qt::ISODate )";
-        } else if ( e.type() == Schema::Element::DateTime ) {
-          data = accessor + ".toString( Qt::ISODate )";
-        } else {
-          data = accessor;
-        }
+        QString data = dataToStringConverter( accessor, e.type() );
         if ( e.text() && !e.hasAttributeRelations() ) {
           if ( e.type() == Schema::Element::String ) {
             code += "if ( !" + data + ".isEmpty() ) {";
@@ -170,4 +151,24 @@ void WriterCreator::createElementWriter( KODE::Class &c,
   writer.setBody( code );
 
   c.addFunction( writer );
+}
+
+// FIXME: Collect in class with other type specific functions from parsercreator
+// and creator
+QString WriterCreator::dataToStringConverter( const QString &data,
+  Schema::Node::Type type )
+{
+  QString converter;
+
+  if ( type == Schema::Element::Integer ) {
+    converter = "QString::number( " + data + " )";
+  } else if ( type == Schema::Element::Date ) {
+    converter = data + ".toString( \"yyyyMMdd\" )";
+  } else if ( type == Schema::Element::DateTime ) {
+    converter = data + ".toString( \"yyyyMMddThhmmssZ\" )";
+  } else {
+    converter = data;
+  }
+  
+  return converter;
 }

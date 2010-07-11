@@ -119,6 +119,8 @@ class Creator
 
     void createElementParser( KODE::Class &c, const Schema::Element &e );
 
+    QString typeName( Schema::Node::Type );
+
   private:
     Schema::Document mDocument;
   

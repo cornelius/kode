@@ -105,7 +105,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
         creator()->document().element( (*it).target() );
 
       if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
-        QString data = dataToStringConverter( "e.text()", targetElement.type() );
+        QString data = stringToDataConverter( "e.text()", targetElement.type() );
         code += "result.set" + className + "( " + data + " );";
       } else {
         code += "bool ok;";
@@ -135,18 +135,13 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   }
   
   if ( e.text() ) {
-    if ( e.type() == Schema::Element::Date ) {
-      code += "qDebug() << element.text() << QDate::fromString( element.text(), \"yyyyMMdd\" );";
-      code += "result.setDate( QDate::fromString( element.text(), \"yyyyMMdd\" ) );";
-    } else {
-      code += "result.setText( element.text() );";
-    }
+    code += "result.setValue( " + stringToDataConverter( "element.text()", e.type() ) + " );";
   }
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
 
-    QString data = dataToStringConverter( "element.attribute( \"" + a.name() + "\" )", a.type() );
+    QString data = stringToDataConverter( "element.attribute( \"" + a.name() + "\" )", a.type() );
 
     code += "result.set" + Namer::getClassName( a.name() ) +
             "( " + data + " );";
@@ -299,14 +294,14 @@ void ParserCreatorDom::createStringParser( const Schema::Element &element )
   }
 }
 
-QString ParserCreatorDom::dataToStringConverter( const QString &data,
+QString ParserCreatorDom::stringToDataConverter( const QString &data,
   Schema::Node::Type type )
 {
   QString converter;
   if ( type == Schema::Element::Integer ) {
     converter = data + ".toInt()";
   } else if ( type == Schema::Element::Date ) {
-    converter = "QDate::fromString( " + data + ", Qt::ISODate )";
+    converter = "QDate::fromString( " + data + ", \"yyyyMMdd\" )";
   } else if ( type == Schema::Element::DateTime ) {
     converter = "QDateTime::fromString( " + data + ", \"yyyyMMddThhmmssZ\" )";
   } else {

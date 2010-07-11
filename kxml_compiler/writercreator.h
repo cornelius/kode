@@ -36,6 +36,8 @@ class WriterCreator
   protected:
     void createIndenter( KODE::File & );
 
+    QString dataToStringConverter( const QString &data, Schema::Node::Type );
+
   private:
     KODE::File &mFile;
     Schema::Document &mDocument;

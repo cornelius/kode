@@ -335,19 +335,11 @@ void Creator::createClass( const Schema::Element &element )
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
-    if ( a.type() == Schema::Element::DateTime ) {
-      createProperty( c, "QDateTime", a.name() );
-    } else {
-      createProperty( c, "QString", a.name() );
-    }
+    createProperty( c, typeName( a.type() ), a.name() );
   }
 
   if ( element.text() ) {
-    if ( element.type() == Schema::Element::Date ) {
-      createProperty( c, "QDate", "date" );
-    } else {
-      createProperty( c, "QString", "text" );
-    }
+    createProperty( c, typeName( element.type() ), "value" );
   }
 
   foreach( Schema::Relation r, element.elementRelations() ) {
@@ -522,6 +514,19 @@ void Creator::setFilename( const QString& baseName )
 {
   mFile.setFilename( baseName );
   mBaseName = baseName;
+}
+
+QString Creator::typeName( Schema::Node::Type type )
+{
+  if ( type == Schema::Element::DateTime ) {
+    return "QDateTime";
+  } else if ( type == Schema::Element::Date ) {
+    return "QDate";
+  } else if ( type == Schema::Element::Integer ) {
+    return "int";
+  } else {
+    return "QString";
+  }
 }
 
 
