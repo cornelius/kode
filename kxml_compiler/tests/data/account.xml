@@ -14,4 +14,34 @@
     <used>4%</used>
   </disk_quota>
   <creation_date by_admin="true">20001122</creation_date>
+  <resources>
+    <resource>
+      <id>xyz</id>
+      <url>http://example.com/xyz</url>
+    </resource>
+    <resource>
+      <id>abc</id>
+      <url>http://example.com/abc</url>
+    </resource>
+  </resources>
+  <resources2>
+    <resource2 updated_at="20100711T170000Z">
+      <id>xyz</id>
+      <url>http://example.com/xyz</url>
+    </resource2>
+    <resource2 updated_at="20100711T170000Z">
+      <id>abc</id>
+      <url>http://example.com/abc</url>
+    </resource2>
+  </resources2>
+  <resources3>
+    <resource3 updated_at="20100711T170000Z" created_at="20100711T170000Z">
+      <id>xyz</id>
+      <url>http://example.com/xyz</url>
+    </resource3>
+    <resource3 updated_at="20100711T170000Z" created_at="20100711T170000Z">
+      <id>abc</id>
+      <url>http://example.com/abc</url>
+    </resource3>
+  </resources3>
 </account>

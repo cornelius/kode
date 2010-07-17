@@ -30,10 +30,15 @@ int main( int argc, char **argv )
     return 1;
   } else {
     kDebug() << "DISPLAY NAME" << account.displayname();
+    
     QDate date = account.creationDate().value();
     kDebug() << date;
     QDateTime dateTime = account.email().updatedAt();
     kDebug() << dateTime;
+    if ( account.resources().resourceList().size() != 2 ) exit( 1 );
+    if ( account.resources2().resource2List().size() != 2 ) exit( 1 );
+    if ( account.resources3().resource3List().size() != 2 ) exit( 1 );
+    
     account.writeFile( "account.out.xml" );
     int exitCode = system( QString( "diff %1 account.out.xml" ).arg( filename ).toUtf8() );
     if ( exitCode != 0 ) exit( 1 );

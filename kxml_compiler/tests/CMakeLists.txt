@@ -1,21 +1,19 @@
-MACRO (KODE_ADD_LOCAL_XML_PARSER _sources)
-  foreach (_current_file ${ARGN})
-    get_filename_component( _schema ${_current_file} ABSOLUTE )
-    get_filename_component( _basename ${_schema} NAME_WE )
+MACRO (KODE_ADD_LOCAL_XML_PARSER _sources _current_file)
+  get_filename_component( _schema ${_current_file} ABSOLUTE )
+  get_filename_component( _basename ${_schema} NAME_WE )
 
-    set( _source_cpp ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.cpp )
-    set( _source_h   ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.h )
+  set( _source_cpp ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.cpp )
+  set( _source_h   ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.h )
 
-    add_custom_command(
-      OUTPUT ${_source_cpp} ${_source_h}
-      COMMAND "${CMAKE_CURRENT_BINARY_DIR}/../kxml_compiler"
-      ARGS ${_schema}
-      MAIN_DEPENDENCY ${_schema}
-      DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/../kxml_compiler"
-    )
+  add_custom_command(
+    OUTPUT ${_source_cpp} ${_source_h}
+    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/../kxml_compiler"
+    ARGS ${_schema} ${ARGN}
+    MAIN_DEPENDENCY ${_schema}
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/../kxml_compiler"
+  )
 
-    set( ${_sources} ${${_sources}} ${_source_cpp} )
-  endforeach (_current_file)
+  set( ${_sources} ${${_sources}} ${_source_cpp} )
 ENDMACRO (KODE_ADD_LOCAL_XML_PARSER)
 
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
@@ -51,7 +49,8 @@ target_link_libraries( parserxsdtest kschema ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LI
 # next target
 
 set( testaccounts_SRCS testaccounts.cpp )
-kode_add_local_xml_parser( testaccounts_SRCS data/account.xml )
+kode_add_local_xml_parser( testaccounts_SRCS data/account.xml
+  --create-crud-functions )
 kde4_add_executable( testaccounts TEST ${testaccounts_SRCS} )
 target_link_libraries( testaccounts ${KDE4_KDECORE_LIBS} ${QT_QTXML_LIBRARY} )
 

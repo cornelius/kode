@@ -266,9 +266,9 @@ void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
 
   KODE::Function inserter( "insert", "bool" );
 
-  inserter.addArgument( "const " + type + " &v" );
-
   code.clear();
+
+  inserter.addArgument( "const " + type + " &v" );
 
   code += "int i = 0;";
   code += "for( ; i < " + listMember + ".size(); ++i ) {";
