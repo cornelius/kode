@@ -28,8 +28,7 @@ set( kxml_compiler_SRCS
   creator.cpp
   kxml_compiler.cpp
   parsercreatordom.cpp
-  parsercreatorcustom.cpp )
-
+)
 
 kde4_add_executable( kxml_compiler NOGUI RUN_UNINSTALLED ${kxml_compiler_SRCS} )
 

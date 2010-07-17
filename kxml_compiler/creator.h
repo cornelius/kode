@@ -60,12 +60,10 @@ class Creator
         bool m_hasId;
     };
   
-    enum XmlParserType { XmlParserDom, XmlParserDomExternal,
-                         XmlParserCustomExternal };
-    enum XmlWriterType { XmlWriterCustom, XmlWriterCustomExternal };
+    enum XmlParserType { XmlParserDom, XmlParserDomExternal };
 
-    Creator( const Schema::Document &document, XmlParserType p = XmlParserDom,
-             XmlWriterType w = XmlWriterCustom );
+    Creator( const Schema::Document &document, XmlParserType p = XmlParserDom );
+
     void setVerbose( bool verbose );
 
     void setUseKde( bool useKde );
@@ -125,7 +123,6 @@ class Creator
     Schema::Document mDocument;
   
     XmlParserType mXmlParserType;
-    XmlWriterType mXmlWriterType;
     QString mExternalClassPrefix;
 
     KODE::File mFile;

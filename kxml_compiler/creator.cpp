@@ -24,7 +24,6 @@
 #include "namer.h"
 
 #include "parsercreatordom.h"
-#include "parsercreatorcustom.h"
 #include "writercreator.h"
 
 #include <libkode/code.h>
@@ -67,9 +66,8 @@ bool Creator::ClassFlags::hasId() const
 }
 
 
-Creator::Creator( const Schema::Document &document, XmlParserType p,
-  XmlWriterType w )
-  : mDocument( document ), mXmlParserType( p ), mXmlWriterType( w ),
+Creator::Creator( const Schema::Document &document, XmlParserType p )
+  : mDocument( document ), mXmlParserType( p ),
     mVerbose( false ), mUseKde( false )
 {
   setExternalClassNames();
@@ -181,10 +179,6 @@ void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
     } else {
       createProperty( c, "QString", className );
       c.addHeaderInclude( "QString" );
-      if ( mXmlParserType == XmlParserCustomExternal ) {
-        ParserCreatorCustom parserCreatorCustom( this );
-        parserCreatorCustom.createTextElementParser( c, targetElement );
-      }
     }
 
     if ( mCreateCrudFunctions && targetElement.name() == "id" ) {
@@ -363,9 +357,6 @@ void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
     case XmlParserDomExternal:
       parserCreator = new ParserCreatorDom( this );
       break;
-    case XmlParserCustomExternal:
-      parserCreator = new ParserCreatorCustom( this );
-      break;
   }
 
   parserCreator->createElementParser( c, e );
@@ -409,9 +400,6 @@ void Creator::createFileParser( const Schema::Element &element )
     case XmlParserDom:
     case XmlParserDomExternal:
       parserCreator = new ParserCreatorDom( this );
-      break;
-    case XmlParserCustomExternal:
-      parserCreator = new ParserCreatorCustom( this );
       break;
   }
 
@@ -457,13 +445,12 @@ void Creator::printFiles( KODE::Printer &printer )
 
 bool Creator::externalParser() const
 {
-  return mXmlParserType == XmlParserDomExternal ||
-         mXmlParserType == XmlParserCustomExternal;
+  return mXmlParserType == XmlParserDomExternal;
 }
 
 bool Creator::externalWriter() const
 {
-  return mXmlWriterType == XmlWriterCustomExternal;
+  return false;
 }
 
 const Schema::Document &Creator::document() const

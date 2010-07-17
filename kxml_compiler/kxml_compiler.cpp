@@ -67,7 +67,6 @@ int main( int argc, char **argv )
   options.add("verbose", ki18n("Generate debug output"));
   options.add("+schema", ki18n("Schema of XML file"));
   options.add("external-parser", ki18n("Generate parser in separate source file"));
-  options.add("custom-parser", ki18n("Generate parser customized for schema"));
   options.add("xsd", ki18n("Schema is XML Schema"));
   options.add("rng", ki18n("Schema is RelaxNG"));
   options.add("xml", ki18n("Schema is example XML"));
@@ -175,9 +174,7 @@ int main( int argc, char **argv )
   }
 
   Creator::XmlParserType pt;
-  if ( args->isSet( "custom-parser" ) ) {
-    pt = Creator::XmlParserCustomExternal;
-  } else if ( args->isSet( "external-parser" ) ) {
+  if ( args->isSet( "external-parser" ) ) {
     pt = Creator::XmlParserDomExternal;
   } else {
     pt = Creator::XmlParserDom;
