@@ -2,5 +2,4 @@
 - Code generation hints (e.g. names of classes and functions)
 - Use Qt stream parser
 - Add support for setting project
-- Add tests for XML example schema parser.
 - Move Namer functions to KODE::Style ?
