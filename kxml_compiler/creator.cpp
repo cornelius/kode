@@ -123,7 +123,8 @@ KODE::File &Creator::file()
   return mFile;
 }
 
-void Creator::createProperty( KODE::Class &c, const QString &type,
+void Creator::createProperty( KODE::Class &c,
+  const ClassDescription &description, const QString &type,
   const QString &name )
 {
   if ( type.startsWith( "Q" ) ) {
@@ -140,6 +141,13 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
     mutator.addArgument( "const " + type + " &v" );
   }
   mutator.addBodyLine( v.name() + " = v;" );
+  if ( mCreateCrudFunctions ) {
+    if ( name != "UpdatedAt" && name != "CreatedAt" ) {
+      if ( description.hasProperty( "UpdatedAt" ) ) {
+        mutator.addBodyLine( "setUpdatedAt( QDateTime::currentDateTime() );" );
+      }
+    }
+  }
   c.addFunction( mutator );
 
   KODE::Function accessor( Namer::getAccessor( name ), type );
@@ -307,8 +315,25 @@ void Creator::createClass( const Schema::Element &element )
     c.setExportDeclaration( mExportDeclaration );
   }
 
-  if ( description.hasProperty( "Id" ) ) {
-    if ( mCreateCrudFunctions ) {
+  bool hasCreatedAt = description.hasProperty( "CreatedAt" );
+  bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+
+  if ( mCreateCrudFunctions ) {
+    if ( hasCreatedAt || hasUpdatedAt ) {
+      KODE::Function constructor( className, "" );
+      KODE::Code code;
+      code += "QDateTime now = QDateTime::currentDateTime();";
+      if ( hasCreatedAt ) {
+        code += "setCreatedAt( now );";
+      }
+      if ( hasUpdatedAt ) {
+        code += "setUpdatedAt( now );";
+      }
+      constructor.setBody( code );
+      c.addFunction( constructor );
+    }
+
+    if ( description.hasProperty( "Id" ) ) {
       KODE::Function isValid( "isValid", "bool" );
       isValid.setConst( true );
       KODE::Code code;
@@ -335,13 +360,13 @@ void Creator::createClass( const Schema::Element &element )
 
       c.addFunction( adder );
 
-      createProperty( c, p.type() + "::List", listName );
+      createProperty( c, description, p.type() + "::List", listName );
 
       if ( mCreateCrudFunctions && p.targetHasId() ) {
         createCrudFunctions( c, p.type() );
       }
     } else {
-      createProperty( c, p.type(), p.name() );
+      createProperty( c, description, p.type(), p.name() );
     }
   }
 

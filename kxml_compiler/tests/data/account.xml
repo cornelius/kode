@@ -5,7 +5,6 @@
   <email updated_at="20100711T174230Z">user@example.com</email>
   <number>123</number>
   <empty_element/>
-  <created_at>2009-05-14 14:51:07 UTC</created_at>
   <xpenid_urls updated_at="20100711T174235Z">
     <openid_url>http://user1.example.com/</openid_url>
   </xpenid_urls>
