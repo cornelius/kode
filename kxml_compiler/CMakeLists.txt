@@ -23,6 +23,7 @@ install( TARGETS kschema  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 ########### next target ###############
 
 set( kxml_compiler_SRCS
+  classdescription.cpp
   namer.cpp
   writercreator.cpp
   creator.cpp

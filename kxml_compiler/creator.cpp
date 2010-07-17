@@ -148,86 +148,6 @@ void Creator::createProperty( KODE::Class &c, const QString &type,
   c.addFunction( accessor );
 }
 
-void Creator::createElementFunctions( KODE::Class &c, const Schema::Element &e,
-  const Schema::Relation &r )
-{
-  Schema::Element targetElement = mDocument.element( r );
-
-  QString className = Namer::getClassName( targetElement );
-
-#if 1
-  if ( mVerbose ) {
-    kDebug() <<"Creator::createElementFunctions()";
-    kDebug() <<"ELEMENT" << e.identifier();
-    kDebug() <<"RELATION:" << r.asString();
-    kDebug() << "TARGETELEMENT" << targetElement.name();
-    foreach( Schema::Relation r, targetElement.attributeRelations() ) {
-      kDebug() << "  ATTR" << r.target();
-    }
-  }
-#endif
-
-  if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
-    if ( mVerbose ) {
-      kDebug() << "  FLATTEN";
-    }
-    if ( targetElement.type() == Schema::Element::Integer ) {
-      createProperty( c, "int", className );
-    } else if ( targetElement.type() == Schema::Element::Date ) {
-      createProperty( c, "QDate", className );
-      c.addHeaderInclude( "QDate" );
-    } else {
-      createProperty( c, "QString", className );
-      c.addHeaderInclude( "QString" );
-    }
-
-    if ( mCreateCrudFunctions && targetElement.name() == "id" ) {
-      KODE::Function isValid( "isValid", "bool" );
-      isValid.setConst( true );
-      KODE::Code code;
-      code += "return !mId.isEmpty();";
-      isValid.setBody( code );
-      c.addFunction( isValid );
-    }
-
-    return;
-  }
-
-  if ( !mFile.hasClass( className ) ) {
-    createClass( targetElement );
-  } else {
-  }
-
-  QString name = KODE::Style::lowerFirst( className );
-
-  if ( r.isList() ) {
-    registerListTypedef( className );
-
-    c.addHeaderInclude( "QList" );
-    name = name + "List";
-
-    KODE::Function adder( "add" + className, "void" );
-    adder.addArgument( "const " + className + " &v" );
-
-    KODE::Code code;
-    code += 'm' + KODE::Style::upperFirst( name ) + ".append( v );";
-
-    adder.setBody( code );
-
-    c.addFunction( adder );
-
-    createProperty( c, className + "::List", name );
-
-    ClassFlags targetClassFlags( targetElement );
-
-    if ( mCreateCrudFunctions && targetClassFlags.hasId() ) {
-      createCrudFunctions( c, className );
-    }
-  } else {
-    createProperty( c, className, name );
-  }
-}
-
 void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
 {
   if ( !c.hasEnum( "Flags" ) ) {
@@ -301,6 +221,64 @@ void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
   c.addFunction( remover );
 }
 
+
+ClassDescription Creator::createClassDescription(
+  const Schema::Element &element )
+{
+  ClassDescription description( Namer::getClassName( element ) );
+
+  foreach( Schema::Relation r, element.attributeRelations() ) {
+    Schema::Attribute a = mDocument.attribute( r );
+    description.addProperty( typeName( a.type() ),
+      Namer::getClassName( a.name() ) );
+  }
+
+  if ( element.text() ) {
+    description.addProperty( typeName( element.type() ), "Value" );
+  }
+
+  foreach( Schema::Relation r, element.elementRelations() ) {
+    Schema::Element targetElement = mDocument.element( r );
+
+    QString targetClassName = Namer::getClassName( targetElement );
+
+    if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
+      if ( mVerbose ) {
+        kDebug() << "  FLATTEN";
+      }
+      if ( targetElement.type() == Schema::Element::Integer ) {
+        description.addProperty( "int", targetClassName );
+      } else if ( targetElement.type() == Schema::Element::Date ) {
+        description.addProperty( "QDate", targetClassName );
+      } else {
+        description.addProperty( "QString", targetClassName );
+      }
+    } else {
+      if ( !mFile.hasClass( targetClassName ) ) {
+        createClass( targetElement );
+      }
+
+      QString name = KODE::Style::lowerFirst( targetClassName );
+
+      if ( r.isList() ) {
+        ClassProperty p( targetClassName, Namer::getClassName( name ) );
+        p.setIsList( true );
+        
+        ClassFlags targetClassFlags( targetElement );
+        if ( targetClassFlags.hasId() ) {
+          p.setTargetHasId( true );
+        }
+
+        description.addProperty( p );
+      } else {
+        description.addProperty( targetClassName, Namer::getClassName( name ) );
+      }
+    }
+  }
+  
+  return description;
+}
+
 void Creator::createClass( const Schema::Element &element )
 {
   QString className = Namer::getClassName( element  );
@@ -319,25 +297,52 @@ void Creator::createClass( const Schema::Element &element )
     return;
   }
 
+  mProcessedClasses.append( className );
+
+  ClassDescription description = createClassDescription( element );
+
   KODE::Class c( className );
 
   if ( !mExportDeclaration.isEmpty() ) {
     c.setExportDeclaration( mExportDeclaration );
   }
 
-  mProcessedClasses.append( className );
-
-  foreach( Schema::Relation r, element.attributeRelations() ) {
-    Schema::Attribute a = mDocument.attribute( r );
-    createProperty( c, typeName( a.type() ), a.name() );
+  if ( description.hasProperty( "Id" ) ) {
+    if ( mCreateCrudFunctions ) {
+      KODE::Function isValid( "isValid", "bool" );
+      isValid.setConst( true );
+      KODE::Code code;
+      code += "return !mId.isEmpty();";
+      isValid.setBody( code );
+      c.addFunction( isValid );
+    }
   }
 
-  if ( element.text() ) {
-    createProperty( c, typeName( element.type() ), "value" );
-  }
+  foreach( ClassProperty p, description.properties() ) {
+    if ( p.isList() ) {
+      registerListTypedef( p.type() );
 
-  foreach( Schema::Relation r, element.elementRelations() ) {
-    createElementFunctions( c, element, r );
+      c.addHeaderInclude( "QList" );
+      QString listName = p.name() + "List";
+
+      KODE::Function adder( "add" + p.type(), "void" );
+      adder.addArgument( "const " + p.type() + " &v" );
+
+      KODE::Code code;
+      code += 'm' + KODE::Style::upperFirst( listName ) + ".append( v );";
+
+      adder.setBody( code );
+
+      c.addFunction( adder );
+
+      createProperty( c, p.type() + "::List", listName );
+
+      if ( mCreateCrudFunctions && p.targetHasId() ) {
+        createCrudFunctions( c, p.type() );
+      }
+    } else {
+      createProperty( c, p.type(), p.name() );
+    }
   }
 
   createElementParser( c, element );

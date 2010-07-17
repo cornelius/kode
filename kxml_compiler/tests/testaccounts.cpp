@@ -38,6 +38,7 @@ int main( int argc, char **argv )
     if ( account.resources().resourceList().size() != 2 ) exit( 1 );
     if ( account.resources2().resource2List().size() != 2 ) exit( 1 );
     if ( account.resources3().resource3List().size() != 2 ) exit( 1 );
+    account.resources().resourceList().first().isValid();
     
     account.writeFile( "account.out.xml" );
     int exitCode = system( QString( "diff %1 account.out.xml" ).arg( filename ).toUtf8() );

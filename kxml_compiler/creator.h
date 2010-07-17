@@ -22,6 +22,7 @@
 #define CREATOR_H
 
 #include "schema.h"
+#include "classdescription.h"
 
 #include <libkode/code.h>
 #include <libkode/printer.h>
@@ -93,8 +94,8 @@ class Creator
     void createCrudFunctions( KODE::Class &c, const QString &type );
     void createProperty( KODE::Class &c, const QString &type,
                          const QString &name );
-    void createElementFunctions( KODE::Class &c, const Schema::Element &e,
-      const Schema::Relation & );
+
+    ClassDescription createClassDescription( const Schema::Element &element );
     void createClass( const Schema::Element &element );
 
     void registerListTypedef( const QString &type );
