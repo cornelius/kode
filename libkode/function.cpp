@@ -92,8 +92,8 @@ Function::Function( const QString &name, const QString &returnType,
 {
   d->mAccess = access;
   d->mIsStatic = isStatic;
-  d->mReturnType = returnType;
   d->mName = name;
+  setReturnType(returnType);
 }
 
 Function::~Function()
@@ -220,6 +220,7 @@ QString Function::accessAsString() const
 
 void Function::setReturnType( const QString &returnType )
 {
+  Q_ASSERT(returnType != "*");
   d->mReturnType = returnType;
 }
 
