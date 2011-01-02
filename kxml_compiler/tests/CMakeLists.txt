@@ -67,4 +67,7 @@ ADD_TEST(RunTestFeatures ${EXECUTABLE_OUTPUT_PATH}/testfeatures)
 ADD_TEST(RunTestHolidays ${EXECUTABLE_OUTPUT_PATH}/testholidays)
 ADD_TEST(RunTestAccount ${EXECUTABLE_OUTPUT_PATH}/testaccounts
   ${CMAKE_CURRENT_SOURCE_DIR}/data/account.xml)
+ADD_TEST(RunTestAccount2 ${EXECUTABLE_OUTPUT_PATH}/testaccounts
+  ${CMAKE_CURRENT_SOURCE_DIR}/data/account2.xml
+  ${CMAKE_CURRENT_SOURCE_DIR}/data/out_account2.xml)
 ADD_TEST(RunTestParser ${EXECUTABLE_OUTPUT_PATH}/testparser)

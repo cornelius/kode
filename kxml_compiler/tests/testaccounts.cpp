@@ -1,5 +1,7 @@
 #include "account.h"
 
+#include <QFileInfo>
+
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
@@ -16,11 +18,21 @@ int main( int argc, char **argv )
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  if ( args->count() != 1 ) {
+  if ( args->count() < 1 || args->count() > 2 ) {
     args->usage( "Wrong number of arguments." );
   }
 
   QString filename = args->arg( 0 );
+  QString referenceFile;
+  if ( args->count() == 2 ) {
+    referenceFile = args->arg( 1 );
+  } else {
+    referenceFile = filename;
+  }
+
+  QString outputFile = "out_" + QFileInfo( filename ).fileName();
+
+  kDebug() << "Comparing" << referenceFile << "and" << outputFile;
 
   bool ok;
   Account account = Account::parseFile( filename, &ok );
@@ -36,12 +48,12 @@ int main( int argc, char **argv )
     QDateTime dateTime = account.email().updatedAt();
     kDebug() << dateTime;
     if ( account.resources().resourceList().size() != 2 ) exit( 1 );
-    if ( account.resources2().resource2List().size() != 2 ) exit( 1 );
-    if ( account.resources3().resource3List().size() != 2 ) exit( 1 );
+    if ( account.resources3().resource3List().size() != 3 ) exit( 1 );
     account.resources().resourceList().first().isValid();
     
-    account.writeFile( "account.out.xml" );
-    int exitCode = system( QString( "diff %1 account.out.xml" ).arg( filename ).toUtf8() );
+    account.writeFile( outputFile );
+    int exitCode = system( QString( "diff %1 %2" ).arg( referenceFile )
+      .arg( outputFile ).toUtf8() );
     if ( exitCode != 0 ) exit( 1 );
   }
   
