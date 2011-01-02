@@ -23,7 +23,6 @@
       <url>http://example.com/abc</url>
     </resource>
   </resources>
-  <resources2/>
   <resources3>
     <resource3 updated_at="20100711T170000Z" created_at="20100711T170000Z">
       <id>xyz</id>

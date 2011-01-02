@@ -105,6 +105,34 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     code += "  xml.writeEndElement();";
     code += "}";
   } else {
+    bool pureList = true;
+    if ( !element.attributeRelations().isEmpty() ) {
+      pureList = false;
+    } else {
+      if ( element.elementRelations().isEmpty() ) {
+        pureList = false;
+      } else {
+        foreach( Schema::Relation r, element.elementRelations() ) {
+          if ( !r.isList() ) {
+            pureList = false;
+            break;
+          }
+        }
+      }
+    }
+
+    if ( pureList ) {
+      QStringList conditions;
+      foreach( Schema::Relation r, element.elementRelations() ) {
+        if ( r.isList() ) {
+          conditions.append( "!" +
+            Namer::getAccessor( r.target() ) + "List().isEmpty()" );
+        }
+      }
+      code += "if ( " + conditions.join( " || " ) + " ) {";
+      code.indent();
+    }
+    
     code += "xml.writeStartElement( \"" + tag + "\" );";
 
     foreach( Schema::Relation r, element.attributeRelations() ) {
@@ -146,6 +174,11 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       }
     }
     code += "xml.writeEndElement();";
+    
+    if ( pureList ) {
+      code.unindent();
+      code += "}";
+    }
   }
 
   writer.setBody( code );
