@@ -38,6 +38,8 @@ class WriterCreator
 
     QString dataToStringConverter( const QString &data, Schema::Node::Type );
 
+    KODE::Code createAttributeWriter( const Schema::Element &element );
+
   private:
     KODE::File &mFile;
     Schema::Document &mDocument;

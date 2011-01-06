@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <account>
-  <username id="x">uexample</username>
+  <username id="x" type="simple">uexample</username>
   <displayname>User Example</displayname>
   <email updated_at="20100711T174230Z">user@example.com</email>
   <number>123</number>

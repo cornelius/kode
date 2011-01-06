@@ -92,14 +92,9 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       code += "if ( !value().isEmpty() ) {";
     }
     code += "  xml.writeStartElement( \"" + tag + "\" );";
-    foreach( Schema::Relation r, element.attributeRelations() ) {
-      Schema::Attribute a = mDocument.attribute( r );
-
-      QString data = Namer::getAccessor( a ) + "()";
     
-      code += "  xml.writeAttribute( \"" + a.name() + "\", " +
-        dataToStringConverter( data, a.type() ) + " );";
-    }
+    code += createAttributeWriter( element );
+
     QString data = dataToStringConverter( "value()", element.type() );
     code += "  xml.writeCharacters( " + data + " );";
     code += "  xml.writeEndElement();";
@@ -135,14 +130,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     
     code += "xml.writeStartElement( \"" + tag + "\" );";
 
-    foreach( Schema::Relation r, element.attributeRelations() ) {
-      Schema::Attribute a = mDocument.attribute( r );
-      
-      QString data = Namer::getAccessor( a ) + "()";
-      
-      code += "xml.writeAttribute( \"" + a.name() + "\", " +
-        dataToStringConverter( data, a.type() ) + " );";
-    }
+    code += createAttributeWriter( element );
 
     foreach( Schema::Relation r, element.elementRelations() ) {
       QString type = Namer::getClassName( r.target() );
@@ -204,4 +192,23 @@ QString WriterCreator::dataToStringConverter( const QString &data,
   }
   
   return converter;
+}
+
+KODE::Code WriterCreator::createAttributeWriter( const Schema::Element &element )
+{
+  KODE::Code code;
+
+  foreach( Schema::Relation r, element.attributeRelations() ) {
+    Schema::Attribute a = mDocument.attribute( r );
+
+    QString data = Namer::getAccessor( a ) + "()";
+
+    code += "  if ( !" + dataToStringConverter( data, a.type() ) +
+      ".isEmpty() ) {";
+    code += "    xml.writeAttribute( \"" + a.name() + "\", " +
+      dataToStringConverter( data, a.type() ) + " );";
+    code += "  }";
+  }
+  
+  return code;
 }

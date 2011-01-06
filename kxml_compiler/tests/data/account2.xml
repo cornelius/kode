@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <account>
-  <username id="x">uexample</username>
+  <username id="x" type="">uexample</username>
   <displayname>User Example</displayname>
   <email updated_at="20100711T174230Z">user@example.com</email>
   <number>123</number>
@@ -30,7 +30,7 @@
       <id>xyz</id>
       <url>http://example.com/xyz</url>
     </resource3>
-    <resource3 updated_at="20100711T170000Z" created_at="20100711T170000Z">
+    <resource3 updated_at="" created_at="20100711T170000Z">
       <id>abc</id>
       <url>http://example.com/abc</url>
     </resource3>
