@@ -58,7 +58,8 @@ Schema::Document ParserXml::parse( QFile &file )
     }
   }
   if ( xml.hasError() ) {
-    kError() << "XML schema parsing error.";
+    kError() << "XML parsing error in line" << xml.lineNumber() << ": " <<
+      xml.errorString();
   }
   
   return mDocument;
