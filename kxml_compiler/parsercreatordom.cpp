@@ -104,7 +104,8 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
       Schema::Element targetElement =
         creator()->document().element( (*it).target() );
 
-      if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
+      if ( targetElement.text() && !targetElement.hasAttributeRelations() &&
+           !(*it).isList() ) {
         QString data = stringToDataConverter( "e.text()", targetElement.type() );
         code += "result.set" + className + "( " + data + " );";
       } else {

@@ -250,7 +250,8 @@ ClassDescription Creator::createClassDescription(
 
     QString targetClassName = Namer::getClassName( targetElement );
 
-    if ( targetElement.text() && !targetElement.hasAttributeRelations() ) {
+    if ( targetElement.text() && !targetElement.hasAttributeRelations() &&
+         !r.isList() ) {
       if ( mVerbose ) {
         kDebug() << "  FLATTEN";
       }
@@ -295,7 +296,7 @@ void Creator::createClass( const Schema::Element &element )
     kDebug() <<"Creator::createClass()" << element.identifier() << className;
     foreach( Schema::Relation r, element.elementRelations() ) {
       kDebug() << "  SUBELEMENTS" << r.target();
-    }  
+    }
   }
 
   if ( mProcessedClasses.contains( className ) ) {

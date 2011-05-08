@@ -47,4 +47,8 @@
       <url>http://example.com/def</url>
     </resource3>
   </resources3>
+  <sequence>
+    <item_id>xxx</item_id>
+    <item_id>xxx222</item_id>
+  </sequence>
 </account>
