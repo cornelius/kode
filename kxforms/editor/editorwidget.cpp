@@ -59,6 +59,7 @@ void EditorWidget::init()
   mInterfaceWidget = new QWidget( this );
   QVBoxLayout *vbl = new QVBoxLayout( mInterfaceWidget );
   vbl->setMargin( 0 );
+  mInDrag = false;
 
   mShowHintsButton = new QPushButton( mInterfaceWidget );
   mShowHintsButton->setIcon( KIconLoader::global()->loadIcon( "document-preview", KIconLoader::NoGroup, 32 ) );

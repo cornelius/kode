@@ -112,15 +112,18 @@ bool Reference::Segment::isEmpty() const
 Reference::Reference()
   : mValid( true )
 {
+  mAbsolute = false;
 }
 
 Reference::Reference( const QString &str )
 {
+  mAbsolute = false;
   fromString( str );
 }
 
 Reference::Reference( const char *str )
 {
+  mAbsolute = false;
   fromString( str );
 }
 
