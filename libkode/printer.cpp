@@ -431,7 +431,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     else
       body += "*" + classObject.dPointerName() + " = *other." + classObject.dPointerName() + ";";
     for ( int i = 0; i < baseClasses.count(); ++i ) {
-        body += QLatin1String("* static_cast<") + baseClasses[i].name() + QLatin1String("*>(this) = other;");
+        body += QLatin1String("* static_cast<") + baseClasses[i].name() + QLatin1String(" *>(this) = other;");
     }
 
     body.newLine();
@@ -480,7 +480,7 @@ void Printer::Private::addFunctionHeaders( Code& code,
         code.unindent();
         code += " */";
       }
-      code += mParent->functionSignature( *it, className, false, true ) + ';';
+      code += mParent->functionSignature( *it, className, false ) + ';';
       if ( mLabelsDefineIndent )
         code.unindent();
       needNewLine = true;
@@ -559,16 +559,15 @@ void Printer::setIndentLabels( bool b )
 
 QString Printer::functionSignature( const Function &function,
                                     const QString &className,
-                                    bool includeClassQualifier,
-                                    bool includeDefaultArguments )
+                                    bool forImplementation )
 {
   QString s;
 
-  if ( function.isStatic() && !includeClassQualifier ) {
+  if ( function.isStatic() && !forImplementation ) {
     s += "static ";
   }
 
-  if ( function.virtualMode() != Function::NotVirtual ) {
+  if ( function.virtualMode() != Function::NotVirtual && !forImplementation ) {
     s += "virtual ";
   }
 
@@ -577,7 +576,7 @@ QString Printer::functionSignature( const Function &function,
     s += d->formatType( ret );
   }
 
-  if ( includeClassQualifier )
+  if ( forImplementation )
     s += d->mStyle.className( className ) + "::";
 
   if ( className == function.name() ) {
@@ -591,7 +590,7 @@ QString Printer::functionSignature( const Function &function,
   if ( function.hasArguments() ) {
     QStringList arguments;
     foreach( Function::Argument argument, function.arguments() ) {
-      if ( includeDefaultArguments ) {
+      if ( !forImplementation ) {
         arguments.append( argument.headerDeclaration() );
       } else {
         arguments.append( argument.bodyDeclaration() );
