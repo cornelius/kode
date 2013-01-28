@@ -430,6 +430,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
       body += classObject.dPointerName() + " = other." + classObject.dPointerName() + ";";
     else
       body += "*" + classObject.dPointerName() + " = *other." + classObject.dPointerName() + ";";
+    for ( int i = 0; i < baseClasses.count(); ++i ) {
+        body += QLatin1String("* static_cast<") + baseClasses[i].name() + QLatin1String("*>(this) = other;");
+    }
 
     body.newLine();
     body += "return *this;";
