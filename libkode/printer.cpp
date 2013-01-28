@@ -700,7 +700,7 @@ void Printer::printHeader( const File &file )
     Q_ASSERT( !cl.name().isEmpty() );
     QStringList includes = cl.headerIncludes();
     if ( cl.useSharedData() )
-        includes.append( "QSharedData" );
+        includes.append( "QtCore/QSharedData" );
     //qDebug() << "includes=" << includes;
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
@@ -752,8 +752,14 @@ void Printer::printHeader( const File &file )
       out.indent();
     }
 
-    if (!clas.isNull())
+    if (!clas.isNull()) {
+      const bool isQtClass = clas.startsWith(QLatin1Char('Q'));
+      if (isQtClass)
+        out += QLatin1String("QT_BEGIN_NAMESPACE");
       out += "class " + clas + ';';
+      if (isQtClass)
+        out += QLatin1String("QT_END_NAMESPACE");
+    }
     prevNS = ns;
   }
 
