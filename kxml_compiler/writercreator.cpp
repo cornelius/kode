@@ -38,6 +38,7 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
   c.addInclude( "QtCore/QFile" );
 
   KODE::Function writer( "writeFile", "bool" );
+  writer.setConst( true );
 
   writer.addArgument( "const QString &filename" );
 
@@ -76,6 +77,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
   const Schema::Element &element )
 {
   KODE::Function writer( "writeElement", "void" );
+  writer.setConst( true );
 
   writer.addArgument( "QXmlStreamWriter &xml" );
 
