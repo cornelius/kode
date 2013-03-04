@@ -23,6 +23,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QStringList>
 #include <QtCore/QTextStream>
+#include <QtCore/QFileInfo>
 #include <QDebug>
 
 #include "printer.h"
@@ -87,9 +88,14 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 {
   Code code;
 
+  int numNamespaces = 0;
   if ( !classObject.nameSpace().isEmpty() ) {
-    code += "namespace " + classObject.nameSpace() + " {";
-    code.indent();
+    const QStringList nsList = classObject.nameSpace().split("::");
+    Q_FOREACH(const QString& ns, nsList) {
+        code += "namespace " + ns + " {";
+        code.indent();
+        ++numNamespaces;
+    }
   }
 
   if ( nestedClass )
@@ -267,7 +273,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   code += "};";
 
-  if ( !classObject.nameSpace().isEmpty() ) {
+  for (int i = 0; i < numNamespaces; ++i) {
       code.unindent();
       code += "} // namespace end";
   }
@@ -430,6 +436,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
       body += classObject.dPointerName() + " = other." + classObject.dPointerName() + ";";
     else
       body += "*" + classObject.dPointerName() + " = *other." + classObject.dPointerName() + ";";
+    for ( int i = 0; i < baseClasses.count(); ++i ) {
+        body += QLatin1String("* static_cast<") + baseClasses[i].name() + QLatin1String(" *>(this) = other;");
+    }
 
     body.newLine();
     body += "return *this;";
@@ -477,7 +486,7 @@ void Printer::Private::addFunctionHeaders( Code& code,
         code.unindent();
         code += " */";
       }
-      code += mParent->functionSignature( *it, className, false, true ) + ';';
+      code += mParent->functionSignature( *it, className, false ) + ';';
       if ( mLabelsDefineIndent )
         code.unindent();
       needNewLine = true;
@@ -556,16 +565,15 @@ void Printer::setIndentLabels( bool b )
 
 QString Printer::functionSignature( const Function &function,
                                     const QString &className,
-                                    bool includeClassQualifier,
-                                    bool includeDefaultArguments )
+                                    bool forImplementation )
 {
   QString s;
 
-  if ( function.isStatic() && !includeClassQualifier ) {
+  if ( function.isStatic() && !forImplementation ) {
     s += "static ";
   }
 
-  if ( function.virtualMode() != Function::NotVirtual ) {
+  if ( function.virtualMode() != Function::NotVirtual && !forImplementation ) {
     s += "virtual ";
   }
 
@@ -574,7 +582,7 @@ QString Printer::functionSignature( const Function &function,
     s += d->formatType( ret );
   }
 
-  if ( includeClassQualifier )
+  if ( forImplementation )
     s += d->mStyle.className( className ) + "::";
 
   if ( className == function.name() ) {
@@ -588,7 +596,7 @@ QString Printer::functionSignature( const Function &function,
   if ( function.hasArguments() ) {
     QStringList arguments;
     foreach( Function::Argument argument, function.arguments() ) {
-      if ( includeDefaultArguments ) {
+      if ( !forImplementation ) {
         arguments.append( argument.headerDeclaration() );
       } else {
         arguments.append( argument.bodyDeclaration() );
@@ -649,6 +657,17 @@ QString Printer::licenseHeader( const File &file ) const
   return code.text();
 }
 
+static QStringList commonLeft(const QStringList& l1, const QStringList& l2) {
+    QStringList r;
+    const int l = qMin(l1.size(), l2.size());
+    for ( int i = 0; i < l; ++i )
+        if (l1.at(i) == l2.at(i))
+            r.append(l1.at(i));
+        else
+            return r;
+    return r;
+}
+
 void Printer::printHeader( const File &file )
 {
   Code out;
@@ -660,6 +679,8 @@ void Printer::printHeader( const File &file )
 
   // Create include guard
   QString className = file.filenameHeader();
+  QFileInfo headerInfo(className);
+  className = headerInfo.fileName(); // remove path, keep only filename
   className.replace( '-', "_" );
 
   QString includeGuard;
@@ -682,7 +703,7 @@ void Printer::printHeader( const File &file )
     Q_ASSERT( !cl.name().isEmpty() );
     QStringList includes = cl.headerIncludes();
     if ( cl.useSharedData() )
-        includes.append( "QSharedData" );
+        includes.append( "QtCore/QSharedData" );
     //qDebug() << "includes=" << includes;
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
@@ -713,8 +734,36 @@ void Printer::printHeader( const File &file )
   }
   QStringList fwdClasses = processed.toList();
   fwdClasses.sort();
-  Q_FOREACH( const QString& cl, fwdClasses ) {
-    out += "class " + cl + ';';
+  fwdClasses += QString(); //for proper closing of the namespace blocks below
+
+  QStringList prevNS;
+
+  Q_FOREACH( const QString& fwd, fwdClasses ) {
+    //handle namespaces by opening and closing namespace blocks accordingly
+    //the sorting will ensure sensible grouping
+    const QStringList seg = fwd.split(QLatin1String("::"));
+    const QStringList ns = seg.mid(0, seg.size() - 1);
+    const QString clas = seg.isEmpty() ? QString() : seg.last();
+    const QStringList common = commonLeft(ns, prevNS);
+    for (int i = common.size(); i < prevNS.size(); ++i) {
+      out.unindent();
+      out += "}";
+      out.newLine();
+    }
+    for (int i = common.size(); i < ns.size(); ++i) {
+      out += "namespace " + ns.at(i) + " {";
+      out.indent();
+    }
+
+    if (!clas.isNull()) {
+      const bool isQtClass = clas.startsWith(QLatin1Char('Q'));
+      if (isQtClass)
+        out += QLatin1String("QT_BEGIN_NAMESPACE");
+      out += "class " + clas + ';';
+      if (isQtClass)
+        out += QLatin1String("QT_END_NAMESPACE");
+    }
+    prevNS = ns;
   }
 
   if ( !processed.isEmpty() )
@@ -857,10 +906,14 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   }
 
   // Classes
+#ifdef KDAB_DELETED
   bool containsQObject = false;
+#endif
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
+#ifdef KDAB_DELETED
     if ( (*it).isQObject() )
       containsQObject = true;
+#endif
 
     QString str = d->classImplementation( *it );
     if ( !str.isEmpty() )

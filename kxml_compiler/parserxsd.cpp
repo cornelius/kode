@@ -170,6 +170,10 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       if ( !attribute.type().isEmpty() ) {
         if ( attribute.type().qname() == "xs:string" ) {
           a.setType( Schema::Node::String );
+        } else if ( attribute.type().qname() == "xs:integer" ) {
+          a.setType( Schema::Node::Integer );
+        } else if ( attribute.type().qname() == "xs:date" ) {
+          a.setType( Schema::Node::Date );
         } else {
           XSD::SimpleType simpleType = types.simpleType( attribute.type() );
           setType( a, simpleType );
