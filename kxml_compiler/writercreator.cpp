@@ -183,7 +183,7 @@ QString WriterCreator::dataToStringConverter( const QString &data,
 {
   QString converter;
 
-  if ( type == Schema::Element::Integer ) {
+  if ( type == Schema::Element::Integer || type == Schema::Element::Decimal ) {
     converter = "QString::number( " + data + " )";
   } else if ( type == Schema::Element::Date ) {
     converter = data + ".toString( \"yyyyMMdd\" )";

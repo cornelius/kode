@@ -135,7 +135,7 @@ void Creator::createProperty( KODE::Class &c,
   c.addMemberVariable( v );
 
   KODE::Function mutator( Namer::getMutator( name ), "void" );
-  if ( type == "int" ) {
+  if ( type == "int" || type == "double" ) {
     mutator.addArgument( type + " v" );
   } else {
     mutator.addArgument( "const " + type + " &v" );
@@ -257,6 +257,8 @@ ClassDescription Creator::createClassDescription(
       }
       if ( targetElement.type() == Schema::Element::Integer ) {
         description.addProperty( "int", targetClassName );
+      } else if ( targetElement.type() == Schema::Element::Decimal ) {
+        description.addProperty( "double", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Date ) {
         description.addProperty( "QDate", targetClassName );
       } else {
@@ -540,8 +542,12 @@ QString Creator::typeName( Schema::Node::Type type )
     return "QDateTime";
   } else if ( type == Schema::Element::Date ) {
     return "QDate";
-  } else if ( type == Schema::Element::Integer ) {
+  } else if ( type == Schema::Element::
+
+              Integer ) {
     return "int";
+  } else if ( type == Schema::Element::Decimal ) {
+    return "double";
   } else {
     return "QString";
   }

@@ -172,6 +172,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
           a.setType( Schema::Node::String );
         } else if ( attribute.type().qname() == "xs:integer" ) {
           a.setType( Schema::Node::Integer );
+        } else if ( attribute.type().qname() == "xs:decimal" ) {
+          a.setType( Schema::Node::Decimal );
         } else if ( attribute.type().qname() == "xs:date" ) {
           a.setType( Schema::Node::Date );
         } else {
