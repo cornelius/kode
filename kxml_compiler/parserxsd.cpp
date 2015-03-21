@@ -173,7 +173,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
         } else if ( attribute.type().qname() == "xs:integer" ) {
           a.setType( Schema::Node::Integer );
         } else if ( attribute.type().qname() == "xs:decimal" ) {
-          a.setType( Schema::Node::Decimal );
+          a.setType( Schema::Node::Decimal
+                     );
         } else if ( attribute.type().qname() == "xs:date" ) {
           a.setType( Schema::Node::Date );
         } else {

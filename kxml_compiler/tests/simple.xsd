@@ -7,7 +7,7 @@
         <xs:element ref="firstname"/>
         <xs:element ref="surname"/>
         <xs:element ref="age"/>
-		<xs:element ref="weight"/>
+        <xs:element ref="weight"/>
       </xs:sequence>
       <xs:attributeGroup ref="attlist.person"/>
     </xs:complexType>

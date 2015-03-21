@@ -542,9 +542,7 @@ QString Creator::typeName( Schema::Node::Type type )
     return "QDateTime";
   } else if ( type == Schema::Element::Date ) {
     return "QDate";
-  } else if ( type == Schema::Element::
-
-              Integer ) {
+  } else if ( type == Schema::Element::Integer ) {
     return "int";
   } else if ( type == Schema::Element::Decimal ) {
     return "double";
