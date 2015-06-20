@@ -204,12 +204,13 @@ KODE::Code WriterCreator::createAttributeWriter( const Schema::Element &element 
     Schema::Attribute a = mDocument.attribute( r );
 
     QString data = Namer::getAccessor( a ) + "()";
-
-    code += "  if ( !" + dataToStringConverter( data, a.type() ) +
-      ".isEmpty() ) {";
-    code += "    xml.writeAttribute( \"" + a.name() + "\", " +
-      dataToStringConverter( data, a.type() ) + " );";
-    code += "  }";
+    if ( a.type() != Schema::Node::Enumeration ) {
+        code += "    xml.writeAttribute( \"" + a.name() + "\", " +
+          dataToStringConverter( data, a.type() ) + " );";
+    } else if ( a.type() == Schema::Node::Enumeration ) {
+       code += "    xml.writeAttribute(\"" + a.name() + "\", " +
+               a.name() + "EnumToString( " + a.name() + "() ));";
+    }
   }
   
   return code;

@@ -137,9 +137,9 @@ void Function::addArgument( const Function::Argument &argument )
   d->mArguments.append( argument );
 }
 
-void Function::addArgument( const QString &argument )
+void Function::addArgument( const QString &argument, const QString &defaultArgument )
 {
-  d->mArguments.append( Argument( argument ) );
+  d->mArguments.append( Argument( argument, defaultArgument ) );
 }
 
 void Function::setArgumentString( const QString &argumentString )

@@ -134,6 +134,8 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   }
   code += txt;
 
+
+
   if( nestedClass ) {
     code.indent();
     code += '{';

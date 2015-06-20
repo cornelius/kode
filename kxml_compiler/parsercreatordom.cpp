@@ -22,6 +22,7 @@
 #include "parsercreatordom.h"
 
 #include "namer.h"
+#include "style.h"
 
 #include <libkode/code.h>
 #include <libkode/printer.h>
@@ -142,10 +143,40 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   foreach( Schema::Relation r, e.attributeRelations() ) {
     Schema::Attribute a = creator()->document().attribute( r );
 
-    QString data = stringToDataConverter( "element.attribute( \"" + a.name() + "\" )", a.type() );
+    if (a.enumerationValues().count()) {
+      QString enumName = KODE::Style::sanitize( a.name() );
 
-    code += "result.set" + Namer::getClassName( a.name() ) +
-            "( " + data + " );";
+      if (!a.required()) { // if not required generate conditions
+        code += "if (element.hasAttribute(\"" + a.name() + "\"))  {";
+        code.indent();
+      }
+      code += Namer::getClassName(a.name()) + "Enum" + " " + enumName+ " = " + KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumFromString( element.attribute( \"" + enumName + "\" ), ok  );";
+      code += "if (ok && *ok == false) {";
+      code.indent();
+      code += "qCritical() << \"Invalid string: \\\"\" << element.attribute( \"" + a.name() + "\" ) << \"\\\" in the \\\"" + a.name() + "\\\" element\";";
+      code += "return " + c.name() + "();";
+      code.unindent();
+      code += "} else {";
+      code.indent();
+      code += "result.set" + Namer::getClassName( a.name() ) +
+              "( " + enumName + " );";
+      code.unindent();
+      code += "}";
+
+      if (!a.required()) {
+        code.unindent();
+        code += "} else {";
+        code.indent();
+        code += "result.set" + Namer::getClassName(a.name()) + "(" + KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumFromString(\""+a.defaultValue()+"\"));";
+        code.unindent();
+        code += "}";
+      }
+    } else {
+      QString data = stringToDataConverter( "element.attribute( \"" + a.name() + "\" )", a.type() );
+
+      code += "result.set" + Namer::getClassName( a.name() ) +
+              "( " + data + " );";
+    }
   }
   code.newLine();
 

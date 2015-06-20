@@ -22,6 +22,8 @@
 #include <QtCore/QStringList>
 
 #include "enum.h"
+#include "code.h"
+#include "style.h"
 
 using namespace KODE;
 
@@ -77,26 +79,117 @@ QString Enum::name() const
   return d->mName;
 }
 
+/**
+ * @brief Enum::declaration
+ * @return Returns a QString contatining the enum declaration in the following format:
+ * enum Foo { Foo_a, Foo_b, Foo_Invalid };
+ *
+ * If the enum name is suffixed with Enum (FooEnum) then the Enum suffix will be removed
+ * from the enum item's names:
+ * enum FooEnum { Foo_a, Foo_b, Foo_Invalid };
+ *
+ * The last item (Foo_Invalid) is automatically generated to each elements, and the
+ * enum parsing methods will return this value if the XML contains a non-enum value.
+ */
 QString Enum::declaration() const
 {
   QString retval( "enum " + d->mName + " {" );
   uint value = 0;
   QStringList::ConstIterator it;
+  QString baseName = name();
+  if ( d->mName.right(4) == "Enum" && d->mName.length() > 4 ) {
+      baseName = d->mName.left(d->mName.length() - 4);
+  }
+
   for ( it = d->mEnums.constBegin(); it != d->mEnums.constEnd(); ++it, ++value ) {
     if ( d->mCombinable ) {
       if ( it == d->mEnums.constBegin() )
-        retval += QString( " %1 = %2" ).arg( *it ).arg( 1 << value );
+        retval += QString( " %1_%2 = %3" ).arg( baseName ).arg( Style::sanitize( *it ) ).arg( 1 << value );
       else
-        retval += QString( ", %1 = %2" ).arg( *it ).arg( 1 << value );
+        retval += QString( ", %1_%2 = %3" ).arg( baseName ).arg( Style::sanitize( *it ) ).arg( 1 << value );
     } else {
       if ( it == d->mEnums.constBegin() )
-        retval += ' ' + *it;
+        retval += ' ' + baseName + '_' + Style::sanitize( *it );
       else
-        retval += ", " + *it;
+        retval += ", " + baseName + '_' + Style::sanitize( *it );
     }
   }
 
+  retval += ", " + baseName + "_Invalid";
   retval += " };";
 
   return retval;
+}
+
+KODE::Function Enum::parserMethod() const
+{
+  QString baseName = name();
+  if ( d->mName.right(4) == "Enum" && d->mName.length() > 4 ) {
+      baseName = d->mName.left(d->mName.length() - 4);
+  }
+
+  KODE::Function ret( KODE::Style::lowerFirst(this->name()) + "FromString", this->name() );
+  ret.setStatic(true);
+
+  ret.addArgument("const QString & v");
+  ret.addArgument( "bool *ok", "NULL" );
+
+  KODE::Code code;
+  code += "if (ok) *ok = true;";
+  code.newLine();
+  bool first = true;
+  foreach (QString enumItem, d->mEnums ) {
+      if ( first ) {
+        code += "if ( v == \"" + enumItem + "\" ) {";
+        first = false;
+      } else {
+          code += "} else if ( v == \"" + enumItem + "\" ) {";
+        }
+      code.indent();
+      code += "return " + baseName + '_' + Style::sanitize(enumItem) + ";";
+      code.unindent();
+    }
+  code += "} else {";
+  code.indent();
+  code += "if (ok) *ok = false;";
+  code += "return " + baseName + "_Invalid;";
+  code.unindent();
+  code += "}";
+  code.newLine();
+  code += "return " + baseName + "_Invalid;";
+
+  ret.setBody(code);
+  return ret;
+}
+
+KODE::Function Enum::writerMethod() const
+{
+  QString baseName = name();
+  if ( d->mName.right(4) == "Enum" && d->mName.length() > 4 ) {
+      baseName = d->mName.left(d->mName.length() - 4);
+  }
+
+  KODE::Function ret( KODE::Style::lowerFirst(this->name()) + "ToString", "QString" );
+  ret.setStatic(true);
+
+  ret.addArgument(QString("const %1 & v").arg(this->name()));
+
+  KODE::Code code;
+  code += "switch( v ) {";
+  code.indent();
+  foreach (QString enumItem, d->mEnums ) {
+      code += QString("case %1: return \"%2\";").arg(baseName + '_' + Style::sanitize(enumItem)).arg(enumItem);
+    }
+  code += "case " + baseName + "_Invalid:";
+  code += "default:";
+    code.indent();
+    code += QString("qCritical() << \"Unable to serialize a(n) %1 enum because it has invalid value\" << %2;")
+            .arg(this->name())
+            .arg("v");
+  code += "return QString();";
+  code.unindent();
+    code.unindent();
+  code += "}";
+  ret.setBody(code);
+  return ret;
 }

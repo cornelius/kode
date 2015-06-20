@@ -153,7 +153,7 @@ class KODE_EXPORT Function
     /**
      * Adds an @param argument to the function.
      */
-    void addArgument( const QString &argument );
+    void addArgument(const QString &argument , const QString &defaultArgument = QString());
 
     /**
      * Sets the complete argument string of the function.

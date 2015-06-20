@@ -25,6 +25,8 @@
 
 #include <kode_export.h>
 
+#include "function.h"
+
 namespace KODE {
 
 class KODE_EXPORT Enum
@@ -71,6 +73,9 @@ class KODE_EXPORT Enum
      * Returns the textual presentation of the enum.
      */
     QString declaration() const;
+
+    KODE::Function parserMethod() const;
+    KODE::Function writerMethod() const;
 
   private:
     class Private;

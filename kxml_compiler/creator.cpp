@@ -152,6 +152,10 @@ void Creator::createProperty( KODE::Class &c,
 
   KODE::Function accessor( Namer::getAccessor( name ), type );
   accessor.setConst( true );
+  if ( type.right(4) == "Enum" ) {
+    accessor.setReturnType( c.name() + "::" + type );
+  }
+
   accessor.addBodyLine( "return " + v.name() + ';' );
   c.addFunction( accessor );
 }
@@ -237,8 +241,16 @@ ClassDescription Creator::createClassDescription(
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
-    description.addProperty( typeName( a.type() ),
-      Namer::getClassName( a.name() ) );
+    if ( a.enumerationValues().count() ) {
+      if (!description.hasEnum(a.name())) {
+        description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
+      }
+      description.addProperty( Namer::getClassName( a.name() ) + "Enum",
+                               Namer::getClassName( a.name() ) );
+    } else {
+      description.addProperty( typeName( a.type() ),
+                               Namer::getClassName( a.name() ) );
+    }
   }
 
   if ( element.text() ) {
@@ -373,6 +385,10 @@ void Creator::createClass( const Schema::Element &element )
     }
   }
 
+  foreach(KODE::Enum e, description.enums() ) {
+    c.addEnum(e);
+  }
+
   createElementParser( c, element );
   
   WriterCreator writerCreator( mFile, mDocument, mDtd );
@@ -390,6 +406,10 @@ void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
     case XmlParserDomExternal:
       parserCreator = new ParserCreatorDom( this );
       break;
+  }
+
+  if ( parserCreator == 0 ) {
+    return;
   }
 
   parserCreator->createElementParser( c, e );

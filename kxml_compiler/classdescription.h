@@ -22,7 +22,10 @@
 #define CLASSDESCRIPTION_H
 
 #include <QString>
+#include <QStringList>
 #include <QList>
+
+#include <libkode/enum.h>
 
 class ClassProperty
 {
@@ -48,7 +51,6 @@ class ClassProperty
     bool m_targetHasId;
 };
 
-
 class ClassDescription
 {
   public:
@@ -63,10 +65,18 @@ class ClassDescription
 
     bool hasProperty( const QString &name ) const;
 
-  private:
+    void addEnum(const KODE::Enum & classEnum);
+    void addEnum( const QString &name, const QStringList &enumItems );
+
+    KODE::Enum::List enums() const;
+
+    bool hasEnum( const QString &name ) const;
+
+private:
     QString m_name;
     
     ClassProperty::List m_properties;
+    KODE::Enum::List m_enums;
 };
 
 #endif

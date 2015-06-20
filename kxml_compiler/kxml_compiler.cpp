@@ -71,8 +71,7 @@ int main( int argc, char **argv )
   options.add("rng", ki18n("Schema is RelaxNG"));
   options.add("xml", ki18n("Schema is example XML"));
   options.add("use-kde", ki18n("Use KDE classes"));
-  options.add("license <license_id>", ki18n("License of generated files"),
-    "gpl" );
+  options.add("license <license_id>", ki18n("License of generated files"), "gpl" );
   options.add("namespace <name>", ki18n("Namespace for generated classes") );
   options.add("export <name>", ki18n("Export declaration for generated classes") );
   options.add("create-crud-functions", ki18n("Create functions for dealing with data suitable for CRUD model") );
