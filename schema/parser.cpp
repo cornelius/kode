@@ -497,7 +497,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
     newAttribute.setReference( reference );
   }
 
-  newAttribute.setDefaultValue( element.attribute( "default" ) );
+  newAttribute.setDefaultValue( element.attribute( "value" ) );
   newAttribute.setFixedValue( element.attribute( "fixed" ) );
 
   if ( element.hasAttribute( "use" ) ) {

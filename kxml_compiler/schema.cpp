@@ -442,6 +442,26 @@ Attribute::Attribute()
 {
 }
 
+bool Attribute::required() const
+{
+  return mRequired;
+}
+
+void Attribute::setRequired(bool required)
+{
+  mRequired = required;
+}
+
+QString Attribute::defaultValue() const
+{
+  return mDefVal;
+}
+
+void Attribute::setDefaultValue(const QString defVal)
+{
+  mDefVal = defVal;
+}
+
 QString Attribute::ref() const
 {
   return '@' + name();

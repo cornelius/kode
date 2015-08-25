@@ -89,3 +89,27 @@ bool ClassDescription::hasProperty( const QString &name ) const
   }
   return false;
 }
+
+void ClassDescription::addEnum(const KODE::Enum &classEnum)
+{
+  m_enums.append( classEnum );
+}
+
+void ClassDescription::addEnum(const QString &name, const QStringList &enumItems)
+{
+  m_enums.append( KODE::Enum(name, enumItems) );
+}
+
+KODE::Enum::List ClassDescription::enums() const
+{
+  return m_enums;
+}
+
+bool ClassDescription::hasEnum(const QString &name) const
+{
+  foreach( KODE::Enum e, m_enums ) {
+    if ( e.name() == name ) return true;
+  }
+  return false;
+}
+

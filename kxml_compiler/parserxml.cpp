@@ -27,6 +27,7 @@
 
 #include <QDebug>
 #include <QXmlStreamReader>
+#include <math.h>
 
 using namespace KXML;
 
@@ -151,8 +152,15 @@ Schema::Node::Type ParserXml::detectType( const QString &text )
     type = Schema::Node::DateTime; 
   } else {
     bool ok;
-    text.toInt( &ok );
-    if ( ok ) type = Schema::Node::Integer;
+    double val = text.toDouble( &ok );
+    double intPart = 0;
+    if ( ok ) {
+      if ( modf(val, &intPart) != 0 ) {
+        type = Schema::Node::Decimal;
+      } else {
+        type = Schema::Node::Integer;
+      }
+    }
   }
   
   return type;

@@ -90,7 +90,7 @@ class KSCHEMA_EXPORT Node : public Annotatable
 {
   public:
     enum Type { None, String, NormalizedString, Token, Integer, Date,
-      Enumeration, ComplexType, DateTime };
+      Enumeration, ComplexType, DateTime, Decimal };
     Node();
     virtual ~Node();
 
@@ -129,7 +129,16 @@ class KSCHEMA_EXPORT Attribute : public Node
 
     Attribute();
 
+    bool required() const;
+    void setRequired(bool required);
+
+    QString defaultValue() const;
+    void setDefaultValue(const QString defVal);
+
     QString ref() const;
+  private:
+    bool mRequired;
+    QString mDefVal;
 };
 
 class KSCHEMA_EXPORT Element : public Node

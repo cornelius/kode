@@ -41,9 +41,9 @@ void ParserXsdTest::initTestCase()
 
 void ParserXsdTest::testElementParsing()
 {
-  QCOMPARE( mDoc.elements().size(), 5 );
+  QCOMPARE( mDoc.elements().size(), 6 );
 
-  QCOMPARE( mDoc.usedElements().size(), 4 );
+  QCOMPARE( mDoc.usedElements().size(), 5 );
 
   QCOMPARE( mDoc.startElement().name(), QString("person") );
 }
@@ -66,7 +66,7 @@ void ParserXsdTest::testTypeParsing()
 
 void ParserXsdTest::testRelationParsing()
 {
-  QCOMPARE( mDoc.startElement().elementRelations().size(), 3 );
+  QCOMPARE( mDoc.startElement().elementRelations().size(), 4 );
 
   QCOMPARE( mDoc.startElement().attributeRelations().size(), 2 );
 

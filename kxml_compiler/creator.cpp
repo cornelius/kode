@@ -135,7 +135,7 @@ void Creator::createProperty( KODE::Class &c,
   c.addMemberVariable( v );
 
   KODE::Function mutator( Namer::getMutator( name ), "void" );
-  if ( type == "int" ) {
+  if ( type == "int" || type == "double" ) {
     mutator.addArgument( type + " v" );
   } else {
     mutator.addArgument( "const " + type + " &v" );
@@ -152,6 +152,10 @@ void Creator::createProperty( KODE::Class &c,
 
   KODE::Function accessor( Namer::getAccessor( name ), type );
   accessor.setConst( true );
+  if ( type.right(4) == "Enum" ) {
+    accessor.setReturnType( c.name() + "::" + type );
+  }
+
   accessor.addBodyLine( "return " + v.name() + ';' );
   c.addFunction( accessor );
 }
@@ -168,7 +172,7 @@ void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
   KODE::Function finder( "find" + type, type );
 
   finder.addArgument( "const QString &id" );
-  finder.addArgument( KODE::Function::Argument( "Flags flags", "None" ) );
+  finder.addArgument( KODE::Function::Argument( "Flags flags", "Flags_None" ) );
 
   QString listMember = "m" + type + "List";
 
@@ -177,7 +181,7 @@ void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
   code += "  if ( v.id() == id ) return v;";
   code += "}";
   code += type + " v;";
-  code += "if ( flags == AutoCreate ) {";
+  code += "if ( flags == Flags_AutoCreate ) {";
   code += "  v.setId( id );";
   code += "}";
   code += "return v;";
@@ -237,8 +241,16 @@ ClassDescription Creator::createClassDescription(
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
-    description.addProperty( typeName( a.type() ),
-      Namer::getClassName( a.name() ) );
+    if ( a.enumerationValues().count() ) {
+      if (!description.hasEnum(a.name())) {
+        description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
+      }
+      description.addProperty( Namer::getClassName( a.name() ) + "Enum",
+                               Namer::getClassName( a.name() ) );
+    } else {
+      description.addProperty( typeName( a.type() ),
+                               Namer::getClassName( a.name() ) );
+    }
   }
 
   if ( element.text() ) {
@@ -257,6 +269,8 @@ ClassDescription Creator::createClassDescription(
       }
       if ( targetElement.type() == Schema::Element::Integer ) {
         description.addProperty( "int", targetClassName );
+      } else if ( targetElement.type() == Schema::Element::Decimal ) {
+        description.addProperty( "double", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Date ) {
         description.addProperty( "QDate", targetClassName );
       } else {
@@ -371,6 +385,10 @@ void Creator::createClass( const Schema::Element &element )
     }
   }
 
+  foreach(KODE::Enum e, description.enums() ) {
+    c.addEnum(e);
+  }
+
   createElementParser( c, element );
   
   WriterCreator writerCreator( mFile, mDocument, mDtd );
@@ -388,6 +406,10 @@ void Creator::createElementParser( KODE::Class &c, const Schema::Element &e )
     case XmlParserDomExternal:
       parserCreator = new ParserCreatorDom( this );
       break;
+  }
+
+  if ( parserCreator == 0 ) {
+    return;
   }
 
   parserCreator->createElementParser( c, e );
@@ -542,6 +564,8 @@ QString Creator::typeName( Schema::Node::Type type )
     return "QDate";
   } else if ( type == Schema::Element::Integer ) {
     return "int";
+  } else if ( type == Schema::Element::Decimal ) {
+    return "double";
   } else {
     return "QString";
   }
