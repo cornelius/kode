@@ -109,6 +109,12 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
             !complexType.baseTypeName().isEmpty() ) {
       if ( complexType.baseTypeName().qname() == "xs:string" ) {
         e.setBaseType( Schema::Node::String );
+      } else if ( complexType.baseTypeName().qname() == "xs:decimal") {
+        e.setBaseType( Schema::Node::Decimal );
+      } else if ( complexType.baseTypeName().qname() == "xs:integer") {
+        e.setBaseType( Schema::Node::Integer );
+      } else if ( complexType.baseTypeName().qname() == "xs:date" ) {
+        e.setBaseType( Schema::Node::Date );
       } else if ( complexType.baseTypeName().qname() == "xs:normalizedString" ) {
         e.setBaseType( Schema::Node::NormalizedString );
       } else if ( complexType.baseTypeName().qname() == "xs:token" ) {
@@ -118,6 +124,12 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
     if ( element.type().qname() == "xs:string" ) {
       e.setType( Schema::Node::String );
+    } else if ( element.type().qname() == "xs:decimal") {
+      e.setType( Schema::Node::Decimal );
+    } else if ( element.type().qname() == "xs:integer") {
+      e.setType( Schema::Node::Integer );
+    } else if ( element.type().qname() == "xs:date" ) {
+      e.setType( Schema::Node::Date );
     } else if ( element.type().qname() == "xs:normalizedString" ) {
       e.setType( Schema::Node::NormalizedString );
     } else if ( element.type().qname() == "xs:token" ) {
@@ -172,9 +184,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
           a.setType( Schema::Node::String );
         } else if ( attribute.type().qname() == "xs:integer" ) {
           a.setType( Schema::Node::Integer );
-        } else if ( attribute.type().qname() == "xs:decimal" ) {
-          a.setType( Schema::Node::Decimal
-                     );
+        } else if(attribute.type().qname() == "xs:decimal") {
+          a.setType( Schema::Node::Decimal );
         } else if ( attribute.type().qname() == "xs:date" ) {
           a.setType( Schema::Node::Date );
         } else {

@@ -335,9 +335,9 @@ QString ParserCreatorDom::stringToDataConverter( const QString &data,
   } else if ( type == Schema::Element::Decimal ) {
     converter = data + ".toDouble()";
   } else if ( type == Schema::Element::Date ) {
-    converter = "QDate::fromString( " + data + ", \"yyyyMMdd\" )";
+    converter = "QDate::fromString( " + data + ", \"yyyy-MM-dd\" )";
   } else if ( type == Schema::Element::DateTime ) {
-    converter = "QDateTime::fromString( " + data + ", \"yyyyMMddThhmmssZ\" )";
+    converter = "QDateTime::fromString( " + data + ", \"yyyy-MM-ddthh:mm:ssZ\" )";
   } else {
     converter = data;
   }

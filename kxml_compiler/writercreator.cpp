@@ -84,23 +84,32 @@ void WriterCreator::createElementWriter( KODE::Class &c,
   KODE::Code code;
 
   QString tag = element.name();
+  code += "if ( mElementIsOptional && !mValueHadBeenSet )";
+  code.indent();
+  code += "return;";
+  code.unindent();
 
-  if ( element.isEmpty() ) {
+  if ( element.type() == Schema::Element::None ) {
     code += "xml.writeEmptyElement( \"" + tag + "\" );";
-  } else if ( element.text() ) {
+  } else if (element.type() > Schema::Element::None && element.type() < Schema::Element::Enumeration) {
+    QString indent = "";
     if ( element.type() == Schema::Element::Date ) {
       code += "if ( value().isValid() ) {";
-    } else {
+      indent = "  ";
+    } else if ( element.type() != Schema::Element::Integer && element.type() != Schema::Element::Decimal){
       code += "if ( !value().isEmpty() ) {";
+      indent = "  ";
     }
-    code += "  xml.writeStartElement( \"" + tag + "\" );";
+    code += indent + "xml.writeStartElement( \"" + tag + "\" );";
     
     code += createAttributeWriter( element );
 
     QString data = dataToStringConverter( "value()", element.type() );
-    code += "  xml.writeCharacters( " + data + " );";
-    code += "  xml.writeEndElement();";
-    code += "}";
+    code += indent + "xml.writeCharacters( " + data + " );";
+    code += indent + "xml.writeEndElement();";
+    if ( element.type() != Schema::Element::Integer && element.type() != Schema::Element::Decimal ){
+      code += "}";
+    }
   } else {
     bool pureList = true;
     if ( !element.attributeRelations().isEmpty() ) {
@@ -183,12 +192,16 @@ QString WriterCreator::dataToStringConverter( const QString &data,
 {
   QString converter;
 
-  if ( type == Schema::Element::Integer || type == Schema::Element::Decimal ) {
-    converter = "QString::number( " + data + " )";
+  if ( type == Schema::Element::Integer || type == Schema::Element::Decimal) {
+    converter = "QString::number( " + data + ", 'f')";
   } else if ( type == Schema::Element::Date ) {
-    converter = data + ".toString( \"yyyyMMdd\" )";
+    // format: [-]CCYY-MM-DD[Z|(+|-)hh:mm]
+    // http://books.xmlschemata.org/relaxng/ch19-77041.html
+    converter = data + ".toString( \"yyyy-MM-dd\" )";
   } else if ( type == Schema::Element::DateTime ) {
-    converter = data + ".toString( \"yyyyMMddThhmmssZ\" )";
+    // format: [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+    // http://books.xmlschemata.org/relaxng/ch19-77049.html
+    converter = data + ".toString( \"yyyy-MM-ddthh:mm:ssZ\" )";
   } else {
     converter = data;
   }

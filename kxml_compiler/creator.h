@@ -113,7 +113,7 @@ class Creator
     QString errorStream() const;
     QString debugStream() const;
 
-  protected:
+protected:
     void setExternalClassNames();
 
     void createElementParser( KODE::Class &c, const Schema::Element &e );
@@ -138,6 +138,9 @@ class Creator
     bool mUseKde;
     bool mCreateCrudFunctions;
     QString mExportDeclaration;
+    void createConstructorOptionalMemberInitializator( const ClassDescription & description, KODE::Code & code );
+    void addCRUDConstructorCode( const ClassDescription &description, KODE::Code &code);
+    void createCRUDIsValid(KODE::Class &c, ClassDescription &description);
 };
 
 class ParserCreator

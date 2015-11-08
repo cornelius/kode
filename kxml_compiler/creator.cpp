@@ -135,7 +135,7 @@ void Creator::createProperty( KODE::Class &c,
   c.addMemberVariable( v );
 
   KODE::Function mutator( Namer::getMutator( name ), "void" );
-  if ( type == "int" || type == "double" ) {
+  if ( type == "int" ) {
     mutator.addArgument( type + " v" );
   } else {
     mutator.addArgument( "const " + type + " &v" );
@@ -148,7 +148,17 @@ void Creator::createProperty( KODE::Class &c,
       }
     }
   }
-  c.addFunction( mutator );
+
+  if (name.toLower() == "value") {
+    mutator.addBodyLine( "mValueHadBeenSet = true;" );
+  }
+
+  // do not pullote the code with the setValueHadBeenSet function
+  // because that variable should be set only by the constructor
+  // or the setValue method
+  if (!(type == "bool" && name == "valueHadBeenSet")) {
+    c.addFunction( mutator );
+  }
 
   KODE::Function accessor( Namer::getAccessor( name ), type );
   accessor.setConst( true );
@@ -253,7 +263,7 @@ ClassDescription Creator::createClassDescription(
     }
   }
 
-  if ( element.text() ) {
+  if ( element.type() > Schema::Node::None && element.type() < Schema::Node::Enumeration ) {
     description.addProperty( typeName( element.type() ), "Value" );
   }
 
@@ -292,14 +302,57 @@ ClassDescription Creator::createClassDescription(
           p.setTargetHasId( true );
         }
 
+        p.setIsOptionalElement( r.isOptional() );
         description.addProperty( p );
       } else {
-        description.addProperty( targetClassName, Namer::getClassName( name ) );
+        description.addProperty( targetClassName, Namer::getClassName( name ), r.isOptional() );
       }
     }
   }
   
   return description;
+}
+
+void Creator::addCRUDConstructorCode(
+        const ClassDescription & description,
+        KODE::Code & code)
+{
+  bool hasCreatedAt = description.hasProperty( "CreatedAt" );
+  bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+  if ( hasCreatedAt || hasUpdatedAt ) {
+    code += "QDateTime now = QDateTime::currentDateTime();";
+    if ( hasCreatedAt ) {
+      code += "setCreatedAt( now );";
+    }
+    if ( hasUpdatedAt ) {
+      code += "setUpdatedAt( now );";
+    }
+  }
+}
+
+void Creator::createConstructorOptionalMemberInitializator(
+    const ClassDescription & description,
+    KODE::Code & code )
+{
+  foreach( ClassProperty p, description.properties() ) {
+    qWarning() << "TO constructor" << p.name();
+    if ( p.isOptionalElement() && p.name().toLower() != "value") {
+      qWarning() << "\t optionall";
+      code += 'm' + KODE::Style::upperFirst( p.name() ) + ".setElementIsOptional( true );";
+    }
+  }
+}
+
+void Creator::createCRUDIsValid(KODE::Class & c, ClassDescription & description)
+{
+  if ( description.hasProperty( "Id" ) ) {
+    KODE::Function isValid( "isValid", "bool" );
+    isValid.setConst( true );
+    KODE::Code code;
+    code += "return !mId.isEmpty();";
+    isValid.setBody( code );
+    c.addFunction( isValid );
+  }
 }
 
 void Creator::createClass( const Schema::Element &element )
@@ -330,31 +383,67 @@ void Creator::createClass( const Schema::Element &element )
     c.setExportDeclaration( mExportDeclaration );
   }
 
-  bool hasCreatedAt = description.hasProperty( "CreatedAt" );
-  bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+  if ((element.type() > Schema::Node::None && element.type() < Schema::Node::Enumeration) ||
+      element.type() == Schema::Node::ComplexType) {
+      // if this is a simple type create a default constructor for passing the value
+      KODE::Function constructorDefault( className, "" );
+      KODE::Code defaultCode;
+      if (element.type() == Schema::Node::Decimal || element.type() == Schema::Node::Integer) {
+        defaultCode += "mValue = 0;";  // FIXME/TODO add initializer rather
+      }
+      defaultCode += "mValueHadBeenSet = false;";
+      defaultCode += "mElementIsOptional = false;";
+      createConstructorOptionalMemberInitializator( description, defaultCode );
+      if (mCreateCrudFunctions)
+        addCRUDConstructorCode( description, defaultCode );
+      constructorDefault.setBody(defaultCode);
+      c.addFunction(constructorDefault);
+
+      if (element.type() != Schema::Node::ComplexType) {
+        KODE::Function constructor( className, "" );
+        constructor.addArgument("const " + typeName(element.type()) +" &v");
+        KODE::Code code; // FIXME add initializer rather
+        code += "mValue = v;";
+        code += "mValueHadBeenSet = true;";
+        code += "mElementIsOptional = false;";
+        createConstructorOptionalMemberInitializator( description, code );
+        if (mCreateCrudFunctions)
+          addCRUDConstructorCode( description, code );
+        constructor.setBody(code);
+        c.addFunction( constructor );
+      }
+
+      if (mCreateCrudFunctions)
+        createCRUDIsValid(c, description);
+  } else {
+    if (mCreateCrudFunctions) {
+      bool hasCreatedAt = description.hasProperty( "CreatedAt" );
+      bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+      if ( hasCreatedAt || hasUpdatedAt ) {
+        KODE::Function constructor( className, "" );
+        KODE::Code code;
+        code += "QDateTime now = QDateTime::currentDateTime();";
+        if ( hasCreatedAt ) {
+          code += "setCreatedAt( now );";
+        }
+        if ( hasUpdatedAt ) {
+          code += "setUpdatedAt( now );";
+        }
+        constructor.setBody( code );
+        c.addFunction( constructor );
+
+        createCRUDIsValid(c, description);
+      }
+    }
+  }
 
   if ( mCreateCrudFunctions ) {
-    if ( hasCreatedAt || hasUpdatedAt ) {
-      KODE::Function constructor( className, "" );
-      KODE::Code code;
-      code += "QDateTime now = QDateTime::currentDateTime();";
-      if ( hasCreatedAt ) {
-        code += "setCreatedAt( now );";
-      }
-      if ( hasUpdatedAt ) {
-        code += "setUpdatedAt( now );";
-      }
-      constructor.setBody( code );
-      c.addFunction( constructor );
-    }
-
     if ( description.hasProperty( "Id" ) ) {
       KODE::Function isValid( "isValid", "bool" );
       isValid.setConst( true );
       KODE::Code code;
       code += "return !mId.isEmpty();";
       isValid.setBody( code );
-      c.addFunction( isValid );
     }
   }
 
@@ -385,7 +474,12 @@ void Creator::createClass( const Schema::Element &element )
     }
   }
 
-  foreach(KODE::Enum e, description.enums() ) {
+  // silly member name had been choosen to make the possible conflicts
+  // with existing members low
+  createProperty( c, description, "bool", "valueHadBeenSet" );
+  createProperty( c, description, "bool", "elementIsOptional");
+  
+  foreach( KODE::Enum e, description.enums() ) {
     c.addEnum(e);
   }
 

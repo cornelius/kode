@@ -710,7 +710,16 @@ void Printer::printHeader( const File &file )
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
-        out += "#include <" + *it2 + '>';
+        // FIXME ugly workaroud for generating Qt4/5 compatible headers
+        if (*it2 == "QtXml/QXmlStreamWriter") {
+          out += "#if QT_VERSION >= 0x050000";
+          out += "#include <QXmlStreamWriter>";
+          out += "#else";
+          out += "#include <QtXml/QXmlStreamWriter>";
+          out += "#endif";
+        } else {
+          out += "#include <" + *it2 + '>';
+        }
         processed.insert( *it2 );
       }
     }

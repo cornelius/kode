@@ -127,6 +127,7 @@ class SCHEMA_EXPORT Parser
 
     class Private;
     Private *d;
+    void findElementsRecursive(ParserContext *context, const QDomElement &element);
 };
 
 }
