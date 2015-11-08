@@ -376,7 +376,6 @@ void Creator::createClass( const Schema::Element &element )
   ClassDescription description = createClassDescription( element );
 
   KODE::Class c( className );
-
   if ( !mExportDeclaration.isEmpty() ) {
     c.setExportDeclaration( mExportDeclaration );
   }

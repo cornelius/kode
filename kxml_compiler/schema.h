@@ -123,6 +123,8 @@ class KSCHEMA_EXPORT Node : public Annotatable
     void setEnumerationValues( const QStringList & );
     QStringList enumerationValues() const;
 
+    static Type typeFromString( QString xsType );
+
   private:
     Type mType;
     QString mIdentifier;

@@ -306,6 +306,26 @@ QStringList Node::enumerationValues() const
   return mEnumerationValues;
 }
 
+Node::Type Node::typeFromString(QString xsType)
+{
+  if ( xsType == "xs:string" ) {
+    return Schema::Node::String;
+  } else if ( xsType == "xs:decimal") {
+    return Schema::Node::Decimal;
+  } else if ( xsType == "xs:integer") {
+    return Schema::Node::Integer;
+  } else if ( xsType == "xs:date" ) {
+    return Schema::Node::Date;
+  } else if ( xsType == "xs:datetime" ) {
+    return Schema::Node::DateTime;
+  } else if ( xsType == "xs:normalizedString" ) {
+    return Schema::Node::NormalizedString;
+  } else if ( xsType == "xs:token" ) {
+    return Schema::Node::Token;
+  }
+  return Schema::Node::None;
+}
+
 
 void Annotatable::setDocumentation( const QString &str )
 {

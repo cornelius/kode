@@ -91,7 +91,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
   foreach ( XSD::Element element, types.elements() ) {
     if ( mVerbose ) {
-      qDebug() << "Element: " << element.name();
+      qDebug() << "Element: " << element.name() << element.type().qname();
 //      qDebug() << "  Annotations: " << element.annotations().count();
 //      qDebug() << "  " << element.minOccurs() << ","
 //        << element.maxOccurs();
@@ -107,36 +107,12 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       e.setText( true );
     } else if ( complexType.contentModel() == XSD::XSDType::SIMPLE &&
             !complexType.baseTypeName().isEmpty() ) {
-      if ( complexType.baseTypeName().qname() == "xs:string" ) {
-        e.setBaseType( Schema::Node::String );
-      } else if ( complexType.baseTypeName().qname() == "xs:decimal") {
-        e.setBaseType( Schema::Node::Decimal );
-      } else if ( complexType.baseTypeName().qname() == "xs:integer") {
-        e.setBaseType( Schema::Node::Integer );
-      } else if ( complexType.baseTypeName().qname() == "xs:date" ) {
-        e.setBaseType( Schema::Node::Date );
-      } else if ( complexType.baseTypeName().qname() == "xs:normalizedString" ) {
-        e.setBaseType( Schema::Node::NormalizedString );
-      } else if ( complexType.baseTypeName().qname() == "xs:token" ) {
-        e.setBaseType( Schema::Node::Token );
-      }
+      e.setBaseType( Schema::Node::typeFromString(complexType.baseTypeName().qname()) );
     }
 
-    if ( element.type().qname() == "xs:string" ) {
-      e.setType( Schema::Node::String );
-    } else if ( element.type().qname() == "xs:decimal") {
-      e.setType( Schema::Node::Decimal );
-    } else if ( element.type().qname() == "xs:integer") {
-      e.setType( Schema::Node::Integer );
-    } else if ( element.type().qname() == "xs:date" ) {
-      e.setType( Schema::Node::Date );
-    } else if ( element.type().qname() == "xs:normalizedString" ) {
-      e.setType( Schema::Node::NormalizedString );
-    } else if ( element.type().qname() == "xs:token" ) {
-      e.setType( Schema::Node::Token );
-    } else {
+    e.setType( Schema::Node::typeFromString(element.type().qname()) );
+    if ( e.type() == Schema::Node::None )
       e.setType( Schema::Node::ComplexType );
-    }
 
     foreach( XSD::Element subElement, complexType.elements() ) {
       if ( mVerbose ) {
@@ -180,15 +156,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       a.setName( attribute.name() );
 
       if ( !attribute.type().isEmpty() ) {
-        if ( attribute.type().qname() == "xs:string" ) {
-          a.setType( Schema::Node::String );
-        } else if ( attribute.type().qname() == "xs:integer" ) {
-          a.setType( Schema::Node::Integer );
-        } else if(attribute.type().qname() == "xs:decimal") {
-          a.setType( Schema::Node::Decimal );
-        } else if ( attribute.type().qname() == "xs:date" ) {
-          a.setType( Schema::Node::Date );
-        } else {
+        a.setType( Schema::Node::typeFromString(attribute.type().qname()) );
+        if ( a.type() == Schema::Node::None ) {
           XSD::SimpleType simpleType = types.simpleType( attribute.type() );
           setType( a, simpleType );
         }
