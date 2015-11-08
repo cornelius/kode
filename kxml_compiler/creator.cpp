@@ -335,9 +335,7 @@ void Creator::createConstructorOptionalMemberInitializator(
     KODE::Code & code )
 {
   foreach( ClassProperty p, description.properties() ) {
-    qWarning() << "TO constructor" << p.name();
     if ( p.isOptionalElement() && p.name().toLower() != "value") {
-      qWarning() << "\t optionall";
       code += 'm' + KODE::Style::upperFirst( p.name() ) + ".setElementIsOptional( true );";
     }
   }

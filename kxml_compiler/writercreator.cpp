@@ -193,7 +193,7 @@ QString WriterCreator::dataToStringConverter( const QString &data,
   QString converter;
 
   if ( type == Schema::Element::Integer || type == Schema::Element::Decimal) {
-    converter = "QString::number( " + data + ", 'f')";
+    converter = "QString::number( " + data + ", 'f', 6)";
   } else if ( type == Schema::Element::Date ) {
     // format: [-]CCYY-MM-DD[Z|(+|-)hh:mm]
     // http://books.xmlschemata.org/relaxng/ch19-77041.html
