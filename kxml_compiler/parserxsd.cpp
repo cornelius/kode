@@ -96,6 +96,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 //      qDebug() << "  " << element.minOccurs() << ","
 //        << element.maxOccurs();
     }
+
+
     Schema::Element e;
     e.setIdentifier( element.name() );
     e.setName( element.name() );
@@ -111,8 +113,19 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     }
 
     e.setType( Schema::Node::typeFromString(element.type().qname()) );
-    if ( e.type() == Schema::Node::None )
-      e.setType( Schema::Node::ComplexType );
+    if ( e.type() == Schema::Node::None ) {
+      bool found = false;
+      XSD::SimpleType simpleType = types.simpleType( element.type().qname(), &found );
+
+      // check if element having restrictions
+      if ( !found )
+        e.setType( Schema::Node::ComplexType );
+      else {
+        if ( simpleType.facetType() &  XSD::SimpleType::ENUM ) {
+          setType( e, simpleType );
+        }
+      }
+    }
 
     foreach( XSD::Element subElement, complexType.elements() ) {
       if ( mVerbose ) {

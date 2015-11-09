@@ -29,6 +29,8 @@
 #include <libkode/typedef.h>
 #include <libkode/file.h>
 
+#include <schema/parser.h>
+
 #include <kaboutdata.h>
 #include <kapplication.h>
 #include <kdebug.h>
@@ -119,7 +121,7 @@ protected:
     void createElementParser( KODE::Class &c, const Schema::Element &e );
 
     QString typeName( Schema::Node::Type );
-
+    QString typeName( const Schema::Element & element );
   private:
     Schema::Document mDocument;
   

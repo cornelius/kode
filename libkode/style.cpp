@@ -87,6 +87,7 @@ QString Style::sanitize(const QString &str)
     ret = ret.replace(QLatin1Char('-'), QLatin1Char('_'));
     ret = ret.replace(QLatin1Char(';'), QLatin1Char('_'));
     ret = ret.replace(QLatin1Char(':'), QLatin1Char('_'));
+    ret = ret.replace(QLatin1Char('.'), QLatin1Char('p'));
     return ret;
 }
 

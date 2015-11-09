@@ -116,7 +116,6 @@ int main( int argc, char **argv )
   if ( args->isSet( "xsd" ) || fi.suffix() == "xsd" ) {
     RNG::ParserXsd p;
     p.setVerbose( verbose );
-
     schemaDocument = p.parse( schemaFile );
 
     if ( schemaDocument.isEmpty() ) {

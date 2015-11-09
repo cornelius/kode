@@ -20,6 +20,7 @@
 #include "writercreator.h"
 
 #include "namer.h"
+#include "style.h"
 
 #include <QDebug>
 
@@ -110,6 +111,13 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     if ( element.type() != Schema::Element::Integer && element.type() != Schema::Element::Decimal ){
       code += "}";
     }
+  } else if ( element.type() == Schema::Element::Enumeration ) {
+    code += "xml.writeStartElement( \"" + tag + "\" );";
+    code += createAttributeWriter( element );
+    code += "xml.writeCharacters( " +
+            KODE::Style::lowerFirst( Namer::getClassName( element.name()))  +
+            "_EnumToString( value() ) );";
+    code += "xml.writeEndElement();";
   } else {
     bool pureList = true;
     if ( !element.attributeRelations().isEmpty() ) {
@@ -191,7 +199,6 @@ QString WriterCreator::dataToStringConverter( const QString &data,
   Schema::Node::Type type )
 {
   QString converter;
-
   if ( type == Schema::Element::Integer || type == Schema::Element::Decimal) {
     converter = "QString::number( " + data + ", 'f', 6)";
   } else if ( type == Schema::Element::Date ) {

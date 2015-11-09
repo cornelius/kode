@@ -610,7 +610,6 @@ void Parser::parseRestriction( ParserContext*, const QDomElement &element, Simpl
     }
 
     st.setFacetValue( childElement.attribute( "value" ) );
-
     childElement = childElement.nextSiblingElement();
   }
 }

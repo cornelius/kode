@@ -30,6 +30,7 @@
 #include <libkode/printer.h>
 #include <libkode/typedef.h>
 #include <libkode/statemachine.h>
+#include <schema/simpletype.h>
 
 #include <kaboutdata.h>
 #include <kapplication.h>
@@ -252,7 +253,7 @@ ClassDescription Creator::createClassDescription(
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
     if ( a.enumerationValues().count() ) {
-      if (!description.hasEnum(a.name())) {
+      if ( !description.hasEnum( a.name()) ) {
         description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
       }
       description.addProperty( Namer::getClassName( a.name() ) + "Enum",
@@ -264,7 +265,9 @@ ClassDescription Creator::createClassDescription(
   }
 
   if ( element.type() > Schema::Node::None && element.type() < Schema::Node::Enumeration ) {
-    description.addProperty( typeName( element.type() ), "Value" );
+    description.addProperty( typeName( element.type() ), "value" );
+  } else if ( element.type() == Schema::Node::Enumeration ) {
+    description.addProperty( Namer::getClassName( element ) + "_Enum", "value" );
   }
 
   foreach( Schema::Relation r, element.elementRelations() ) {
@@ -353,12 +356,14 @@ void Creator::createCRUDIsValid(KODE::Class & c, ClassDescription & description)
   }
 }
 
-void Creator::createClass( const Schema::Element &element )
+void Creator::createClass(const Schema::Element &element )
 {
   QString className = Namer::getClassName( element  );
-
   if ( mVerbose ) {
-    kDebug() <<"Creator::createClass()" << element.identifier() << className;
+    if ( element.type() == Schema::Node::Enumeration )
+      kDebug() <<"Creator::createClass()" << element.identifier() << className;
+    else
+      kDebug() <<"Creator::createClass()" << element.identifier() << className << "ENUM";
     foreach( Schema::Relation r, element.elementRelations() ) {
       kDebug() << "  SUBELEMENTS" << r.target();
     }
@@ -380,11 +385,11 @@ void Creator::createClass( const Schema::Element &element )
     c.setExportDeclaration( mExportDeclaration );
   }
 
-  if ((element.type() > Schema::Node::None && element.type() < Schema::Node::Enumeration) ||
+  if ((element.type() > Schema::Node::None && element.type() <= Schema::Node::Enumeration) ||
       element.type() == Schema::Node::ComplexType) {
-      // if this is a simple type create a default constructor for passing the value
       KODE::Function constructorDefault( className, "" );
       KODE::Code defaultCode;
+      // initialize number based elements
       if (element.type() == Schema::Node::Decimal || element.type() == Schema::Node::Integer) {
         defaultCode += "mValue = 0;";  // FIXME/TODO add initializer rather
       }
@@ -396,9 +401,10 @@ void Creator::createClass( const Schema::Element &element )
       constructorDefault.setBody(defaultCode);
       c.addFunction(constructorDefault);
 
+      // if this is a simple type create a default constructor for passing the value
       if (element.type() != Schema::Node::ComplexType) {
         KODE::Function constructor( className, "" );
-        constructor.addArgument("const " + typeName(element.type()) +" &v");
+        constructor.addArgument("const " + typeName( element ) +" &v");
         KODE::Code code; // FIXME add initializer rather
         code += "mValue = v;";
         code += "mValueHadBeenSet = true;";
@@ -478,6 +484,12 @@ void Creator::createClass( const Schema::Element &element )
   
   foreach( KODE::Enum e, description.enums() ) {
     c.addEnum(e);
+  }
+
+  if ( element.type() == Schema::Node::Enumeration ) {
+    QStringList enumItems = element.enumerationValues();
+    KODE::Enum selfEnum( typeName( element ), enumItems, false);
+    c.addEnum(selfEnum);
   }
 
   createElementParser( c, element );
@@ -657,8 +669,21 @@ QString Creator::typeName( Schema::Node::Type type )
     return "int";
   } else if ( type == Schema::Element::Decimal ) {
     return "double";
-  } else {
+  } else if ( type == Schema::Element::String ||
+              type == Schema::Element::NormalizedString ||
+              type == Schema::Element::Token ) {
     return "QString";
+  } else {
+    return "Invalid";
+  }
+}
+
+QString Creator::typeName(const Schema::Element &element)
+{
+  if ( element.type() == Schema::Node::Enumeration ) {
+    return Namer::getClassName( element ) + "_Enum";
+  } else {
+    return typeName( element.type() );
   }
 }
 
