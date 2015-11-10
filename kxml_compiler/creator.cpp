@@ -390,8 +390,12 @@ void Creator::createClass(const Schema::Element &element )
       KODE::Function constructorDefault( className, "" );
       KODE::Code defaultCode;
       // initialize number based elements
+      // FIXME/TODO add initializer rather
       if (element.type() == Schema::Node::Decimal || element.type() == Schema::Node::Integer) {
-        defaultCode += "mValue = 0;";  // FIXME/TODO add initializer rather
+        defaultCode += "mValue = 0;";
+      } else if ( element.type() == Schema::Node::Enumeration ) {
+        QString typeNameStr = typeName( element ); // going to be suffixed with _Enum
+        defaultCode += "mValue = " + typeNameStr.left( typeNameStr.length() - 5 ) + "__Invalid;";
       }
       defaultCode += "mValueHadBeenSet = false;";
       defaultCode += "mElementIsOptional = false;";
