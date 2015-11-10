@@ -322,6 +322,8 @@ Node::Type Node::typeFromString(QString xsType)
     return Schema::Node::NormalizedString;
   } else if ( xsType == "xs:token" ) {
     return Schema::Node::Token;
+  } else if ( xsType == "xs:boolean" ) {
+    return Schema::Node::Boolean;
   }
   return Schema::Node::None;
 }

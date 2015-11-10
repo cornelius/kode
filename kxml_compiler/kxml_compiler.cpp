@@ -208,6 +208,7 @@ int main( int argc, char **argv )
       c.createClass( e );
     }
   }
+
   if ( verbose ) {
     kDebug() <<"Create parser";
   }

@@ -185,7 +185,6 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     setAnnotations( e, element.annotations() );
 
     mDocument.addElement( e );
-
     if ( mDocument.startElement().isEmpty() ) {
       mDocument.setStartElement( e );
     }

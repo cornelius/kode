@@ -97,7 +97,9 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     if ( element.type() == Schema::Element::Date ) {
       code += "if ( value().isValid() ) {";
       indent = "  ";
-    } else if ( element.type() != Schema::Element::Integer && element.type() != Schema::Element::Decimal){
+    } else if ( element.type() != Schema::Element::Integer &&
+                element.type() != Schema::Element::Decimal &&
+                element.type() != Schema::Element::Boolean ){
       code += "if ( !value().isEmpty() ) {";
       indent = "  ";
     }
@@ -108,7 +110,9 @@ void WriterCreator::createElementWriter( KODE::Class &c,
     QString data = dataToStringConverter( "value()", element.type() );
     code += indent + "xml.writeCharacters( " + data + " );";
     code += indent + "xml.writeEndElement();";
-    if ( element.type() != Schema::Element::Integer && element.type() != Schema::Element::Decimal ){
+    if ( element.type() != Schema::Element::Integer &&
+         element.type() != Schema::Element::Decimal &&
+         element.type() != Schema::Element::Boolean ){
       code += "}";
     }
   } else if ( element.type() == Schema::Element::Enumeration ) {
@@ -209,6 +213,9 @@ QString WriterCreator::dataToStringConverter( const QString &data,
     // format: [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
     // http://books.xmlschemata.org/relaxng/ch19-77049.html
     converter = data + ".toString( \"yyyy-MM-ddthh:mm:ssZ\" )";
+  } else if ( type == Schema::Element::Boolean ) {
+    // Legal values for boolean are true, false, 1 (which indicates true), and 0 (which indicates false).
+    converter = data + " ? \"1\" : \"0\"";
   } else {
     converter = data;
   }

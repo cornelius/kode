@@ -361,9 +361,9 @@ void Creator::createClass(const Schema::Element &element )
   QString className = Namer::getClassName( element  );
   if ( mVerbose ) {
     if ( element.type() == Schema::Node::Enumeration )
-      kDebug() <<"Creator::createClass()" << element.identifier() << className;
-    else
       kDebug() <<"Creator::createClass()" << element.identifier() << className << "ENUM";
+    else
+      kDebug() <<"Creator::createClass()" << element.identifier() << className;
     foreach( Schema::Relation r, element.elementRelations() ) {
       kDebug() << "  SUBELEMENTS" << r.target();
     }
@@ -396,6 +396,8 @@ void Creator::createClass(const Schema::Element &element )
       } else if ( element.type() == Schema::Node::Enumeration ) {
         QString typeNameStr = typeName( element ); // going to be suffixed with _Enum
         defaultCode += "mValue = " + typeNameStr.left( typeNameStr.length() - 5 ) + "__Invalid;";
+      } else if ( element.type() == Schema::Node::Boolean ) {
+        defaultCode += "mValue = false;";
       }
       defaultCode += "mValueHadBeenSet = false;";
       defaultCode += "mElementIsOptional = false;";
@@ -677,6 +679,8 @@ QString Creator::typeName( Schema::Node::Type type )
               type == Schema::Element::NormalizedString ||
               type == Schema::Element::Token ) {
     return "QString";
+  } else if ( type == Schema::Element::Boolean) {
+    return "bool";
   } else {
     return "Invalid";
   }

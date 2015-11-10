@@ -135,7 +135,7 @@ SimpleType Types::simpleType( const QName &typeName, bool *found ) const
 {
   qDebug() << "Types::simpleType()" << typeName.qname();
   foreach( SimpleType type, d->mSimpleTypes ) {
-    //qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname() << type.name();
+    qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname() << type.name();
     if ( type.name() == typeName.qname() ) {
       if ( found != NULL )
         *found = true;
