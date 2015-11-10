@@ -61,7 +61,7 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
     code += "xml.writeDTD( \\\"" + mDtd + "\\\" );";
   }
 
-  code += "writeElement( xml );";
+  code += "writeElement( xml, true );";
   code += "xml.writeEndDocument();";
   code += "file.close();";
   code += "";
@@ -74,13 +74,27 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
   mFile.insertClass( c );
 }
 
-void WriterCreator::createElementWriter( KODE::Class &c,
-  const Schema::Element &element )
+void WriterCreator::addWriteStartElement(QString tag, const QString & targetNameSpace, KODE::Code & code)
+{
+  code += "xml.writeStartElement( \"" + tag + "\" );";
+  code += "if ( printNameSpace )";
+  code.indent();
+  code += "xml.addAttribute( \"xmlns\", \"" + targetNameSpace + "\" );";
+  code.unindent();
+}
+
+void WriterCreator::createElementWriter(
+    KODE::Class &c,
+    const Schema::Element &element,
+    const QString targetNameSpace )
 {
   KODE::Function writer( "writeElement", "void" );
   writer.setConst( true );
 
   writer.addArgument( "QXmlStreamWriter &xml" );
+
+  KODE::Function::Argument printNameSpace("bool printNameSpace", "false");
+  writer.addArgument(printNameSpace);
 
   KODE::Code code;
 
@@ -93,30 +107,30 @@ void WriterCreator::createElementWriter( KODE::Class &c,
   if ( element.type() == Schema::Element::None ) {
     code += "xml.writeEmptyElement( \"" + tag + "\" );";
   } else if (element.type() > Schema::Element::None && element.type() < Schema::Element::Enumeration) {
-    QString indent = "";
     if ( element.type() == Schema::Element::Date ) {
       code += "if ( value().isValid() ) {";
-      indent = "  ";
+      code.indent();
     } else if ( element.type() != Schema::Element::Integer &&
                 element.type() != Schema::Element::Decimal &&
                 element.type() != Schema::Element::Boolean ){
       code += "if ( !value().isEmpty() ) {";
-      indent = "  ";
+      code.indent();
     }
-    code += indent + "xml.writeStartElement( \"" + tag + "\" );";
-    
+    addWriteStartElement(tag, targetNameSpace, code);
     code += createAttributeWriter( element );
 
     QString data = dataToStringConverter( "value()", element.type() );
-    code += indent + "xml.writeCharacters( " + data + " );";
-    code += indent + "xml.writeEndElement();";
+    code += "xml.writeCharacters( " + data + " );";
+    code += "xml.writeEndElement();";
     if ( element.type() != Schema::Element::Integer &&
          element.type() != Schema::Element::Decimal &&
          element.type() != Schema::Element::Boolean ){
       code += "}";
+      code.unindent();
     }
   } else if ( element.type() == Schema::Element::Enumeration ) {
-    code += "xml.writeStartElement( \"" + tag + "\" );";
+    addWriteStartElement(tag, targetNameSpace, code);
+
     code += createAttributeWriter( element );
     code += "xml.writeCharacters( " +
             KODE::Style::lowerFirst( Namer::getClassName( element.name()))  +
@@ -151,8 +165,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       code.indent();
     }
     
-    code += "xml.writeStartElement( \"" + tag + "\" );";
-
+    addWriteStartElement(tag, targetNameSpace, code);
     code += createAttributeWriter( element );
 
     foreach( Schema::Relation r, element.elementRelations() ) {

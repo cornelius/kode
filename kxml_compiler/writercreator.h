@@ -31,9 +31,10 @@ class WriterCreator
     void createFileWriter( const QString &className,
       const QString &errorStream );
 
-    void createElementWriter( KODE::Class &c, const Schema::Element &e );
+    void createElementWriter(KODE::Class &c, const Schema::Element &e , const QString targetNameSpace = "");
 
-  protected:
+    void addWriteStartElement(QString tag, const QString &targetNameSpace, KODE::Code &code);
+protected:
     void createIndenter( KODE::File & );
 
     QString dataToStringConverter( const QString &data, Schema::Node::Type );

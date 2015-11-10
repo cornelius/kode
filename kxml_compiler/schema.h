@@ -220,7 +220,10 @@ class KSCHEMA_EXPORT Document : public Annotatable
 
     bool isEmpty() const;
 
-  protected:
+    QString targetNamespace() const;
+    void setTargetNamespace(const QString &targetNamespace);
+
+protected:
     void findUsedElements( const Element &e ) const;
     bool addUsedElement( const Element &element ) const;
 
@@ -229,6 +232,8 @@ class KSCHEMA_EXPORT Document : public Annotatable
 
     Element::List mElements;
     Attribute::List mAttributes;
+
+    QString mTargetNamespace;
 
     mutable Element::List mUsedElements;
 };

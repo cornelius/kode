@@ -196,8 +196,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     qDebug() << "----ParserXsd::parse() done";
   }
 
-//  return Schema::Document();
-
+  mDocument.setTargetNamespace(parser.targetNamespace());
   return mDocument;
 }
 

@@ -501,7 +501,7 @@ void Creator::createClass(const Schema::Element &element )
   createElementParser( c, element );
   
   WriterCreator writerCreator( mFile, mDocument, mDtd );
-  writerCreator.createElementWriter( c, element );
+  writerCreator.createElementWriter( c, element, mDocument.targetNamespace() );
 
   mFile.insertClass( c );
 }

@@ -107,15 +107,24 @@ bool Document::addUsedElement( const Element &element ) const
     return false;
   }
 }
+QString Document::targetNamespace() const
+{
+    return mTargetNamespace;
+}
+
+void Document::setTargetNamespace(const QString &targetNamespace)
+{
+    mTargetNamespace = targetNamespace;
+}
 
 void Document::addAttribute( const Attribute &a )
 {
-  mAttributes.append( a );
+    mAttributes.append( a );
 }
 
 Attribute::List Document::attributes() const
 {
-  return mAttributes;
+    return mAttributes;
 }
 
 bool Document::hasAttribute( const Attribute &attribute )

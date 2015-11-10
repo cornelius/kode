@@ -98,7 +98,7 @@ class Creator
       const QString &type, const QString &name );
 
     ClassDescription createClassDescription( const Schema::Element &element );
-    void createClass( const Schema::Element &element );
+    void createClass(const Schema::Element &element);
 
     void registerListTypedef( const QString &type );
 
