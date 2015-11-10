@@ -79,7 +79,7 @@ void WriterCreator::addWriteStartElement(QString tag, const QString & targetName
   code += "xml.writeStartElement( \"" + tag + "\" );";
   code += "if ( printNameSpace )";
   code.indent();
-  code += "xml.addAttribute( \"xmlns\", \"" + targetNameSpace + "\" );";
+  code += "xml.writeAttribute( \"xmlns\", \"" + targetNameSpace + "\" );";
   code.unindent();
 }
 
