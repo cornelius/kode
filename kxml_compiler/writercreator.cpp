@@ -203,7 +203,9 @@ QString WriterCreator::dataToStringConverter( const QString &data,
   Schema::Node::Type type )
 {
   QString converter;
-  if ( type == Schema::Element::Integer || type == Schema::Element::Decimal) {
+  if ( type == Schema::Element::Integer ) {
+    converter = "QString::number( " + data + ", 'f', 0)";
+  } else if ( type == Schema::Element::Decimal) {
     converter = "QString::number( " + data + ", 'f', 6)";
   } else if ( type == Schema::Element::Date ) {
     // format: [-]CCYY-MM-DD[Z|(+|-)hh:mm]
