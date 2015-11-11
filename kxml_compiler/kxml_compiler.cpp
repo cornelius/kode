@@ -75,6 +75,8 @@ int main( int argc, char **argv )
   options.add("namespace <name>", ki18n("Namespace for generated classes") );
   options.add("export <name>", ki18n("Export declaration for generated classes") );
   options.add("create-crud-functions", ki18n("Create functions for dealing with data suitable for CRUD model") );
+  options.add("dont-create-write-functions", ki18n("Do not create XML generating methods to the generated classes (useful for applications require XML parse only feature)") );
+  options.add("dont-create-parse-functions", ki18n("Do not create XML parsing methods to the generated classes (useful for applications require XML write only feature)") );
   KCmdLineArgs::addCmdLineOptions( options );
 
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -182,6 +184,8 @@ int main( int argc, char **argv )
   c.setVerbose( verbose );
   c.setUseKde( args->isSet( "use-kde" ) );
   c.setCreateCrudFunctions( args->isSet( "create-crud-functions" ) );
+  c.setCreateWriteFunctions( !args->isSet( "dont-create-write-functions" ) );
+  c.setCreateParseFunctions( !args->isSet( "dont-create-parse-functions" ) );
   if ( args->isSet( "namespace" ) ) {
     c.file().setNameSpace( args->getOption( "namespace" ) );
   }
@@ -203,6 +207,7 @@ int main( int argc, char **argv )
   if ( verbose ) {
     kDebug() <<"Create classes";
   }
+
   foreach( Schema::Element e, schemaDocument.usedElements() ) {
     if ( !e.text() ) {
       c.createClass( e );

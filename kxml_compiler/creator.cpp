@@ -69,7 +69,7 @@ bool Creator::ClassFlags::hasId() const
 
 Creator::Creator( const Schema::Document &document, XmlParserType p )
   : mDocument( document ), mXmlParserType( p ),
-    mVerbose( false ), mUseKde( false )
+    mVerbose( false ), mUseKde( false ), m_createParseFunctions(true), m_createWriteFunctions(true)
 {
   setExternalClassNames();
 }
@@ -498,11 +498,13 @@ void Creator::createClass(const Schema::Element &element )
     c.addEnum(selfEnum);
   }
 
-  createElementParser( c, element );
+  if ( m_createParseFunctions)
+    createElementParser( c, element );
   
-  WriterCreator writerCreator( mFile, mDocument, mDtd );
-  writerCreator.createElementWriter( c, element, mDocument.targetNamespace() );
-
+  if ( m_createWriteFunctions ) {
+    WriterCreator writerCreator( mFile, mDocument, mDtd );
+    writerCreator.createElementWriter( c, element, mDocument.targetNamespace() );
+  }
   mFile.insertClass( c );
 }
 
@@ -652,9 +654,11 @@ void Creator::create()
 {
   Schema::Element startElement = mDocument.startElement();
   setExternalClassPrefix( KODE::Style::upperFirst( startElement.name() ) );
-  createFileParser( startElement );
+  if ( m_createParseFunctions )
+    createFileParser( startElement );
 //  setDtd( schemaFilename.replace( "rng", "dtd" ) );
-  createFileWriter( startElement );
+  if ( m_createWriteFunctions )
+   createFileWriter( startElement );
 
   createListTypedefs();
 }
@@ -694,6 +698,26 @@ QString Creator::typeName(const Schema::Element &element)
     return typeName( element.type() );
   }
 }
+bool Creator::createWriteFunctions() const
+{
+  return m_createWriteFunctions;
+}
+
+void Creator::setCreateWriteFunctions(bool createWriteFunctions)
+{
+  m_createWriteFunctions = createWriteFunctions;
+}
+
+bool Creator::createParseFunctions() const
+{
+  return m_createParseFunctions;
+}
+
+void Creator::setCreateParseFunctions(bool createParseFunctions)
+{
+  m_createParseFunctions = createParseFunctions;
+}
+
 
 
 ParserCreator::ParserCreator( Creator *c )

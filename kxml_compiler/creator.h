@@ -115,6 +115,12 @@ class Creator
     QString errorStream() const;
     QString debugStream() const;
 
+    bool createParseFunctions() const;
+    void setCreateParseFunctions(bool createParseFunctions);
+
+    bool createWriteFunctions() const;
+    void setCreateWriteFunctions(bool createWriteFunctions);
+
 protected:
     void setExternalClassNames();
 
@@ -139,6 +145,8 @@ protected:
     bool mVerbose;
     bool mUseKde;
     bool mCreateCrudFunctions;
+    bool m_createParseFunctions;
+    bool m_createWriteFunctions;
     QString mExportDeclaration;
     void createConstructorOptionalMemberInitializator( const ClassDescription & description, KODE::Code & code );
     void addCRUDConstructorCode( const ClassDescription &description, KODE::Code &code);

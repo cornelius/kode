@@ -33,6 +33,7 @@ Document::Document()
 void Document::setStartElement( const Element &e )
 {
   mStartElement = e;
+  mStartElement.setIsRootElement( true );
 }
 
 Element Document::startElement() const
@@ -360,7 +361,7 @@ QList<QDomElement> Annotatable::annotations() const
 
 
 Element::Element()
-  : mText( false )
+  : mText( false ), mIsRootElement( false )
 {
 }
 
@@ -468,6 +469,16 @@ bool Element::isEmpty() const
 {
   return !mText && mElementRelations.isEmpty();
 }
+bool Element::isRootElement() const
+{
+    return mIsRootElement;
+}
+
+void Element::setIsRootElement(bool IsRootElement)
+{
+    mIsRootElement = IsRootElement;
+}
+
 
 Attribute::Attribute()
 {
@@ -475,12 +486,12 @@ Attribute::Attribute()
 
 bool Attribute::required() const
 {
-  return mRequired;
+    return mRequired;
 }
 
 void Attribute::setRequired(bool required)
 {
-  mRequired = required;
+    mRequired = required;
 }
 
 QString Attribute::defaultValue() const

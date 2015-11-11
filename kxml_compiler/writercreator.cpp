@@ -61,7 +61,7 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
     code += "xml.writeDTD( \\\"" + mDtd + "\\\" );";
   }
 
-  code += "writeElement( xml, true );";
+  code += "writeElement( xml );";
   code += "xml.writeEndDocument();";
   code += "file.close();";
   code += "";
@@ -74,13 +74,12 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
   mFile.insertClass( c );
 }
 
-void WriterCreator::addWriteStartElement(QString tag, const QString & targetNameSpace, KODE::Code & code)
+void WriterCreator::addWriteStartElement(QString tag, const QString & targetNameSpace, KODE::Code & code, bool printNameSpace)
 {
   code += "xml.writeStartElement( \"" + tag + "\" );";
-  code += "if ( printNameSpace )";
-  code.indent();
-  code += "xml.writeAttribute( \"xmlns\", \"" + targetNameSpace + "\" );";
-  code.unindent();
+  if ( printNameSpace ) {
+    code += "xml.writeAttribute( \"xmlns\", \"" + targetNameSpace + "\" );";
+  }
 }
 
 void WriterCreator::createElementWriter(
@@ -93,11 +92,7 @@ void WriterCreator::createElementWriter(
 
   writer.addArgument( "QXmlStreamWriter &xml" );
 
-  KODE::Function::Argument printNameSpace("bool printNameSpace", "false");
-  writer.addArgument(printNameSpace);
-
   KODE::Code code;
-
   QString tag = element.name();
   code += "if ( mElementIsOptional && !mValueHadBeenSet )";
   code.indent();
@@ -116,7 +111,7 @@ void WriterCreator::createElementWriter(
       code += "if ( !value().isEmpty() ) {";
       code.indent();
     }
-    addWriteStartElement(tag, targetNameSpace, code);
+    addWriteStartElement( tag, targetNameSpace, code, element.isRootElement() );
     code += createAttributeWriter( element );
 
     QString data = dataToStringConverter( "value()", element.type() );
@@ -129,7 +124,7 @@ void WriterCreator::createElementWriter(
       code.unindent();
     }
   } else if ( element.type() == Schema::Element::Enumeration ) {
-    addWriteStartElement(tag, targetNameSpace, code);
+    addWriteStartElement( tag, targetNameSpace, code, element.isRootElement() );
 
     code += createAttributeWriter( element );
     code += "xml.writeCharacters( " +
@@ -165,7 +160,7 @@ void WriterCreator::createElementWriter(
       code.indent();
     }
     
-    addWriteStartElement(tag, targetNameSpace, code);
+    addWriteStartElement( tag, targetNameSpace, code, element.isRootElement() );
     code += createAttributeWriter( element );
 
     foreach( Schema::Relation r, element.elementRelations() ) {

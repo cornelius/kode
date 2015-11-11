@@ -185,8 +185,12 @@ class KSCHEMA_EXPORT Element : public Node
 
     bool isEmpty() const;
 
-  private:
+    bool isRootElement() const;
+    void setIsRootElement(bool isRootElement);
+
+private:
     bool mText;
+    bool mIsRootElement;
 
     Relation::List mElementRelations;
     Relation::List mAttributeRelations;

@@ -33,7 +33,7 @@ class WriterCreator
 
     void createElementWriter(KODE::Class &c, const Schema::Element &e , const QString targetNameSpace = "");
 
-    void addWriteStartElement(QString tag, const QString &targetNameSpace, KODE::Code &code);
+    void addWriteStartElement(QString tag, const QString &targetNameSpace, KODE::Code &code, bool printNameSpace);
 protected:
     void createIndenter( KODE::File & );
 
