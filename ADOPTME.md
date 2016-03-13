@@ -42,4 +42,5 @@ what suits your needs and the needs of other users best. I'm curious to see what
 the future holds for Kode.
 
 Category: Programming
+
 Contact: Cornelius Schumacher <schumacher@kde.org>
