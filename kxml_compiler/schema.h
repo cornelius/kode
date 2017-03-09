@@ -94,13 +94,14 @@ class KSCHEMA_EXPORT Node : public Annotatable
                 String = 1,
                 NormalizedString = 2,
                 Token = 3,
-                Integer = 4,
-                Decimal = 5,
-                Date = 6,
-                DateTime = 7,
-                Boolean = 8,
-                Enumeration = 9,
-                ComplexType = 10,
+                Int = 4, // xs:int -> signed 32-bit integer
+                Integer = 5, // xs:integer -> integer unbounded value
+                Decimal = 6,
+                Date = 7,
+                DateTime = 8,
+                Boolean = 9,
+                Enumeration = 10,
+                ComplexType = 11,
                };
     Node();
     virtual ~Node();

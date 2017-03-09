@@ -97,7 +97,6 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 //        << element.maxOccurs();
     }
 
-
     Schema::Element e;
     e.setIdentifier( element.name() );
     e.setName( element.name() );
@@ -126,7 +125,6 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
         }
       }
     }
-
     foreach( XSD::Element subElement, complexType.elements() ) {
       if ( mVerbose ) {
         qDebug() << "  Element: " << subElement.name();

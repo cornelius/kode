@@ -105,7 +105,8 @@ void WriterCreator::createElementWriter(
     if ( element.type() == Schema::Element::Date ) {
       code += "if ( value().isValid() ) {";
       code.indent();
-    } else if ( element.type() != Schema::Element::Integer &&
+    } else if ( element.type() != Schema::Element::Int &&
+                element.type() != Schema::Element::Integer &&
                 element.type() != Schema::Element::Decimal &&
                 element.type() != Schema::Element::Boolean ){
       code += "if ( !value().isEmpty() ) {";
@@ -117,7 +118,7 @@ void WriterCreator::createElementWriter(
     QString data = dataToStringConverter( "value()", element.type() );
     code += "xml.writeCharacters( " + data + " );";
     code += "xml.writeEndElement();";
-    if ( element.type() != Schema::Element::Integer &&
+    if ( element.type() != Schema::Element::Int &&
          element.type() != Schema::Element::Decimal &&
          element.type() != Schema::Element::Boolean ){
       code += "}";
@@ -211,7 +212,7 @@ QString WriterCreator::dataToStringConverter( const QString &data,
   Schema::Node::Type type )
 {
   QString converter;
-  if ( type == Schema::Element::Integer ) {
+  if ( type == Schema::Element::Int ) {
     converter = "QString::number( " + data + ", 'f', 0)";
   } else if ( type == Schema::Element::Decimal) {
     converter = "QString::number( " + data + ", 'f', 6)";

@@ -280,8 +280,10 @@ ClassDescription Creator::createClassDescription(
       if ( mVerbose ) {
         kDebug() << "  FLATTEN";
       }
-      if ( targetElement.type() == Schema::Element::Integer ) {
-        description.addProperty( "int", targetClassName );
+      if ( targetElement.type() == Schema::Element::Int ) {
+        description.addProperty( "qint32", targetClassName );
+      } else if ( targetElement.type() == Schema::Element::Integer ) {
+        description.addProperty( "qlonglong", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Decimal ) {
         description.addProperty( "double", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Date ) {
@@ -391,7 +393,9 @@ void Creator::createClass(const Schema::Element &element )
       KODE::Code defaultCode;
       // initialize number based elements
       // FIXME/TODO add initializer rather
-      if (element.type() == Schema::Node::Decimal || element.type() == Schema::Node::Integer) {
+      if ( element.type() == Schema::Node::Decimal ||
+           element.type() == Schema::Node::Int ||
+           element.type() == Schema::Node::Integer ) {
         defaultCode += "mValue = 0;";
       } else if ( element.type() == Schema::Node::Enumeration ) {
         QString typeNameStr = typeName( element ); // going to be suffixed with _Enum
@@ -675,8 +679,10 @@ QString Creator::typeName( Schema::Node::Type type )
     return "QDateTime";
   } else if ( type == Schema::Element::Date ) {
     return "QDate";
+  } else if ( type == Schema::Element::Int ) {
+    return "qint32";
   } else if ( type == Schema::Element::Integer ) {
-    return "int";
+    return "qlonglong";
   } else if ( type == Schema::Element::Decimal ) {
     return "double";
   } else if ( type == Schema::Element::String ||

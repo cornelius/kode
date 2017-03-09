@@ -320,9 +320,11 @@ Node::Type Node::typeFromString(QString xsType)
 {
   if ( xsType == "xs:string" ) {
     return Schema::Node::String;
-  } else if ( xsType == "xs:decimal") {
+  } else if ( xsType == "xs:decimal" || xsType == "xs:double" ) {
     return Schema::Node::Decimal;
-  } else if ( xsType == "xs:integer") {
+  } else if ( xsType == "xs:int")  {
+    return Schema::Node::Int;
+  } else if ( xsType == "xs:integer")  {
     return Schema::Node::Integer;
   } else if ( xsType == "xs:date" ) {
     return Schema::Node::Date;
