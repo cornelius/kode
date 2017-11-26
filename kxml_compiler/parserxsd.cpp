@@ -109,6 +109,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
             !complexType.baseTypeName().isEmpty() ) {
       if ( complexType.baseTypeName().qname() == "xs:string" ) {
         e.setBaseType( Schema::Node::String );
+      } else if ( complexType.baseTypeName().qname() == "xs:boolean" ) {
+        e.setBaseType( Schema::Node::Boolean );
       } else if ( complexType.baseTypeName().qname() == "xs:normalizedString" ) {
         e.setBaseType( Schema::Node::NormalizedString );
       } else if ( complexType.baseTypeName().qname() == "xs:token" ) {
@@ -118,6 +120,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
     if ( element.type().qname() == "xs:string" ) {
       e.setType( Schema::Node::String );
+    } else if ( element.type().qname() == "xs:boolean" ) {
+      e.setType( Schema::Node::Boolean );
     } else if ( element.type().qname() == "xs:normalizedString" ) {
       e.setType( Schema::Node::NormalizedString );
     } else if ( element.type().qname() == "xs:token" ) {
@@ -173,8 +177,9 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
         } else if ( attribute.type().qname() == "xs:integer" ) {
           a.setType( Schema::Node::Integer );
         } else if ( attribute.type().qname() == "xs:decimal" ) {
-          a.setType( Schema::Node::Decimal
-                     );
+          a.setType( Schema::Node::Decimal );
+        } else if ( attribute.type().qname() == "xs:boolean" ) {
+          a.setType( Schema::Node::Boolean );
         } else if ( attribute.type().qname() == "xs:date" ) {
           a.setType( Schema::Node::Date );
         } else {

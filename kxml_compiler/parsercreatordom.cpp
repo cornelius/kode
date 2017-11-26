@@ -334,6 +334,8 @@ QString ParserCreatorDom::stringToDataConverter( const QString &data,
     converter = data + ".toInt()";
   } else if ( type == Schema::Element::Decimal ) {
     converter = data + ".toDouble()";
+  } else if ( type == Schema::Element::Boolean ) {
+    converter = "(" + data + " == \"1\" || " + data + " == \"true\")";
   } else if ( type == Schema::Element::Date ) {
     converter = "QDate::fromString( " + data + ", \"yyyyMMdd\" )";
   } else if ( type == Schema::Element::DateTime ) {
