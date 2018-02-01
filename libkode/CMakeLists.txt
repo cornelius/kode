@@ -1,3 +1,12 @@
+find_package(Qt5Core REQUIRED
+    Xml
+    Network
+)
+
+add_definitions( ${QT_DEFINITIONS} )
+include_directories( ${CMAKE_BINARY_DIR} )
+
+
 add_subdirectory( tests )
 
 set(kode_LIB_SRCS
@@ -16,14 +25,6 @@ set(kode_LIB_SRCS
    automakefile.cpp )
    
 add_library( kode SHARED ${kode_LIB_SRCS} )
-
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5Network REQUIRED)
-
-qt5_use_modules(kode Core)
-qt5_use_modules(kode Xml)
-qt5_use_modules(kode Network)
 
 target_link_libraries( kode ${QT_QTCORE_LIBRARY} )
 

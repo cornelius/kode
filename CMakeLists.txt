@@ -7,7 +7,6 @@ find_package(Qt5Core REQUIRED
     Network
 )
 
-include( ${QT_USE_FILE} )
 add_definitions( ${QT_DEFINITIONS} )
 include_directories( ${CMAKE_BINARY_DIR} )
 

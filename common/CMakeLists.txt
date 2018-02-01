@@ -7,6 +7,9 @@ set( kxmlcommon_LIB_SRCS
    qname.cpp
 )
 
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5Network REQUIRED)
 
 add_library( kxmlcommon SHARED ${kxmlcommon_LIB_SRCS} )
 
