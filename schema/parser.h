@@ -32,7 +32,7 @@
 #include "types.h"
 #include "typestable.h"
 #include "annotation.h"
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 class ParserContext;
 

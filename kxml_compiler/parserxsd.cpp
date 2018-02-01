@@ -27,7 +27,7 @@
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
 
-#include <kdebug.h>
+#include <QDebug>
 
 #include <QDebug>
 

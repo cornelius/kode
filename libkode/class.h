@@ -21,15 +21,15 @@
 #ifndef KODE_CLASS_H
 #define KODE_CLASS_H
 
-#include <QtCore/QList>
-#include <QtCore/QStringList>
+#include <QList>
+#include <QStringList>
 
 #include "enum.h"
 #include "function.h"
 #include "membervariable.h"
 #include "typedef.h"
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 namespace KODE {
 

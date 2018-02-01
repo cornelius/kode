@@ -26,7 +26,7 @@
 #include "license.h"
 #include "variable.h"
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 namespace KODE {
 

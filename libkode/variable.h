@@ -21,9 +21,9 @@
 #ifndef KODE_VARIABLE_H
 #define KODE_VARIABLE_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 namespace KODE {
 

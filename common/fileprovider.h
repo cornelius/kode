@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 
-#include <kode_export.h>
+#include "kode_export.h"
 
 namespace KIO {
 class Job;

@@ -26,12 +26,12 @@
 #include <QUrl>
 #include <QXmlSimpleReader>
 #include <QtDebug>
-#include <QtCore/QLatin1String>
+#include <QLatin1String>
 
-#include <common/fileprovider.h>
-#include <common/messagehandler.h>
-#include <common/nsmanager.h>
-#include <common/parsercontext.h>
+#include "../common/fileprovider.h"
+#include "../common/messagehandler.h"
+#include "../common/nsmanager.h"
+#include "../common/parsercontext.h"
 #include "parser.h"
 
 static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );

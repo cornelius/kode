@@ -23,7 +23,7 @@
 #define MESSAGEHANDLER_H
 
 #include <QString>
-#include <kode_export.h>
+#include "kode_export.h"
 
 /**
   This class is an interface for the xml parsing classes

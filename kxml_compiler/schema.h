@@ -25,7 +25,8 @@
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
-#include <kode_export.h>
+
+#include "../common/kode_export.h"
 
 namespace Schema {
 

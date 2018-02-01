@@ -27,8 +27,8 @@
 #include <QMap>
 #include <QString>
 
-#include <common/qname.h>
-#include <kode_export.h>
+#include "../common/qname.h"
+#include "../common/kode_export.h"
 
 #include "xmlelement.h"
 

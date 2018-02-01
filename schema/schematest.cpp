@@ -1,11 +1,11 @@
 #include <QFile>
 #include <QDebug>
 
-#include <schema/parser.h>
+#include "parser.h"
 
-#include <common/nsmanager.h>
-#include <common/messagehandler.h>
-#include <common/parsercontext.h>
+#include "../common/nsmanager.h"
+#include "../common/messagehandler.h"
+#include "../common/parsercontext.h"
 
 int main( int argc, char **argv )
 {

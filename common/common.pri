@@ -1,4 +1,4 @@
- 
+ QT += network # for fileprovider.h
 
 HEADERS += \
     $$PWD/fileprovider.h \

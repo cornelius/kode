@@ -22,11 +22,11 @@
 #ifndef KODE_FUNCTION_H
 #define KODE_FUNCTION_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 #include "code.h"
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 namespace KODE {
 

@@ -21,12 +21,12 @@
 #ifndef KODE_MEMBERVARIABLE_H
 #define KODE_MEMBERVARIABLE_H
 
-#include <QtCore/QList>
-#include <QtCore/QString>
+#include <QList>
+#include <QString>
 
 #include "variable.h"
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 namespace KODE {
 

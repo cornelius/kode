@@ -1,38 +1,58 @@
+cmake_minimum_required(VERSION 3.5)
+
 project( kode )
-set(CMAKE_MODULE_PATH "${kode_SOURCE_DIR}/cmake/modules")
 
-find_package(KDE4 REQUIRED)
-find_package(KdepimLibs REQUIRED)
-include(KDE4Defaults)
-include(FindKode)
+find_package(Qt5Core REQUIRED
+    Xml
+    Network
+)
 
-add_definitions(-DKDE_DEFAULT_DEBUG_AREA=5295)
+include( ${QT_USE_FILE} )
+add_definitions( ${QT_DEFINITIONS} )
+include_directories( ${CMAKE_BINARY_DIR} )
 
 include_directories(
-    ${KDE4_INCLUDES}
-    ${KDEPIMLIBS_INCLUDE_DIRS}
+    ${Qt5Core_INCLUDES}
+    ${Qt5Xml_INCLUDES}
+    ${Qt5Network_INCLUDES}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/libkode
     ${CMAKE_CURRENT_SOURCE_DIR}/kwsdl
 )
 
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+
 add_subdirectory( libkode )
 add_subdirectory( common )
 add_subdirectory( schema )
 add_subdirectory( kxml_compiler )
-add_subdirectory( kxforms )
-add_subdirectory( kwsdl )
-add_subdirectory( cmake )
+#add_subdirectory( kxforms )
+#add_subdirectory( kwsdl )
 
 ########### next target ###############
 
+
+
 set( kode_bin_SRCS kodemain.cpp )
 
+add_executable(kode_bin kodemain.cpp)
+qt5_use_modules(kode_bin Core)
+qt5_use_modules(kode_bin Xml)
+qt5_use_modules(kode_bin Network)
 
-kde4_add_executable( kode_bin ${kode_bin_SRCS} )
+# Use the Widgets module from Qt 5.
+target_link_libraries(kode_bin Qt5::Core)
+target_link_libraries(kode_bin Qt5::Xml)
+target_link_libraries(kode_bin Qt5::Network)
+target_link_libraries( kode_bin kode  )
+
 set_target_properties( kode_bin PROPERTIES OUTPUT_NAME kode )
 
-target_link_libraries( kode_bin  ${KDE4_KDEUI_LIBS} kode ${KDEPIMLIBS_KABC_LIBS} )
-
-install( TARGETS kode_bin  ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install( 
+    TARGETS kode_bin  ${INSTALL_TARGETS_DEFAULT_ARGS} 
+    RUNTIME DESTINATION bin
+)

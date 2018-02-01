@@ -24,6 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include(libkode.pri)
 
+INCLUDEPATH += -I../common
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

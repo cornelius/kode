@@ -1,4 +1,4 @@
- 
+ QT += xml
 
 HEADERS += \
     $$PWD/annotation.h \
@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/parser.h \
     $$PWD/simpletype.h \
     $$PWD/types.h \
-    $$PWD/typestable.h \
     $$PWD/xmlelement.h \
     $$PWD/xsdtype.h
 
@@ -22,9 +21,7 @@ SOURCES += \
     $$PWD/compositor.cpp \
     $$PWD/element.cpp \
     $$PWD/parser.cpp \
-    $$PWD/schematest.cpp \
     $$PWD/simpletype.cpp \
     $$PWD/types.cpp \
-    $$PWD/typestable.cpp \
     $$PWD/xmlelement.cpp \
     $$PWD/xsdtype.cpp

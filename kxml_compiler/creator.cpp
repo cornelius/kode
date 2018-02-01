@@ -31,14 +31,7 @@
 #include <libkode/typedef.h>
 #include <libkode/statemachine.h>
 
-#include <kaboutdata.h>
-#include <kapplication.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kcmdlineargs.h>
-#include <kglobal.h>
-#include <kconfig.h>
-#include <kstandarddirs.h>
+#include <QDebug>
 
 #include <QFile>
 #include <QTextStream>
@@ -265,7 +258,7 @@ ClassDescription Creator::createClassDescription(
     if ( targetElement.text() && !targetElement.hasAttributeRelations() &&
          !r.isList() ) {
       if ( mVerbose ) {
-        kDebug() << "  FLATTEN";
+        qDebug() << "  FLATTEN";
       }
       if ( targetElement.type() == Schema::Element::Integer ) {
         description.addProperty( "int", targetClassName );
@@ -307,15 +300,15 @@ void Creator::createClass( const Schema::Element &element )
   QString className = Namer::getClassName( element  );
 
   if ( mVerbose ) {
-    kDebug() <<"Creator::createClass()" << element.identifier() << className;
+    qDebug() <<"Creator::createClass()" << element.identifier() << className;
     foreach( Schema::Relation r, element.elementRelations() ) {
-      kDebug() << "  SUBELEMENTS" << r.target();
+      qDebug() << "  SUBELEMENTS" << r.target();
     }
   }
 
   if ( mProcessedClasses.contains( className ) ) {
     if ( mVerbose ) {
-      kDebug() << "  ALREADY DONE";
+      qDebug() << "  ALREADY DONE";
     }
     return;
   }
@@ -474,23 +467,23 @@ void Creator::printFiles( KODE::Printer &printer )
     parserFile.insertClass( mParserClass );
 
     if ( mVerbose ) {
-      kDebug() <<"Print external parser header" << parserFile.filenameHeader();
+      qDebug() <<"Print external parser header" << parserFile.filenameHeader();
     }
     printer.printHeader( parserFile );
     if ( mVerbose ) {
-      kDebug() <<"Print external parser implementation"
+      qDebug() <<"Print external parser implementation"
         << parserFile.filenameImplementation();
     }
     printer.printImplementation( parserFile );
   }
 
   if ( mVerbose ) {
-    kDebug() <<"Print header" << file().filenameHeader();
+    qDebug() <<"Print header" << file().filenameHeader();
   }
   printer.printHeader( file() );
 
   if ( mVerbose ) {
-    kDebug() <<"Print implementation" << file().filenameImplementation();
+    qDebug() <<"Print implementation" << file().filenameImplementation();
   }
   printer.printImplementation( file() );
 
@@ -533,7 +526,7 @@ QString Creator::errorStream() const
 QString Creator::debugStream() const
 {
   if ( useKde() ) {
-    return "kDebug()";
+    return "qDebug()";
   } else {
     return "qDebug()";
   }

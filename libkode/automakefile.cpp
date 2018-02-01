@@ -19,8 +19,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <QtCore/QMap>
-#include <QtCore/QStringList>
+#include <QMap>
+#include <QStringList>
 
 #include "automakefile.h"
 

@@ -21,9 +21,9 @@
 #ifndef KODE_STYLE_H
 #define KODE_STYLE_H
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
-#include <QtCore/QString>
+#include <QString>
 
 namespace KODE {
 
