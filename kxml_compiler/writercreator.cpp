@@ -33,7 +33,7 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
 {
   KODE::Class c = mFile.findClass( className );
 
-  c.addHeaderInclude( "QtXml/QXmlStreamWriter" );
+  c.addHeaderInclude( "QXmlStreamWriter" );
   c.addInclude( "QtDebug" );
   c.addInclude( "QFile" );
 

@@ -23,7 +23,7 @@
 #define FILEPROVIDER_H
 
 #include <QObject>
-#include <QNetworkAccessManager>
+#include <QtNetwork/QNetworkAccessManager>
 
 #include "kode_export.h"
 

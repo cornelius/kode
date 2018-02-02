@@ -34,8 +34,15 @@ install(
 set( schematest_SRCS schematest.cpp )
 
 add_executable( schematest ${schematest_SRCS} )
+qt5_use_modules(schematest Core)
+qt5_use_modules(schematest Xml)
+qt5_use_modules(schematest Network)
 
-target_link_libraries( schematest ${KDE4_KDECORE_LIBS} schema )
+target_link_libraries(schematest Qt5::Core)
+target_link_libraries(schematest Qt5::Xml)
+target_link_libraries(schematest Qt5::Network)
+
+target_link_libraries( schematest schema )
 
 install( 
     TARGETS schematest ${INSTALL_TARGETS_DEFAULT_ARGS} 

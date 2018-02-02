@@ -6,7 +6,6 @@ find_package(Qt5Core REQUIRED
 add_definitions( ${QT_DEFINITIONS} )
 include_directories( ${CMAKE_BINARY_DIR} )
 
-
 add_subdirectory( tests )
 
 set(kode_LIB_SRCS

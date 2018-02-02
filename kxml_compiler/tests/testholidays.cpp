@@ -21,9 +21,10 @@
 
 #include "kde-holidays.h"
 
-#include <kcmdlineargs.h>
-#include <kaboutdata.h>
-#include <kdebug.h>
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include <QDebug>
 
 #include <QFile>
 #include <QTextStream>
@@ -32,36 +33,57 @@
 
 int main( int argc, char **argv )
 {
-  KAboutData aboutData( "testholidays", 0, ki18n("Dump holidays to stdout"),
-                        "0.1" );
-  KCmdLineArgs::init( argc, argv, &aboutData );
+  QCoreApplication app( argc, argv);
+  QCoreApplication::setApplicationName("testholidays");
+  QCoreApplication::setApplicationVersion("0.1");
 
-  KCmdLineOptions options;
-  options.add("+holidayfile", ki18n("Name of holiday XML file"));
-  options.add("output <file>", ki18n("Name of output file"));
-  KCmdLineArgs::addCmdLineOptions( options );
+  QCommandLineParser cmdLine;
+  cmdLine.setApplicationDescription("Dump holidays to stdout");
+  cmdLine.addHelpOption();
+  cmdLine.addVersionOption();
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  QCommandLineOption holidayfile(
+              "holidayfile",
+              QCoreApplication::translate("main", "Name of holiday XML file"));
+  cmdLine.addOption(holidayfile);
 
-  if ( args->count() != 1 ) {
-    args->usage( "Wrong number of arguments." );
+  QCommandLineOption output(
+              "holidayfile",
+              QCoreApplication::translate("main", "Name of output XML file"));
+  cmdLine.addOption(output);
+
+  if (!cmdLine.parse(QCoreApplication::arguments())) {
+    qDebug() << cmdLine.errorText();
+    return -1;
   }
 
-  QString filename = args->arg( 0 );
+  if ( cmdLine.positionalArguments().count() < 1 ||
+       cmdLine.positionalArguments().count() > 2 ) {
+    qDebug() << "Wrong number of arguments";
+    cmdLine.showHelp();
+    return -1;
+  }
+
+  if ( cmdLine.positionalArguments().count() != 1 ) {
+    qDebug( "Wrong number of arguments." );
+    cmdLine.showHelp(-1);
+  }
+
+  QString filename = cmdLine.positionalArguments().at( 0 );
 
   bool ok;
   HolidayCalendar holidays = HolidayCalendar::parseFile( filename, &ok );
 
   if ( !ok ) {
-    kError() <<"Parse error";
+    qDebug() <<"Parse error";
   } else {
     // TODO: Print data to stdout
   }
 
-  if ( args->isSet( "output" ) ) {
-    QString out = args->getOption( "output" );
+  if ( cmdLine.isSet( output) ) {
+    QString out = cmdLine.value( "output" );
     if ( !holidays.writeFile( out ) ) {
-      kError() <<"Write error";
+      qDebug() <<"Write error";
     }
   }
 }

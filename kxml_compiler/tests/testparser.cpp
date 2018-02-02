@@ -1,6 +1,6 @@
 #include "testparser.h"
 
-#include "qtest_kde.h"
+#include <QtTest/QTest>
 
 QTEST_KDEMAIN_CORE( TestParser )
 

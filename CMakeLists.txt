@@ -2,28 +2,39 @@ cmake_minimum_required(VERSION 3.5)
 
 project( kode )
 
-find_package(Qt5Core REQUIRED
-    Xml
-    Network
-)
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
+
+
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Test REQUIRED)
 
 add_definitions( ${QT_DEFINITIONS} )
 include_directories( ${CMAKE_BINARY_DIR} )
 
 include_directories(
+    ${Qt5_INCLUDES}
+    ${Qt5_INCLUDE_DIRS}
     ${Qt5Core_INCLUDES}
+    ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Xml_INCLUDES}
+    ${Qt5Xml_INCLUDE_DIRS}
     ${Qt5Network_INCLUDES}
+    ${Qt5Network_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/libkode
     ${CMAKE_CURRENT_SOURCE_DIR}/kwsdl
 )
 
-# Find includes in corresponding build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
 
 add_subdirectory( libkode )
 add_subdirectory( common )
