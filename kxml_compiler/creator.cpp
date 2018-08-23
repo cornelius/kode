@@ -30,6 +30,7 @@
 #include <libkode/printer.h>
 #include <libkode/typedef.h>
 #include <libkode/statemachine.h>
+#include <schema/simpletype.h>
 
 #include <QDebug>
 
@@ -61,7 +62,7 @@ bool Creator::ClassFlags::hasId() const
 
 Creator::Creator( const Schema::Document &document, XmlParserType p )
   : mDocument( document ), mXmlParserType( p ),
-    mVerbose( false ), mUseKde( false )
+    mVerbose( false ), mUseKde( false ), m_createParseFunctions(true), m_createWriteFunctions(true)
 {
   setExternalClassNames();
 }
@@ -128,7 +129,7 @@ void Creator::createProperty( KODE::Class &c,
   c.addMemberVariable( v );
 
   KODE::Function mutator( Namer::getMutator( name ), "void" );
-  if ( type == "int" || type == "double" ) {
+  if ( type == "int" ) {
     mutator.addArgument( type + " v" );
   } else {
     mutator.addArgument( "const " + type + " &v" );
@@ -141,7 +142,17 @@ void Creator::createProperty( KODE::Class &c,
       }
     }
   }
-  c.addFunction( mutator );
+
+  if (name.toLower() == "value") {
+    mutator.addBodyLine( "mValueHadBeenSet = true;" );
+  }
+
+  // do not pullote the code with the setValueHadBeenSet function
+  // because that variable should be set only by the constructor
+  // or the setValue method
+  if (!(type == "bool" && name == "valueHadBeenSet")) {
+    c.addFunction( mutator );
+  }
 
   KODE::Function accessor( Namer::getAccessor( name ), type );
   accessor.setConst( true );
@@ -235,7 +246,7 @@ ClassDescription Creator::createClassDescription(
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
     if ( a.enumerationValues().count() ) {
-      if (!description.hasEnum(a.name())) {
+      if ( !description.hasEnum( a.name()) ) {
         description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
       }
       description.addProperty( Namer::getClassName( a.name() ) + "Enum",
@@ -246,8 +257,10 @@ ClassDescription Creator::createClassDescription(
     }
   }
 
-  if ( element.text() ) {
-    description.addProperty( typeName( element.type() ), "Value" );
+  if ( element.type() > Schema::Node::None && element.type() < Schema::Node::Enumeration ) {
+    description.addProperty( typeName( element.type() ), "value" );
+  } else if ( element.type() == Schema::Node::Enumeration ) {
+    description.addProperty( Namer::getClassName( element ) + "_Enum", "value" );
   }
 
   foreach( Schema::Relation r, element.elementRelations() ) {
@@ -260,8 +273,10 @@ ClassDescription Creator::createClassDescription(
       if ( mVerbose ) {
         qDebug() << "  FLATTEN";
       }
-      if ( targetElement.type() == Schema::Element::Integer ) {
-        description.addProperty( "int", targetClassName );
+      if ( targetElement.type() == Schema::Element::Int ) {
+        description.addProperty( "qint32", targetClassName );
+      } else if ( targetElement.type() == Schema::Element::Integer ) {
+        description.addProperty( "qlonglong", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Decimal ) {
         description.addProperty( "double", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Date ) {
@@ -285,9 +300,10 @@ ClassDescription Creator::createClassDescription(
           p.setTargetHasId( true );
         }
 
+        p.setIsOptionalElement( r.isOptional() );
         description.addProperty( p );
       } else {
-        description.addProperty( targetClassName, Namer::getClassName( name ) );
+        description.addProperty( targetClassName, Namer::getClassName( name ), r.isOptional() );
       }
     }
   }
@@ -295,10 +311,49 @@ ClassDescription Creator::createClassDescription(
   return description;
 }
 
-void Creator::createClass( const Schema::Element &element )
+void Creator::addCRUDConstructorCode(
+        const ClassDescription & description,
+        KODE::Code & code)
+{
+  bool hasCreatedAt = description.hasProperty( "CreatedAt" );
+  bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+  if ( hasCreatedAt || hasUpdatedAt ) {
+    code += "QDateTime now = QDateTime::currentDateTime();";
+    if ( hasCreatedAt ) {
+      code += "setCreatedAt( now );";
+    }
+    if ( hasUpdatedAt ) {
+      code += "setUpdatedAt( now );";
+    }
+  }
+}
+
+void Creator::createConstructorOptionalMemberInitializator(
+    const ClassDescription & description,
+    KODE::Code & code )
+{
+  foreach( ClassProperty p, description.properties() ) {
+    if ( p.isOptionalElement() && p.name().toLower() != "value") {
+      code += 'm' + KODE::Style::upperFirst( p.name() ) + ".setElementIsOptional( true );";
+    }
+  }
+}
+
+void Creator::createCRUDIsValid(KODE::Class & c, ClassDescription & description)
+{
+  if ( description.hasProperty( "Id" ) ) {
+    KODE::Function isValid( "isValid", "bool" );
+    isValid.setConst( true );
+    KODE::Code code;
+    code += "return !mId.isEmpty();";
+    isValid.setBody( code );
+    c.addFunction( isValid );
+  }
+}
+
+void Creator::createClass(const Schema::Element &element )
 {
   QString className = Namer::getClassName( element  );
-
   if ( mVerbose ) {
     qDebug() <<"Creator::createClass()" << element.identifier() << className;
     foreach( Schema::Relation r, element.elementRelations() ) {
@@ -318,36 +373,80 @@ void Creator::createClass( const Schema::Element &element )
   ClassDescription description = createClassDescription( element );
 
   KODE::Class c( className );
-
   if ( !mExportDeclaration.isEmpty() ) {
     c.setExportDeclaration( mExportDeclaration );
   }
 
-  bool hasCreatedAt = description.hasProperty( "CreatedAt" );
-  bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+  if ((element.type() > Schema::Node::None && element.type() <= Schema::Node::Enumeration) ||
+      element.type() == Schema::Node::ComplexType) {
+      KODE::Function constructorDefault( className, "" );
+      KODE::Code defaultCode;
+      // initialize number based elements
+      // FIXME/TODO add initializer rather
+      if ( element.type() == Schema::Node::Decimal ||
+           element.type() == Schema::Node::Int ||
+           element.type() == Schema::Node::Integer ) {
+        defaultCode += "mValue = 0;";
+      } else if ( element.type() == Schema::Node::Enumeration ) {
+        QString typeNameStr = typeName( element ); // going to be suffixed with _Enum
+        defaultCode += "mValue = " + typeNameStr.left( typeNameStr.length() - 5 ) + "__Invalid;";
+      } else if ( element.type() == Schema::Node::Boolean ) {
+        defaultCode += "mValue = false;";
+      }
+      defaultCode += "mValueHadBeenSet = false;";
+      defaultCode += "mElementIsOptional = false;";
+      createConstructorOptionalMemberInitializator( description, defaultCode );
+      if (mCreateCrudFunctions)
+        addCRUDConstructorCode( description, defaultCode );
+      constructorDefault.setBody(defaultCode);
+      c.addFunction(constructorDefault);
+
+      // if this is a simple type create a default constructor for passing the value
+      if (element.type() != Schema::Node::ComplexType) {
+        KODE::Function constructor( className, "" );
+        constructor.addArgument("const " + typeName( element ) +" &v");
+        KODE::Code code; // FIXME add initializer rather
+        code += "mValue = v;";
+        code += "mValueHadBeenSet = true;";
+        code += "mElementIsOptional = false;";
+        createConstructorOptionalMemberInitializator( description, code );
+        if (mCreateCrudFunctions)
+          addCRUDConstructorCode( description, code );
+        constructor.setBody(code);
+        c.addFunction( constructor );
+      }
+
+      if (mCreateCrudFunctions)
+        createCRUDIsValid(c, description);
+  } else {
+    if (mCreateCrudFunctions) {
+      bool hasCreatedAt = description.hasProperty( "CreatedAt" );
+      bool hasUpdatedAt = description.hasProperty( "UpdatedAt" );
+      if ( hasCreatedAt || hasUpdatedAt ) {
+        KODE::Function constructor( className, "" );
+        KODE::Code code;
+        code += "QDateTime now = QDateTime::currentDateTime();";
+        if ( hasCreatedAt ) {
+          code += "setCreatedAt( now );";
+        }
+        if ( hasUpdatedAt ) {
+          code += "setUpdatedAt( now );";
+        }
+        constructor.setBody( code );
+        c.addFunction( constructor );
+
+        createCRUDIsValid(c, description);
+      }
+    }
+  }
 
   if ( mCreateCrudFunctions ) {
-    if ( hasCreatedAt || hasUpdatedAt ) {
-      KODE::Function constructor( className, "" );
-      KODE::Code code;
-      code += "QDateTime now = QDateTime::currentDateTime();";
-      if ( hasCreatedAt ) {
-        code += "setCreatedAt( now );";
-      }
-      if ( hasUpdatedAt ) {
-        code += "setUpdatedAt( now );";
-      }
-      constructor.setBody( code );
-      c.addFunction( constructor );
-    }
-
     if ( description.hasProperty( "Id" ) ) {
       KODE::Function isValid( "isValid", "bool" );
       isValid.setConst( true );
       KODE::Code code;
       code += "return !mId.isEmpty();";
       isValid.setBody( code );
-      c.addFunction( isValid );
     }
   }
 
@@ -378,15 +477,28 @@ void Creator::createClass( const Schema::Element &element )
     }
   }
 
-  foreach(KODE::Enum e, description.enums() ) {
+  // silly member name had been choosen to make the possible conflicts
+  // with existing members low
+  createProperty( c, description, "bool", "valueHadBeenSet" );
+  createProperty( c, description, "bool", "elementIsOptional");
+  
+  foreach( KODE::Enum e, description.enums() ) {
     c.addEnum(e);
   }
 
-  createElementParser( c, element );
-  
-  WriterCreator writerCreator( mFile, mDocument, mDtd );
-  writerCreator.createElementWriter( c, element );
+  if ( element.type() == Schema::Node::Enumeration ) {
+    QStringList enumItems = element.enumerationValues();
+    KODE::Enum selfEnum( typeName( element ), enumItems, false);
+    c.addEnum(selfEnum);
+  }
 
+  if ( m_createParseFunctions)
+    createElementParser( c, element );
+  
+  if ( m_createWriteFunctions ) {
+    WriterCreator writerCreator( mFile, mDocument, mDtd );
+    writerCreator.createElementWriter( c, element, mDocument.targetNamespace() );
+  }
   mFile.insertClass( c );
 }
 
@@ -536,9 +648,11 @@ void Creator::create()
 {
   Schema::Element startElement = mDocument.startElement();
   setExternalClassPrefix( KODE::Style::upperFirst( startElement.name() ) );
-  createFileParser( startElement );
+  if ( m_createParseFunctions )
+    createFileParser( startElement );
 //  setDtd( schemaFilename.replace( "rng", "dtd" ) );
-  createFileWriter( startElement );
+  if ( m_createWriteFunctions )
+   createFileWriter( startElement );
 
   createListTypedefs();
 }
@@ -555,14 +669,51 @@ QString Creator::typeName( Schema::Node::Type type )
     return "QDateTime";
   } else if ( type == Schema::Element::Date ) {
     return "QDate";
+  } else if ( type == Schema::Element::Int ) {
+    return "qint32";
   } else if ( type == Schema::Element::Integer ) {
-    return "int";
+    return "qlonglong";
   } else if ( type == Schema::Element::Decimal ) {
     return "double";
-  } else {
+  } else if ( type == Schema::Element::String ||
+              type == Schema::Element::NormalizedString ||
+              type == Schema::Element::Token ) {
     return "QString";
+  } else if ( type == Schema::Element::Boolean) {
+    return "bool";
+  } else {
+    return "Invalid";
   }
 }
+
+QString Creator::typeName(const Schema::Element &element)
+{
+  if ( element.type() == Schema::Node::Enumeration ) {
+    return Namer::getClassName( element ) + "_Enum";
+  } else {
+    return typeName( element.type() );
+  }
+}
+bool Creator::createWriteFunctions() const
+{
+  return m_createWriteFunctions;
+}
+
+void Creator::setCreateWriteFunctions(bool createWriteFunctions)
+{
+  m_createWriteFunctions = createWriteFunctions;
+}
+
+bool Creator::createParseFunctions() const
+{
+  return m_createParseFunctions;
+}
+
+void Creator::setCreateParseFunctions(bool createParseFunctions)
+{
+  m_createParseFunctions = createParseFunctions;
+}
+
 
 
 ParserCreator::ParserCreator( Creator *c )

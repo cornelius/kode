@@ -187,6 +187,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 
     element = element.nextSiblingElement();
   }
+  findElementsRecursive(context, root.firstChildElement());
 
   context->setNamespaceManager( parentManager );
   d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
@@ -195,6 +196,23 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   resolveForwardDeclarations();
 
   return true;
+}
+
+void Parser::findElementsRecursive(ParserContext *context, const QDomElement &element)
+{
+  QDomElement sibling = element;
+  while ( !sibling.isNull() ) {
+      QName name = sibling.tagName();
+      if ( name.localName() == QLatin1String("element") ) {
+        addGlobalElement( parseElement( context, sibling, d->mNameSpace, sibling ) );
+      }
+      if (sibling.hasChildNodes()) {
+          for (int i = 0; i<sibling.childNodes().count(); i++) {
+            findElementsRecursive(context, sibling.childNodes().at(i).toElement());
+          }
+      }
+      sibling = sibling.nextSiblingElement();
+   }
 }
 
 void Parser::parseImport( ParserContext *context, const QDomElement &element )
@@ -497,7 +515,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
     newAttribute.setReference( reference );
   }
 
-  newAttribute.setDefaultValue( element.attribute( "value" ) );
+  newAttribute.setDefaultValue( element.attribute( "default" ) );
   newAttribute.setFixedValue( element.attribute( "fixed" ) );
 
   if ( element.hasAttribute( "use" ) ) {
@@ -592,7 +610,6 @@ void Parser::parseRestriction( ParserContext*, const QDomElement &element, Simpl
     }
 
     st.setFacetValue( childElement.attribute( "value" ) );
-
     childElement = childElement.nextSiblingElement();
   }
 }

@@ -32,7 +32,7 @@ class ClassProperty
   public:
     typedef QList<ClassProperty> List;
 
-    ClassProperty( const QString &type, const QString &name );
+    ClassProperty( const QString &type, const QString &name, bool isOptional = false );
 
     QString type() const;
     QString name() const;
@@ -43,12 +43,16 @@ class ClassProperty
     void setTargetHasId( bool );
     bool targetHasId() const;
 
-  private:
+    bool isOptionalElement() const;
+    void setIsOptionalElement(bool isOptionalElement);
+
+private:
     QString m_type;
     QString m_name;
 
     bool m_isList;
     bool m_targetHasId;
+    bool m_isOptionalElement;
 };
 
 class ClassDescription
@@ -59,7 +63,7 @@ class ClassDescription
     QString name() const;
 
     void addProperty( const ClassProperty & );
-    void addProperty( const QString &type, const QString &name );
+    void addProperty(const QString &type, const QString &name , bool isOptional = false);
 
     ClassProperty::List properties() const;
 

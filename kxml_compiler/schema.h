@@ -90,8 +90,20 @@ class KSCHEMA_EXPORT Annotatable
 class KSCHEMA_EXPORT Node : public Annotatable
 {
   public:
-    enum Type { None, String, NormalizedString, Token, Integer, Date,
-      Enumeration, ComplexType, DateTime, Decimal };
+    // Do not change order of them
+    enum Type { None = 0,
+                String = 1,
+                NormalizedString = 2,
+                Token = 3,
+                Int = 4, // xs:int -> signed 32-bit integer
+                Integer = 5, // xs:integer -> integer unbounded value
+                Decimal = 6,
+                Date = 7,
+                DateTime = 8,
+                Boolean = 9,
+                Enumeration = 10,
+                ComplexType = 11,
+               };
     Node();
     virtual ~Node();
 
@@ -113,6 +125,8 @@ class KSCHEMA_EXPORT Node : public Annotatable
 
     void setEnumerationValues( const QStringList & );
     QStringList enumerationValues() const;
+
+    static Type typeFromString( QString xsType );
 
   private:
     Type mType;
@@ -173,8 +187,12 @@ class KSCHEMA_EXPORT Element : public Node
 
     bool isEmpty() const;
 
-  private:
+    bool isRootElement() const;
+    void setIsRootElement(bool isRootElement);
+
+private:
     bool mText;
+    bool mIsRootElement;
 
     Relation::List mElementRelations;
     Relation::List mAttributeRelations;
@@ -208,7 +226,10 @@ class KSCHEMA_EXPORT Document : public Annotatable
 
     bool isEmpty() const;
 
-  protected:
+    QString targetNamespace() const;
+    void setTargetNamespace(const QString &targetNamespace);
+
+protected:
     void findUsedElements( const Element &e ) const;
     bool addUsedElement( const Element &element ) const;
 
@@ -217,6 +238,8 @@ class KSCHEMA_EXPORT Document : public Annotatable
 
     Element::List mElements;
     Attribute::List mAttributes;
+
+    QString mTargetNamespace;
 
     mutable Element::List mUsedElements;
 };

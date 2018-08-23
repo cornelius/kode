@@ -59,7 +59,7 @@ class SCHEMA_EXPORT Types
 
     ComplexType complexType( const Element & ) const;
 
-    SimpleType simpleType( const QName & ) const;
+    SimpleType simpleType(const QName & , bool *found = NULL ) const;
 
   private:
     class Private;

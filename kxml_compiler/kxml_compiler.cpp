@@ -244,11 +244,13 @@ int main( int argc, char **argv )
   if ( verbose ) {
     qDebug() <<"Create classes";
   }
+
   foreach( Schema::Element e, schemaDocument.usedElements() ) {
     if ( !e.text() ) {
       c.createClass( e );
     }
   }
+
   if ( verbose ) {
     qDebug() <<"Create parser";
   }

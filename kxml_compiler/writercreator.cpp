@@ -20,6 +20,7 @@
 #include "writercreator.h"
 
 #include "namer.h"
+#include "style.h"
 
 #include <QDebug>
 
@@ -73,8 +74,18 @@ void WriterCreator::createFileWriter( const QString &className, const QString &e
   mFile.insertClass( c );
 }
 
-void WriterCreator::createElementWriter( KODE::Class &c,
-  const Schema::Element &element )
+void WriterCreator::addWriteStartElement(QString tag, const QString & targetNameSpace, KODE::Code & code, bool printNameSpace)
+{
+  code += "xml.writeStartElement( \"" + tag + "\" );";
+  if ( printNameSpace ) {
+    code += "xml.writeAttribute( \"xmlns\", \"" + targetNameSpace + "\" );";
+  }
+}
+
+void WriterCreator::createElementWriter(
+    KODE::Class &c,
+    const Schema::Element &element,
+    const QString targetNameSpace )
 {
   KODE::Function writer( "writeElement", "void" );
   writer.setConst( true );
@@ -82,25 +93,45 @@ void WriterCreator::createElementWriter( KODE::Class &c,
   writer.addArgument( "QXmlStreamWriter &xml" );
 
   KODE::Code code;
-
   QString tag = element.name();
+  code += "if ( mElementIsOptional && !mValueHadBeenSet )";
+  code.indent();
+  code += "return;";
+  code.unindent();
 
-  if ( element.isEmpty() ) {
+  if ( element.type() == Schema::Element::None ) {
     code += "xml.writeEmptyElement( \"" + tag + "\" );";
-  } else if ( element.text() ) {
+  } else if (element.type() > Schema::Element::None && element.type() < Schema::Element::Enumeration) {
     if ( element.type() == Schema::Element::Date ) {
       code += "if ( value().isValid() ) {";
-    } else {
+      code.indent();
+    } else if ( element.type() != Schema::Element::Int &&
+                element.type() != Schema::Element::Integer &&
+                element.type() != Schema::Element::Decimal &&
+                element.type() != Schema::Element::Boolean ){
       code += "if ( !value().isEmpty() ) {";
+      code.indent();
     }
-    code += "  xml.writeStartElement( \"" + tag + "\" );";
-    
+    addWriteStartElement( tag, targetNameSpace, code, element.isRootElement() );
     code += createAttributeWriter( element );
 
     QString data = dataToStringConverter( "value()", element.type() );
-    code += "  xml.writeCharacters( " + data + " );";
-    code += "  xml.writeEndElement();";
-    code += "}";
+    code += "xml.writeCharacters( " + data + " );";
+    code += "xml.writeEndElement();";
+    if ( element.type() != Schema::Element::Int &&
+         element.type() != Schema::Element::Decimal &&
+         element.type() != Schema::Element::Boolean ){
+      code += "}";
+      code.unindent();
+    }
+  } else if ( element.type() == Schema::Element::Enumeration ) {
+    addWriteStartElement( tag, targetNameSpace, code, element.isRootElement() );
+
+    code += createAttributeWriter( element );
+    code += "xml.writeCharacters( " +
+            KODE::Style::lowerFirst( Namer::getClassName( element.name()))  +
+            "_EnumToString( value() ) );";
+    code += "xml.writeEndElement();";
   } else {
     bool pureList = true;
     if ( !element.attributeRelations().isEmpty() ) {
@@ -130,8 +161,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       code.indent();
     }
     
-    code += "xml.writeStartElement( \"" + tag + "\" );";
-
+    addWriteStartElement( tag, targetNameSpace, code, element.isRootElement() );
     code += createAttributeWriter( element );
 
     foreach( Schema::Relation r, element.elementRelations() ) {
@@ -182,13 +212,21 @@ QString WriterCreator::dataToStringConverter( const QString &data,
   Schema::Node::Type type )
 {
   QString converter;
-
-  if ( type == Schema::Element::Integer || type == Schema::Element::Decimal ) {
-    converter = "QString::number( " + data + " )";
+  if ( type == Schema::Element::Int ) {
+    converter = "QString::number( " + data + ", 'f', 0)";
+  } else if ( type == Schema::Element::Decimal) {
+    converter = "QString::number( " + data + ", 'f', 6)";
   } else if ( type == Schema::Element::Date ) {
-    converter = data + ".toString( \"yyyyMMdd\" )";
+    // format: [-]CCYY-MM-DD[Z|(+|-)hh:mm]
+    // http://books.xmlschemata.org/relaxng/ch19-77041.html
+    converter = data + ".toString( \"yyyy-MM-dd\" )";
   } else if ( type == Schema::Element::DateTime ) {
-    converter = data + ".toString( \"yyyyMMddThhmmssZ\" )";
+    // format: [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+    // http://books.xmlschemata.org/relaxng/ch19-77049.html
+    converter = data + ".toString( \"yyyy-MM-ddthh:mm:ssZ\" )";
+  } else if ( type == Schema::Element::Boolean ) {
+    // Legal values for boolean are true, false, 1 (which indicates true), and 0 (which indicates false).
+    converter = data + " ? \"1\" : \"0\"";
   } else {
     converter = data;
   }
