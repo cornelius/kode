@@ -129,7 +129,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
     code.newLine();
   }
   
-  if ( e.text() || e.type() < Schema::Node::Enumeration ) {
+  if ( e.text() ) {
     code += "result.setValue( " + stringToDataConverter( "element.text()", e.type() ) + " );";
   }
 
@@ -323,16 +323,14 @@ QString ParserCreatorDom::stringToDataConverter( const QString &data,
   Schema::Node::Type type )
 {
   QString converter;
-  if ( type == Schema::Element::Int ) {
+  if ( type == Schema::Element::Integer ) {
     converter = data + ".toInt()";
-  } else if ( type == Schema::Element::Integer ) {
-    converter = data + ".toLongLong()";
   } else if ( type == Schema::Element::Decimal ) {
     converter = data + ".toDouble()";
   } else if ( type == Schema::Element::Date ) {
-    converter = "QDate::fromString( " + data + ", \"yyyy-MM-dd\" )";
+    converter = "QDate::fromString( " + data + ", \"yyyyMMdd\" )";
   } else if ( type == Schema::Element::DateTime ) {
-    converter = "QDateTime::fromString( " + data + ", \"yyyy-MM-ddthh:mm:ssZ\" )";
+    converter = "QDateTime::fromString( " + data + ", \"yyyyMMddThhmmssZ\" )";
   } else {
     converter = data;
   }

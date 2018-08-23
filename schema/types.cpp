@@ -1,4 +1,4 @@
-/*
+/* 
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -131,20 +131,14 @@ ComplexType Types::complexType( const Element &element ) const
   return ComplexType();
 }
 
-SimpleType Types::simpleType( const QName &typeName, bool *found ) const
+SimpleType Types::simpleType( const QName &typeName ) const
 {
   qDebug() << "Types::simpleType()" << typeName.qname();
   foreach( SimpleType type, d->mSimpleTypes ) {
-    qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname() << type.name();
-    if ( type.name() == typeName.qname() ) {
-      if ( found != NULL )
-        *found = true;
-      return type;
-    }
+    qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname();
+    if ( type.qualifiedName() == typeName ) return type;
   }
   qDebug() << "not found";
-  if ( found != NULL )
-    *found = false;
   return SimpleType();
 }
 

@@ -33,7 +33,6 @@ Document::Document()
 void Document::setStartElement( const Element &e )
 {
   mStartElement = e;
-  mStartElement.setIsRootElement( true );
 }
 
 Element Document::startElement() const
@@ -108,24 +107,15 @@ bool Document::addUsedElement( const Element &element ) const
     return false;
   }
 }
-QString Document::targetNamespace() const
-{
-    return mTargetNamespace;
-}
-
-void Document::setTargetNamespace(const QString &targetNamespace)
-{
-    mTargetNamespace = targetNamespace;
-}
 
 void Document::addAttribute( const Attribute &a )
 {
-    mAttributes.append( a );
+  mAttributes.append( a );
 }
 
 Attribute::List Document::attributes() const
 {
-    return mAttributes;
+  return mAttributes;
 }
 
 bool Document::hasAttribute( const Attribute &attribute )
@@ -316,30 +306,6 @@ QStringList Node::enumerationValues() const
   return mEnumerationValues;
 }
 
-Node::Type Node::typeFromString(QString xsType)
-{
-  if ( xsType == "xs:string" ) {
-    return Schema::Node::String;
-  } else if ( xsType == "xs:decimal" || xsType == "xs:double" ) {
-    return Schema::Node::Decimal;
-  } else if ( xsType == "xs:int")  {
-    return Schema::Node::Int;
-  } else if ( xsType == "xs:integer")  {
-    return Schema::Node::Integer;
-  } else if ( xsType == "xs:date" ) {
-    return Schema::Node::Date;
-  } else if ( xsType == "xs:datetime" ) {
-    return Schema::Node::DateTime;
-  } else if ( xsType == "xs:normalizedString" ) {
-    return Schema::Node::NormalizedString;
-  } else if ( xsType == "xs:token" ) {
-    return Schema::Node::Token;
-  } else if ( xsType == "xs:boolean" ) {
-    return Schema::Node::Boolean;
-  }
-  return Schema::Node::None;
-}
-
 
 void Annotatable::setDocumentation( const QString &str )
 {
@@ -363,7 +329,7 @@ QList<QDomElement> Annotatable::annotations() const
 
 
 Element::Element()
-  : mText( false ), mIsRootElement( false )
+  : mText( false )
 {
 }
 
@@ -471,16 +437,6 @@ bool Element::isEmpty() const
 {
   return !mText && mElementRelations.isEmpty();
 }
-bool Element::isRootElement() const
-{
-    return mIsRootElement;
-}
-
-void Element::setIsRootElement(bool IsRootElement)
-{
-    mIsRootElement = IsRootElement;
-}
-
 
 Attribute::Attribute()
 {
@@ -488,12 +444,12 @@ Attribute::Attribute()
 
 bool Attribute::required() const
 {
-    return mRequired;
+  return mRequired;
 }
 
 void Attribute::setRequired(bool required)
 {
-    mRequired = required;
+  mRequired = required;
 }
 
 QString Attribute::defaultValue() const

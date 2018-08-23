@@ -98,7 +98,7 @@ QString Enum::declaration() const
   QStringList::ConstIterator it;
   QString baseName = name();
   if ( d->mName.right(4) == "Enum" && d->mName.length() > 4 ) {
-    baseName = d->mName.left(d->mName.length() - 4);
+      baseName = d->mName.left(d->mName.length() - 4);
   }
 
   for ( it = d->mEnums.constBegin(); it != d->mEnums.constEnd(); ++it, ++value ) {
@@ -115,9 +115,7 @@ QString Enum::declaration() const
     }
   }
 
-  if (value != 0)
-    retval += ", "; // Do not generate broken code on empty enums
-  retval += baseName + "_Invalid";
+  retval += ", " + baseName + "_Invalid";
   retval += " };";
 
   return retval;
@@ -127,7 +125,7 @@ KODE::Function Enum::parserMethod() const
 {
   QString baseName = name();
   if ( d->mName.right(4) == "Enum" && d->mName.length() > 4 ) {
-    baseName = d->mName.left(d->mName.length() - 4);
+      baseName = d->mName.left(d->mName.length() - 4);
   }
 
   KODE::Function ret( KODE::Style::lowerFirst(this->name()) + "FromString", this->name() );
@@ -141,26 +139,23 @@ KODE::Function Enum::parserMethod() const
   code.newLine();
   bool first = true;
   foreach (QString enumItem, d->mEnums ) {
-    if ( first ) {
-      code += "if ( v == \"" + enumItem + "\" ) {";
-      first = false;
-    } else {
-      code += "} else if ( v == \"" + enumItem + "\" ) {";
+      if ( first ) {
+        code += "if ( v == \"" + enumItem + "\" ) {";
+        first = false;
+      } else {
+          code += "} else if ( v == \"" + enumItem + "\" ) {";
+        }
+      code.indent();
+      code += "return " + baseName + '_' + Style::sanitize(enumItem) + ";";
+      code.unindent();
     }
-    code.indent();
-    code += "return " + baseName + '_' + Style::sanitize(enumItem) + ";";
-    code.unindent();
-  }
-
-  if ( d->mEnums.count() != 0) { // do not generate error on empty enums
-    code += "} else {";
-    code.indent();
-    code += "if (ok) *ok = false;";
-    code += "return " + baseName + "_Invalid;";
-    code.unindent();
-    code += "}";
-    code.newLine();
-  }
+  code += "} else {";
+  code.indent();
+  code += "if (ok) *ok = false;";
+  code += "return " + baseName + "_Invalid;";
+  code.unindent();
+  code += "}";
+  code.newLine();
   code += "return " + baseName + "_Invalid;";
 
   ret.setBody(code);
@@ -171,7 +166,7 @@ KODE::Function Enum::writerMethod() const
 {
   QString baseName = name();
   if ( d->mName.right(4) == "Enum" && d->mName.length() > 4 ) {
-    baseName = d->mName.left(d->mName.length() - 4);
+      baseName = d->mName.left(d->mName.length() - 4);
   }
 
   KODE::Function ret( KODE::Style::lowerFirst(this->name()) + "ToString", "QString" );
@@ -183,17 +178,17 @@ KODE::Function Enum::writerMethod() const
   code += "switch( v ) {";
   code.indent();
   foreach (QString enumItem, d->mEnums ) {
-    code += QString("case %1: return \"%2\";").arg(baseName + '_' + Style::sanitize(enumItem)).arg(enumItem);
-  }
+      code += QString("case %1: return \"%2\";").arg(baseName + '_' + Style::sanitize(enumItem)).arg(enumItem);
+    }
   code += "case " + baseName + "_Invalid:";
   code += "default:";
-  code.indent();
-  code += QString("qCritical() << \"Unable to serialize a(n) %1 enum because it has invalid value\" << %2;")
-          .arg(this->name())
-          .arg("v");
+    code.indent();
+    code += QString("qCritical() << \"Unable to serialize a(n) %1 enum because it has invalid value\" << %2;")
+            .arg(this->name())
+            .arg("v");
   code += "return QString();";
   code.unindent();
-  code.unindent();
+    code.unindent();
   code += "}";
   ret.setBody(code);
   return ret;

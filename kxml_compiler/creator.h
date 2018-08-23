@@ -89,7 +89,7 @@ class Creator
       const QString &type, const QString &name );
 
     ClassDescription createClassDescription( const Schema::Element &element );
-    void createClass(const Schema::Element &element);
+    void createClass( const Schema::Element &element );
 
     void registerListTypedef( const QString &type );
 
@@ -106,19 +106,13 @@ class Creator
     QString errorStream() const;
     QString debugStream() const;
 
-    bool createParseFunctions() const;
-    void setCreateParseFunctions(bool createParseFunctions);
-
-    bool createWriteFunctions() const;
-    void setCreateWriteFunctions(bool createWriteFunctions);
-
-protected:
+  protected:
     void setExternalClassNames();
 
     void createElementParser( KODE::Class &c, const Schema::Element &e );
 
     QString typeName( Schema::Node::Type );
-    QString typeName( const Schema::Element & element );
+
   private:
     Schema::Document mDocument;
   
@@ -136,12 +130,7 @@ protected:
     bool mVerbose;
     bool mUseKde;
     bool mCreateCrudFunctions;
-    bool m_createParseFunctions;
-    bool m_createWriteFunctions;
     QString mExportDeclaration;
-    void createConstructorOptionalMemberInitializator( const ClassDescription & description, KODE::Code & code );
-    void addCRUDConstructorCode( const ClassDescription &description, KODE::Code &code);
-    void createCRUDIsValid(KODE::Class &c, ClassDescription &description);
 };
 
 class ParserCreator

@@ -158,7 +158,7 @@ Schema::Node::Type ParserXml::detectType( const QString &text )
       if ( modf(val, &intPart) != 0 ) {
         type = Schema::Node::Decimal;
       } else {
-        type = Schema::Node::Int;
+        type = Schema::Node::Integer;
       }
     }
   }

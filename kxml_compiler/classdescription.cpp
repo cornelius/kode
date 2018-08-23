@@ -21,8 +21,8 @@
 
 #include "classdescription.h"
 
-ClassProperty::ClassProperty(const QString &type, const QString &name , bool isOptional)
-  : m_type( type ), m_name( name ), m_isList( false ), m_targetHasId( false ), m_isOptionalElement(isOptional)
+ClassProperty::ClassProperty( const QString &type, const QString &name )
+  : m_type( type ), m_name( name ), m_isList( false ), m_targetHasId( false )
 {
 }
 
@@ -55,16 +55,6 @@ bool ClassProperty::targetHasId() const
 {
   return m_targetHasId;
 }
-bool ClassProperty::isOptionalElement() const
-{
-    return m_isOptionalElement;
-}
-
-void ClassProperty::setIsOptionalElement(bool isOptionalElement)
-{
-    m_isOptionalElement = isOptionalElement;
-}
-
 
 
 ClassDescription::ClassDescription( const QString &name )
@@ -77,9 +67,9 @@ QString ClassDescription::name() const
   return m_name;
 }
 
-void ClassDescription::addProperty( const QString &type, const QString &name, bool isOptional )
+void ClassDescription::addProperty( const QString &type, const QString &name )
 {
-  m_properties.append( ClassProperty( type, name, isOptional ) );
+  m_properties.append( ClassProperty( type, name ) );
 }
 
 void ClassDescription::addProperty( const ClassProperty &p )

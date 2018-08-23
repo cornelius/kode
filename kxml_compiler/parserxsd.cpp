@@ -91,12 +91,11 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
 
   foreach ( XSD::Element element, types.elements() ) {
     if ( mVerbose ) {
-      qDebug() << "Element: " << element.name() << element.type().qname();
+      qDebug() << "Element: " << element.name();
 //      qDebug() << "  Annotations: " << element.annotations().count();
 //      qDebug() << "  " << element.minOccurs() << ","
 //        << element.maxOccurs();
     }
-
     Schema::Element e;
     e.setIdentifier( element.name() );
     e.setName( element.name() );
@@ -108,23 +107,25 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       e.setText( true );
     } else if ( complexType.contentModel() == XSD::XSDType::SIMPLE &&
             !complexType.baseTypeName().isEmpty() ) {
-      e.setBaseType( Schema::Node::typeFromString(complexType.baseTypeName().qname()) );
-    }
-
-    e.setType( Schema::Node::typeFromString(element.type().qname()) );
-    if ( e.type() == Schema::Node::None ) {
-      bool found = false;
-      XSD::SimpleType simpleType = types.simpleType( element.type().qname(), &found );
-
-      // check if element having restrictions
-      if ( !found )
-        e.setType( Schema::Node::ComplexType );
-      else {
-        if ( simpleType.facetType() &  XSD::SimpleType::ENUM ) {
-          setType( e, simpleType );
-        }
+      if ( complexType.baseTypeName().qname() == "xs:string" ) {
+        e.setBaseType( Schema::Node::String );
+      } else if ( complexType.baseTypeName().qname() == "xs:normalizedString" ) {
+        e.setBaseType( Schema::Node::NormalizedString );
+      } else if ( complexType.baseTypeName().qname() == "xs:token" ) {
+        e.setBaseType( Schema::Node::Token );
       }
     }
+
+    if ( element.type().qname() == "xs:string" ) {
+      e.setType( Schema::Node::String );
+    } else if ( element.type().qname() == "xs:normalizedString" ) {
+      e.setType( Schema::Node::NormalizedString );
+    } else if ( element.type().qname() == "xs:token" ) {
+      e.setType( Schema::Node::Token );
+    } else {
+      e.setType( Schema::Node::ComplexType );
+    }
+
     foreach( XSD::Element subElement, complexType.elements() ) {
       if ( mVerbose ) {
         qDebug() << "  Element: " << subElement.name();
@@ -167,8 +168,16 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       a.setName( attribute.name() );
 
       if ( !attribute.type().isEmpty() ) {
-        a.setType( Schema::Node::typeFromString(attribute.type().qname()) );
-        if ( a.type() == Schema::Node::None ) {
+        if ( attribute.type().qname() == "xs:string" ) {
+          a.setType( Schema::Node::String );
+        } else if ( attribute.type().qname() == "xs:integer" ) {
+          a.setType( Schema::Node::Integer );
+        } else if ( attribute.type().qname() == "xs:decimal" ) {
+          a.setType( Schema::Node::Decimal
+                     );
+        } else if ( attribute.type().qname() == "xs:date" ) {
+          a.setType( Schema::Node::Date );
+        } else {
           XSD::SimpleType simpleType = types.simpleType( attribute.type() );
           setType( a, simpleType );
         }
@@ -183,6 +192,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     setAnnotations( e, element.annotations() );
 
     mDocument.addElement( e );
+
     if ( mDocument.startElement().isEmpty() ) {
       mDocument.setStartElement( e );
     }
@@ -194,7 +204,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
     qDebug() << "----ParserXsd::parse() done";
   }
 
-  mDocument.setTargetNamespace(parser.targetNamespace());
+//  return Schema::Document();
+
   return mDocument;
 }
 
