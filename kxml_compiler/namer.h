@@ -35,6 +35,7 @@ class Namer
     static QString getAccessor( const Schema::Element & );
     static QString getAccessor( const Schema::Attribute & );
     static QString getAccessor( const QString & );
+    static QString getListAccessor( const QString & );
 
     static QString getMutator( const Schema::Element & );
     static QString getMutator( const Schema::Attribute & );

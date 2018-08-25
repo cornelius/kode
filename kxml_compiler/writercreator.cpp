@@ -20,6 +20,7 @@
 #include "writercreator.h"
 
 #include "namer.h"
+#include "style.h"
 
 #include <QDebug>
 
@@ -123,7 +124,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       foreach( Schema::Relation r, element.elementRelations() ) {
         if ( r.isList() ) {
           conditions.append( "!" +
-            Namer::getAccessor( r.target() ) + "List().isEmpty()" );
+            Namer::getListAccessor( r.target() ) + "().isEmpty()" );
         }
       }
       code += "if ( " + conditions.join( " || " ) + " ) {";
@@ -138,7 +139,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       QString type = Namer::getClassName( r.target() );
       if ( r.isList() ) {
         code += "foreach( " + type + " e, " +
-          Namer::getAccessor( r.target() ) + "List() ) {";
+          Namer::getListAccessor( r.target() ) + "() ) {";
         code.indent();
         code += "e.writeElement( xml );";
         code.unindent();

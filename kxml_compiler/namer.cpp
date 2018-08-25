@@ -188,6 +188,11 @@ QString Namer::getAccessor( const QString &elementName )
   return checkForKeyWords( lowerFirst( getClassName( elementName ) ) );
 }
 
+QString Namer::getListAccessor( const QString &elementName )
+{
+  return QString("%1List").arg( lowerFirst( getClassName( elementName ) ) );
+}
+
 QString Namer::getMutator( const Schema::Element &element )
 {
   return getMutator( element.name() );
