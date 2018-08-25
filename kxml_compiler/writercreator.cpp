@@ -205,11 +205,13 @@ KODE::Code WriterCreator::createAttributeWriter( const Schema::Element &element 
 
     QString data = Namer::getAccessor( a ) + "()";
     if ( a.type() != Schema::Node::Enumeration ) {
-        code += "    xml.writeAttribute( \"" + a.name() + "\", " +
-          dataToStringConverter( data, a.type() ) + " );";
+      code.addLine("xml.writeAttribute(\"" + a.name() + "\", " +
+          dataToStringConverter( data, a.type() ) + " );");
     } else if ( a.type() == Schema::Node::Enumeration ) {
-       code += "    xml.writeAttribute(\"" + a.name() + "\", " +
-               a.name() + "EnumToString( " + a.name() + "() ));";
+      code.addLine("xml.writeAttribute(\"" + a.name() + "\", " +
+                   KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumToString( " +
+                   KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "() "
+                                                                            "));");
     }
   }
   

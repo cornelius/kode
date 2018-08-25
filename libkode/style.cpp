@@ -21,6 +21,8 @@
 
 #include "style.h"
 
+#include <QRegularExpression>
+
 using namespace KODE;
 
 class Style::Private
@@ -57,7 +59,7 @@ Style& Style::operator=( const Style &other )
 QString Style::className( const QString &str )
 {
   Q_ASSERT(!str.isEmpty());
-  QString cl = sanitize( upperFirst( str ));
+  QString cl = upperFirst( str );
   return cl;
 }
 
@@ -67,27 +69,6 @@ QString Style::upperFirst( const QString &str )
     return str;
 
   return str[ 0 ].toUpper() + str.mid( 1 );
-}
-
-QString Style::sanitize(const QString &str)
-{
-    if (str == "class") {
-        return "class_name";
-    }
-
-    if (str == "signals") {
-        return "signal_s";
-    }
-
-    if (str == "slots") {
-        return "slot_s";
-    }
-
-    QString ret = str;
-    ret = ret.replace(QLatin1Char('-'), QLatin1Char('_'));
-    ret = ret.replace(QLatin1Char(';'), QLatin1Char('_'));
-    ret = ret.replace(QLatin1Char(':'), QLatin1Char('_'));
-    return ret;
 }
 
 QString Style::lowerFirst( const QString &str )

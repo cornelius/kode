@@ -144,13 +144,14 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
     Schema::Attribute a = creator()->document().attribute( r );
 
     if (a.enumerationValues().count()) {
-      QString enumName = KODE::Style::sanitize( a.name() );
+      QString enumName = Namer::sanitize( a.name() );
 
       if (!a.required()) { // if not required generate conditions
         code += "if (element.hasAttribute(\"" + a.name() + "\"))  {";
         code.indent();
       }
-      code += Namer::getClassName(a.name()) + "Enum" + " " + enumName+ " = " + KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumFromString( element.attribute( \"" + enumName + "\" ), ok  );";
+      code += Namer::getClassName(a.name()) + "Enum" + " " + enumName+ " = " +
+              KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumFromString( element.attribute( \"" + a.name() + "\" ), ok  );";
       code += "if (ok && *ok == false) {";
       code.indent();
       code += "qCritical() << \"Invalid string: \\\"\" << element.attribute( \"" + a.name() + "\" ) << \"\\\" in the \\\"" + a.name() + "\\\" element\";";
