@@ -13,11 +13,29 @@
     </xs:complexType>
   </xs:element>
   
+    <xs:element name="beers">
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="beer"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+    <xs:element name="wines">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="wine"  minOccurs="1" maxOccurs="2" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
   <xs:element name="firstname" type="xs:string"/>
   <xs:element name="surname" type="xs:string"/>
   <xs:element name="age" type="xs:integer"/>
   <xs:element name="weight" type="xs:decimal"/>
   <xs:element name="notused" type="xs:integer"/>
+  <xs:element name="beer" type="xs:string"/>
+  <xs:element name="wine" type="xs:string"/>
   
   <xs:attributeGroup name="attlist.person">
     <xs:attribute name="id" use="required"/>
