@@ -25,7 +25,7 @@
 
 #include <QRegularExpression>
 
-QStringList Namer::m_reservedKeyWords = QStringList()
+QStringList Namer::m_reservedKeywords = QStringList()
                                                        << "alignas"
                                                        << "alignof"
                                                        << "and"
@@ -185,7 +185,7 @@ QString Namer::getAccessor( const Schema::Attribute &attribute )
 
 QString Namer::getAccessor( const QString &elementName )
 {
-  return checkForKeyWords( lowerFirst( getClassName( elementName ) ) );
+  return substituteKeywords( lowerFirst( getClassName( elementName ) ) );
 }
 
 QString Namer::getListAccessor( const QString &elementName )
@@ -214,9 +214,9 @@ QString Namer::removeInvalidCharacters(const QString &name)
   return ret.replace(QRegularExpression("[\\;\\-\\:\\,\\+\\*\\/\\<\\>\\|]"), "_");
 }
 
-QString Namer::checkForKeyWords(const QString &name)
+QString Namer::substituteKeywords(const QString &name)
 {
-  if (m_reservedKeyWords.contains(name)) {
+  if (m_reservedKeywords.contains(name)) {
     QString ret = name;
     return ret.append("_");
   }
@@ -225,5 +225,5 @@ QString Namer::checkForKeyWords(const QString &name)
 
 QString Namer::sanitize(const QString &name)
 {
-  return checkForKeyWords(removeInvalidCharacters(name));
+  return substituteKeywords(removeInvalidCharacters(name));
 }

@@ -52,7 +52,7 @@ class Namer
      * If the @param name is a reserved C/C++/Qt keyword it suffixes
      * with an underscore (_)
      */
-    static QString checkForKeyWords( const QString &name );
+    static QString substituteKeywords( const QString &name );
 
     /**
      * Returns a new version of @param name converted to a format
@@ -73,7 +73,7 @@ class Namer
     static QString lowerFirst( const QString &str );
 
   private:
-    static QStringList m_reservedKeyWords;
+    static QStringList m_reservedKeywords;
 };
 
 #endif
