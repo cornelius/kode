@@ -341,8 +341,21 @@ void Parser::parseCompositor( ParserContext *context,
           newElement = parseElement( context, childElement,
             ct.nameSpace(), element );
         } else {
-          newElement = parseElement( context, childElement,
-            ct.nameSpace(), childElement );
+          if ( isSequence ) {
+            // occurence attributes can be either in the
+            // parent (sequence) to on the current element
+            if ( childElement.hasAttribute("minOccurs") ||
+                 childElement.hasAttribute("maxOccurs")) {
+              newElement = parseElement( context, childElement,
+                ct.nameSpace(), childElement );
+            } else {
+              newElement = parseElement( context, childElement,
+                ct.nameSpace(), element );
+            }
+          } else {
+            newElement = parseElement( context, childElement,
+              ct.nameSpace(), childElement );
+          }
         }
         newElements.append( newElement );
         compositor.addChild( csName );
