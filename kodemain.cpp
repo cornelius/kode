@@ -24,24 +24,19 @@
 #include "license.h"
 #include "printer.h"
 
-#include <kabc/stdaddressbook.h>
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include <QDebug>
+#include <QDate>
+#include <QSettings>
+#include <QTemporaryFile>
 
-#include <kaboutdata.h>
-#include <kapplication.h>
-#include <kcmdlineargs.h>
-#include <kconfiggroup.h>
-#include <kdebug.h>
-#include <kglobal.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <ksavefile.h>
-#include <kstandarddirs.h>
-
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/QList>
-#include <QtCore/QRegExp>
-#include <QtCore/QTextStream>
+#include <QFile>
+#include <QFileInfo>
+#include <QList>
+#include <QRegExp>
+#include <QTextStream>
 
 #include <iostream>
 
@@ -93,19 +88,19 @@ void addPropertyVariable( QString &out, const QString &type,
 }
 
 // FIXME: Put addProperty in PropertyAdder class and add endReadAhead function.
-int addProperty( KCmdLineArgs *args )
+int addProperty( QCommandLineParser *cmdLine )
 {
-  if ( args->count() != 3 ) {
+  if ( cmdLine->positionalArguments().count() != 2 ) {
     std::cerr << "Usage: kode --add-property <class> <proprerty-type> "
       << "<property-name>" << std::endl;
     return 1;
   }
 
-  QString className = args->arg( 0 );
-  QString type = args->arg( 1 );
-  QString name = args->arg( 2 );
+  QString className = cmdLine->value("add-property");
+  QString type = cmdLine->positionalArguments().value(0);
+  QString name = cmdLine->positionalArguments().value(1);
 
-  kDebug() <<"Add property: class" << className <<":" << type << name;
+  qDebug() <<"Add property: class" << className <<":" << type << name;
 
   QString headerFileName = className.toLower() + ".h";
 
@@ -131,19 +126,19 @@ int addProperty( KCmdLineArgs *args )
 
   QString line;
   while ( !( line = in.readLine() ).isNull() ) {
-    kDebug() << int(state) <<" LINE:" << line;
+    qDebug() << int(state) <<" LINE:" << line;
     QString readAheadPrevious = readAhead;
     readAhead += line + '\n';
     switch( state ) {
       case FindClass:
         if ( line.indexOf( QRegExp( "^\\s*class\\s+" + className ) ) >= 0 ) {
-          kDebug() <<"  FOUND CLASS";
+          qDebug() <<"  FOUND CLASS";
           state = FindConstructor;
         }
         break;
       case FindConstructor:
         if ( line.indexOf( QRegExp( "^\\s*" + className + "\\s*\\(" ) ) >= 0 ) {
-          kDebug() <<"  FOUND CONSTRUCTOR";
+          qDebug() <<"  FOUND CONSTRUCTOR";
           out += readAhead;
           readAhead.clear();
           state = FindProperties;
@@ -155,22 +150,22 @@ int addProperty( KCmdLineArgs *args )
           if ( re.indexIn( line ) >= 0 ) {
             QString function = re.cap( 1 ).toLower();
             if ( !function.isEmpty() ) {
-              kDebug() <<"Function:" << function;
+              qDebug() <<"Function:" << function;
               if ( function == className || function == '~' + className ) {
                 out += readAhead;
                 readAhead.clear();
               } else {
                 if ( function.startsWith( "set" ) ) {
                   mutator = function.mid( 3 );
-                  kDebug() <<"MUTATOR:" << mutator;
+                  qDebug() <<"MUTATOR:" << mutator;
                 } else {
                   if ( function == mutator ) {
                     accessor = function;
-                    kDebug() <<"ACCESSOR:" << accessor;
+                    qDebug() <<"ACCESSOR:" << accessor;
                     out += readAhead;
                     readAhead.clear();
                   } else {
-                    kDebug() <<"CREATE PROPERTY";
+                    qDebug() <<"CREATE PROPERTY";
                     out += readAheadPrevious;
                     addPropertyFunctions( out, type, name );
                     out += '\n';
@@ -233,17 +228,17 @@ int addProperty( KCmdLineArgs *args )
 
   out += readAhead;
 
-  if ( args->isSet( "inplace" ) ) {
+  if ( cmdLine->isSet( "inplace" ) ) {
     QString headerFileNameOut = headerFileName + ".kodeorig" ;
 
     // XXX Why copy instead of rename?
     QFile::remove( headerFileNameOut );
     if ( !QFile::copy( headerFileName, headerFileNameOut ) ) {
-      kError() <<"Copy failed";
+      qDebug() <<"Copy failed";
     } else {
-      kDebug() <<"Write to original file.";
+      qDebug() <<"Write to original file.";
       if ( !headerFile.open( QIODevice::WriteOnly ) ) {
-        kError() <<"Unable to open file '" << headerFileName <<
+        qDebug() <<"Unable to open file '" << headerFileName <<
           "' for writing.";
         return 1;
       }
@@ -257,18 +252,18 @@ int addProperty( KCmdLineArgs *args )
   return 0;
 }
 
-int codify( KCmdLineArgs *args )
+int codify( QCommandLineParser *cmdLine )
 {
-  if ( args->count() != 1 ) {
+    if ( cmdLine->positionalArguments().count() != 1 ) {
     std::cerr << "Usage: kode --codify <sourcecodefile>" << std::endl;
     return 1;
   }
 
-  QString filename = args->arg( 0 );
+  QString filename = cmdLine->value("codify");
 
   QFile f( filename );
   if ( !f.open( QIODevice::ReadOnly ) ) {
-    kError() <<"Unable to open file '" << filename <<"'.";
+    qDebug() <<"Unable to open file '" << filename <<"'.";
     return 1;
   } else {
     std::cout << "KODE::Code code;" << std::endl;
@@ -286,19 +281,19 @@ int codify( KCmdLineArgs *args )
   return 0;
 }
 
-int create( KCmdLineArgs *args )
+int create( QCommandLineParser *cmdLine )
 {
   KODE::Printer p;
-  if ( args->isSet( "warning" ) ) p.setCreationWarning( true );
+  if ( cmdLine->isSet( "warning" ) ) p.setCreationWarning( true );
 
-  bool createKioslave = args->isSet( "create-kioslave" );
-  bool createMain = args->isSet( "create-main" );
+  bool createKioslave = cmdLine->isSet( "create-kioslave" );
+  bool createMain = cmdLine->isSet( "create-main" );
 
-  QString filename = args->getOption( "filename" );
+  QString filename = cmdLine->value( "filename" );
 
   if ( createMain ) {
     if ( filename.isEmpty() ) {
-      kError() <<"Error: No file name given.";
+      qDebug() <<"Error: No file name given.";
       return 1;
     }
 
@@ -306,66 +301,50 @@ int create( KCmdLineArgs *args )
       filename = filename.left( filename.length() - 4 );
     }
   } else {
-    if ( !args->isSet( "classname" ) ) {
-      kError() <<"Error: No class name given.";
+    if ( !cmdLine->isSet( "classname" ) ) {
+      qDebug() <<"Error: No class name given.";
       return 1;
     }
   }
 
-  QString className = args->getOption( "classname" );
+  QString className = cmdLine->value( "classname" );
 
   QString protocol;
 
   if ( createKioslave ) {
-    if ( !args->isSet( "protocol" ) ) {
+    if ( !cmdLine->isSet( "protocol" ) ) {
       protocol = className.toLower();
-      kWarning() <<"Warning: No protocol for kioslave given. Assuming '"
+      qWarning() <<"Warning: No protocol for kioslave given. Assuming '"
                   << protocol << "'";
     } else {
-      protocol = args->getOption( "protocol" );
+      protocol = cmdLine->value( "protocol" );
     }
   }
 
   KODE::File file;
 
-  file.setProject( args->getOption( "project" ) );
+  file.setProject( cmdLine->value( "project" ) );
 
-  QString authorEmail = args->getOption( "author-email" );
-  QString authorName;
-  KABC::Addressee a;
-  if ( authorEmail.isEmpty() ) {
-    a = KABC::StdAddressBook::self()->whoAmI();
-    authorEmail = a.preferredEmail();
-  } else {
-    KABC::Addressee::List as =
-        KABC::StdAddressBook::self()->findByEmail( authorEmail );
-    if ( as.isEmpty() ) {
-      kDebug() <<"Unable to find '" << authorEmail <<"' in address book.";
-    } else {
-      a = as.first();
-    }
-  }
-  if ( !a.isEmpty() ) {
-      authorName = a.realName();
-  }
+  QString authorEmail = cmdLine->value( "author-email" );
+  QString authorName = cmdLine->value( "author-name" );
   if ( !authorEmail.isEmpty() ) {
     file.addCopyright( QDate::currentDate().year(), authorName, authorEmail );
   }
 
   KODE::License l;
-  if ( args->isSet( "gpl" ) ) l = KODE::License( KODE::License::GPL );
-  if ( args->isSet( "lgpl" ) ) l = KODE::License( KODE::License::LGPL );
-  l.setQtException( args->isSet( "qt-exception" ) );
+  if ( cmdLine->isSet( "gpl" ) ) l = KODE::License( KODE::License::GPL );
+  if ( cmdLine->isSet( "lgpl" ) ) l = KODE::License( KODE::License::LGPL );
+  l.setQtException( cmdLine->isSet( "qt-exception" ) );
   file.setLicense( l );
 
-  file.setNameSpace( args->getOption( "namespace" ) );
+  file.setNameSpace( cmdLine->value( "namespace" ) );
 
   if ( createMain ) {
     file.addInclude( "kaboutdata.h" );
     file.addInclude( "kapplication.h" );
-    file.addInclude( "kdebug" );
+    file.addInclude( "qDebug" );
     file.addInclude( "klocale" );
-    file.addInclude( "kcmdlineargs" );
+    file.addInclude( "kcmdlinecmdLine" );
 
     KODE::Function main( "main", "int" );
     main.addArgument( "int argc" );
@@ -373,17 +352,17 @@ int create( KCmdLineArgs *args )
 
     KODE::Code code;
     code += "KAboutData aboutData(\"test\",0,ki18n(\"Test\"),\"0.1\");";
-    code += "KCmdLineArgs::init(argc,argv,&aboutData);";
+    code += "KCmdLinecmdLine::init(argc,argv,&aboutData);";
     code += "";
     code += "KCmdLineOptions options;";
     code += "options.add(\"verbose\", ki18n(\"Verbose output\"));";
-    code += "KCmdLineArgs::addCmdLineOptions( options );";
+    code += "KCmdLinecmdLine::addCmdLineOptions( options );";
     code += "";
     code += "KApplication app;";
     code += "";
-    code += "KCmdLineArgs *args = KCmdLineArgs::parsedArgs();";
+    code += "KCmdLinecmdLine *cmdLine = KCmdLinecmdLine::parsedcmdLine();";
     code += "";
-    code += "Q_UNUSED( args );";
+    code += "Q_UNUSED( cmdLine );";
     main.setBody( code );
 
     file.addFileFunction( main );
@@ -397,7 +376,7 @@ int create( KCmdLineArgs *args )
 
   KODE::Class c( className );
 
-  if ( args->isSet( "create-dialog" ) ) {
+  if ( cmdLine->isSet( "create-dialog" ) ) {
     c.addBaseClass( KODE::Class( "KDialog" ) );
     c.addInclude( "kdialog.h" );
   } else if ( createKioslave ) {
@@ -411,13 +390,13 @@ int create( KCmdLineArgs *args )
 
     KODE::Code code;
 
-    code += "kDebug(7000) << \"" + className +"::get()\";";
-    code += "kDebug(7000) << \" URL: \" << url.url();";
+    code += "qDebug(7000) << \"" + className +"::get()\";";
+    code += "qDebug(7000) << \" URL: \" << url.url();";
     code += "#if 1";
-    code += "kDebug(7000) << \" Path: \" << url.path();";
-    code += "kDebug(7000) << \" Query: \" << url.query();";
-    code += "kDebug(7000) << \" Protocol: \" << url.protocol();";
-    code += "kDebug(7000) << \" Filename: \" << url.filename();";
+    code += "qDebug(7000) << \" Path: \" << url.path();";
+    code += "qDebug(7000) << \" Query: \" << url.query();";
+    code += "qDebug(7000) << \" Protocol: \" << url.protocol();";
+    code += "qDebug(7000) << \" Filename: \" << url.filename();";
     code += "#endif";
     code.newLine();
 
@@ -431,7 +410,7 @@ int create( KCmdLineArgs *args )
     code += "finished();";
     code.newLine();
 
-    code += "kDebug(7000) << \"" + className +"CgiProtocol::get() done\";";
+    code += "qDebug(7000) << \"" + className +"CgiProtocol::get() done\";";
 
     get.setBody( code );
 
@@ -439,7 +418,7 @@ int create( KCmdLineArgs *args )
 
 
     c.addInclude( "kinstance.h" );
-    c.addInclude( "kdebug.h" );
+    c.addInclude( "qDebug.h" );
     c.addInclude( "sys/types.h" );
     c.addInclude( "unistd.h" );
     c.addInclude( "stdlib.h" );
@@ -452,7 +431,7 @@ int create( KCmdLineArgs *args )
 
     code += "KComponentData instance( \"kio_" + protocol + "\" );";
     code += "";
-    code += "kDebug(7000) << \"Starting kio_" + protocol +"(pid:  \" << getpid() << \")\";";
+    code += "qDebug(7000) << \"Starting kio_" + protocol +"(pid:  \" << getpid() << \")\";";
     code += "";
     code += "if (argc != 4) {";
     code.indent();
@@ -475,7 +454,7 @@ int create( KCmdLineArgs *args )
 
   KODE::Function constructor( className );
 
-  if ( args->isSet( "singleton" ) ) {
+  if ( cmdLine->isSet( "singleton" ) ) {
     constructor.setAccess( KODE::Function::Private );
 
     KODE::Function self( "self", className + " *" );
@@ -548,21 +527,25 @@ int create( KCmdLineArgs *args )
     QFileInfo fi( protocolFilename );
     protocolFilename = fi.absoluteFilePath();
 
-    KSaveFile::simpleBackupFile( protocolFilename, QString(), ".backup" );
+    QFile protocolFile(protocolFilename);
+    if (protocolFile.copy(protocolFilename + ".backup")) {
+      QFile::remove( protocolFilename );
 
-    QFile::remove( protocolFilename );
+      QSettings protocolFileSettings( protocolFilename, QSettings::IniFormat);
 
-    KConfig protocolFile( protocolFilename, KConfig::SimpleConfig);
-
-    KConfigGroup group( &protocolFile, "Protocol" );
-    group.writeEntry( "exec", "kio_" + protocol );
-    group.writeEntry( "protocol", protocol );
-    group.writeEntry( "input", "none" );
-    group.writeEntry( "output", "filesystem" );
-    group.writeEntry( "reading", "true" );
-    group.writeEntry( "DocPath", "kioslave/" + protocol + ".html" );
-
-    protocolFile.sync();
+      protocolFileSettings.beginGroup("Protocol");
+      protocolFileSettings.setValue( "exec", "kio_" + protocol );
+      protocolFileSettings.setValue( "protocol", protocol );
+      protocolFileSettings.setValue( "input", "none" );
+      protocolFileSettings.setValue( "output", "filesystem" );
+      protocolFileSettings.setValue( "reading", "true" );
+      protocolFileSettings.setValue( "DocPath", "kioslave/" + protocol + ".html" );
+      protocolFileSettings.endGroup();
+      protocolFileSettings.sync();
+    } else {
+      qDebug() << "Unable to crete the" << protocolFilename + ".backup" << " file";
+      return -1;
+    }
   }
 
   return 0;
@@ -570,47 +553,128 @@ int create( KCmdLineArgs *args )
 
 int main(int argc,char **argv)
 {
-  KAboutData aboutData( "kode", 0, ki18n("KDE Code Generator"), "0.1" );
-  aboutData.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
+  QCoreApplication app(argc, argv);
+  QCoreApplication::setApplicationName("kode");
+  QCoreApplication::setOrganizationName("KDE Code Generator");
+  QCoreApplication::setApplicationName("0.1");
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
+  QCommandLineParser cmdLine;
+  cmdLine.setApplicationDescription("KDE Code Generator");
+  cmdLine.addHelpOption();
+  cmdLine.addVersionOption();
 
-  KCmdLineOptions options;
-  options.add("c");
-  options.add("create-class", ki18n("Create class"));
-  options.add("d");
-  options.add("create-dialog", ki18n("Create dialog"));
-  options.add("create-kioslave", ki18n("Create kioslave"));
-  options.add("create-main", ki18n("Create main function template"));
-  options.add("y");
-  options.add("codify", ki18n("Create generator code for given source"));
-  options.add("add-property", ki18n("Add property to class"));
-  options.add("inplace", ki18n("Change file in place"));
-  options.add("author-email <name>", ki18n("Add author with given email address"));
-  options.add("project <name>", ki18n("Name of project"));
-  options.add("gpl", ki18n("Use GPL as license"));
-  options.add("lgpl", ki18n("Use LGPL as license"));
-  options.add("classname <name>", ki18n("Name of class"));
-  options.add("filename <name>", ki18n("Name of file"));
-  options.add("namespace <name>", ki18n("Namespace"));
-  options.add("warning", ki18n("Create warning about code generation"));
-  options.add("qt-exception", ki18n("Add Qt exception to GPL"));
-  options.add("singleton", ki18n("Create a singleton class"));
-  options.add("protocol", ki18n("kioslave protocol"));
-  options.add("+[filename]", ki18n("Source code file name"));
-  KCmdLineArgs::addCmdLineOptions( options );
 
-  KApplication app;
+  QCommandLineOption createClass(
+              QStringList() << "c" << "create-class",
+              QCoreApplication::translate("main", "Create class"));
+  cmdLine.addOption(createClass);
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  QCommandLineOption createDialog(
+              QStringList() << "d" << "create-dialog",
+              QCoreApplication::translate("main", "Create dialog"));
+  cmdLine.addOption(createDialog);
 
-  if ( args->isSet( "create-class" ) || args->isSet( "create-dialog" ) ||
-       args->isSet( "create-kioslave" ) || args->isSet( "create-main" ) ) {
-    return create( args );
-  } else if ( args->isSet( "codify" ) ) {
-    return codify( args );
-  } else if ( args->isSet( "add-property" ) ) {
-    return addProperty( args );
+  QCommandLineOption createKIOSlave(
+              "create-kioslave",
+              QCoreApplication::translate("main", "Create kioslave"));
+  cmdLine.addOption(createKIOSlave);
+
+  QCommandLineOption createMain(
+              QStringList() << "d" << "create-main",
+              QCoreApplication::translate("main", "Create main function template"),
+              "yes",
+              "y");
+  cmdLine.addOption(createMain);
+
+  QCommandLineOption codifyOption(
+              "codify",
+              QCoreApplication::translate("main", "Create generator code for given source"));
+  cmdLine.addOption(codifyOption);
+
+  QCommandLineOption addPropertyOption(
+              "add-property",
+              QCoreApplication::translate("main", "Add property to class"));
+  cmdLine.addOption(addPropertyOption);
+
+  QCommandLineOption inplace(
+              "inplace",
+              QCoreApplication::translate("main", "Change file in place"));
+  cmdLine.addOption(inplace);
+
+  QCommandLineOption authorMail(
+              "author-email",
+              QCoreApplication::translate("main", "Add author with given email address"),
+              "name");
+  cmdLine.addOption(authorMail);
+
+  QCommandLineOption project(
+              "project",
+              QCoreApplication::translate("main", "Name of project"),
+              "name");
+  cmdLine.addOption(authorMail);
+
+  QCommandLineOption gpl(
+              "gpl",
+              QCoreApplication::translate("main", "Use GPL as license"));
+  cmdLine.addOption(gpl);
+
+  QCommandLineOption className(
+              "classname",
+              QCoreApplication::translate("main", "Name of class"),
+              "name");
+  cmdLine.addOption(className);
+
+  QCommandLineOption fileName(
+              "filename",
+              QCoreApplication::translate("main", "Name of file"),
+              "name");
+  cmdLine.addOption(fileName);
+
+  QCommandLineOption namespaceName(
+              "namespace",
+              QCoreApplication::translate("main", "Namespace"),
+              "name");
+  cmdLine.addOption(namespaceName);
+
+  QCommandLineOption warning(
+              "warning",
+              QCoreApplication::translate("main", "Create warning about code generation"));
+  cmdLine.addOption(warning);
+
+  QCommandLineOption qtException(
+              "qt-exception",
+              QCoreApplication::translate("main", "Add Qt exception to GPL"));
+  cmdLine.addOption(qtException);
+
+  QCommandLineOption singleton(
+              "singleton",
+              QCoreApplication::translate("main", "Create a singleton class"));
+  cmdLine.addOption(singleton);
+
+  QCommandLineOption protocol(
+              "protocol",
+              QCoreApplication::translate("main", "kioslave protocol"));
+  cmdLine.addOption(protocol);
+
+  QCommandLineOption filename(
+              "filename",
+              QCoreApplication::translate("main", "Source code file name"));
+  cmdLine.addOption(filename);
+
+
+
+  if (!cmdLine.parse(QCoreApplication::arguments())) {
+    qDebug() << cmdLine.errorText();
+    return -1;
+  }
+
+  if ( cmdLine.isSet(createClass ) || cmdLine.isSet( createDialog ) ||
+       cmdLine.isSet( createKIOSlave ) || cmdLine.isSet( createMain ) ) {
+    return create( &cmdLine );
+  } else if ( cmdLine.isSet( codifyOption ) ) {
+    return codify( &cmdLine );
+  } else if ( cmdLine.isSet( addPropertyOption ) ) {
+    return addProperty( &cmdLine );
   } else {
     std::cerr << "Error: No command given." << std::endl;
     return 1;

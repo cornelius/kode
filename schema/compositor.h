@@ -23,8 +23,8 @@
 #define SCHEMA_COMPOSITOR_H
 
 #include <QString>
-#include <common/qname.h>
-#include <kode_export.h>
+#include "../common/qname.h"
+#include "../common/kode_export.h"
 
 namespace XSD {
 

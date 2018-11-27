@@ -1,52 +1,64 @@
 #include "account.h"
 
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 #include <QFileInfo>
 
-#include <KAboutData>
-#include <KCmdLineArgs>
-#include <KDebug>
+#include <QDebug>
 
 int main( int argc, char **argv )
 {
-  KAboutData aboutData( "testaccounts", 0, ki18n("Test program"),
-                        "0.1" );
-  KCmdLineArgs::init( argc, argv, &aboutData );
+  QCoreApplication app( argc, argv);
+  QCoreApplication::setApplicationName("testaccounts");
+  QCoreApplication::setApplicationVersion("0.1");
 
-  KCmdLineOptions options;
-  options.add("+xmlfile", ki18n("Name of XML file"));
-  KCmdLineArgs::addCmdLineOptions( options );
+  QCommandLineParser cmdLine;
+  cmdLine.setApplicationDescription("Test program");
+  cmdLine.addHelpOption();
+  cmdLine.addVersionOption();
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  QCommandLineOption dirOption(
+              "xmlfile",
+              QCoreApplication::translate("main", "Name of XML file"));
+  cmdLine.addOption(dirOption);
 
-  if ( args->count() < 1 || args->count() > 2 ) {
-    args->usage( "Wrong number of arguments." );
+  if (!cmdLine.parse(QCoreApplication::arguments())) {
+    qDebug() << cmdLine.errorText();
+    return -1;
   }
 
-  QString filename = args->arg( 0 );
+  if ( cmdLine.positionalArguments().count() < 1 ||
+       cmdLine.positionalArguments().count() > 2 ) {
+    qDebug() << "Wrong number of arguments";
+    cmdLine.showHelp(-1);
+  }
+
+  QString filename = cmdLine.positionalArguments().at( 0 );
   QString referenceFile;
-  if ( args->count() == 2 ) {
-    referenceFile = args->arg( 1 );
+  if ( cmdLine.positionalArguments().count() == 2 ) {
+    referenceFile = cmdLine.positionalArguments().at( 1 );
   } else {
     referenceFile = filename;
   }
 
   QString outputFile = "out_" + QFileInfo( filename ).fileName();
 
-  kDebug() << "Comparing" << referenceFile << "and" << outputFile;
+  qDebug() << "Comparing" << referenceFile << "and" << outputFile;
 
   bool ok;
   Account account = Account::parseFile( filename, &ok );
   
   if ( !ok ) {
-    kError() <<"Parse error";
+    qDebug() <<"Parse error";
     return 1;
   } else {
-    kDebug() << "DISPLAY NAME" << account.displayname();
+    qDebug() << "DISPLAY NAME" << account.displayname();
     
     QDate date = account.creationDate().value();
-    kDebug() << date;
+    qDebug() << date;
     QDateTime dateTime = account.email().updatedAt();
-    kDebug() << dateTime;
+    qDebug() << dateTime;
     if ( account.resources().resourceList().size() != 2 ) exit( 1 );
     if ( account.resources3().resource3List().size() != 3 ) exit( 1 );
     account.resources().resourceList().first().isValid();

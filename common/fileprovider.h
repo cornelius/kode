@@ -23,8 +23,9 @@
 #define FILEPROVIDER_H
 
 #include <QObject>
+#include <QtNetwork/QNetworkAccessManager>
 
-#include <kode_export.h>
+#include "kode_export.h"
 
 namespace KIO {
 class Job;
@@ -35,19 +36,18 @@ class KXMLCOMMON_EXPORT FileProvider : QObject
   Q_OBJECT
 
   public:
-    FileProvider();
+    FileProvider(QObject *parent = NULL);
 
     bool get( const QString &url, QString &target );
     void cleanUp();
 
   private slots:
-    void slotData( KIO::Job*, const QByteArray& );
-    void slotResult( KJob* );
+    void downloadFinished( QNetworkReply *reply );
 
   private:
     QString mFileName;
     QByteArray mData;
-    bool mBlocked;
+    QNetworkAccessManager mManager;
 };
 
 #endif

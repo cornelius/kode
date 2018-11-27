@@ -21,8 +21,8 @@
 #ifndef KODE_CODE_H
 #define KODE_CODE_H
 
-#include <kode_export.h>
-#include <QtCore/QString>
+#include "../common/kode_export.h"
+#include <QString>
 
 namespace KODE {
 

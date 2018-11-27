@@ -25,7 +25,7 @@
 #include "file.h"
 #include "style.h"
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 namespace KODE {
 

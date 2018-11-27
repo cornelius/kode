@@ -25,9 +25,9 @@
 
 #include <QStringList>
 
-#include <common/qname.h>
 #include "xsdtype.h"
-#include <kode_export.h>
+#include "../common/qname.h"
+#include "../common/kode_export.h"
 
 namespace XSD {
 

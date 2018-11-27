@@ -20,20 +20,21 @@
  */
 
 #include <unistd.h>
-#include <kdefakes.h> // usleep
 
 #include <QCoreApplication>
 #include <QEventLoop>
 #include <QFile>
-
-#include <kio/job.h>
-#include <ktemporaryfile.h>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QTemporaryFile>
 
 #include "fileprovider.h"
 
-FileProvider::FileProvider()
-  : QObject( 0 ), mBlocked( false )
+FileProvider::FileProvider(QObject *parent)
+  : QObject( parent )
 {
+    connect(&mManager, SIGNAL(finished(QNetworkReply*)),
+               this, SLOT(downloadFinished(QNetworkReply*)));
 }
 
 bool FileProvider::get( const QString &url, QString &target )
@@ -42,30 +43,24 @@ bool FileProvider::get( const QString &url, QString &target )
     cleanUp();
 
   if ( target.isEmpty() ) {
-    KTemporaryFile tmpFile;
+    QTemporaryFile tmpFile;
     tmpFile.setAutoRemove(false);
     tmpFile.open();
     target = tmpFile.fileName();
     mFileName = target;
   }
 
-  mData.truncate( 0 );
-
   qDebug( "Downloading external schema '%s'", qPrintable( url ) );
 
-  KIO::TransferJob* job = KIO::get( KUrl( url ), KIO::NoReload, KIO::HideProgressInfo );
-  connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-           this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );
-  connect( job, SIGNAL( result( KJob* ) ),
-           this, SLOT( slotResult( KJob* ) ) );
+  QNetworkRequest request = QNetworkRequest(QUrl(url));
+  QNetworkReply *reply = mManager.get(request);
 
-  mBlocked = true;
-  while ( mBlocked ) {
+  while ( !reply->isFinished() ) {
     QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
     usleep( 500 );
   }
 
-  return true;
+  return (reply->error() == QNetworkReply::NoError);
 }
 
 void FileProvider::cleanUp()
@@ -74,35 +69,22 @@ void FileProvider::cleanUp()
   mFileName = QString();
 }
 
-void FileProvider::slotData( KIO::Job*, const QByteArray &data )
-{
-  unsigned int oldSize = mData.size();
-  mData.resize( oldSize + data.size() );
-  memcpy( mData.data() + oldSize, data.data(), data.size() );
-}
 
-void FileProvider::slotResult( KJob *job )
+void FileProvider::downloadFinished(QNetworkReply *reply )
 {
-  if ( job->error() ) {
-    qDebug( "%s", qPrintable( job->errorText() ) );
-    mBlocked = false;
+  if ( reply->error() != QNetworkReply::NoError) {
+    qDebug( "%s", qPrintable( reply->errorString() ) );
     return;
   }
 
   QFile file( mFileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
     qDebug( "Unable to create temporary file" );
-    mBlocked = false;
     return;
   }
 
   qDebug( "Download successful" );
-  file.write( mData );
+  file.write( reply->readAll() );
   file.close();
-
-  mData.truncate( 0 );
-
-  mBlocked = false;
 }
 
-#include "fileprovider.moc"

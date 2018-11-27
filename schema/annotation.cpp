@@ -21,7 +21,7 @@
 
 #include "annotation.h"
 
-#include <common/qname.h>
+#include "../common/qname.h"
 
 namespace XSD {
 

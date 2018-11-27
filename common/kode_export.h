@@ -21,15 +21,15 @@
 #ifndef KODE_EXPORT_H
 #define KODE_EXPORT_H
 
-#include <kdemacros.h>
+#include <qglobal.h>
 
 #ifndef KODE_EXPORT
 # if defined(MAKE_KODE_LIB)
    /* We are building this library */ 
-#  define KODE_EXPORT KDE_EXPORT
+#  define KODE_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define KODE_EXPORT KDE_IMPORT
+#  define KODE_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
@@ -37,70 +37,70 @@
 #ifndef KXMLCOMMON_EXPORT
 # if defined(MAKE_KXMLCOMMON_LIB)
    /* We are building this library */ 
-#  define KXMLCOMMON_EXPORT KDE_EXPORT
+#  define KXMLCOMMON_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define KXMLCOMMON_EXPORT KDE_IMPORT
+#  define KXMLCOMMON_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
 #ifndef SCHEMA_EXPORT
 # if defined(MAKE_SCHEMA_LIB)
    /* We are building this library */ 
-#  define SCHEMA_EXPORT KDE_EXPORT
+#  define SCHEMA_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define SCHEMA_EXPORT KDE_IMPORT
+#  define SCHEMA_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
 #ifndef KSCHEMA_EXPORT
 # if defined(MAKE_KSCHEMA_LIB)
    /* We are building this library */ 
-#  define KSCHEMA_EXPORT KDE_EXPORT
+#  define KSCHEMA_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define KSCHEMA_EXPORT KDE_IMPORT
+#  define KSCHEMA_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
 #ifndef KUNG_EXPORT
 # if defined(MAKE_KUNG_LIB)
    /* We are building this library */ 
-#  define KUNG_EXPORT KDE_EXPORT
+#  define KUNG_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define KUNG_EXPORT KDE_IMPORT
+#  define KUNG_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
 #ifndef WSCL_EXPORT
 # if defined(MAKE_WSCL_LIB)
    /* We are building this library */ 
-#  define WSCL_EXPORT KDE_EXPORT
+#  define WSCL_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define WSCL_EXPORT KDE_IMPORT
+#  define WSCL_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
 #ifndef KSCHEMAWIDGETS_EXPORT
 # if defined(MAKE_KSCHEMAWIDGETS_LIB)
    /* We are building this library */ 
-#  define KSCHEMAWIDGETS_EXPORT KDE_EXPORT
+#  define KSCHEMAWIDGETS_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define KSCHEMAWIDGETS_EXPORT KDE_IMPORT
+#  define KSCHEMAWIDGETS_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 
 #ifndef KWSDL_EXPORT
 # if defined(MAKE_WSDL_LIB)
    /* We are building this library */ 
-#  define KWSDL_EXPORT KDE_EXPORT
+#  define KWSDL_EXPORT  Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define KWSDL_EXPORT KDE_IMPORT
+#  define KWSDL_EXPORT  Q_DECL_IMPORT
 # endif
 #endif
 

@@ -20,10 +20,10 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <QtCore/QFile>
-#include <QtCore/QStringList>
-#include <QtCore/QTextStream>
-#include <QtCore/QFileInfo>
+#include <QFile>
+#include <QStringList>
+#include <QTextStream>
+#include <QFileInfo>
 #include <QDebug>
 
 #include "printer.h"
@@ -705,7 +705,7 @@ void Printer::printHeader( const File &file )
     Q_ASSERT( !cl.name().isEmpty() );
     QStringList includes = cl.headerIncludes();
     if ( cl.useSharedData() )
-        includes.append( "QtCore/QSharedData" );
+        includes.append( "QSharedData" );
     //qDebug() << "includes=" << includes;
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {

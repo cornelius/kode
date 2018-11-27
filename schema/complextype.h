@@ -25,13 +25,13 @@
 
 #include <QString>
 
-#include <schema/attribute.h>
-#include <schema/attributegroup.h>
-#include <schema/element.h>
-#include <schema/xsdtype.h>
+#include "attribute.h"
+#include "attributegroup.h"
+#include "element.h"
+#include "xsdtype.h"
 
-#include <common/qname.h>
-#include <kode_export.h>
+#include "../common/qname.h"
+#include "../common/kode_export.h"
 
 namespace XSD {
 

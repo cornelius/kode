@@ -21,9 +21,9 @@
 #ifndef KODE_ENUM_H
 #define KODE_ENUM_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
-#include <kode_export.h>
+#include "../common/kode_export.h"
 
 #include "function.h"
 

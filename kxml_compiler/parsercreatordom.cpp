@@ -29,14 +29,7 @@
 #include <libkode/typedef.h>
 #include <libkode/statemachine.h>
 
-#include <kaboutdata.h>
-#include <kapplication.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kcmdlineargs.h>
-#include <kglobal.h>
-#include <kconfig.h>
-#include <kstandarddirs.h>
+#include <QDebug>
 
 #include <QFile>
 #include <QTextStream>
@@ -196,7 +189,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
 
 void ParserCreatorDom::createFileParser( const Schema::Element &element )
 {
-//   kDebug() <<"Creator::createFileParserDom()";
+//   qDebug() <<"Creator::createFileParserDom()";
 
   QString className = Namer::getClassName( element );
 
@@ -209,7 +202,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   }
 
   if ( creator()->useKde() ) {
-    c.addInclude( "kdebug.h" );
+    c.addInclude( "qDebug.h" );
   } else {
     c.addInclude( "QtDebug" );
   } 
@@ -278,7 +271,7 @@ void ParserCreatorDom::createStringParser( const Schema::Element &element )
   }
 
   if ( creator()->useKde() ) {
-    c.addInclude( "kdebug.h" );
+    c.addInclude( "qDebug.h" );
   } else {
     c.addInclude( "QtDebug" );
   } 
