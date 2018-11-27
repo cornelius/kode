@@ -152,16 +152,6 @@ QString Namer::lowerFirst( const QString &str )
   return KODE::Style::lowerFirst( str );
 }
 
-QString Namer::getClassName( const Schema::Attribute &attribute )
-{
-  return getClassName( attribute.name() );
-}
-
-QString Namer::getClassName( const Schema::Element &element )
-{
-  return getClassName( element.name() );
-}
-
 QString Namer::getClassName( const QString &elementName )
 {
   QString name;
@@ -173,16 +163,6 @@ QString Namer::getClassName( const QString &elementName )
   return name;
 }
 
-QString Namer::getAccessor( const Schema::Element &element )
-{
-  return getAccessor( element.name() );
-}
-
-QString Namer::getAccessor( const Schema::Attribute &attribute )
-{
-  return getAccessor( attribute.name() );
-}
-
 QString Namer::getAccessor( const QString &elementName )
 {
   return substituteKeywords( lowerFirst( getClassName( elementName ) ) );
@@ -190,17 +170,7 @@ QString Namer::getAccessor( const QString &elementName )
 
 QString Namer::getListAccessor( const QString &elementName )
 {
-  return QString("%1List").arg( lowerFirst( getClassName( elementName ) ) );
-}
-
-QString Namer::getMutator( const Schema::Element &element )
-{
-  return getMutator( element.name() );
-}
-
-QString Namer::getMutator( const Schema::Attribute &attribute )
-{
-  return getMutator( attribute.name() );
+  return QString("%1List").arg(lowerFirst(getClassName(elementName)));
 }
 
 QString Namer::getMutator( const QString &elementName )
