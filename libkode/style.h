@@ -71,12 +71,6 @@ class KODE_EXPORT Style
     static QString upperFirst( const QString &str );
 
     /**
-     * Returns a new version of @param str converted to a format
-     * which could be compiled
-     */
-    static QString sanitize( const QString &str );
-
-    /**
      * Returns a new version of @param str with the first
      * character be lowercase.
      */
