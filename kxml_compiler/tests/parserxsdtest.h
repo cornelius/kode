@@ -34,6 +34,8 @@ private slots:
     void testTypeParsing();
     void testAttributeParsing();
     void testRelationParsing();
+    void testSequenceOccurenceParsing();
+    void testSequenceElementOccurenceParsing();
 
 private:
     Schema::Document mDoc;

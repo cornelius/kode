@@ -41,7 +41,7 @@ void ParserXsdTest::initTestCase()
 
 void ParserXsdTest::testElementParsing()
 {
-  QCOMPARE( mDoc.elements().size(), 7 );
+  QCOMPARE( mDoc.elements().size(), 10 );
 
   QCOMPARE( mDoc.usedElements().size(), 6 );
 
@@ -72,12 +72,26 @@ void ParserXsdTest::testRelationParsing()
 
   QCOMPARE( mDoc.startElement().attributeRelations().size(), 2 );
 
+  QCOMPARE( mDoc.element( "beers" ).elementRelations().size(), 1 );
+
 //   foreach( Schema::Relation e, doc.startElement().attributeRelations() ) {
 //     if( e.target() == QString("id") )
 //       QCOMPARE( e.isRequired(), true );
 //     else if( e.target() == QString("cc") )
 //       QCOMPARE( e.isRequired(), false );
-//   }
+  //   }
+}
+
+void ParserXsdTest::testSequenceOccurenceParsing()
+{
+  QCOMPARE( mDoc.element("beers").elementRelations().first().minOccurs(), 1 );
+  QCOMPARE( mDoc.element("beers").elementRelations().first().maxOccurs(), (int)Schema::Relation::Unbounded );
+}
+
+void ParserXsdTest::testSequenceElementOccurenceParsing()
+{
+  QCOMPARE( mDoc.element("wines").elementRelations().first().minOccurs(), 1 );
+  QCOMPARE( mDoc.element("wines").elementRelations().first().maxOccurs(), 2 );
 }
 
 QTEST_MAIN(ParserXsdTest)
