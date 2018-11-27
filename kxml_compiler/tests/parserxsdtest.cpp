@@ -43,7 +43,7 @@ void ParserXsdTest::testElementParsing()
 {
   QCOMPARE( mDoc.elements().size(), 10 );
 
-  QCOMPARE( mDoc.usedElements().size(), 5 );
+  QCOMPARE( mDoc.usedElements().size(), 6 );
 
   QCOMPARE( mDoc.startElement().name(), QString("person") );
 }
@@ -62,11 +62,13 @@ void ParserXsdTest::testTypeParsing()
   QCOMPARE( mDoc.element( "firstname" ).type(), Schema::Node::String );
 
   QCOMPARE( mDoc.element( "age" ).type(), Schema::Node::ComplexType );
+
+  QCOMPARE( mDoc.element( "active" ).type(), Schema::Node::Boolean );
 }
 
 void ParserXsdTest::testRelationParsing()
 {
-  QCOMPARE( mDoc.startElement().elementRelations().size(), 4 );
+  QCOMPARE( mDoc.startElement().elementRelations().size(), 5 );
 
   QCOMPARE( mDoc.startElement().attributeRelations().size(), 2 );
 

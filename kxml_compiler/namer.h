@@ -35,14 +35,45 @@ class Namer
     static QString getAccessor( const Schema::Element & );
     static QString getAccessor( const Schema::Attribute & );
     static QString getAccessor( const QString & );
+    static QString getListAccessor( const QString & );
 
     static QString getMutator( const Schema::Element & );
     static QString getMutator( const Schema::Attribute & );
     static QString getMutator( const QString & );
 
+    /**
+     * Replaces the characters which are forbidden
+     * in the C type/varaible names with an underscore (_)
+     * in the  @param name.
+     */
+    static QString removeInvalidCharacters( const QString & name );
+
+    /**
+     * If the @param name is a reserved C/C++/Qt keyword it suffixes
+     * with an underscore (_)
+     */
+    static QString substituteKeywords( const QString &name );
+
+    /**
+     * Returns a new version of @param name converted to a format
+     * which could be compiled to a valid C type or variable name.
+     *
+     * The sanitization includes:
+     * - If the given string is a reserved keyword it will be
+     * suffixed with and underscore (_)
+     * - The non valid characters will be replaced with an
+     * underscore
+     */
+    static QString sanitize( const QString & name );
+
+
+
   protected:
     static QString upperFirst( const QString &str );
     static QString lowerFirst( const QString &str );
+
+  private:
+    static QStringList m_reservedKeywords;
 };
 
 #endif

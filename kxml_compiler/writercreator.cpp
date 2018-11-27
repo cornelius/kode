@@ -20,6 +20,7 @@
 #include "writercreator.h"
 
 #include "namer.h"
+#include "style.h"
 
 #include <QDebug>
 
@@ -123,7 +124,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       foreach( Schema::Relation r, element.elementRelations() ) {
         if ( r.isList() ) {
           conditions.append( "!" +
-            Namer::getAccessor( r.target() ) + "List().isEmpty()" );
+            Namer::getListAccessor( r.target() ) + "().isEmpty()" );
         }
       }
       code += "if ( " + conditions.join( " || " ) + " ) {";
@@ -138,7 +139,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       QString type = Namer::getClassName( r.target() );
       if ( r.isList() ) {
         code += "foreach( " + type + " e, " +
-          Namer::getAccessor( r.target() ) + "List() ) {";
+          Namer::getListAccessor( r.target() ) + "() ) {";
         code.indent();
         code += "e.writeElement( xml );";
         code.unindent();
@@ -185,6 +186,8 @@ QString WriterCreator::dataToStringConverter( const QString &data,
 
   if ( type == Schema::Element::Integer || type == Schema::Element::Decimal ) {
     converter = "QString::number( " + data + " )";
+  } else if ( type == Schema::Element::Boolean ) {
+    converter = data + " ? \"true\" : \"false\"";
   } else if ( type == Schema::Element::Date ) {
     converter = data + ".toString( \"yyyyMMdd\" )";
   } else if ( type == Schema::Element::DateTime ) {
@@ -205,11 +208,13 @@ KODE::Code WriterCreator::createAttributeWriter( const Schema::Element &element 
 
     QString data = Namer::getAccessor( a ) + "()";
     if ( a.type() != Schema::Node::Enumeration ) {
-        code += "    xml.writeAttribute( \"" + a.name() + "\", " +
-          dataToStringConverter( data, a.type() ) + " );";
+      code.addLine("xml.writeAttribute(\"" + a.name() + "\", " +
+          dataToStringConverter( data, a.type() ) + " );");
     } else if ( a.type() == Schema::Node::Enumeration ) {
-       code += "    xml.writeAttribute(\"" + a.name() + "\", " +
-               a.name() + "EnumToString( " + a.name() + "() ));";
+      code.addLine("xml.writeAttribute(\"" + a.name() + "\", " +
+                   KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumToString( " +
+                   KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "() "
+                                                                            "));");
     }
   }
   

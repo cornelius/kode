@@ -273,6 +273,8 @@ ClassDescription Creator::createClassDescription(
         description.addProperty( "double", targetClassName );
       } else if ( targetElement.type() == Schema::Element::Date ) {
         description.addProperty( "QDate", targetClassName );
+      } else if ( targetElement.type() == Schema::Element::Boolean ) {
+        description.addProperty( "bool", targetClassName );
       } else {
         description.addProperty( "QString", targetClassName );
       }
@@ -566,6 +568,8 @@ QString Creator::typeName( Schema::Node::Type type )
     return "int";
   } else if ( type == Schema::Element::Decimal ) {
     return "double";
+  } else if ( type == Schema::Element::Boolean ) {
+    return "bool";
   } else {
     return "QString";
   }
