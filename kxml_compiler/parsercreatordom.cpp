@@ -191,7 +191,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 {
 //   qDebug() <<"Creator::createFileParserDom()";
 
-  QString className = Namer::getClassName( element );
+  QString className = Namer::getClassName( element.name() );
 
   KODE::Class c;
 
@@ -260,7 +260,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
 
 void ParserCreatorDom::createStringParser( const Schema::Element &element )
 {
-  QString className = Namer::getClassName( element );
+  QString className = Namer::getClassName( element.name() );
 
   KODE::Class c;
 

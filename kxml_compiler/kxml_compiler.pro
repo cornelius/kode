@@ -30,7 +30,6 @@ HEADERS += \
     parserxml.h \
     parserrelaxng.h \
     parsercreatordom.h \
-    namer.h \
     creator.h \
     classdescription.h
 
@@ -41,7 +40,6 @@ SOURCES += \
     parserxml.cpp \
     parserrelaxng.cpp \
     parsercreatordom.cpp \
-    namer.cpp \
     kxml_compiler.cpp \
     creator.cpp \
     classdescription.cpp

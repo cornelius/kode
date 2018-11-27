@@ -15,7 +15,8 @@ HEADERS += \
     $$PWD/code.h \
     $$PWD/enum.h \
     $$PWD/file.h \
-    $$PWD/function.h
+    $$PWD/function.h \
+    $$PWD/namer.h
 
 SOURCES += \
     $$PWD/automakefile.cpp \
@@ -30,5 +31,6 @@ SOURCES += \
     $$PWD/code.cpp \
     $$PWD/enum.cpp \
     $$PWD/file.cpp \
-    $$PWD/function.cpp
+    $$PWD/function.cpp \
+    $$PWD/namer.cpp
 
