@@ -170,7 +170,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
     } else if ( name.localName() == QLatin1String("element") ) {
       addGlobalElement( parseElement( context, element, d->mNameSpace, element ) );
     } else if ( name.localName() == QLatin1String("complexType") ) {
-      ComplexType ct = parseComplexType( context, element );
+      ComplexType ct = parseComplexType( context, element, element.attribute("name") );
       d->mComplexTypes.append( ct );
     } else if ( name.localName() == QLatin1String("simpleType") ) {
       SimpleType st = parseSimpleType( context, element );
@@ -252,16 +252,18 @@ Annotation::List Parser::parseAnnotation( ParserContext *,
   return result;
 }
 
-ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement &element )
+ComplexType Parser::parseComplexType( ParserContext *context,
+                                      const QDomElement &complexTypeElement,
+                                      const QString elementName )
 {
   ComplexType newType( d->mNameSpace );
 
-  newType.setName( element.attribute( "name" ) );
+  newType.setName( complexTypeElement.attribute( "name" ) );
 
-  if ( element.hasAttribute( "mixed" ) )
+  if ( complexTypeElement.hasAttribute( "mixed" ) )
     newType.setContentModel( XSDType::MIXED );
 
-  QDomElement childElement = element.firstChildElement();
+  QDomElement childElement = complexTypeElement.firstChildElement();
 
   AttributeGroup::List attributeGroups;
 
@@ -274,7 +276,7 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     } else if ( name.localName() == "choice" ) {
       parseCompositor( context, childElement, newType );
     } else if ( name.localName() == "attribute" ) {
-      newType.addAttribute( parseAttribute( context, childElement ) );
+      newType.addAttribute( parseAttribute( context, childElement, elementName ) );
     } else if ( name.localName() == "attributeGroup" ) {
       AttributeGroup g = parseAttributeGroup( context, childElement );
       attributeGroups.append( g );
@@ -423,7 +425,7 @@ Element Parser::parseElement( ParserContext *context,
     while ( !childElement.isNull() ) {
       QName childName = childElement.tagName();
       if ( childName.localName() == "complexType" ) {
-        ComplexType ct = parseComplexType( context, childElement );
+        ComplexType ct = parseComplexType( context, childElement, element.attribute("name") );
 
         ct.setName( newElement.name() + "Anonymous" );
         d->mComplexTypes.append( ct );
@@ -481,7 +483,8 @@ void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, Comple
 }
 
 Attribute Parser::parseAttribute( ParserContext *context,
-  const QDomElement &element )
+  const QDomElement &element,
+  const QString & elementName)
 {
   Attribute newAttribute;
 
@@ -529,6 +532,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
     if ( childName.localName() == "simpleType" ) {
       SimpleType st = parseSimpleType( context, childElement );
       st.setName( newAttribute.name() );
+      st.setElementName( elementName );
       d->mSimpleTypes.append( st );
 
       newAttribute.setType( st.qualifiedName() );

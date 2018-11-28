@@ -137,9 +137,13 @@ class KSCHEMA_EXPORT Attribute : public Node
     void setDefaultValue(const QString defVal);
 
     QString ref() const;
-  private:
+    void setElementName(const QString &elementName);
+    QString elementName() const;
+
+private:
     bool mRequired;
     QString mDefVal;
+    QString mElementName;
 };
 
 class KSCHEMA_EXPORT Element : public Node
@@ -199,8 +203,8 @@ class KSCHEMA_EXPORT Document : public Annotatable
     void addAttribute( const Attribute & );
     Attribute::List attributes() const;
     bool hasAttribute( const Attribute & );
-    Attribute attribute( const QString &identifier ) const;
-    Attribute attribute( const Relation & ) const;
+    Attribute attribute( const QString &identifier, const QString &parentName = QString("") ) const;
+    Attribute attribute( const Relation &relation, const QString &parentName = QString("") ) const;
 
     Element::List usedElements() const;
 

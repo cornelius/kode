@@ -89,7 +89,7 @@ class SCHEMA_EXPORT Parser
     AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
 
     Annotation::List parseAnnotation( ParserContext *context, const QDomElement& );
-    ComplexType parseComplexType( ParserContext *context, const QDomElement& );
+    ComplexType parseComplexType(ParserContext *context, const QDomElement& complexTypeElement, const QString elementName);
 
     void all( ParserContext *context, const QDomElement&, ComplexType& );
     void parseCompositor( ParserContext *context,
@@ -101,7 +101,7 @@ class SCHEMA_EXPORT Parser
     Element parseElement( ParserContext *context, const QDomElement &,
       const QString &nameSpace, const QDomElement &occurrenceElement );
 
-    Attribute parseAttribute( ParserContext *context, const QDomElement& );
+    Attribute parseAttribute(ParserContext *context, const QDomElement& , const QString &elementName = QString(""));
     void addAny( ParserContext *context, const QDomElement&, ComplexType& );
     void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
 

@@ -107,6 +107,15 @@ class SCHEMA_EXPORT SimpleType : public XSDType
     int facetFractionDigits() const;
     QString facetPattern() const;
 
+    /**
+     * @brief complexTypeName
+     * @return if the specific Simple type belongs to a complex one
+     * it returns the name of that complex type. Otherwise returns an
+     * empty string.
+     */
+    QString elementName() const;
+    void setElementName(const QString &elementName);
+
   private:
     class Private;
     Private *d;

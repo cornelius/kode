@@ -170,6 +170,7 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
       Schema::Attribute a;
       a.setIdentifier( attribute.name() );
       a.setName( attribute.name() );
+      a.setElementName( element.name() );
 
       if ( !attribute.type().isEmpty() ) {
         if ( attribute.type().qname() == "xs:string" ) {
@@ -183,7 +184,8 @@ Schema::Document ParserXsd::parse( const XSD::Parser &parser )
         } else if ( attribute.type().qname() == "xs:date" ) {
           a.setType( Schema::Node::Date );
         } else {
-          XSD::SimpleType simpleType = types.simpleType( attribute.type() );
+          QName name = attribute.type();
+          XSD::SimpleType simpleType = types.simpleType( name, element.name() );
           setType( a, simpleType );
         }
       }

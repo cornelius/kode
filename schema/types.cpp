@@ -131,12 +131,20 @@ ComplexType Types::complexType( const Element &element ) const
   return ComplexType();
 }
 
-SimpleType Types::simpleType( const QName &typeName ) const
+SimpleType Types::simpleType(const QName &simpleTypeName , const QString &elementFilter) const
 {
-  qDebug() << "Types::simpleType()" << typeName.qname();
+  qDebug() << "Types::simpleType()" << simpleTypeName.qname();
+  qDebug() << "  In complextype: " << elementFilter;
   foreach( SimpleType type, d->mSimpleTypes ) {
     qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname();
-    if ( type.qualifiedName() == typeName ) return type;
+    if (elementFilter.isEmpty()) {
+      if ( type.qualifiedName() == simpleTypeName )
+        return type;
+    } else {
+      if ( type.qualifiedName() == simpleTypeName
+           && elementFilter == type.elementName())
+        return type;
+    }
   }
   qDebug() << "not found";
   return SimpleType();
