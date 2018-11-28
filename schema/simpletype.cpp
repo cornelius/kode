@@ -60,6 +60,7 @@ public:
     } FacetValueType;
 
     FacetValueType mFacetValue;
+    QString mElementName;
 };
 
 SimpleType::SimpleType()
@@ -292,6 +293,16 @@ int SimpleType::facetFractionDigits() const
 QString SimpleType::facetPattern() const
 {
   return d->mFacetValue.pattern;
+}
+
+QString SimpleType::elementName() const
+{
+  return d->mElementName;
+}
+
+void SimpleType::setElementName(const QString &elementName)
+{
+  d->mElementName = elementName;
 }
 
 }

@@ -134,7 +134,7 @@ void ParserCreatorDom::createElementParser( KODE::Class &c,
   }
 
   foreach( Schema::Relation r, e.attributeRelations() ) {
-    Schema::Attribute a = creator()->document().attribute( r );
+    Schema::Attribute a = creator()->document().attribute( r, e.name() );
 
     if (a.enumerationValues().count()) {
       QString enumName = Namer::sanitize( a.name() );

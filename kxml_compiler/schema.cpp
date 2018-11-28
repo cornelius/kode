@@ -126,17 +126,24 @@ bool Document::hasAttribute( const Attribute &attribute )
   return false;
 }
 
-Attribute Document::attribute( const QString &identifier ) const
+Attribute Document::attribute(const QString &identifier , const QString &elementName) const
 {
   foreach( Attribute a, mAttributes ) {
-    if ( a.identifier() == identifier ) return a;
+    if ( a.identifier() == identifier ) {
+      if (elementName.isEmpty())
+        return a;
+      else {
+        if (a.elementName() == elementName)
+          return a;
+      }
+    }
   }
   return Attribute();
 }
 
-Attribute Document::attribute( const Relation &relation ) const
+Attribute Document::attribute(const Relation &relation , const QString &parentName) const
 {
-  return attribute( relation.target() );
+  return attribute( relation.target(), parentName );
 }
 
 bool Document::isEmpty() const
@@ -465,4 +472,14 @@ void Attribute::setDefaultValue(const QString defVal)
 QString Attribute::ref() const
 {
   return '@' + name();
+}
+
+void Attribute::setElementName(const QString &parentName)
+{
+  mElementName = parentName;
+}
+
+QString Attribute::elementName() const
+{
+  return mElementName;
 }

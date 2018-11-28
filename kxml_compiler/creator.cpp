@@ -233,7 +233,7 @@ ClassDescription Creator::createClassDescription(
   ClassDescription description( Namer::getClassName( element.name() ) );
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
-    Schema::Attribute a = mDocument.attribute( r );
+    Schema::Attribute a = mDocument.attribute( r, element.name() );
     if ( a.enumerationValues().count() ) {
       if (!description.hasEnum(a.name())) {
         description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
@@ -300,7 +300,6 @@ ClassDescription Creator::createClassDescription(
 void Creator::createClass( const Schema::Element &element )
 {
   QString className = Namer::getClassName( element.name() );
-
   if ( mVerbose ) {
     qDebug() <<"Creator::createClass()" << element.identifier() << className;
     foreach( Schema::Relation r, element.elementRelations() ) {
