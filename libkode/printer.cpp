@@ -43,6 +43,8 @@ class Printer::Private
     }
 
     void addLabel( Code& code, const QString& label );
+    void changeSection(Code &code, const QString& section, bool print = true );
+
     QString classHeader( const Class &classObject, bool publicMembers, bool nestedClass = false );
     QString classImplementation( const Class &classObject, bool nestedClass = false );
     void addFunctionHeaders( Code& code,
@@ -82,6 +84,17 @@ QString Printer::Private::formatType( const QString& type ) const
       s += ' ';
   }
   return s;
+}
+
+void Printer::Private::changeSection( Code& code, const QString &section, bool print )
+{
+  static QString currentSection;
+  if (section != currentSection) {
+    currentSection = section;
+    if (print) {
+      addLabel(code, section);
+    }
+  }
 }
 
 QString Printer::Private::classHeader( const Class &classObject, bool publicMembers, bool nestedClass )
@@ -155,11 +168,12 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code += declMacro;
     code.newLine();
   }
+  changeSection(code, "private:", false);
 
   Class::List nestedClasses = classObject.nestedClasses();
   // Generate nestedclasses
   if ( !classObject.nestedClasses().isEmpty() ) {
-    addLabel( code, "public:" );
+    changeSection( code, "public:" );
 
     Class::List::ConstIterator it, itEnd = nestedClasses.constEnd();
     for ( it = nestedClasses.constBegin(); it != itEnd; ++it ) {
@@ -171,7 +185,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   Typedef::List typedefs = classObject.typedefs();
   if ( typedefs.count() > 0 ) {
-    addLabel( code, "public:" );
+    changeSection( code, "public:" );
     if ( mLabelsDefineIndent )
       code.indent();
 
@@ -186,7 +200,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   Enum::List enums = classObject.enums();
   if ( enums.count() > 0 ) {
-    addLabel( code, "public:" );
+    changeSection( code, "public:" );
     if ( mLabelsDefineIndent )
       code.indent();
 
@@ -234,9 +248,9 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     }
 
     if ( publicMembers )
-      addLabel( code, "public:" );
+      changeSection( code, "public:" );
     else if ( !hasPrivateFunc || hasPrivateSlot )
-      addLabel( code, "private:" );
+      changeSection( code, "private:" );
 
     if (mLabelsDefineIndent)
       code.indent();
@@ -476,7 +490,7 @@ void Printer::Private::addFunctionHeaders( Code& code,
     Function f = *it;
     if ( f.access() == access ) {
       if ( !hasAccess ) {
-        addLabel( code, f.accessAsString() + ':' );
+        changeSection( code, f.accessAsString() + ':');
         hasAccess = true;
       }
       if ( mLabelsDefineIndent )
