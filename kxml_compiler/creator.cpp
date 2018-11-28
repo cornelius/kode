@@ -567,7 +567,6 @@ QString Creator::typeName( Schema::Node::Type type )
   }
 }
 
-
 ParserCreator::ParserCreator( Creator *c )
   : mCreator( c )
 {
