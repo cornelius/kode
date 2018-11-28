@@ -21,24 +21,15 @@
 #ifndef NAMER_H
 #define NAMER_H
 
-#include "schema.h"
 
 #include <QString>
 
 class Namer
 {
   public:
-    static QString getClassName( const Schema::Element & );
-    static QString getClassName( const Schema::Attribute & );
     static QString getClassName( const QString & );
-
-    static QString getAccessor( const Schema::Element & );
-    static QString getAccessor( const Schema::Attribute & );
     static QString getAccessor( const QString & );
     static QString getListAccessor( const QString & );
-
-    static QString getMutator( const Schema::Element & );
-    static QString getMutator( const Schema::Attribute & );
     static QString getMutator( const QString & );
 
     /**

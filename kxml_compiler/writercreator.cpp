@@ -124,7 +124,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
       foreach( Schema::Relation r, element.elementRelations() ) {
         if ( r.isList() ) {
           conditions.append( "!" +
-            Namer::getListAccessor( r.target() ) + "().isEmpty()" );
+            Namer::getListAccessor( r.target()) + "().isEmpty()" );
         }
       }
       code += "if ( " + conditions.join( " || " ) + " ) {";
@@ -146,7 +146,7 @@ void WriterCreator::createElementWriter( KODE::Class &c,
         code += '}';
       } else {
         Schema::Element e = mDocument.element( r );
-        QString accessor = Namer::getAccessor( e ) + "()";
+        QString accessor = Namer::getAccessor( e.name() ) + "()";
         QString data = dataToStringConverter( accessor, e.type() );
         if ( e.text() && !e.hasAttributeRelations() ) {
           if ( e.type() == Schema::Element::String ) {
@@ -206,7 +206,7 @@ KODE::Code WriterCreator::createAttributeWriter( const Schema::Element &element 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
 
-    QString data = Namer::getAccessor( a ) + "()";
+    QString data = Namer::getAccessor( a.name() ) + "()";
     if ( a.type() != Schema::Node::Enumeration ) {
       code.addLine("xml.writeAttribute(\"" + a.name() + "\", " +
           dataToStringConverter( data, a.type() ) + " );");

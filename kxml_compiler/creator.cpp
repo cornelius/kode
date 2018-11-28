@@ -230,7 +230,7 @@ void Creator::createCrudFunctions( KODE::Class &c, const QString &type )
 ClassDescription Creator::createClassDescription(
   const Schema::Element &element )
 {
-  ClassDescription description( Namer::getClassName( element ) );
+  ClassDescription description( Namer::getClassName( element.name() ) );
 
   foreach( Schema::Relation r, element.attributeRelations() ) {
     Schema::Attribute a = mDocument.attribute( r );
@@ -253,7 +253,7 @@ ClassDescription Creator::createClassDescription(
   foreach( Schema::Relation r, element.elementRelations() ) {
     Schema::Element targetElement = mDocument.element( r );
 
-    QString targetClassName = Namer::getClassName( targetElement );
+    QString targetClassName = Namer::getClassName( targetElement.name() );
 
     if ( targetElement.text() && !targetElement.hasAttributeRelations() &&
          !r.isList() ) {
@@ -299,7 +299,7 @@ ClassDescription Creator::createClassDescription(
 
 void Creator::createClass( const Schema::Element &element )
 {
-  QString className = Namer::getClassName( element  );
+  QString className = Namer::getClassName( element.name() );
 
   if ( mVerbose ) {
     qDebug() <<"Creator::createClass()" << element.identifier() << className;
@@ -436,7 +436,7 @@ void Creator::setDtd( const QString &dtd )
 void Creator::createFileWriter( const Schema::Element &element )
 {
   WriterCreator writerCreator( mFile, mDocument, mDtd );
-  writerCreator.createFileWriter( Namer::getClassName( element ),
+  writerCreator.createFileWriter( Namer::getClassName( element.name() ),
     errorStream() );
 }
 
