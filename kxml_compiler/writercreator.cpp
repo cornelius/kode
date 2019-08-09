@@ -184,7 +184,9 @@ QString WriterCreator::dataToStringConverter( const QString &data,
 {
   QString converter;
 
-  if ( type == Schema::Element::Integer || type == Schema::Element::Decimal ) {
+  if ( type == Schema::Element::Integer
+       || type == Schema::Element::Integer
+       || type == Schema::Element::Decimal ) {
     converter = "QString::number( " + data + " )";
   } else if ( type == Schema::Element::Boolean ) {
     converter = data + " ? \"true\" : \"false\"";
