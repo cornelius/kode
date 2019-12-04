@@ -121,6 +121,14 @@ int main( int argc, char **argv )
               QCoreApplication::translate("main", "Create functions for dealing with data suitable for CRUD model"));
   cmdLine.addOption(createCRUDFunctionsOption);
 
+  QCommandLineOption generateQEnums(
+              "generate-qenums",
+              QCoreApplication::translate("main", "The enumerations in the generated code will be registered "
+                                                  "to the meta object system with Q_ENUM macro.\n"
+                                                  "Please note that a Q_GADGET macro will be generated to your "
+                                                  "classes private section."));
+  cmdLine.addOption(generateQEnums);
+
   if (!cmdLine.parse(QCoreApplication::arguments())) {
     qDebug() << cmdLine.errorText();
     return -1;
@@ -223,6 +231,7 @@ int main( int argc, char **argv )
   c.setVerbose( verbose );
   c.setUseKde( cmdLine.isSet( "use-kde" ) );
   c.setCreateCrudFunctions( cmdLine.isSet( "create-crud-functions" ) );
+  c.setUseQEnums(cmdLine.isSet("generate-qenums"));
   if ( cmdLine.isSet( "namespace" ) ) {
     c.file().setNameSpace( cmdLine.value( "namespace" ) );
   }
@@ -265,7 +274,6 @@ int main( int argc, char **argv )
   printer.setGenerator( QCoreApplication::applicationName() );
   printer.setOutputDirectory( baseDir );
   printer.setSourceFile( cmdLine.positionalArguments().at(0) );
-
   c.printFiles( printer );
 
   if ( verbose ) {

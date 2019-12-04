@@ -52,7 +52,7 @@ class KODE_EXPORT Enum
      * @param combinable If true the integer associations will be a power of two,
      *                   so the enum flags will be combinable.
      */
-    Enum( const QString &name, const QStringList &enums, bool combinable = false );
+    Enum( const QString &name, const QStringList &enums, bool isQEnum = false, bool combinable = false);
 
     /**
      * Destroys the enum.

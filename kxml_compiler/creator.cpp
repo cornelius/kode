@@ -236,7 +236,10 @@ ClassDescription Creator::createClassDescription(
     Schema::Attribute a = mDocument.attribute( r, element.name() );
     if ( a.enumerationValues().count() ) {
       if (!description.hasEnum(a.name())) {
-        description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
+        description.addEnum(KODE::Enum(Namer::getClassName(
+                                       a.name() ) + "Enum",
+                                       a.enumerationValues(),
+                                       mUseQEnums));
       }
       description.addProperty( Namer::getClassName( a.name() ) + "Enum",
                                Namer::getClassName( a.name() ) );
@@ -384,6 +387,9 @@ void Creator::createClass( const Schema::Element &element )
   foreach(KODE::Enum e, description.enums() ) {
     c.addEnum(e);
   }
+
+  if (mUseQEnums)
+    c.setQGadget(c.enums().count());
 
   createElementParser( c, element );
   
@@ -569,6 +575,16 @@ QString Creator::typeName( Schema::Node::Type type )
   } else {
     return "QString";
   }
+}
+
+void Creator::setUseQEnums(bool useQEnums)
+{
+  mUseQEnums = useQEnums;
+}
+
+bool Creator::useQEnums() const
+{
+  return mUseQEnums;
 }
 
 ParserCreator::ParserCreator( Creator *c )

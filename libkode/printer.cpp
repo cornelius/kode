@@ -164,7 +164,13 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   if ( classObject.isQObject() ) {
     code += "Q_OBJECT";
     code.newLine();
+  } else {
+    if ( classObject.isQGadget() ) {
+      code += "Q_GADGET";
+      code.newLine();
+    }
   }
+
   Q_FOREACH( const QString& declMacro, classObject.declarationMacros() ) {
     code += declMacro;
     code.newLine();

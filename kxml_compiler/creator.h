@@ -106,7 +106,10 @@ class Creator
     QString errorStream() const;
     QString debugStream() const;
 
-  protected:
+    void setUseQEnums(bool useQEnums);
+    bool useQEnums() const;
+
+protected:
     void setExternalClassNames();
 
     void createElementParser( KODE::Class &c, const Schema::Element &e );
@@ -130,6 +133,7 @@ class Creator
     bool mVerbose;
     bool mUseKde;
     bool mCreateCrudFunctions;
+    bool mUseQEnums = false;
     QString mExportDeclaration;
 };
 
