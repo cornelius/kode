@@ -66,3 +66,10 @@ CMakeLists.txt.user*
 *automoc.cpp*
 *.creator.user*
 *.shell
+
+#kde show hidden files marker
+.directory
+mocs*
+kxml_compiler/kxml_compiler*
+
+# test generated codes
