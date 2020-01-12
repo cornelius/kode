@@ -61,6 +61,7 @@ class Printer::Private
     QString mGenerator;
     QString mOutputDirectory;
     QString mSourceFile;
+    bool mVerbose = false;
 };
 
 void Printer::Private::addLabel( Code& code, const QString& label )
@@ -631,6 +632,11 @@ QString Printer::functionSignature( const Function &function,
   return s;
 }
 
+void Printer::setVerbose(bool verbose)
+{
+  d->mVerbose = verbose;
+}
+
 QString Printer::creationWarning() const
 {
   // Create warning about generated file
@@ -812,19 +818,8 @@ void Printer::printHeader( const File &file )
   if ( !d->mOutputDirectory.isEmpty() )
     filename.prepend( d->mOutputDirectory + '/' );
 
-//  KSaveFile::simpleBackupFile( filename, QString(), ".backup" );
-
   QFile header( filename );
-  if ( !header.open( QIODevice::WriteOnly ) ) {
-    qWarning( "Can't open '%s' for writing.", qPrintable( filename ) );
-    return;
-  }
-
-  QTextStream h( &header );
-
-  h << out.text();
-
-  header.close();
+  printCodeIntoFile(out, &header);
 }
 
 void Printer::printImplementation( const File &file, bool createHeaderInclude )
@@ -956,16 +951,47 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
     filename.prepend( d->mOutputDirectory + '/' );
 
   QFile implementation( filename );
-  if ( !implementation.open( QIODevice::WriteOnly ) ) {
-    qWarning( "Can't open '%s' for writing.", qPrintable( filename ) );
-    return;
+  printCodeIntoFile(out, &implementation);
+}
+
+void Printer::printCodeIntoFile(const Code &code, QFile *file)
+{
+  QString outText = code.text();
+  bool identical = true;
+  QTextStream fileStream( file );
+  if (QFile::exists(file->fileName())) {
+    if ( !file->open( QIODevice::ReadOnly ) ) {
+      qWarning( "Can't open '%s' for reading.", qPrintable( file->fileName() ) );
+      return;
+    }
+    QTextStream codeStream( &outText );
+    QString fileLine, outLine;
+    while (fileStream.readLineInto(&fileLine) && codeStream.readLineInto(&outLine)) {
+      if (fileLine != outLine) {
+        identical = false;
+        break;
+      }
+    }
+    identical = fileStream.atEnd() && codeStream.atEnd();
+    file->close();
+  } else {
+    identical = false;
   }
 
-  QTextStream h( &implementation );
+  if (!identical) {
+    if ( !file->open( QIODevice::WriteOnly ) ) {
+      qWarning( "Can't open '%s' for writing.", qPrintable( file->fileName() ) );
+      return;
+    }
 
-  h << out.text();
+    fileStream << outText;
 
-  implementation.close();
+    file->close();
+  } else {
+    if (d->mVerbose) {
+      qDebug("Skip generating %s because it's content did not changed",  qPrintable( file->fileName() ));
+    }
+  }
 }
 
 #if 0 // TODO: port to cmake

@@ -27,6 +27,8 @@
 
 #include "../common/kode_export.h"
 
+#include <QFile>
+
 namespace KODE {
 
 /**
@@ -118,6 +120,16 @@ class KODE_EXPORT Printer
     void printImplementation( const File &file, bool createHeaderInclude = true );
 
     /**
+     * @brief printCodeIntoFile
+     * Writes the string passed through the code parameter to the file refernced
+     * by the file parameter in the case if it differs from the content of the file pointed by the
+     * file parameter.
+     * @param code reference to a Code object which contents needs to be printed
+     * @param file the target file in unopened state with filename set
+     */
+    void printCodeIntoFile (const Code &code, QFile *file);
+
+    /**
      * Prints a automake file as defined by @param autoMakefile.
      */
     //void printAutoMakefile( const AutoMakefile &autoMakefile );
@@ -132,6 +144,12 @@ class KODE_EXPORT Printer
     QString functionSignature( const Function &function,
                                const QString &className = QString(),
                                bool forImplementation = false );
+
+    /**
+     * @brief setVerbose enable/disable outputting verbose logs
+     * @param verbose
+     */
+    void setVerbose(bool verbose);
 
   protected:
     /**
