@@ -133,6 +133,12 @@ class KODE_EXPORT Printer
                                const QString &className = QString(),
                                bool forImplementation = false );
 
+    /**
+     * @brief setVerbose enable/disable outputting verbose logs
+     * @param verbose
+     */
+    void setVerbose( bool verbose );
+
   protected:
     /**
      * Returns the creation warning.

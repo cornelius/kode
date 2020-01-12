@@ -20,11 +20,12 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <QFile>
-#include <QStringList>
-#include <QTextStream>
-#include <QFileInfo>
 #include <QDebug>
+#include <QFile>
+#include <QFileInfo>
+#include <QStringList>
+#include <QTextCodec>
+#include <QTextStream>
 
 #include "printer.h"
 
@@ -61,6 +62,17 @@ class Printer::Private
     QString mGenerator;
     QString mOutputDirectory;
     QString mSourceFile;
+    bool mVerbose = false;
+
+    /**
+     * @brief printCodeIntoFile
+     * Writes the string passed through the code parameter to the file referenced
+     * by the file parameter in the case if it differs from the content of the file pointed by the
+     * file parameter.
+     * @param code reference to a Code object which contents needs to be printed
+     * @param file the target file in unopened state with filename set
+     */
+    void printCodeIntoFile( const Code &code, QFile *file );
 };
 
 void Printer::Private::addLabel( Code& code, const QString& label )
@@ -631,6 +643,11 @@ QString Printer::functionSignature( const Function &function,
   return s;
 }
 
+void Printer::setVerbose( bool verbose )
+{
+  d->mVerbose = verbose;
+}
+
 QString Printer::creationWarning() const
 {
   // Create warning about generated file
@@ -812,19 +829,8 @@ void Printer::printHeader( const File &file )
   if ( !d->mOutputDirectory.isEmpty() )
     filename.prepend( d->mOutputDirectory + '/' );
 
-//  KSaveFile::simpleBackupFile( filename, QString(), ".backup" );
-
   QFile header( filename );
-  if ( !header.open( QIODevice::WriteOnly ) ) {
-    qWarning( "Can't open '%s' for writing.", qPrintable( filename ) );
-    return;
-  }
-
-  QTextStream h( &header );
-
-  h << out.text();
-
-  header.close();
+  d->printCodeIntoFile( out, &header );
 }
 
 void Printer::printImplementation( const File &file, bool createHeaderInclude )
@@ -956,16 +962,54 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
     filename.prepend( d->mOutputDirectory + '/' );
 
   QFile implementation( filename );
-  if ( !implementation.open( QIODevice::WriteOnly ) ) {
-    qWarning( "Can't open '%s' for writing.", qPrintable( filename ) );
-    return;
+  d->printCodeIntoFile( out, &implementation );
+}
+
+void Printer::Private::printCodeIntoFile( const Code &code, QFile *file )
+{
+  const QString outText = code.text();
+  bool identical = true;
+  if ( file->exists() ) {
+    if ( !file->open( QIODevice::ReadOnly ) ) {
+      qWarning( "Can't open '%s' for reading.", qPrintable( file->fileName() ) );
+      return;
+    }
+
+    QTextStream fileReaderStream( file );
+    fileReaderStream.setCodec( QTextCodec::codecForName("UTF-8") );
+
+    QTextStream codeStream( outText.toUtf8() );
+    QString fileLine, outLine;
+    while ( fileReaderStream.readLineInto( &fileLine ) && codeStream.readLineInto(&outLine) ) {
+      if ( fileLine != outLine ) {
+        identical = false;
+        break;
+      }
+    }
+
+    if ( identical )
+      identical = fileReaderStream.atEnd() && codeStream.atEnd();
+    file->close();
+  } else {
+    identical = false;
   }
 
-  QTextStream h( &implementation );
+  if ( !identical ) {
+    if ( !file->open( QIODevice::WriteOnly ) ) {
+      qWarning( "Can't open '%s' for writing.", qPrintable( file->fileName() ) );
+      return;
+    }
 
-  h << out.text();
+    QTextStream fileWriterStream( file );
+    fileWriterStream.setCodec( QTextCodec::codecForName("UTF-8") );
+    fileWriterStream << outText;
 
-  implementation.close();
+    file->close();
+  } else {
+    if ( mVerbose ) {
+      qDebug("Skip generating %s because its content did not change", qPrintable( file->fileName() ));
+    }
+  }
 }
 
 #if 0 // TODO: port to cmake
