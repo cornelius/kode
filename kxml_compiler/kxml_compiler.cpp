@@ -260,6 +260,7 @@ int main( int argc, char **argv )
   c.setFilename( baseName );
 
   KODE::Printer printer;
+  printer.setVerbose(verbose);
   printer.setCreationWarning( true );
   printer.setGenerator( QCoreApplication::applicationName() );
   printer.setOutputDirectory( baseDir );
