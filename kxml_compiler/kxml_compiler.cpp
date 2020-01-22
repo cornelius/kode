@@ -122,12 +122,12 @@ int main( int argc, char **argv )
   cmdLine.addOption(createCRUDFunctionsOption);
 
   if (!cmdLine.parse(QCoreApplication::arguments())) {
-    qDebug() << cmdLine.errorText();
+    qCritical() << cmdLine.errorText();
     return -1;
   }
 
   if (cmdLine.positionalArguments().count() < 1) {
-    qDebug() << "No filename argument passed";
+    qCritical() << "No filename argument passed";
     return -1;
   }
 
@@ -142,7 +142,7 @@ int main( int argc, char **argv )
 
   QFile schemaFile( schemaFilename );
   if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
-    qDebug() <<"Unable to open '" << schemaFilename <<"'";
+    qCritical() <<"Unable to open '" << schemaFilename <<"'";
     return 1;
   }
 
@@ -160,7 +160,7 @@ int main( int argc, char **argv )
     schemaDocument = p.parse( schemaFile );
 
     if ( schemaDocument.isEmpty() ) {
-      qDebug() <<"Error parsing schema '" << schemaFilename <<"'";
+      qCritical() <<"Error parsing schema '" << schemaFilename <<"'";
       return 1;
     }
   } else if ( cmdLine.isSet( rngOption ) || fi.suffix() == "rng" ) {
@@ -176,7 +176,7 @@ int main( int argc, char **argv )
     p.setVerbose( verbose );
     RNG::Element *start = p.parse( doc.documentElement() );
     if ( !start ) {
-      qDebug() <<"Could not find start element";
+      qCritical() <<"Could not find start element";
       return 1;
     }
 
@@ -201,7 +201,7 @@ int main( int argc, char **argv )
     schemaParser.setVerbose( verbose );
     schemaDocument = schemaParser.parse( schemaFile );
   } else {
-    qDebug() <<"Unable to determine schema type.";
+    qCritical() <<"Unable to determine schema type.";
     return 1;
   }
 
