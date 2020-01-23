@@ -149,7 +149,7 @@ class KODE_EXPORT Printer
      * @brief setVerbose enable/disable outputting verbose logs
      * @param verbose
      */
-    void setVerbose(bool verbose);
+    void setVerbose( bool verbose );
 
   protected:
     /**

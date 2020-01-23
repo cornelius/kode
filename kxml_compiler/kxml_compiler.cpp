@@ -127,15 +127,34 @@ int main( int argc, char **argv )
                                                   "to the meta object system with Q_ENUM macro.\n"
                                                   "Please note that a Q_GADGET macro will be generated to your "
                                                   "classes private section."));
-  cmdLine.addOption(generateQEnums);
+  cmdLine.addOption( generateQEnums );
+  
+  QCommandLineOption dontCreateWriteFunctionsOption(
+        "dont-create-write-functions",
+        QCoreApplication::translate( "main", "Do not create XML generating methods to the generated classes\n"
+                                     "(useful for applications which require onyl an XML parser code)." ) );
+  cmdLine.addOption( dontCreateWriteFunctionsOption );
+
+  QCommandLineOption dontCreateParseFunctionsOption(
+        "dont-create-parse-functions",
+        QCoreApplication::translate( "main", "Do not create XML parsing methods to the generated classes\n"
+                                             "(useful for applications which require XML writing code)" ) );
+  cmdLine.addOption( dontCreateParseFunctionsOption );
 
   if (!cmdLine.parse(QCoreApplication::arguments())) {
-    qDebug() << cmdLine.errorText();
+    qCritical() << cmdLine.errorText();
+    return -1;
+  }
+
+  if ( cmdLine.isSet(dontCreateParseFunctionsOption) && cmdLine.isSet(dontCreateWriteFunctionsOption) ) {
+    qCritical() << QCoreApplication::translate( "main",
+                                                "It is not allowed to pass both dont-create-parse-functions\n"
+                                                "and dont-create-write-functions together" );
     return -1;
   }
 
   if (cmdLine.positionalArguments().count() < 1) {
-    qDebug() << "No filename argument passed";
+    qCritical() << "No filename argument passed";
     return -1;
   }
 
@@ -150,7 +169,7 @@ int main( int argc, char **argv )
 
   QFile schemaFile( schemaFilename );
   if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
-    qDebug() <<"Unable to open '" << schemaFilename <<"'";
+    qCritical() <<"Unable to open '" << schemaFilename <<"'";
     return 1;
   }
 
@@ -168,7 +187,7 @@ int main( int argc, char **argv )
     schemaDocument = p.parse( schemaFile );
 
     if ( schemaDocument.isEmpty() ) {
-      qDebug() <<"Error parsing schema '" << schemaFilename <<"'";
+      qCritical() <<"Error parsing schema '" << schemaFilename <<"'";
       return 1;
     }
   } else if ( cmdLine.isSet( rngOption ) || fi.suffix() == "rng" ) {
@@ -184,7 +203,7 @@ int main( int argc, char **argv )
     p.setVerbose( verbose );
     RNG::Element *start = p.parse( doc.documentElement() );
     if ( !start ) {
-      qDebug() <<"Could not find start element";
+      qCritical() <<"Could not find start element";
       return 1;
     }
 
@@ -209,7 +228,7 @@ int main( int argc, char **argv )
     schemaParser.setVerbose( verbose );
     schemaDocument = schemaParser.parse( schemaFile );
   } else {
-    qDebug() <<"Unable to determine schema type.";
+    qCritical() <<"Unable to determine schema type.";
     return 1;
   }
 
@@ -232,6 +251,8 @@ int main( int argc, char **argv )
   c.setUseKde( cmdLine.isSet( "use-kde" ) );
   c.setCreateCrudFunctions( cmdLine.isSet( "create-crud-functions" ) );
   c.setUseQEnums(cmdLine.isSet("generate-qenums"));
+  c.setCreateParserFunctions( !cmdLine.isSet(dontCreateParseFunctionsOption) );
+  c.setCreateWriterFunctions( !cmdLine.isSet(dontCreateWriteFunctionsOption) );
   if ( cmdLine.isSet( "namespace" ) ) {
     c.file().setNameSpace( cmdLine.value( "namespace" ) );
   }
