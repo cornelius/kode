@@ -121,8 +121,27 @@ int main( int argc, char **argv )
               QCoreApplication::translate("main", "Create functions for dealing with data suitable for CRUD model"));
   cmdLine.addOption(createCRUDFunctionsOption);
 
+  QCommandLineOption dontCreateWriteFunctionsOption(
+        "dont-create-write-functions",
+        QCoreApplication::translate( "main", "Do not create XML generating methods to the generated classes\n"
+                                     "(useful for applications which require onyl an XML parser code)." ) );
+  cmdLine.addOption( dontCreateWriteFunctionsOption );
+
+  QCommandLineOption dontCreateParseFunctionsOption(
+        "dont-create-parse-functions",
+        QCoreApplication::translate( "main", "Do not create XML parsing methods to the generated classes\n"
+                                             "(useful for applications which require XML writing code)" ) );
+  cmdLine.addOption( dontCreateParseFunctionsOption );
+
   if (!cmdLine.parse(QCoreApplication::arguments())) {
     qCritical() << cmdLine.errorText();
+    return -1;
+  }
+
+  if ( cmdLine.isSet(dontCreateParseFunctionsOption) && cmdLine.isSet(dontCreateWriteFunctionsOption) ) {
+    qCritical() << QCoreApplication::translate( "main",
+                                                "It is not allowed to pass both dont-create-parse-functions\n"
+                                                "and dont-create-write-functions together" );
     return -1;
   }
 
@@ -223,6 +242,8 @@ int main( int argc, char **argv )
   c.setVerbose( verbose );
   c.setUseKde( cmdLine.isSet( "use-kde" ) );
   c.setCreateCrudFunctions( cmdLine.isSet( "create-crud-functions" ) );
+  c.setCreateParserFunctions( !cmdLine.isSet(dontCreateParseFunctionsOption) );
+  c.setCreateWriterFunctions( !cmdLine.isSet(dontCreateWriteFunctionsOption) );
   if ( cmdLine.isSet( "namespace" ) ) {
     c.file().setNameSpace( cmdLine.value( "namespace" ) );
   }
