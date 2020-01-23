@@ -205,7 +205,7 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
     c.addInclude( "qDebug.h" );
   } else {
     c.addInclude( "QtDebug" );
-  } 
+  }
 
   KODE::Function parser( "parseFile", className );
   parser.setStatic( true );
@@ -256,6 +256,9 @@ void ParserCreatorDom::createFileParser( const Schema::Element &element )
   } else {
     creator()->file().insertClass( c );
   }
+
+  if ( creator()->useQEnums() )
+    c.setQGadget(c.enums().count());
 }
 
 void ParserCreatorDom::createStringParser( const Schema::Element &element )

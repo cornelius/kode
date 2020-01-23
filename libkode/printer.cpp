@@ -175,7 +175,13 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   if ( classObject.isQObject() ) {
     code += "Q_OBJECT";
     code.newLine();
+  } else {
+    if ( classObject.isQGadget() ) {
+      code += "Q_GADGET";
+      code.newLine();
+    }
   }
+
   Q_FOREACH( const QString& declMacro, classObject.declarationMacros() ) {
     code += declMacro;
     code.newLine();
@@ -1003,7 +1009,6 @@ void Printer::Private::printCodeIntoFile( const Code &code, QFile *file )
     QTextStream fileWriterStream( file );
     fileWriterStream.setCodec( QTextCodec::codecForName("UTF-8") );
     fileWriterStream << outText;
-
     file->close();
   } else {
     if ( mVerbose ) {
