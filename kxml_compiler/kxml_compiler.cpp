@@ -121,6 +121,15 @@ int main( int argc, char **argv )
               QCoreApplication::translate("main", "Create functions for dealing with data suitable for CRUD model"));
   cmdLine.addOption(createCRUDFunctionsOption);
 
+  QCommandLineOption outputFileName(
+              QStringLiteral( "output-filename" ),
+              QCoreApplication::translate( "main", "Set the filename of the output files.\n"
+                                                  "If this options is set the basename of the generated files will be the <output-filename> \n"
+                                                  "instead of the basename of the source XML/XSD/RNG file.)" ),
+              QStringLiteral( "output-filename" ),
+              QString());
+  cmdLine.addOption( outputFileName );
+
   QCommandLineOption generateQEnums(
               "generate-qenums",
               QCoreApplication::translate("main", "The enumerations in the generated code will be registered "
@@ -163,9 +172,13 @@ int main( int argc, char **argv )
 
   QString schemaFilename = cmdLine.positionalArguments().at(0);
   QFileInfo fi(schemaFilename);
-  QString baseName = fi.baseName();
-  baseName.remove( "_" );
-
+  QString baseName;
+  if ( cmdLine.isSet( outputFileName ) ) {
+    baseName = cmdLine.value( outputFileName );
+  } else {
+    baseName = fi.baseName();
+    baseName.remove( "_" );
+  }
 
   QFile schemaFile( schemaFilename );
   if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
