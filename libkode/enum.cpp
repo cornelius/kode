@@ -39,6 +39,7 @@ class Enum::Private
     QString mName;
     QStringList mEnums;
     bool mCombinable;
+    bool mIsQEnum = false;
 };
 
 Enum::Enum()
@@ -52,11 +53,12 @@ Enum::Enum( const Enum &other )
   *d = *other.d;
 }
 
-Enum::Enum( const QString &name, const QStringList &enums, bool combinable )
+Enum::Enum(const QString &name, const QStringList &enums, bool isQEnum, bool combinable )
   : d( new Private )
 {
   d->mName = name;
   d->mEnums = enums;
+  d->mIsQEnum = isQEnum;
   d->mCombinable = combinable;
 }
 
@@ -118,6 +120,9 @@ QString Enum::declaration() const
 
   retval += ", " + baseName + "_Invalid";
   retval += " };";
+
+  if (d->mIsQEnum)
+    retval += QString(" Q_ENUM(%1)").arg(Namer::getClassName(name()));
 
   return retval;
 }

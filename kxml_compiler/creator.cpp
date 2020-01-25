@@ -88,6 +88,16 @@ void Creator::setCreateCrudFunctions( bool enabled )
   mCreateCrudFunctions = enabled;
 }
 
+void Creator::setCreateWriterFunctions( bool createWriter )
+{
+  mCreateWriterFunctions = createWriter;
+}
+
+void Creator::setCreateParserFunctions( bool createParser )
+{
+  mCreateParserFunctions = createParser;
+}
+
 void Creator::setLicense( const KODE::License &l )
 {
   mFile.setLicense( l );
@@ -236,7 +246,10 @@ ClassDescription Creator::createClassDescription(
     Schema::Attribute a = mDocument.attribute( r, element.name() );
     if ( a.enumerationValues().count() ) {
       if (!description.hasEnum(a.name())) {
-        description.addEnum(KODE::Enum(Namer::getClassName( a.name() ) + "Enum", a.enumerationValues()));
+        description.addEnum(KODE::Enum(Namer::getClassName(
+                                       a.name() ) + "Enum",
+                                       a.enumerationValues(),
+                                       mUseQEnums));
       }
       description.addProperty( Namer::getClassName( a.name() ) + "Enum",
                                Namer::getClassName( a.name() ) );
@@ -385,11 +398,16 @@ void Creator::createClass( const Schema::Element &element )
     c.addEnum(e);
   }
 
-  createElementParser( c, element );
-  
-  WriterCreator writerCreator( mFile, mDocument, mDtd );
-  writerCreator.createElementWriter( c, element );
+  if (mUseQEnums)
+    c.setQGadget(c.enums().count());
 
+  if ( mCreateParserFunctions )
+    createElementParser( c, element );
+  
+  if ( mCreateWriterFunctions ) {
+    WriterCreator writerCreator( mFile, mDocument, mDtd );
+    writerCreator.createElementWriter( c, element );
+  }
   mFile.insertClass( c );
 }
 
@@ -539,9 +557,11 @@ void Creator::create()
 {
   Schema::Element startElement = mDocument.startElement();
   setExternalClassPrefix( KODE::Style::upperFirst( startElement.name() ) );
-  createFileParser( startElement );
+  if ( mCreateParserFunctions )
+    createFileParser( startElement );
 //  setDtd( schemaFilename.replace( "rng", "dtd" ) );
-  createFileWriter( startElement );
+  if ( mCreateWriterFunctions )
+    createFileWriter( startElement );
 
   createListTypedefs();
 }
@@ -569,6 +589,16 @@ QString Creator::typeName( Schema::Node::Type type )
   } else {
     return "QString";
   }
+}
+
+void Creator::setUseQEnums(bool useQEnums)
+{
+  mUseQEnums = useQEnums;
+}
+
+bool Creator::useQEnums() const
+{
+  return mUseQEnums;
 }
 
 ParserCreator::ParserCreator( Creator *c )

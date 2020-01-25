@@ -54,6 +54,7 @@ class Class::Private
     Class::List mNestedClasses;
     QString mParentClassName;
     QStringList mDeclMacros;
+    bool mIsQGadget = false;
 };
 
 Class::Class()
@@ -316,6 +317,16 @@ bool Class::isQObject() const
   }
 
   return false;
+}
+
+bool Class::isQGadget() const
+{
+  return d->mIsQGadget;
+}
+
+void Class::setQGadget(const bool isQGadget)
+{
+  d->mIsQGadget = isQGadget;
 }
 
 void Class::setDocs( const QString &str )

@@ -293,6 +293,18 @@ class KODE_EXPORT Class
     bool isQObject() const;
 
     /**
+     * Returns whether the class should have a Q_GADGET macro
+     */
+    bool isQGadget() const;
+
+    /**
+     * Sets whether the Q_GADGET macro should be genrated at the first private
+     * section. Please note if isQObject is set only the Q_OBJECT macro will
+     * be genrated since adding Q_GADGET is useless this case.
+     */
+    void setQGadget(const bool isQGadget);
+
+    /**
      * Adds a nested class to this class.
      */
     void addNestedClass( const Class &nestedClass );

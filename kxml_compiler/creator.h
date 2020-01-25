@@ -65,6 +65,22 @@ class Creator
 
     void setCreateCrudFunctions( bool createCrud );
 
+    /**
+     * @brief setCreateWriterFunctions
+     * This method can be used to enable/disable the generation of the XML
+     * generating codes.
+     * @param createWriter
+     */
+    void setCreateWriterFunctions( bool createWriter = true );
+
+    /**
+     * @brief setCreateParserFunctions
+     * This method can be used to enable/disable the generation of the XML
+     * parsing codes.
+     * @param createParser
+     */
+    void setCreateParserFunctions( bool createParser = true );
+
     void setLicense( const KODE::License & );
 
     void setExportDeclaration( const QString &name );
@@ -106,7 +122,10 @@ class Creator
     QString errorStream() const;
     QString debugStream() const;
 
-  protected:
+    void setUseQEnums(bool useQEnums);
+    bool useQEnums() const;
+
+protected:
     void setExternalClassNames();
 
     void createElementParser( KODE::Class &c, const Schema::Element &e );
@@ -130,6 +149,9 @@ class Creator
     bool mVerbose;
     bool mUseKde;
     bool mCreateCrudFunctions;
+    bool mUseQEnums = false;
+    bool mCreateWriterFunctions = true;
+    bool mCreateParserFunctions = true;
     QString mExportDeclaration;
 };
 
