@@ -24,8 +24,8 @@
 
 class KLineEdit : public QLineEdit
 {
-  public:
-    KLineEdit( QWidget *parent ) : QLineEdit( parent ) {}
+public:
+    KLineEdit(QWidget *parent) : QLineEdit(parent) {}
 };
 
 #endif

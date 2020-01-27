@@ -26,156 +26,152 @@
 
 using namespace KWSDL;
 
-Operation::Operation()
+Operation::Operation() {}
+
+Operation::Operation(const QString &nameSpace) : Element(nameSpace)
 {
+    mInput.setNameSpace(nameSpace);
+    mOutput.setNameSpace(nameSpace);
 }
 
-Operation::Operation( const QString &nameSpace )
-  : Element( nameSpace )
-{
-  mInput.setNameSpace( nameSpace );
-  mOutput.setNameSpace( nameSpace );
-}
+Operation::~Operation() {}
 
-Operation::~Operation()
+void Operation::setOperationType(OperationType type)
 {
-}
-
-void Operation::setOperationType( OperationType type )
-{
-  mType = type;
+    mType = type;
 }
 
 Operation::OperationType Operation::operationType() const
 {
-  return mType;
+    return mType;
 }
 
-void Operation::setName( const QString &name )
+void Operation::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Operation::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Operation::setInput( const Param &input )
+void Operation::setInput(const Param &input)
 {
-  mInput = input;
+    mInput = input;
 }
 
 Param Operation::input() const
 {
-  return mInput;
+    return mInput;
 }
 
-void Operation::setOutput( const Param &output )
+void Operation::setOutput(const Param &output)
 {
-  mOutput = output;
+    mOutput = output;
 }
 
 Param Operation::output() const
 {
-  return mOutput;
+    return mOutput;
 }
 
-void Operation::setFaults( const Fault::List &faults )
+void Operation::setFaults(const Fault::List &faults)
 {
-  mFaults = faults;
+    mFaults = faults;
 }
 
 Fault::List Operation::faults() const
 {
-  return mFaults;
+    return mFaults;
 }
 
-void Operation::loadXML( ParserContext *context, const QDomElement &element )
+void Operation::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mName = element.attribute( "name" );
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Operation: 'name' required" );
+    mName = element.attribute("name");
+    if (mName.isEmpty())
+        context->messageHandler()->warning("Operation: 'name' required");
 
-  QDomNodeList inputElements = element.elementsByTagName( "input" );
-  QDomNodeList outputElements = element.elementsByTagName( "output" );
+    QDomNodeList inputElements = element.elementsByTagName("input");
+    QDomNodeList outputElements = element.elementsByTagName("output");
 
-  if ( inputElements.count() == 1 && outputElements.count() == 0 ) {
-    mType = OneWayOperation;
-    mInput.loadXML( context, inputElements.item( 0 ).toElement() );
-  } else if ( inputElements.count() == 0 && outputElements.count() == 1 ) {
-    mType = NotificationOperation;
-    mOutput.loadXML( context, outputElements.item( 0 ).toElement() );
-  } else {
-    bool first = true;
-    QDomElement child = element.firstChildElement();
-    while ( !child.isNull() ) {
-      QName tagName = child.tagName();
-      if ( tagName.localName() == "input" ) {
-        if ( first ) {
-          first = false;
-          mType = RequestResponseOperation;
+    if (inputElements.count() == 1 && outputElements.count() == 0) {
+        mType = OneWayOperation;
+        mInput.loadXML(context, inputElements.item(0).toElement());
+    } else if (inputElements.count() == 0 && outputElements.count() == 1) {
+        mType = NotificationOperation;
+        mOutput.loadXML(context, outputElements.item(0).toElement());
+    } else {
+        bool first = true;
+        QDomElement child = element.firstChildElement();
+        while (!child.isNull()) {
+            QName tagName = child.tagName();
+            if (tagName.localName() == "input") {
+                if (first) {
+                    first = false;
+                    mType = RequestResponseOperation;
+                }
+                mInput.loadXML(context, child);
+            } else if (tagName.localName() == "output") {
+                if (first) {
+                    first = false;
+                    mType = SolicitResponseOperation;
+                }
+                mOutput.loadXML(context, child);
+            } else if (tagName.localName() == "fault") {
+                Fault fault(nameSpace());
+                fault.loadXML(context, child);
+                mFaults.append(fault);
+            } else if (tagName.localName() == "documentation") {
+                QString text = child.firstChild().toText().data().trimmed();
+                setDocumentation(text);
+            } else {
+                context->messageHandler()->warning(
+                        QString("Operation: unknown tag %1").arg(child.tagName()));
+            }
+
+            child = child.nextSiblingElement();
         }
-        mInput.loadXML( context, child );
-      } else if ( tagName.localName() == "output" ) {
-        if ( first ) {
-          first = false;
-          mType = SolicitResponseOperation;
-        }
-        mOutput.loadXML( context, child );
-      } else if ( tagName.localName() == "fault" ) {
-        Fault fault( nameSpace() );
-        fault.loadXML( context, child );
-        mFaults.append( fault );
-      } else if ( tagName.localName() == "documentation") {
-        QString text = child.firstChild().toText().data().trimmed();
-        setDocumentation(text);
-      } else {
-        context->messageHandler()->warning( QString( "Operation: unknown tag %1" ).arg( child.tagName() ) );
-      }
-
-      child = child.nextSiblingElement();
     }
-  }
 }
 
-void Operation::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void Operation::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  QDomElement element = document.createElement( "operation" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("operation");
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
-  else
-    context->messageHandler()->warning( "Operation: 'name' required" );
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
+    else
+        context->messageHandler()->warning("Operation: 'name' required");
 
-  switch ( mType ) {
+    switch (mType) {
     case OneWayOperation:
-      mInput.saveXML( context, "input", document, element );
-      break;
+        mInput.saveXML(context, "input", document, element);
+        break;
     case SolicitResponseOperation:
-      mOutput.saveXML( context, "output", document, element );
-      mInput.saveXML( context, "input", document, element );
-      {
-        Fault::List::ConstIterator it( mFaults.begin() );
-        const Fault::List::ConstIterator endIt( mFaults.end() );
-        for ( ; it != endIt; ++it )
-          (*it).saveXML( context, document, element );
-      }
-      break;
+        mOutput.saveXML(context, "output", document, element);
+        mInput.saveXML(context, "input", document, element);
+        {
+            Fault::List::ConstIterator it(mFaults.begin());
+            const Fault::List::ConstIterator endIt(mFaults.end());
+            for (; it != endIt; ++it)
+                (*it).saveXML(context, document, element);
+        }
+        break;
     case NotificationOperation:
-      mOutput.saveXML( context, "output", document, element );
-      break;
+        mOutput.saveXML(context, "output", document, element);
+        break;
     case RequestResponseOperation:
     default:
-      mInput.saveXML( context, "input", document, element );
-      mOutput.saveXML( context, "output", document, element );
-      {
-        Fault::List::ConstIterator it( mFaults.begin() );
-        const Fault::List::ConstIterator endIt( mFaults.end() );
-        for ( ; it != endIt; ++it )
-          (*it).saveXML( context, document, element );
-      }
-      break;
-  }
+        mInput.saveXML(context, "input", document, element);
+        mOutput.saveXML(context, "output", document, element);
+        {
+            Fault::List::ConstIterator it(mFaults.begin());
+            const Fault::List::ConstIterator endIt(mFaults.end());
+            for (; it != endIt; ++it)
+                (*it).saveXML(context, document, element);
+        }
+        break;
+    }
 }

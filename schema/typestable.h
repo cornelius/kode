@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -33,45 +33,44 @@ namespace XSD {
 
 class TypesTable
 {
-  public:
+public:
     TypesTable();
-    TypesTable( const TypesTable &other );
+    TypesTable(const TypesTable &other);
     ~TypesTable();
 
-    TypesTable &operator=( const TypesTable &other );
+    TypesTable &operator=(const TypesTable &other);
 
     void clear();
 
-    int addType( XSDType *type );
-    int addExtType( XSDType *type, int id );
+    int addType(XSDType *type);
+    int addExtType(XSDType *type, int id);
 
-    int typeId( const QName &name, bool create = false );
+    int typeId(const QName &name, bool create = false);
 
-    QString typeName( int id ) const;
+    QString typeName(int id) const;
 
-    int addExternalTypeId( const QName &name, XSDType *type );
+    int addExternalTypeId(const QName &name, XSDType *type);
 
     int numExtRefs() const;
-    QName extRefName( int index ) const;
-    int extRefType( int index ) const;
+    QName extRefName(int index) const;
+    int extRefType(int index) const;
 
-    void resolveForwardElementRefs( const QString &name, Element &element );
-    void resolveForwardAttributeRefs( const QString &name, Attribute &attribute );
+    void resolveForwardElementRefs(const QString &name, Element &element);
+    void resolveForwardAttributeRefs(const QString &name, Attribute &attribute);
 
-    XSDType *typePtr( int id ) const;
+    XSDType *typePtr(int id) const;
 
     int numTypes() const;
 
     bool detectUndefinedTypes();
 
-    void setTargetNamespace( const QString &nameSpace );
+    void setTargetNamespace(const QString &nameSpace);
     QString targetNamespace() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

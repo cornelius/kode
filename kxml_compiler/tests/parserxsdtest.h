@@ -25,7 +25,7 @@
 
 #include <QtTest/QtTest>
 
-class ParserXsdTest: public QObject
+class ParserXsdTest : public QObject
 {
     Q_OBJECT
 private slots:

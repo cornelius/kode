@@ -33,7 +33,7 @@ namespace KODE {
  */
 class KODE_EXPORT Typedef
 {
-  public:
+public:
     typedef QList<Typedef> List;
 
     /**
@@ -44,13 +44,13 @@ class KODE_EXPORT Typedef
     /**
      * Creates a new typedef from @param other.
      */
-    Typedef( const Typedef &other );
+    Typedef(const Typedef &other);
 
     /**
      * Creates a new typedef with the given @param type and
      * @param alias.
      */
-    Typedef( const QString &type, const QString &alias );
+    Typedef(const QString &type, const QString &alias);
 
     /**
      * Destroys the typedef.
@@ -60,18 +60,17 @@ class KODE_EXPORT Typedef
     /**
      * Assignment operator.
      */
-    Typedef& operator=( const Typedef &other );
+    Typedef &operator=(const Typedef &other);
 
     /**
      * Returns the textual presentation of the typedef.
      */
     QString declaration() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

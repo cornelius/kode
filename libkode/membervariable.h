@@ -38,7 +38,7 @@ namespace KODE {
  */
 class KODE_EXPORT MemberVariable : public Variable
 {
-  public:
+public:
     typedef QList<MemberVariable> List;
 
     /**
@@ -49,7 +49,7 @@ class KODE_EXPORT MemberVariable : public Variable
     /**
      * Creates a new member variable from @param other.
      */
-    MemberVariable( const MemberVariable &other );
+    MemberVariable(const MemberVariable &other);
 
     /**
      * Creates a new member variable of the given @param type
@@ -57,8 +57,7 @@ class KODE_EXPORT MemberVariable : public Variable
      *
      * @param isStatic If true the variable is marked as static.
      */
-    MemberVariable( const QString &name, const QString &type,
-                    bool isStatic = false );
+    MemberVariable(const QString &name, const QString &type, bool isStatic = false);
 
     /**
      * Destroys the member variable.
@@ -68,13 +67,12 @@ class KODE_EXPORT MemberVariable : public Variable
     /**
      * Assignment operator.
      */
-    MemberVariable& operator=( const MemberVariable &other );
+    MemberVariable &operator=(const MemberVariable &other);
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

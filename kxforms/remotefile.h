@@ -35,18 +35,18 @@ class QWidget;
 class RemoteFile : public QObject
 {
     Q_OBJECT
-  public:
-    RemoteFile( QWidget *parent = 0 );
+public:
+    RemoteFile(QWidget *parent = 0);
 
-    void get( const KUrl & );
-    void put( const KUrl &, const QString &data );
-    void put( const QString &data );
+    void get(const KUrl &);
+    void put(const KUrl &, const QString &data);
+    void put(const QString &data);
 
     QString data() const;
 
     QString putResult() const;
 
-    void setUrl( const KUrl & );
+    void setUrl(const KUrl &);
     KUrl url() const;
 
     bool isValid() const;
@@ -54,24 +54,24 @@ class RemoteFile : public QObject
     bool isLoading() const;
     bool isLoaded() const;
 
-  signals:
-    void resultGet( bool ok );
-    void resultPut( bool ok );
+signals:
+    void resultGet(bool ok);
+    void resultPut(bool ok);
 
-  protected slots:
-    void slotJobResultGet( KJob *job );
-    void slotJobDataGet( KIO::Job *job, const QByteArray &data );
+protected slots:
+    void slotJobResultGet(KJob *job);
+    void slotJobDataGet(KIO::Job *job, const QByteArray &data);
 
-    void slotDataReq( KIO::Job *, QByteArray &data );
-    void slotJobDataPut( KIO::Job *, const QByteArray &data );
-    void slotJobResultPut( KJob *job );
+    void slotDataReq(KIO::Job *, QByteArray &data);
+    void slotJobDataPut(KIO::Job *, const QByteArray &data);
+    void slotJobResultPut(KJob *job);
 
-  private:
+private:
     QWidget *mParent;
-  
+
     KUrl mUrl;
     QString mData;
-    
+
     QString mPutData;
     QString mPutResult;
 

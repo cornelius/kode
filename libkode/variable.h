@@ -32,7 +32,7 @@ namespace KODE {
  */
 class KODE_EXPORT Variable
 {
-  public:
+public:
     typedef QList<Variable> List;
 
     /**
@@ -43,7 +43,7 @@ class KODE_EXPORT Variable
     /**
      * Creates a new variable from @param other.
      */
-    Variable( const Variable &other );
+    Variable(const Variable &other);
 
     /**
      * Creates a new variable of the given @param type and with the
@@ -51,7 +51,7 @@ class KODE_EXPORT Variable
      *
      * @param isStatic If true the variable is marked as static.
      */
-    Variable( const QString &name, const QString &type, bool isStatic = false );
+    Variable(const QString &name, const QString &type, bool isStatic = false);
 
     /**
      * Destroys the variable.
@@ -61,12 +61,12 @@ class KODE_EXPORT Variable
     /**
      * Assignment operator.
      */
-    Variable& operator=( const Variable &other );
+    Variable &operator=(const Variable &other);
 
     /**
      * Sets the @param type of the variable.
      */
-    void setType( const QString &type );
+    void setType(const QString &type);
 
     /**
      * Returns the type of the variable.
@@ -76,7 +76,7 @@ class KODE_EXPORT Variable
     /**
      * Sets the @param name of the variable.
      */
-    void setName( const QString &name );
+    void setName(const QString &name);
 
     /**
      * Returns the name of the variable.
@@ -86,7 +86,7 @@ class KODE_EXPORT Variable
     /**
      * Sets whether the variable is static.
      */
-    void setStatic( bool isStatic );
+    void setStatic(bool isStatic);
 
     /**
      * Returns whether the variable is static.
@@ -96,18 +96,17 @@ class KODE_EXPORT Variable
     /**
      * Sets the initializer of the variable.
      */
-    void setInitializer( const QString &initializer );
+    void setInitializer(const QString &initializer);
 
     /**
      * Returns the initializer of the variable.
      */
     QString initializer() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

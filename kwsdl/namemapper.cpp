@@ -25,21 +25,26 @@ using namespace KWSDL;
 
 NameMapper::NameMapper()
 {
-  mKeyWords << "delete" << "class" << "default" << "new" << "not" << "return";
+    mKeyWords << "delete"
+              << "class"
+              << "default"
+              << "new"
+              << "not"
+              << "return";
 }
 
-QString NameMapper::escape( const QString &name ) const
+QString NameMapper::escape(const QString &name) const
 {
-  if ( mKeyWords.contains( name ) )
-    return '_' + name;
-  else
-    return name;
+    if (mKeyWords.contains(name))
+        return '_' + name;
+    else
+        return name;
 }
 
-QString NameMapper::unescape( const QString &name ) const
+QString NameMapper::unescape(const QString &name) const
 {
-  if ( name.startsWith( "_" ) )
-    return name.mid( 1 );
-  else
-    return name;
+    if (name.startsWith("_"))
+        return name.mid(1);
+    else
+        return name;
 }

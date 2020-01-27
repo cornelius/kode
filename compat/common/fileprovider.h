@@ -24,10 +24,10 @@
 
 class FileProvider
 {
-  public:
+public:
     FileProvider() {}
 
-    bool get( const QString &, QString & ) { return false; }
+    bool get(const QString &, QString &) { return false; }
     void cleanUp() {}
 };
 

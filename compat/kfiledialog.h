@@ -32,15 +32,11 @@ class QWidget;
 
 class KFileDialog
 {
-  public:
-    static KUrl getOpenUrl(const KUrl& = KUrl(),
-			   const QString& filter= QString(),
-			   QWidget *parent= 0,
-			   const QString& caption = QString());
-    static KUrl getSaveUrl(const KUrl& startDir= KUrl(),
-			   const QString& filter= QString(),
-			   QWidget *parent= 0,
-			   const QString& caption = QString());
+public:
+    static KUrl getOpenUrl(const KUrl & = KUrl(), const QString &filter = QString(),
+                           QWidget *parent = 0, const QString &caption = QString());
+    static KUrl getSaveUrl(const KUrl &startDir = KUrl(), const QString &filter = QString(),
+                           QWidget *parent = 0, const QString &caption = QString());
 };
 
 #endif

@@ -24,35 +24,33 @@
 #include <QList>
 #include <QDomElement>
 
-
 namespace KXForms {
 
 class Manager;
 
 class Form
 {
-  public:
+public:
     typedef QList<Form *> List;
 
-    Form( Manager * );
+    Form(Manager *);
 
-    void setRef( const QString & );
+    void setRef(const QString &);
     QString ref() const;
 
     bool isValid() const;
 
-    void setElement( const QDomElement & );
+    void setElement(const QDomElement &);
     QDomElement element() const;
 
     QString label() const;
 
-  private:
+private:
     Manager *mManager;
 
     QString mRef;
     QDomElement mElement;
 };
-
 }
 
 #endif

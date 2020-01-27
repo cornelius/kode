@@ -31,22 +31,22 @@ class Transport;
 
 class Dispatcher : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     Dispatcher();
     ~Dispatcher();
 
-    void setWSDL( const KWSDL::WSDL &wsdl );
+    void setWSDL(const KWSDL::WSDL &wsdl);
 
     void run();
 
-  private slots:
+private slots:
     void nextMessage();
-    void result( const QString &xml );
-    void error( const QString &errorMsg );
+    void result(const QString &xml);
+    void error(const QString &errorMsg);
 
-  private:
+private:
     KWSDL::WSDL mWSDL;
 
     QString mCurrentMessage;

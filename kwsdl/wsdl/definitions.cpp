@@ -27,183 +27,180 @@
 
 using namespace KWSDL;
 
-Definitions::Definitions()
-{
-}
+Definitions::Definitions() {}
 
-Definitions::~Definitions()
-{
-}
+Definitions::~Definitions() {}
 
-void Definitions::setName( const QString &name )
+void Definitions::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Definitions::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Definitions::setTargetNamespace( const QString &targetNamespace )
+void Definitions::setTargetNamespace(const QString &targetNamespace)
 {
-  mTargetNamespace = targetNamespace;
+    mTargetNamespace = targetNamespace;
 
-  mType.setNameSpace( mTargetNamespace );
-  mService.setNameSpace( mTargetNamespace );
+    mType.setNameSpace(mTargetNamespace);
+    mService.setNameSpace(mTargetNamespace);
 }
 
 QString Definitions::targetNamespace() const
 {
-  return mTargetNamespace;
+    return mTargetNamespace;
 }
 
-void Definitions::setBindings( const Binding::List &bindings )
+void Definitions::setBindings(const Binding::List &bindings)
 {
-  mBindings = bindings;
+    mBindings = bindings;
 }
 
 Binding::List Definitions::bindings() const
 {
-  return mBindings;
+    return mBindings;
 }
 
-void Definitions::setImports( const Import::List &imports )
+void Definitions::setImports(const Import::List &imports)
 {
-  mImports = imports;
+    mImports = imports;
 }
 
 Import::List Definitions::imports() const
 {
-  return mImports;
+    return mImports;
 }
 
-void Definitions::setMessages( const Message::List &messages )
+void Definitions::setMessages(const Message::List &messages)
 {
-  mMessages = messages;
+    mMessages = messages;
 }
 
 Message::List Definitions::messages() const
 {
-  return mMessages;
+    return mMessages;
 }
 
-void Definitions::setPortTypes( const PortType::List &portTypes )
+void Definitions::setPortTypes(const PortType::List &portTypes)
 {
-  mPortTypes = portTypes;
+    mPortTypes = portTypes;
 }
 
 PortType::List Definitions::portTypes() const
 {
-  return mPortTypes;
+    return mPortTypes;
 }
 
-void Definitions::setService( const Service &service )
+void Definitions::setService(const Service &service)
 {
-  mService = service;
+    mService = service;
 }
 
 Service Definitions::service() const
 {
-  return mService;
+    return mService;
 }
 
-void Definitions::setType( const Type &type )
+void Definitions::setType(const Type &type)
 {
-  mType = type;
+    mType = type;
 }
 
 Type Definitions::type() const
 {
-  return mType;
+    return mType;
 }
 
-void Definitions::loadXML( ParserContext *context, const QDomElement &element )
+void Definitions::loadXML(ParserContext *context, const QDomElement &element)
 {
-  setTargetNamespace( element.attribute( "targetNamespace" ) );
-  mName = element.attribute( "name" );
+    setTargetNamespace(element.attribute("targetNamespace"));
+    mName = element.attribute("name");
 
-  QDomNamedNodeMap attributes = element.attributes();
-  for ( int i = 0; i < attributes.count(); ++i ) {
-    QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().startsWith( "xmlns:" ) ) {
-      QString prefix = attribute.name().mid( 6 );
-      context->namespaceManager()->setPrefix( prefix, attribute.value() );
-    }
-  }
-
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    QName tagName = child.tagName();
-    if ( tagName.localName() == "import" ) {
-      Import import( mTargetNamespace );
-      import.loadXML( context, child );
-      mImports.append( import );
-    } else if ( tagName.localName() == "types" ) {
-      mType.loadXML( context, child );
-    } else if ( tagName.localName() == "message" ) {
-      Message message( mTargetNamespace );
-      message.loadXML( context, child );
-      mMessages.append( message );
-    } else if ( tagName.localName() == "portType" ) {
-      PortType portType( mTargetNamespace );
-      portType.loadXML( context, child );
-      mPortTypes.append( portType );
-    } else if ( tagName.localName() == "binding" ) {
-      Binding binding( mTargetNamespace );
-      binding.loadXML( context, child );
-      mBindings.append( binding );
-    } else if ( tagName.localName() == "service" ) {
-      mService.loadXML( context, &mBindings, child );
-    } else if ( tagName.localName() == "documentation" ) {
-      // ignore documentation for now
-    } else {
-      context->messageHandler()->warning( QString( "Definitions: unknown tag %1" ).arg( child.tagName() ) );
+    QDomNamedNodeMap attributes = element.attributes();
+    for (int i = 0; i < attributes.count(); ++i) {
+        QDomAttr attribute = attributes.item(i).toAttr();
+        if (attribute.name().startsWith("xmlns:")) {
+            QString prefix = attribute.name().mid(6);
+            context->namespaceManager()->setPrefix(prefix, attribute.value());
+        }
     }
 
-    child = child.nextSiblingElement();
-  }
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        QName tagName = child.tagName();
+        if (tagName.localName() == "import") {
+            Import import(mTargetNamespace);
+            import.loadXML(context, child);
+            mImports.append(import);
+        } else if (tagName.localName() == "types") {
+            mType.loadXML(context, child);
+        } else if (tagName.localName() == "message") {
+            Message message(mTargetNamespace);
+            message.loadXML(context, child);
+            mMessages.append(message);
+        } else if (tagName.localName() == "portType") {
+            PortType portType(mTargetNamespace);
+            portType.loadXML(context, child);
+            mPortTypes.append(portType);
+        } else if (tagName.localName() == "binding") {
+            Binding binding(mTargetNamespace);
+            binding.loadXML(context, child);
+            mBindings.append(binding);
+        } else if (tagName.localName() == "service") {
+            mService.loadXML(context, &mBindings, child);
+        } else if (tagName.localName() == "documentation") {
+            // ignore documentation for now
+        } else {
+            context->messageHandler()->warning(
+                    QString("Definitions: unknown tag %1").arg(child.tagName()));
+        }
+
+        child = child.nextSiblingElement();
+    }
 }
 
-void Definitions::saveXML( ParserContext *context, QDomDocument &document ) const
+void Definitions::saveXML(ParserContext *context, QDomDocument &document) const
 {
-  QDomElement element = document.createElement( "definitions" );
-  document.appendChild( element );
+    QDomElement element = document.createElement("definitions");
+    document.appendChild(element);
 
-  if ( !mTargetNamespace.isEmpty() )
-    element.setAttribute( "targetNamespace", mTargetNamespace );
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    if (!mTargetNamespace.isEmpty())
+        element.setAttribute("targetNamespace", mTargetNamespace);
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
 
-  {
-    Import::List::ConstIterator it( mImports.begin() );
-    const Import::List::ConstIterator endIt( mImports.end() );
-    for ( ; it != endIt; ++it )
-      (*it).saveXML( context, document, element );
-  }
+    {
+        Import::List::ConstIterator it(mImports.begin());
+        const Import::List::ConstIterator endIt(mImports.end());
+        for (; it != endIt; ++it)
+            (*it).saveXML(context, document, element);
+    }
 
-  mType.saveXML( context, document, element );
+    mType.saveXML(context, document, element);
 
-  {
-    Message::List::ConstIterator it( mMessages.begin() );
-    const Message::List::ConstIterator endIt( mMessages.end() );
-    for ( ; it != endIt; ++it )
-      (*it).saveXML( context, document, element );
-  }
+    {
+        Message::List::ConstIterator it(mMessages.begin());
+        const Message::List::ConstIterator endIt(mMessages.end());
+        for (; it != endIt; ++it)
+            (*it).saveXML(context, document, element);
+    }
 
-  {
-    PortType::List::ConstIterator it( mPortTypes.begin() );
-    const PortType::List::ConstIterator endIt( mPortTypes.end() );
-    for ( ; it != endIt; ++it )
-      (*it).saveXML( context, document, element );
-  }
+    {
+        PortType::List::ConstIterator it(mPortTypes.begin());
+        const PortType::List::ConstIterator endIt(mPortTypes.end());
+        for (; it != endIt; ++it)
+            (*it).saveXML(context, document, element);
+    }
 
-  {
-    Binding::List::ConstIterator it( mBindings.begin() );
-    const Binding::List::ConstIterator endIt( mBindings.end() );
-    for ( ; it != endIt; ++it )
-      (*it).saveXML( context, document, element );
-  }
+    {
+        Binding::List::ConstIterator it(mBindings.begin());
+        const Binding::List::ConstIterator endIt(mBindings.end());
+        for (; it != endIt; ++it)
+            (*it).saveXML(context, document, element);
+    }
 
-  mService.saveXML( context, &mBindings, document, element );
+    mService.saveXML(context, &mBindings, document, element);
 }

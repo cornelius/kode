@@ -32,41 +32,39 @@
 
 using namespace KXForms;
 
-AppearanceAction::AppearanceAction( Editor *e)
-: EditorAction( e )
+AppearanceAction::AppearanceAction(Editor *e) : EditorAction(e) {}
+
+AppearanceAction::~AppearanceAction() {}
+
+void AppearanceAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-AppearanceAction::~AppearanceAction()
-{
-}
+    QString newStyle;
+    bool ok;
+    QStringList list;
+    list << "minimal"
+         << "compact"
+         << "full";
 
-void AppearanceAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    int currentPosition = 0;
+    if (e->properties())
+        currentPosition = e->properties()->appearance;
 
-  QString newStyle;
-  bool ok;
-  QStringList list;
-  list << "minimal" << "compact" << "full";
+    newStyle = KInputDialog::getItem(i18n("Select the appearance style"),
+                                     i18n("Appearance style for %1:", e->ref().toString()), list,
+                                     currentPosition, false, &ok);
 
-  int currentPosition = 0;
-  if( e->properties() )
-     currentPosition = e->properties()->appearance;
+    if (ok) {
+        kDebug() << "New Style:" << newStyle;
+        Hint h;
+        h.setRef(e->id());
+        h.setValue(Hint::Appearance, newStyle);
+        emit hintGenerated(h);
+    }
 
-  newStyle = KInputDialog::getItem( i18n("Select the appearance style"), i18n("Appearance style for %1:", e->ref().toString()),
-      list, currentPosition, false, &ok );
-
-  if( ok ) {
-    kDebug() <<"New Style:" << newStyle;
-    Hint h;
-    h.setRef( e->id() );
-    h.setValue( Hint::Appearance, newStyle );
-    emit hintGenerated( h );
-  }
-
-  editor()->finishEdit();
+    editor()->finishEdit();
 }
 
 #include "appearanceaction.moc"

@@ -26,74 +26,67 @@
 
 using namespace KWSDL;
 
-Part::Part()
-{
-}
+Part::Part() {}
 
-Part::Part( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+Part::Part(const QString &nameSpace) : Element(nameSpace) {}
 
-Part::~Part()
-{
-}
+Part::~Part() {}
 
-void Part::setName( const QString &name )
+void Part::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Part::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Part::setType( const QName &type )
+void Part::setType(const QName &type)
 {
-  mType = type;
+    mType = type;
 }
 
 QName Part::type() const
 {
-  return mType;
+    return mType;
 }
 
-void Part::setElement( const QName &element )
+void Part::setElement(const QName &element)
 {
-  mElement = element;
+    mElement = element;
 }
 
 QName Part::element() const
 {
-  return mElement;
+    return mElement;
 }
 
-void Part::loadXML( ParserContext *context, const QDomElement &element )
+void Part::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mName = element.attribute( "name" );
-  mType = element.attribute( "type" );
-  if ( !mType.prefix().isEmpty() )
-    mType.setNameSpace( context->namespaceManager()->uri( mType.prefix() ) );
+    mName = element.attribute("name");
+    mType = element.attribute("type");
+    if (!mType.prefix().isEmpty())
+        mType.setNameSpace(context->namespaceManager()->uri(mType.prefix()));
 
-  mElement = element.attribute( "element" );
-  if ( !mElement.prefix().isEmpty() )
-    mElement.setNameSpace( context->namespaceManager()->uri( mElement.prefix() ) );
+    mElement = element.attribute("element");
+    if (!mElement.prefix().isEmpty())
+        mElement.setNameSpace(context->namespaceManager()->uri(mElement.prefix()));
 }
 
-void Part::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void Part::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  Q_UNUSED( context );
+    Q_UNUSED(context);
 
-  QDomElement element = document.createElement( "part" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("part");
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
 
-  if ( !mType.isEmpty() )
-    element.setAttribute( "type", mType.qname() );
+    if (!mType.isEmpty())
+        element.setAttribute("type", mType.qname());
 
-  if ( !mElement.isEmpty() )
-    element.setAttribute( "element", mElement.qname() );
+    if (!mElement.isEmpty())
+        element.setAttribute("element", mElement.qname());
 }

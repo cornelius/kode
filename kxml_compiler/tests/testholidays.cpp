@@ -31,59 +31,56 @@
 
 #include <iostream>
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
-  QCoreApplication app( argc, argv);
-  QCoreApplication::setApplicationName("testholidays");
-  QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication app(argc, argv);
+    QCoreApplication::setApplicationName("testholidays");
+    QCoreApplication::setApplicationVersion("0.1");
 
-  QCommandLineParser cmdLine;
-  cmdLine.setApplicationDescription("Dump holidays to stdout");
-  cmdLine.addHelpOption();
-  cmdLine.addVersionOption();
+    QCommandLineParser cmdLine;
+    cmdLine.setApplicationDescription("Dump holidays to stdout");
+    cmdLine.addHelpOption();
+    cmdLine.addVersionOption();
 
-  QCommandLineOption holidayfile(
-              "holidayfile",
-              QCoreApplication::translate("main", "Name of holiday XML file"));
-  cmdLine.addOption(holidayfile);
+    QCommandLineOption holidayfile("holidayfile",
+                                   QCoreApplication::translate("main", "Name of holiday XML file"));
+    cmdLine.addOption(holidayfile);
 
-  QCommandLineOption output(
-              "holidayfile",
-              QCoreApplication::translate("main", "Name of output XML file"));
-  cmdLine.addOption(output);
+    QCommandLineOption output("holidayfile",
+                              QCoreApplication::translate("main", "Name of output XML file"));
+    cmdLine.addOption(output);
 
-  if (!cmdLine.parse(QCoreApplication::arguments())) {
-    qDebug() << cmdLine.errorText();
-    return -1;
-  }
-
-  if ( cmdLine.positionalArguments().count() < 1 ||
-       cmdLine.positionalArguments().count() > 2 ) {
-    qDebug() << "Wrong number of arguments";
-    cmdLine.showHelp();
-    return -1;
-  }
-
-  if ( cmdLine.positionalArguments().count() != 1 ) {
-    qDebug( "Wrong number of arguments." );
-    cmdLine.showHelp(-1);
-  }
-
-  QString filename = cmdLine.positionalArguments().at( 0 );
-
-  bool ok;
-  HolidayCalendar holidays = HolidayCalendar::parseFile( filename, &ok );
-
-  if ( !ok ) {
-    qDebug() <<"Parse error";
-  } else {
-    // TODO: Print data to stdout
-  }
-
-  if ( cmdLine.isSet( output) ) {
-    QString out = cmdLine.value( "output" );
-    if ( !holidays.writeFile( out ) ) {
-      qDebug() <<"Write error";
+    if (!cmdLine.parse(QCoreApplication::arguments())) {
+        qDebug() << cmdLine.errorText();
+        return -1;
     }
-  }
+
+    if (cmdLine.positionalArguments().count() < 1 || cmdLine.positionalArguments().count() > 2) {
+        qDebug() << "Wrong number of arguments";
+        cmdLine.showHelp();
+        return -1;
+    }
+
+    if (cmdLine.positionalArguments().count() != 1) {
+        qDebug("Wrong number of arguments.");
+        cmdLine.showHelp(-1);
+    }
+
+    QString filename = cmdLine.positionalArguments().at(0);
+
+    bool ok;
+    HolidayCalendar holidays = HolidayCalendar::parseFile(filename, &ok);
+
+    if (!ok) {
+        qDebug() << "Parse error";
+    } else {
+        // TODO: Print data to stdout
+    }
+
+    if (cmdLine.isSet(output)) {
+        QString out = cmdLine.value("output");
+        if (!holidays.writeFile(out)) {
+            qDebug() << "Write error";
+        }
+    }
 }

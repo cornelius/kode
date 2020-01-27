@@ -33,22 +33,22 @@ class WSDL;
 
 class Loader : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     Loader();
 
-    void setWSDLUrl( const QString &wsdlUrl );
+    void setWSDLUrl(const QString &wsdlUrl);
 
-  public slots:
+public slots:
     void run();
 
-  private slots:
+private slots:
     void download();
-    void parse( const QDomElement& );
-    void execute( const KWSDL::WSDL& );
+    void parse(const QDomElement &);
+    void execute(const KWSDL::WSDL &);
 
-  private:
+private:
     QString mWSDLUrl;
     QString mWSDLBaseUrl;
 

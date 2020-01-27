@@ -31,23 +31,22 @@ namespace KWSDL {
 
 class Compiler : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     Compiler();
 
-  public slots:
+public slots:
     void run();
 
-  private slots:
+private slots:
     void download();
-    void parse( const QDomElement& );
+    void parse(const QDomElement &);
     void create();
 
-  private:
+private:
     WSDL mWSDL;
 };
-
 }
 
 #endif

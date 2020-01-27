@@ -40,14 +40,14 @@ namespace XSD {
 
 class SCHEMA_EXPORT Parser
 {
-  public:
+public:
     enum { UNBOUNDED = 100000 };
 
-    Parser( const QString &nameSpace = QString() );
-    Parser( const Parser &other );
+    Parser(const QString &nameSpace = QString());
+    Parser(const Parser &other);
     ~Parser();
 
-    Parser &operator=( const Parser &other );
+    Parser &operator=(const Parser &other);
 
     Types types() const;
 
@@ -59,10 +59,10 @@ class SCHEMA_EXPORT Parser
       Parse schema from file. The file has to be open. Returns true on success,
       otherwise false.
     */
-    bool parseFile( ParserContext *context, QFile &file );
-    bool parseString( ParserContext *context, const QString &data );
+    bool parseFile(ParserContext *context, QFile &file);
+    bool parseString(ParserContext *context, const QString &data);
 
-    bool parseSchemaTag( ParserContext *context, const QDomElement &element );
+    bool parseSchemaTag(ParserContext *context, const QDomElement &element);
 
     QString targetNamespace() const;
 
@@ -71,11 +71,11 @@ class SCHEMA_EXPORT Parser
      */
     static QString schemaUri();
 
-  protected:
-    bool parse( ParserContext *context, QXmlInputSource *source );
+protected:
+    bool parse(ParserContext *context, QXmlInputSource *source);
 
-  private:
-    void parseImport( ParserContext *context, const QDomElement& );
+private:
+    void parseImport(ParserContext *context, const QDomElement &);
     /**
      * @brief Parse include element.
      * The <include> element must include a external schema within the same target namespace
@@ -83,54 +83,50 @@ class SCHEMA_EXPORT Parser
      * @param context Current parser context.
      * @param element DOM element to parse.
      */
-    void parseInclude( ParserContext *context, const QDomElement& element);
-    void addGlobalElement( const Element & );
-    void addGlobalAttribute( const Attribute & );
-    AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
+    void parseInclude(ParserContext *context, const QDomElement &element);
+    void addGlobalElement(const Element &);
+    void addGlobalAttribute(const Attribute &);
+    AttributeGroup parseAttributeGroup(ParserContext *context, const QDomElement &);
 
-    Annotation::List parseAnnotation( ParserContext *context, const QDomElement& );
-    ComplexType parseComplexType(ParserContext *context, const QDomElement& complexTypeElement, const QString elementName);
+    Annotation::List parseAnnotation(ParserContext *context, const QDomElement &);
+    ComplexType parseComplexType(ParserContext *context, const QDomElement &complexTypeElement,
+                                 const QString elementName);
 
-    void all( ParserContext *context, const QDomElement&, ComplexType& );
-    void parseCompositor( ParserContext *context,
-      const QDomElement&, ComplexType& );
+    void all(ParserContext *context, const QDomElement &, ComplexType &);
+    void parseCompositor(ParserContext *context, const QDomElement &, ComplexType &);
 
-    void setOccurrenceAttributes( Element &newElement,
-      const QDomElement &element );
+    void setOccurrenceAttributes(Element &newElement, const QDomElement &element);
 
-    Element parseElement( ParserContext *context, const QDomElement &,
-      const QString &nameSpace, const QDomElement &occurrenceElement );
+    Element parseElement(ParserContext *context, const QDomElement &, const QString &nameSpace,
+                         const QDomElement &occurrenceElement);
 
-    Attribute parseAttribute(ParserContext *context, const QDomElement& , const QString &elementName = QString(""));
-    void addAny( ParserContext *context, const QDomElement&, ComplexType& );
-    void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
+    Attribute parseAttribute(ParserContext *context, const QDomElement &,
+                             const QString &elementName = QString(""));
+    void addAny(ParserContext *context, const QDomElement &, ComplexType &);
+    void addAnyAttribute(ParserContext *context, const QDomElement &, ComplexType &);
 
-    SimpleType parseSimpleType( ParserContext *context, const QDomElement& );
-    void parseRestriction( ParserContext *context, const QDomElement&, SimpleType& );
-    void parseComplexContent( ParserContext *context, const QDomElement&, ComplexType& );
-    void parseSimpleContent( ParserContext *context, const QDomElement&, ComplexType& );
+    SimpleType parseSimpleType(ParserContext *context, const QDomElement &);
+    void parseRestriction(ParserContext *context, const QDomElement &, SimpleType &);
+    void parseComplexContent(ParserContext *context, const QDomElement &, ComplexType &);
+    void parseSimpleContent(ParserContext *context, const QDomElement &, ComplexType &);
 
-
-    void importSchema( ParserContext *context, const QString &location );
+    void importSchema(ParserContext *context, const QString &location);
     /**
      * @brief Read and include the given schema into the current schema.
      * @param context Current parser context.
      * @param localtion Schema location.
      */
-    void includeSchema( ParserContext *context, const QString &location );
-    QStringList joinNamespaces( const QStringList&, const QStringList& );
+    void includeSchema(ParserContext *context, const QString &location);
+    QStringList joinNamespaces(const QStringList &, const QStringList &);
 
-    Element findElement( const QName &name );
-    Attribute findAttribute( const QName &name );
-    AttributeGroup findAttributeGroup( const QName &name );
+    Element findElement(const QName &name);
+    Attribute findAttribute(const QName &name);
+    AttributeGroup findAttributeGroup(const QName &name);
     void resolveForwardDeclarations();
 
     class Private;
     Private *d;
 };
-
 }
 
 #endif
-
-

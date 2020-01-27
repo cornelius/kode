@@ -33,18 +33,18 @@ class Job;
 class KJob;
 class KXMLCOMMON_EXPORT FileProvider : QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     FileProvider(QObject *parent = NULL);
 
-    bool get( const QString &url, QString &target );
+    bool get(const QString &url, QString &target);
     void cleanUp();
 
-  private slots:
-    void downloadFinished( QNetworkReply *reply );
+private slots:
+    void downloadFinished(QNetworkReply *reply);
 
-  private:
+private:
     QString mFileName;
     QByteArray mData;
     QNetworkAccessManager mManager;

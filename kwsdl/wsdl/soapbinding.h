@@ -35,67 +35,55 @@ namespace KWSDL {
 
 class KWSDL_EXPORT SoapBinding : public AbstractBinding
 {
-  public:
-    enum Style
-    {
-      RPCStyle,
-      DocumentStyle
-    };
+public:
+    enum Style { RPCStyle, DocumentStyle };
 
-    enum Use
-    {
-      LiteralUse,
-      EncodedUse
-    };
+    enum Use { LiteralUse, EncodedUse };
 
-    enum Transport
-    {
-      HTTPTransport
-    };
+    enum Transport { HTTPTransport };
 
     class KWSDL_EXPORT Binding
     {
-      public:
+    public:
         Binding();
         ~Binding();
 
-        void setTransport( Transport transport );
+        void setTransport(Transport transport);
         Transport transport() const;
 
-        void setStyle( Style style );
+        void setStyle(Style style);
         Style style() const;
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-      private:
+    private:
         Transport mTransport;
         Style mStyle;
     };
 
-
     class KWSDL_EXPORT Body
     {
-      public:
+    public:
         Body();
         ~Body();
 
-        void setEncodingStyle( const QString &encodingStyle );
+        void setEncodingStyle(const QString &encodingStyle);
         QString encodingStyle() const;
 
-        void setPart( const QString &part );
+        void setPart(const QString &part);
         QString part() const;
 
-        void setUse( Use use );
+        void setUse(Use use);
         Use use() const;
 
-        void setNameSpace( const QString &nameSpace );
+        void setNameSpace(const QString &nameSpace);
         QString nameSpace() const;
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-      private:
+    private:
         QString mEncodingStyle;
         QString mPart;
         Use mUse;
@@ -104,23 +92,23 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
 
     class KWSDL_EXPORT Fault
     {
-      public:
+    public:
         Fault();
         ~Fault();
 
-        void setEncodingStyle( const QString &encodingStyle );
+        void setEncodingStyle(const QString &encodingStyle);
         QString encodingStyle() const;
 
-        void setUse( Use use );
+        void setUse(Use use);
         Use use() const;
 
-        void setNameSpace( const QString &nameSpace );
+        void setNameSpace(const QString &nameSpace);
         QString nameSpace() const;
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-      private:
+    private:
         QString mEncodingStyle;
         Use mUse;
         QString mNameSpace;
@@ -128,29 +116,29 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
 
     class KWSDL_EXPORT HeaderFault
     {
-      public:
+    public:
         HeaderFault();
         ~HeaderFault();
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-        void setMessage( const QName &message );
+        void setMessage(const QName &message);
         QName message() const;
 
-        void setEncodingStyle( const QString &encodingStyle );
+        void setEncodingStyle(const QString &encodingStyle);
         QString encodingStyle() const;
 
-        void setPart( const QString &part );
+        void setPart(const QString &part);
         QString part() const;
 
-        void setUse( Use use );
+        void setUse(Use use);
         Use use() const;
 
-        void setNameSpace( const QString &nameSpace );
+        void setNameSpace(const QString &nameSpace);
         QString nameSpace() const;
 
-      private:
+    private:
         QName mMessage;
         QString mPart;
         Use mUse;
@@ -160,32 +148,32 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
 
     class KWSDL_EXPORT Header
     {
-      public:
+    public:
         Header();
         ~Header();
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-        void setHeaderFault( const HeaderFault &headerFault );
+        void setHeaderFault(const HeaderFault &headerFault);
         HeaderFault headerFault() const;
 
-        void setMessage( const QName &message );
+        void setMessage(const QName &message);
         QName message() const;
 
-        void setPart( const QString &part );
+        void setPart(const QString &part);
         QString part() const;
 
-        void setUse( const Use &use );
+        void setUse(const Use &use);
         Use use() const;
 
-        void setEncodingStyle( const QString encodingStyle );
+        void setEncodingStyle(const QString encodingStyle);
         QString encodingStyle() const;
 
-        void setNameSpace( const QString &nameSpace );
+        void setNameSpace(const QString &nameSpace);
         QString nameSpace() const;
 
-      private:
+    private:
         HeaderFault mHeaderFault;
         QName mMessage;
         QString mPart;
@@ -196,42 +184,42 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
 
     class KWSDL_EXPORT Operation
     {
-      public:
+    public:
         typedef QList<Operation> List;
         typedef QMap<QString, Operation> Map;
 
         Operation();
-        Operation( const QString &name );
+        Operation(const QString &name);
         ~Operation();
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-        void setName( const QString &name );
+        void setName(const QString &name);
         QString name() const;
 
-        void setAction( const QString &action );
+        void setAction(const QString &action);
         QString action() const;
 
-        void setStyle( Style style );
+        void setStyle(Style style);
         Style style() const;
 
-        void setInput( const Body &input );
+        void setInput(const Body &input);
         Body input() const;
 
-        void setOutput( const Body &output );
+        void setOutput(const Body &output);
         Body output() const;
 
-        void setInputHeader( const Header &inputHeader );
+        void setInputHeader(const Header &inputHeader);
         Header inputHeader() const;
 
-        void setOutputHeader( const Header &outputHeader );
+        void setOutputHeader(const Header &outputHeader);
         Header outputHeader() const;
 
-        void setFault( const Fault &fault );
+        void setFault(const Fault &fault);
         Fault fault() const;
 
-      private:
+    private:
         QString mName;
         QString mSoapAction;
         Style mStyle;
@@ -244,53 +232,59 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
 
     class KWSDL_EXPORT Address
     {
-      public:
+    public:
         Address();
         ~Address();
 
-        void setLocation( const QUrl &location );
+        void setLocation(const QUrl &location);
         QUrl location() const;
 
-        void loadXML( ParserContext *context, const QDomElement &element );
-        void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+        void loadXML(ParserContext *context, const QDomElement &element);
+        void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-      private:
+    private:
         QUrl mLocation;
     };
 
     SoapBinding();
     ~SoapBinding();
 
-    void setAddress( const Address &address );
+    void setAddress(const Address &address);
     Address address() const;
 
-    void setOperations( const Operation::Map &operations );
+    void setOperations(const Operation::Map &operations);
     Operation::Map operations() const;
 
-    void setBinding( const Binding &binding );
+    void setBinding(const Binding &binding);
     Binding binding() const;
 
-    void parseBinding( ParserContext *context, const QDomElement &parent );
-    void parseOperation( ParserContext *context, const QString &name, const QDomElement &parent );
-    void parseOperationInput( ParserContext *context, const QString &name, const QDomElement &parent );
-    void parseOperationOutput( ParserContext *context, const QString &name, const QDomElement &parent );
-    void parseOperationFault( ParserContext *context, const QString &name, const QDomElement &parent );
-    void parsePort( ParserContext *context, const QDomElement &parent );
+    void parseBinding(ParserContext *context, const QDomElement &parent);
+    void parseOperation(ParserContext *context, const QString &name, const QDomElement &parent);
+    void parseOperationInput(ParserContext *context, const QString &name,
+                             const QDomElement &parent);
+    void parseOperationOutput(ParserContext *context, const QString &name,
+                              const QDomElement &parent);
+    void parseOperationFault(ParserContext *context, const QString &name,
+                             const QDomElement &parent);
+    void parsePort(ParserContext *context, const QDomElement &parent);
 
-    void synthesizeBinding( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
-    void synthesizeOperation( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const;
-    void synthesizeOperationInput( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const;
-    void synthesizeOperationOutput( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const;
-    void synthesizeOperationFault( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const;
-    void synthesizePort( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+    void synthesizeBinding(ParserContext *context, QDomDocument &document,
+                           QDomElement &parent) const;
+    void synthesizeOperation(ParserContext *context, const QString &name, QDomDocument &document,
+                             QDomElement &parent) const;
+    void synthesizeOperationInput(ParserContext *context, const QString &name,
+                                  QDomDocument &document, QDomElement &parent) const;
+    void synthesizeOperationOutput(ParserContext *context, const QString &name,
+                                   QDomDocument &document, QDomElement &parent) const;
+    void synthesizeOperationFault(ParserContext *context, const QString &name,
+                                  QDomDocument &document, QDomElement &parent) const;
+    void synthesizePort(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     Binding mBinding;
     Operation::Map mOperations;
     Address mAddress;
 };
-
 }
 
 #endif // KWSDL_SOAPBINDING_H
-

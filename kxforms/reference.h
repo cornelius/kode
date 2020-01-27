@@ -33,49 +33,50 @@ namespace KXForms {
 */
 class Reference
 {
-  public:
-    class Segment {
-      public:
+public:
+    class Segment
+    {
+    public:
         typedef QList<Segment> List;
 
         Segment();
-        Segment( const QString &str );
-        Segment( const QString &name, int count );
+        Segment(const QString &str);
+        Segment(const QString &name, int count);
 
-        void setName( const QString &name );
+        void setName(const QString &name);
         QString name() const { return mName; }
 
-        void setCount( int count ) { mCount = count; }
+        void setCount(int count) { mCount = count; }
         int count() const { return mCount; }
 
         bool isAttribute() const { return mIsAttribute; }
 
-        void fromString( const QString & );
+        void fromString(const QString &);
         QString toString() const;
 
-        bool operator==( const Segment & ) const;
-        bool operator!=( const Segment & ) const;
+        bool operator==(const Segment &) const;
+        bool operator!=(const Segment &) const;
 
         bool isEmpty() const;
 
-      private:
+    private:
         QString mName;
         int mCount;
         bool mIsAttribute;
     };
 
     Reference();
-    Reference( const QString & );
-    Reference( const char * );
+    Reference(const QString &);
+    Reference(const char *);
 
-    Reference &operator=( const QString & );
-    Reference &operator=( const char * );
+    Reference &operator=(const QString &);
+    Reference &operator=(const char *);
 
-    void setPath( const QString & );
+    void setPath(const QString &);
     QString path() const;
 
-    Reference &append( const Reference & );
-    Reference &append( const Segment & );
+    Reference &append(const Reference &);
+    Reference &append(const Segment &);
 
     bool isAbsolute() const;
     bool isRelative() const;
@@ -83,7 +84,7 @@ class Reference
     bool isValid() const;
     bool isEmpty() const;
 
-    void fromString( const QString & );
+    void fromString(const QString &);
     QString toString() const;
 
     Segment::List segments() const;
@@ -91,27 +92,26 @@ class Reference
     Segment &lastSegment();
     const Segment &lastSegment() const;
 
-    Reference operator+( const Reference & ) const;
-    Reference operator+( const Reference::Segment & ) const;
+    Reference operator+(const Reference &) const;
+    Reference operator+(const Reference::Segment &) const;
 
-    bool operator==( const Reference & ) const;
-    bool operator!=( const Reference & ) const;
+    bool operator==(const Reference &) const;
+    bool operator!=(const Reference &) const;
 
-    bool matches( const Reference &ref, bool exact = true, bool pathOnly = false ) const;
+    bool matches(const Reference &ref, bool exact = true, bool pathOnly = false) const;
 
-    QDomElement apply( const QDomDocument & ) const;
+    QDomElement apply(const QDomDocument &) const;
 
-    QDomElement applyElement( const QDomElement &context ) const;
-    QDomElement applyAttributeContext( const QDomElement &context ) const;
-    QString applyString( const QDomElement & ) const;
+    QDomElement applyElement(const QDomElement &context) const;
+    QDomElement applyAttributeContext(const QDomElement &context) const;
+    QString applyString(const QDomElement &) const;
 
-  private:
+private:
     Segment::List mSegments;
 
     bool mValid;
     bool mAbsolute;
 };
-
 }
 
 #endif

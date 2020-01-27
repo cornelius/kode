@@ -34,81 +34,94 @@ namespace KXForms {
 
 class Hint
 {
-  public:
+public:
     typedef QList<Hint> List;
-    enum Type { Label, ListShowHeader, ListHeader, ListShowSearch, ListItemLabel, 
-        ListItemList, Groups, GroupReference, Appearance, Position, LayoutStyle,
-        ReadOnly, InputType, FormSizeThreshold };
+    enum Type {
+        Label,
+        ListShowHeader,
+        ListHeader,
+        ListShowSearch,
+        ListItemLabel,
+        ListItemList,
+        Groups,
+        GroupReference,
+        Appearance,
+        Position,
+        LayoutStyle,
+        ReadOnly,
+        InputType,
+        FormSizeThreshold
+    };
 
     Hint();
-    Hint( const Reference &ref );
+    Hint(const Reference &ref);
 
     bool isValid() const;
-    
-    void setRef( const Reference & );
+
+    void setRef(const Reference &);
     Reference ref() const;
 
-    void setValue( Type, const QString & );
-    QString value( Type ) const;
+    void setValue(Type, const QString &);
+    QString value(Type) const;
 
-    bool hasValue( Type ) const;
+    bool hasValue(Type) const;
 
-    void addElement( Type, const QDomElement );
-    QList<QDomElement> elements( Type ) const;
-    QMap< Type, QList<QDomElement> > allElements() const;
+    void addElement(Type, const QDomElement);
+    QList<QDomElement> elements(Type) const;
+    QMap<Type, QList<QDomElement>> allElements() const;
 
-    void merge( const Hint & h );
+    void merge(const Hint &h);
 
-    void setEnumValue( const QString &value, const QString &replacement );
-    QString enumValue( const QString &value ) const;
+    void setEnumValue(const QString &value, const QString &replacement);
+    QString enumValue(const QString &value) const;
 
     QMap<Type, QString> values() const { return mValues; }
 
-    static QString nameForType( Type t );
-  private:
+    static QString nameForType(Type t);
+
+private:
     Reference mRef;
     QMap<Type, QString> mValues;
     QMap<QString, QString> mEnums;
-    QMap< Type, QList<QDomElement> > mElements;
+    QMap<Type, QList<QDomElement>> mElements;
 };
 
 class Hints
 {
-  public:
+public:
     Hints();
 
-    bool parseFile( QFile & );
-    bool parseString( const QString & );
+    bool parseFile(QFile &);
+    bool parseString(const QString &);
 
     QString toXml();
 
-    void insertHint( const Hint & );
-    
-    Hint hint( const Reference &ref ) const;
+    void insertHint(const Hint &);
+
+    Hint hint(const Reference &ref) const;
 
     Hint::List hints() const;
 
-    void extractHints( const Schema::Document & );
+    void extractHints(const Schema::Document &);
 
-    void merge( const Hints &h );
-    void merge( const Hint &h );
+    void merge(const Hints &h);
+    void merge(const Hint &h);
 
     void dump() const;
     QString toRichText() const;
 
-  protected:
-    bool parse( const QDomDocument &doc );
-    void parseHint( const QDomElement &, const Reference &refPrefix = Reference() );
+protected:
+    bool parse(const QDomDocument &doc);
+    void parseHint(const QDomElement &, const Reference &refPrefix = Reference());
 
-    void extractHints( const QList<QDomElement> &annotations,
-      const Reference &refPrefix = Reference() );
+    void extractHints(const QList<QDomElement> &annotations,
+                      const Reference &refPrefix = Reference());
 
-    QString contentAsString( const QDomElement &e );
+    QString contentAsString(const QDomElement &e);
 
-  private:
-    QMap<QString,Hint> mHints;
+private:
+    QMap<QString, Hint> mHints;
 };
-
 }
 
 #endif

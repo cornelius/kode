@@ -27,11 +27,8 @@ using namespace KODE;
 
 class Variable::Private
 {
-  public:
-    Private()
-      : mIsStatic( false )
-    {
-    }
+public:
+    Private() : mIsStatic(false) {}
 
     QString mType;
     QString mName;
@@ -39,83 +36,78 @@ class Variable::Private
     QString mInitializer;
 };
 
-Variable::Variable()
-  : d( new Private )
+Variable::Variable() : d(new Private) {}
+
+Variable::Variable(const Variable &other) : d(new Private)
 {
+    *d = *other.d;
 }
 
-Variable::Variable( const Variable &other )
-  : d( new Private )
+Variable::Variable(const QString &name, const QString &type, bool isStatic) : d(new Private)
 {
-  *d = *other.d;
-}
+    d->mType = type;
+    d->mIsStatic = isStatic;
 
-Variable::Variable( const QString &name, const QString &type, bool isStatic )
-  : d( new Private )
-{
-  d->mType = type;
-  d->mIsStatic = isStatic;
+    Q_ASSERT(!name.isEmpty());
 
-  Q_ASSERT(!name.isEmpty());
-
-  if ( name.isEmpty() ) {
-    d->mName = "mUndefined";
-  } else {
-    d->mName = name;
-  }
+    if (name.isEmpty()) {
+        d->mName = "mUndefined";
+    } else {
+        d->mName = name;
+    }
 }
 
 Variable::~Variable()
 {
-  delete d;
+    delete d;
 }
 
-Variable& Variable::operator=( const Variable &other )
+Variable &Variable::operator=(const Variable &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void Variable::setName( const QString &name )
+void Variable::setName(const QString &name)
 {
-  d->mName = name;
+    d->mName = name;
 }
 
 QString Variable::name() const
 {
-  return d->mName;
+    return d->mName;
 }
 
-void Variable::setType( const QString &type )
+void Variable::setType(const QString &type)
 {
-  d->mType = type;
+    d->mType = type;
 }
 
 QString Variable::type() const
 {
-  return d->mType;
+    return d->mType;
 }
 
-void Variable::setStatic( bool isStatic )
+void Variable::setStatic(bool isStatic)
 {
-  d->mIsStatic = isStatic;
+    d->mIsStatic = isStatic;
 }
 
 bool Variable::isStatic() const
 {
-  return d->mIsStatic;
+    return d->mIsStatic;
 }
 
-void Variable::setInitializer( const QString &initializer )
+void Variable::setInitializer(const QString &initializer)
 {
-  d->mInitializer = initializer;
+    d->mInitializer = initializer;
 }
 
 QString Variable::initializer() const
 {
-  return d->mInitializer;
+    return d->mInitializer;
 }

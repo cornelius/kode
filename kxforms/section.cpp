@@ -29,21 +29,22 @@
 
 using namespace KXForms;
 
-Section::Section( Manager *m, const QString &label, QWidget *parent, Properties *p, bool externalLabel )
-  : GuiElement( parent, m, p )
+Section::Section(Manager *m, const QString &label, QWidget *parent, Properties *p,
+                 bool externalLabel)
+    : GuiElement(parent, m, p)
 {
-  mBox = new QGroupBox( mParent );
-  QWidget *w = mBox;
+    mBox = new QGroupBox(mParent);
+    QWidget *w = mBox;
 
-  if( externalLabel ) {
-    mLabel = new QLabel( label );
-  } else {
-    mBox->setTitle( label );
-  }
+    if (externalLabel) {
+        mLabel = new QLabel(label);
+    } else {
+        mBox->setTitle(label);
+    }
 
-  mLayout = mManager->getTopLayout();
-  mBox->setLayout( mLayout );
+    mLayout = mManager->getTopLayout();
+    mBox->setLayout(mLayout);
 
-  setWidget( w );
-  applyProperties();
+    setWidget(w);
+    applyProperties();
 }

@@ -27,16 +27,15 @@ namespace KXForms {
 
 class ReadOnlyAction : public EditorAction
 {
-  Q_OBJECT
-  public:
-    ReadOnlyAction( Editor *e );
+    Q_OBJECT
+public:
+    ReadOnlyAction(Editor *e);
     ~ReadOnlyAction();
 
-    void perform( GuiElement *e );
+    void perform(GuiElement *e);
 
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
+Q_SIGNALS:
+    void hintGenerated(const Hint &hint);
 };
-
 }
 #endif

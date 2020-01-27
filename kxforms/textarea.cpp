@@ -30,95 +30,94 @@
 
 using namespace KXForms;
 
-TextArea::TextArea( Manager *m, const QString &label, QWidget *parent, Properties *p )
-  : GuiElement( parent, m, p )
+TextArea::TextArea(Manager *m, const QString &label, QWidget *parent, Properties *p)
+    : GuiElement(parent, m, p)
 {
-  mManager->dispatcher()->registerElement( this );
+    mManager->dispatcher()->registerElement(this);
 
-  mLabel = new QLabel( label, mParent );
-  mEdit = new QTextEdit( mParent );
+    mLabel = new QLabel(label, mParent);
+    mEdit = new QTextEdit(mParent);
 
-  mEdit->setMinimumHeight( 40 );
-  mEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    mEdit->setMinimumHeight(40);
+    mEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  setWidget( mEdit );
-  applyProperties();
+    setWidget(mEdit);
+    applyProperties();
 
-  connect( mEdit, SIGNAL(textChanged()), SLOT(emitValueChanged()) );
+    connect(mEdit, SIGNAL(textChanged()), SLOT(emitValueChanged()));
 }
 
 void TextArea::loadData()
 {
-  QDomElement element = ref().applyElement( context() );
+    QDomElement element = ref().applyElement(context());
 
-  QString txt;
-  QTextStream ts( &txt, QIODevice::WriteOnly );
+    QString txt;
+    QTextStream ts(&txt, QIODevice::WriteOnly);
 
-  QDomNode n;
-  for( n = element.firstChild(); ! n.isNull(); n = n.nextSibling() ) {
-    n.save( ts, 0 );
-  }
+    QDomNode n;
+    for (n = element.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        n.save(ts, 0);
+    }
 
-  mEdit->setPlainText( txt );
+    mEdit->setPlainText(txt);
 }
 
 void TextArea::saveData()
 {
-  kDebug() <<"TextArea::saveData()";
+    kDebug() << "TextArea::saveData()";
 
-  QDomElement e = ref().applyElement( context() );
+    QDomElement e = ref().applyElement(context());
 
-  if ( e.isNull() ) {
-    e = createElement( ref() );
-  }
+    if (e.isNull()) {
+        e = createElement(ref());
+    }
 
-  QString tag = e.tagName();
+    QString tag = e.tagName();
 
-  while( !e.firstChild().isNull() ) {
-    e.removeChild( e.firstChild() );
-  }
+    while (!e.firstChild().isNull()) {
+        e.removeChild(e.firstChild());
+    }
 
-  QString xml = '<' + tag + '>' + mEdit->toPlainText() + "</" + tag + '>';
+    QString xml = '<' + tag + '>' + mEdit->toPlainText() + "</" + tag + '>';
 
-  kDebug() <<"XML:" << xml;
+    kDebug() << "XML:" << xml;
 
-  QDomDocument doc;
-  doc.setContent( xml );
+    QDomDocument doc;
+    doc.setContent(xml);
 
-  kDebug() <<"DOC:" << doc.toString( 2 ) <<"END OF DOC";
+    kDebug() << "DOC:" << doc.toString(2) << "END OF DOC";
 
-  QDomElement docElement = doc.documentElement();
-  QDomNode n;
-  for( n = docElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    kDebug() <<"TAG:" << n.toElement().tagName();
-    e.appendChild( n.cloneNode() );
-  }
+    QDomElement docElement = doc.documentElement();
+    QDomNode n;
+    for (n = docElement.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        kDebug() << "TAG:" << n.toElement().tagName();
+        e.appendChild(n.cloneNode());
+    }
 }
 
 void TextArea::applyProperties()
 {
-  if( mEdit ) {
-    mEdit->setReadOnly( mProperties->readonly );
-  }
+    if (mEdit) {
+        mEdit->setReadOnly(mProperties->readonly);
+    }
 }
 
 void TextArea::emitValueChanged()
 {
-  emit valueChanged( ref().toString(), mEdit->toPlainText() );
+    emit valueChanged(ref().toString(), mEdit->toPlainText());
 }
-
 
 bool TextArea::isValid() const
 {
-  if( mProperties->constraint.isEmpty() )
-    return true;
+    if (mProperties->constraint.isEmpty())
+        return true;
 
-  QRegExp regExp( mProperties->constraint );  
+    QRegExp regExp(mProperties->constraint);
 
-  if( (mEdit->toPlainText().indexOf( regExp ) >= 0 ) ) {
-    return true;
-  } else {
-    return false;
-  }
+    if ((mEdit->toPlainText().indexOf(regExp) >= 0)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 #include "textarea.moc"

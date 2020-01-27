@@ -34,34 +34,36 @@ namespace KWSDL {
 
 class Converter
 {
-  public:
+public:
     Converter();
 
-    void setWSDL( const WSDL &wsdl );
+    void setWSDL(const WSDL &wsdl);
 
     void convert();
 
     KODE::Class::List classes() const;
 
-  private:
+private:
     void convertTypes();
 
-    void convertComplexType( const XSD::ComplexType* );
-    void createComplexTypeSerializer( const XSD::ComplexType* );
+    void convertComplexType(const XSD::ComplexType *);
+    void createComplexTypeSerializer(const XSD::ComplexType *);
 
-    void convertSimpleType( const XSD::SimpleType* );
-    void createSimpleTypeSerializer( const XSD::SimpleType* );
+    void convertSimpleType(const XSD::SimpleType *);
+    void createSimpleTypeSerializer(const XSD::SimpleType *);
 
-    void convertAttribute( const XSD::Attribute* );
-    void createAttributeSerializer( const XSD::Attribute* );
+    void convertAttribute(const XSD::Attribute *);
+    void createAttributeSerializer(const XSD::Attribute *);
 
-    void convertElement( const XSD::Element* );
-    void createElementSerializer( const XSD::Element* );
+    void convertElement(const XSD::Element *);
+    void createElementSerializer(const XSD::Element *);
 
     // Client Stub
     void convertClientService();
-    void convertClientInputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
-    void convertClientOutputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
+    void convertClientInputMessage(const Operation &, const Param &, const Binding &,
+                                   KODE::Class &);
+    void convertClientOutputMessage(const Operation &, const Param &, const Binding &,
+                                    KODE::Class &);
 
     // Server Stub
     void convertServerService();
@@ -85,12 +87,11 @@ class Converter
     TypeMap mTypeMap;
     NSManager mNSManager;
 };
-
 }
 
-QString upperlize( const QString& );
-QString lowerlize( const QString& );
+QString upperlize(const QString &);
+QString lowerlize(const QString &);
 
-static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
+static QName XmlAnyType("http://www.w3.org/2001/XMLSchema", "any");
 
 #endif

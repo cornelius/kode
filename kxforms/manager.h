@@ -35,44 +35,45 @@ namespace KXForms {
 
 class Manager
 {
-  public:
+public:
     Manager();
     ~Manager();
 
-    void setGuiHandler( GuiHandler * );
+    void setGuiHandler(GuiHandler *);
 
-    bool parseForms( const QString & );
+    bool parseForms(const QString &);
 
-    Form *parseForm( const QDomElement & );
+    Form *parseForm(const QDomElement &);
 
     Form *rootForm();
 
-    Form *form( const QString &ref );
+    Form *form(const QString &ref);
 
-    KResult loadData( const QString & );
-    KResult saveData( QString & );
+    KResult loadData(const QString &);
+    KResult saveData(QString &);
 
-    void loadData( FormGui * );
+    void loadData(FormGui *);
 
     void clearForms();
 
-    QWidget *createRootGui( QWidget *parent );
-    void createGui( const Reference &ref, GuiElement *parent );
+    QWidget *createRootGui(QWidget *parent);
+    void createGui(const Reference &ref, GuiElement *parent);
 
-    void registerGui( FormGui * );
-    void unregisterGui( FormGui * );
+    void registerGui(FormGui *);
+    void unregisterGui(FormGui *);
 
     bool hasData() const;
     QDomDocument document() const;
 
-    QDomElement applyReference( const Reference & );
+    QDomElement applyReference(const Reference &);
 
     QString schemaUri() const;
 
     QLayout *getTopLayout() const;
-    void addWidget( QLayout *, QWidget * ) const;
-    void addElementRow( QLayout *, Layout::Element *e, int width, int height ) const;
-    void addElementRowElement( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight, int xPosition, int yPosition ) const;
+    void addWidget(QLayout *, QWidget *) const;
+    void addElementRow(QLayout *, Layout::Element *e, int width, int height) const;
+    void addElementRowElement(QLayout *l, Layout::Element *e, int totalWidth, int totalHeight,
+                              int xPosition, int yPosition) const;
 
     Dispatcher *dispatcher() const { return mDispatcher; }
 
@@ -81,10 +82,11 @@ class Manager
     GuiElement::Properties *defaultProperties() { return mDefaultProperties; }
 
     FormGui *currentGui() { return mGuiHandler->currentGui(); }
-  protected:
+
+protected:
     void loadData();
 
-  private:
+private:
     GuiHandler *mGuiHandler;
 
     GuiElement::Properties *mDefaultProperties;
@@ -102,7 +104,6 @@ class Manager
 
     Editor *mEditor;
 };
-
 }
 
 #endif

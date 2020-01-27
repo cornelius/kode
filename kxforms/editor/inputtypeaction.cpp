@@ -32,41 +32,39 @@
 
 using namespace KXForms;
 
-InputTypeAction::InputTypeAction( Editor *e)
-: EditorAction( e )
+InputTypeAction::InputTypeAction(Editor *e) : EditorAction(e) {}
+
+InputTypeAction::~InputTypeAction() {}
+
+void InputTypeAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-InputTypeAction::~InputTypeAction()
-{
-}
+    QString newType;
+    bool ok;
+    QStringList list;
+    list << "xs:string"
+         << "xs:integer"
+         << "xs:boolean";
 
-void InputTypeAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    int currentPosition = 0;
+    if (e->properties())
+        currentPosition = list.indexOf(e->properties()->type);
 
-  QString newType;
-  bool ok;
-  QStringList list;
-  list << "xs:string" << "xs:integer" << "xs:boolean";
+    newType = KInputDialog::getItem(i18n("Select the input type"),
+                                    i18n("Input type for %1:", e->ref().toString()), list,
+                                    currentPosition, true, &ok);
 
-  int currentPosition = 0;
-  if( e->properties() )
-     currentPosition = list.indexOf( e->properties()->type );
+    if (ok) {
+        kDebug() << "New Type:" << newType;
+        Hint h;
+        h.setRef(e->id());
+        h.setValue(Hint::InputType, newType);
+        emit hintGenerated(h);
+    }
 
-  newType = KInputDialog::getItem( i18n("Select the input type"), i18n("Input type for %1:", e->ref().toString()),
-      list, currentPosition, true, &ok );
-
-  if( ok ) {
-    kDebug() <<"New Type:" << newType;
-    Hint h;
-    h.setRef( e->id() );
-    h.setValue( Hint::InputType, newType );
-    emit hintGenerated( h );
-  }
-
-  editor()->finishEdit();
+    editor()->finishEdit();
 }
 
 #include "inputtypeaction.moc"

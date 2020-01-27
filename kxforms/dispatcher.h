@@ -27,18 +27,17 @@ namespace KXForms {
 
 class Dispatcher : public QObject
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     Dispatcher();
 
-    void registerElement( QObject * );
+    void registerElement(QObject *);
 
-  signals:
-    void valueChanged( const QString &, const QString & );
+signals:
+    void valueChanged(const QString &, const QString &);
 
-  private slots:
-    void slotValueChanged( const QString &, const QString & );
+private slots:
+    void slotValueChanged(const QString &, const QString &);
 };
-
 }
 #endif

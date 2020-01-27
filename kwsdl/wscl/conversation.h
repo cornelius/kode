@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -30,38 +30,38 @@ namespace WSCL {
 
 class WSCL_EXPORT Conversation
 {
-  public:
+public:
     Conversation();
     ~Conversation();
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setVersion( const QString &version );
+    void setVersion(const QString &version);
     QString version() const;
 
-    void setDescription( const QString &description );
+    void setDescription(const QString &description);
     QString description() const;
 
-    void setNameSpace( const QString &nameSpace );
+    void setNameSpace(const QString &nameSpace);
     QString nameSpace() const;
 
-    void setSchema( const QString &schema );
+    void setSchema(const QString &schema);
     QString schema() const;
 
-    void setInitialInteraction( const QString &initialInteraction );
+    void setInitialInteraction(const QString &initialInteraction);
     QString initialInteraction() const;
 
-    void setFinalInteraction( const QString &finalInteraction );
+    void setFinalInteraction(const QString &finalInteraction);
     QString finalInteraction() const;
 
-    void setInteractions( const Interaction::List &interactions );
+    void setInteractions(const Interaction::List &interactions);
     Interaction::List interactions() const;
 
-    void setTransitions( const Transition::List &transitions );
+    void setTransitions(const Transition::List &transitions);
     Transition::List transitions() const;
 
-  private:
+private:
     QString mName;
     QString mVersion;
     QString mDescription;
@@ -73,7 +73,6 @@ class WSCL_EXPORT Conversation
     Interaction::List mInteractions;
     Transition::List mTransitions;
 };
-
 }
 
 #endif

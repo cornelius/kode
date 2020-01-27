@@ -35,7 +35,7 @@ class SimpleType;
  */
 class KSCHEMAWIDGETS_EXPORT InputFieldFactory
 {
-  public:
+public:
     /**
       Destructor.
      */
@@ -44,22 +44,23 @@ class KSCHEMAWIDGETS_EXPORT InputFieldFactory
     /**
       Creates an input field of the given type with the given name.
      */
-    InputField *createField( const QString &name, const QString &typeName, bool isList = false );
+    InputField *createField(const QString &name, const QString &typeName, bool isList = false);
 
     /**
       Creates an input field of the given type with the given name.
      */
-    InputField *createBasicField( const QString &name, const QString &typeName, const XSD::SimpleType *type, bool isList = false );
+    InputField *createBasicField(const QString &name, const QString &typeName,
+                                 const XSD::SimpleType *type, bool isList = false);
 
     /**
       Sets the types description, so that the factory can pass
       them to the input fields.
      */
-    void setTypes( const XSD::Types &types );
+    void setTypes(const XSD::Types &types);
 
-    static InputFieldFactory* self();
+    static InputFieldFactory *self();
 
-  private:
+private:
     InputFieldFactory();
 
     static InputFieldFactory *mSelf;

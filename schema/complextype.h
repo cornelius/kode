@@ -37,55 +37,51 @@ namespace XSD {
 
 class SCHEMA_EXPORT ComplexType : public XSDType
 {
-  public:
+public:
     typedef QList<ComplexType> List;
 
-    typedef enum {
-      Restriction,
-      Extension
-    } Derivation;
+    typedef enum { Restriction, Extension } Derivation;
 
     ComplexType();
-    ComplexType( const QString &nameSpace );
-    ComplexType( const ComplexType &other );
+    ComplexType(const QString &nameSpace);
+    ComplexType(const ComplexType &other);
     ~ComplexType();
 
-    ComplexType &operator=( const ComplexType &other );
+    ComplexType &operator=(const ComplexType &other);
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
     bool isSimple() const;
 
-    void setAnonymous( bool anonymous );
+    void setAnonymous(bool anonymous);
     bool isAnonymous() const;
 
-    void setBaseDerivation( Derivation derivation );
+    void setBaseDerivation(Derivation derivation);
     Derivation baseDerivation() const;
 
-    void setBaseTypeName( const QName &baseTypeName );
+    void setBaseTypeName(const QName &baseTypeName);
     QName baseTypeName() const;
 
-    void setElements( const Element::List &elements );
+    void setElements(const Element::List &elements);
     Element::List elements() const;
 
-    void setAttributes( const Attribute::List &attributes );
+    void setAttributes(const Attribute::List &attributes);
     Attribute::List attributes() const;
 
-    void setAttributeGroups( const AttributeGroup::List &attributeGroups );
+    void setAttributeGroups(const AttributeGroup::List &attributeGroups);
     AttributeGroup::List attributeGroups() const;
 
-    void setIsArray( bool isArray );
+    void setIsArray(bool isArray);
     bool isArray() const;
 
-    void addAttribute( const Attribute &attribute );
-    void addElement( const Element &element );
+    void addAttribute(const Attribute &attribute);
+    void addElement(const Element &element);
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

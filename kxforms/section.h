@@ -30,8 +30,9 @@ namespace KXForms {
 
 class Section : public GuiElement
 {
-  public:
-    Section( Manager *, const QString &label, QWidget *parent, Properties *p, bool externalLabel = false );
+public:
+    Section(Manager *, const QString &label, QWidget *parent, Properties *p,
+            bool externalLabel = false);
 
     void loadData() {}
     void saveData() {}
@@ -40,11 +41,10 @@ class Section : public GuiElement
 
     QLayout *layout() const { return mLayout; }
 
-  private:
+private:
     QGroupBox *mBox;
     QLayout *mLayout;
 };
-
 }
 
 #endif

@@ -34,7 +34,7 @@
  */
 class KXMLCOMMON_EXPORT MessageHandler
 {
-  public:
+public:
     /**
       Constructs a MessageHandler.
      */
@@ -48,13 +48,12 @@ class KXMLCOMMON_EXPORT MessageHandler
     /**
       This method is called to indicate a warning.
      */
-    virtual void warning( const QString &message );
+    virtual void warning(const QString &message);
 
     /**
       This method is called to indicate an error.
      */
-    virtual void error( const QString &message );
+    virtual void error(const QString &message);
 };
 
 #endif
-

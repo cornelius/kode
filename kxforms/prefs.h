@@ -23,8 +23,7 @@
 
 class Prefs
 {
-  public:
-
+public:
     static Prefs *self();
 
     ~Prefs();
@@ -32,43 +31,26 @@ class Prefs
     /**
       Set Enable developer mode
     */
-    static
-    void setDeveloperMode( bool v )
-    {
-        self()->mDeveloperMode = v;
-    }
+    static void setDeveloperMode(bool v) { self()->mDeveloperMode = v; }
 
     /**
       Get Enable developer mode
     */
-    static
-    bool developerMode()
-    {
-      return self()->mDeveloperMode;
-    }
+    static bool developerMode() { return self()->mDeveloperMode; }
 
     /**
       Set VerticalListButtons
     */
-    static
-    void setVerticalListButtons( bool v )
-    {
-        self()->mVerticalListButtons = v;
-    }
+    static void setVerticalListButtons(bool v) { self()->mVerticalListButtons = v; }
 
     /**
       Get VerticalListButtons
     */
-    static
-    bool verticalListButtons()
-    {
-      return self()->mVerticalListButtons;
-    }
+    static bool verticalListButtons() { return self()->mVerticalListButtons; }
 
-  protected:
+protected:
     Prefs() {}
     static Prefs *mSelf;
-
 
     // General
     bool mDeveloperMode;
@@ -76,8 +58,7 @@ class Prefs
     // GuiElements
     bool mVerticalListButtons;
 
-  private:
+private:
 };
 
 #endif
-

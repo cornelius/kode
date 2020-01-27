@@ -29,15 +29,15 @@
 
 class ParserCreatorDom : public ParserCreator
 {
-  public:
-    ParserCreatorDom( Creator * );
-  
-    void createFileParser( const Schema::Element &element );
-    void createStringParser( const Schema::Element &element );
-    void createElementParser( KODE::Class &c, const Schema::Element &e );
+public:
+    ParserCreatorDom(Creator *);
 
-  protected:
-    QString stringToDataConverter( const QString &data, Schema::Node::Type );
+    void createFileParser(const Schema::Element &element);
+    void createStringParser(const Schema::Element &element);
+    void createElementParser(KODE::Class &c, const Schema::Element &e);
+
+protected:
+    QString stringToDataConverter(const QString &data, Schema::Node::Type);
 };
 
 #endif

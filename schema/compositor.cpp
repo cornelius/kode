@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2006 Cornelius Schumacher <schumacher@kde.org>
@@ -26,74 +26,66 @@ namespace XSD {
 class Compositor::Private
 {
 public:
-    Private()
-     : mType( Invalid )
-    {}
+    Private() : mType(Invalid) {}
 
     Type mType;
     QName::List mChildren;
 };
 
-Compositor::Compositor()
-  : d(new Private)
+Compositor::Compositor() : d(new Private) {}
+
+Compositor::Compositor(Type type) : d(new Private)
 {
+    d->mType = type;
 }
 
-Compositor::Compositor( Type type )
-  : d(new Private)
+Compositor::Compositor(const Compositor &other) : d(new Private)
 {
-  d->mType = type;
-}
-
-Compositor::Compositor( const Compositor &other )
-  : d(new Private)
-{
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Compositor::~Compositor()
 {
-  delete d;
+    delete d;
 }
 
-Compositor &Compositor::operator=( const Compositor &other )
+Compositor &Compositor::operator=(const Compositor &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
 bool Compositor::isValid() const
 {
-  return d->mType != Invalid;
+    return d->mType != Invalid;
 }
 
-void Compositor::setType( Type type )
+void Compositor::setType(Type type)
 {
-  d->mType = type;
+    d->mType = type;
 }
 
 Compositor::Type Compositor::type() const
 {
-  return d->mType;
+    return d->mType;
 }
 
-void Compositor::addChild( const QName &child )
+void Compositor::addChild(const QName &child)
 {
-  d->mChildren.append( child );
+    d->mChildren.append(child);
 }
 
-void Compositor::setChildren( const QName::List &children )
+void Compositor::setChildren(const QName::List &children)
 {
-  d->mChildren = children;
+    d->mChildren = children;
 }
 
 QName::List Compositor::children() const
 {
-  return d->mChildren;
+    return d->mChildren;
 }
-
 }

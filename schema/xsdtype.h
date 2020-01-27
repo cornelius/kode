@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -36,69 +36,59 @@ namespace XSD {
 
 class SCHEMA_EXPORT XSDType : public XmlElement
 {
-  public:
-    typedef QList<const XSDType*> List;
+public:
+    typedef QList<const XSDType *> List;
 
-    enum ContentModel
-    {
-      SIMPLE = 0,
-      COMPLEX,
-      MIXED
-    };
+    enum ContentModel { SIMPLE = 0, COMPLEX, MIXED };
 
-    enum
-    {
-      INVALID = 0,
-      STRING = 1,
-      INTEGER,
-      INT,
-      BYTE,
-      UBYTE,
-      POSINT,
-      UINT,
-      LONG,
-      ULONG,
-      SHORT,
-      USHORT,
-      DECIMAL,
-      FLOAT,
-      DOUBLE,
-      BOOLEAN,
-      TIME,
-      DATETIME,
-      DATE,
-      TOKEN,
-      QNAME,
-      NCNAME,
-      NMTOKEN,
-      NMTOKENS,
-      BASE64BIN,
-      HEXBIN,
-      ANY,
-      ANYTYPE,
-      ANYURI
+    enum {
+        INVALID = 0,
+        STRING = 1,
+        INTEGER,
+        INT,
+        BYTE,
+        UBYTE,
+        POSINT,
+        UINT,
+        LONG,
+        ULONG,
+        SHORT,
+        USHORT,
+        DECIMAL,
+        FLOAT,
+        DOUBLE,
+        BOOLEAN,
+        TIME,
+        DATETIME,
+        DATE,
+        TOKEN,
+        QNAME,
+        NCNAME,
+        NMTOKEN,
+        NMTOKENS,
+        BASE64BIN,
+        HEXBIN,
+        ANY,
+        ANYTYPE,
+        ANYURI
     };
 
     XSDType();
-    XSDType( const QString& );
-    XSDType( const XSDType &other );
+    XSDType(const QString &);
+    XSDType(const XSDType &other);
     virtual ~XSDType();
 
-    XSDType &operator=( const XSDType &other );
+    XSDType &operator=(const XSDType &other);
 
-    void setContentModel( ContentModel contentModel);
+    void setContentModel(ContentModel contentModel);
     ContentModel contentModel() const;
 
-    virtual bool isSimple() const
-    {
-      return true;
-    }
+    virtual bool isSimple() const { return true; }
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

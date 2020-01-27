@@ -31,137 +31,133 @@
 
 using namespace KXML;
 
-ParserXml::ParserXml() : mVerbose ( false )
+ParserXml::ParserXml() : mVerbose(false) {}
+
+void ParserXml::setVerbose(bool verbose)
 {
+    mVerbose = verbose;
 }
 
-void ParserXml::setVerbose( bool verbose )
+Schema::Document ParserXml::parse(QFile &file)
 {
-  mVerbose = verbose;
-}
-
-Schema::Document ParserXml::parse( QFile &file )
-{
-  if ( mVerbose ) {
-    qDebug() << "----ParserXml::parse() file";
-  }
-
-  QXmlStreamReader xml( &file );
-  
-  while ( !xml.atEnd() ) {
-    xml.readNext();
-
-    if ( xml.isStartElement() ) {
-      Schema::Element element = parseElement( xml );
-
-      mDocument.setStartElement( element );
-      mDocument.addElement( element );
+    if (mVerbose) {
+        qDebug() << "----ParserXml::parse() file";
     }
-  }
-  if ( xml.hasError() ) {
-    qDebug() << "XML parsing error in line" << xml.lineNumber() << ": " <<
-      xml.errorString();
-  }
-  
-  return mDocument;
+
+    QXmlStreamReader xml(&file);
+
+    while (!xml.atEnd()) {
+        xml.readNext();
+
+        if (xml.isStartElement()) {
+            Schema::Element element = parseElement(xml);
+
+            mDocument.setStartElement(element);
+            mDocument.addElement(element);
+        }
+    }
+    if (xml.hasError()) {
+        qDebug() << "XML parsing error in line" << xml.lineNumber() << ": " << xml.errorString();
+    }
+
+    return mDocument;
 }
 
-Schema::Element ParserXml::parseElement( QXmlStreamReader &xml, bool isArray )
+Schema::Element ParserXml::parseElement(QXmlStreamReader &xml, bool isArray)
 {
-  Schema::Element element;
-  
-  QString elementName = xml.name().toString();
+    Schema::Element element;
 
-//  qDebug() << "PARSE ELEMENT" << elementName;
+    QString elementName = xml.name().toString();
 
-  element.setIdentifier( elementName );
-  element.setName( elementName );
+    //  qDebug() << "PARSE ELEMENT" << elementName;
 
-  QXmlStreamAttributes attributes = xml.attributes();
+    element.setIdentifier(elementName);
+    element.setName(elementName);
 
-  foreach( QXmlStreamAttribute attribute, attributes ) {
-//          qDebug() << "  ATTRIBUTE" << attribute.name();
-    Schema::Attribute a;
-    a.setType( detectType( attribute.value().toString() ) );
-    a.setIdentifier( attribute.name().toString() );
-    a.setName( attribute.name().toString() );
+    QXmlStreamAttributes attributes = xml.attributes();
 
-    Schema::Relation relation( a.identifier() );
-//          qDebug() << "  ADD" << a.identifier() << element.identifier();
-    element.addAttributeRelation( relation );
+    foreach (QXmlStreamAttribute attribute, attributes) {
+        //          qDebug() << "  ATTRIBUTE" << attribute.name();
+        Schema::Attribute a;
+        a.setType(detectType(attribute.value().toString()));
+        a.setIdentifier(attribute.name().toString());
+        a.setName(attribute.name().toString());
 
-    if ( !mDocument.hasAttribute( a ) ) {
-      mDocument.addAttribute( a );
+        Schema::Relation relation(a.identifier());
+        //          qDebug() << "  ADD" << a.identifier() << element.identifier();
+        element.addAttributeRelation(relation);
+
+        if (!mDocument.hasAttribute(a)) {
+            mDocument.addAttribute(a);
+        }
     }
-  }
-      
-  while ( !xml.atEnd() ) {
-    xml.readNext();
 
-    if ( xml.isStartElement() ) {
-//      qDebug() << "  ELEMENT" << element.identifier();
-//      qDebug() << "  START ELEMENT" << xml.name();
+    while (!xml.atEnd()) {
+        xml.readNext();
 
-      bool childIsArray = xml.attributes().value( "type" ) == "array";    
+        if (xml.isStartElement()) {
+            //      qDebug() << "  ELEMENT" << element.identifier();
+            //      qDebug() << "  START ELEMENT" << xml.name();
 
-      Schema::Element childElement = parseElement( xml, childIsArray );
+            bool childIsArray = xml.attributes().value("type") == "array";
 
-      if ( element.hasElementRelation( childElement ) ) {
-        Schema::Relation &relation = element.elementRelation( childElement );
-        relation.setMaxOccurs( Schema::Relation::Unbounded );
-      } else {
-        Schema::Relation relation( childElement.identifier() );
-        if ( isArray ) {
-          relation.setMaxOccurs( Schema::Relation::Unbounded );
+            Schema::Element childElement = parseElement(xml, childIsArray);
+
+            if (element.hasElementRelation(childElement)) {
+                Schema::Relation &relation = element.elementRelation(childElement);
+                relation.setMaxOccurs(Schema::Relation::Unbounded);
+            } else {
+                Schema::Relation relation(childElement.identifier());
+                if (isArray) {
+                    relation.setMaxOccurs(Schema::Relation::Unbounded);
+                }
+                element.addElementRelation(relation);
+
+                if (!mDocument.hasElement(childElement)) {
+                    mDocument.addElement(childElement);
+                }
+            }
+        } else if (xml.isEndElement() && xml.name() == elementName) {
+            break;
+        } else {
+            if (xml.isCharacters() && !xml.isWhitespace()) {
+                element.setText(true);
+
+                QString text = xml.text().toString();
+
+                element.setType(detectType(text));
+            } else {
+                element.setType(Schema::Element::ComplexType);
+            }
         }
-        element.addElementRelation( relation );
+    }
 
-        if ( !mDocument.hasElement( childElement ) ) {
-          mDocument.addElement( childElement );
-        }
-      }
-    } else if ( xml.isEndElement() && xml.name() == elementName ) {
-      break;
+    return element;
+}
+
+Schema::Node::Type ParserXml::detectType(const QString &text)
+{
+    Schema::Node::Type type = Schema::Node::String;
+
+    QRegExp dateR("\\d{8}");
+    QRegExp dateTimeR("\\d{8}T\\d{6}Z");
+
+    if (dateR.exactMatch(text)) {
+        type = Schema::Node::Date;
+    } else if (dateTimeR.exactMatch(text)) {
+        type = Schema::Node::DateTime;
     } else {
-      if ( xml.isCharacters() && !xml.isWhitespace() ) {
-        element.setText( true );
-
-        QString text = xml.text().toString();
-
-        element.setType( detectType( text ) );
-      } else {
-        element.setType( Schema::Element::ComplexType );
-      }
+        bool ok;
+        double val = text.toDouble(&ok);
+        double intPart = 0;
+        if (ok) {
+            if (modf(val, &intPart) != 0) {
+                type = Schema::Node::Decimal;
+            } else {
+                type = Schema::Node::Integer;
+            }
+        }
     }
 
-  }
-
-  return element;
-}
-
-Schema::Node::Type ParserXml::detectType( const QString &text )
-{
-  Schema::Node::Type type = Schema::Node::String;
-
-  QRegExp dateR( "\\d{8}" );
-  QRegExp dateTimeR( "\\d{8}T\\d{6}Z" );
-
-  if ( dateR.exactMatch( text ) ) {
-    type = Schema::Node::Date;
-  } else if ( dateTimeR.exactMatch( text ) ) {
-    type = Schema::Node::DateTime; 
-  } else {
-    bool ok;
-    double val = text.toDouble( &ok );
-    double intPart = 0;
-    if ( ok ) {
-      if ( modf(val, &intPart) != 0 ) {
-        type = Schema::Node::Decimal;
-      } else {
-        type = Schema::Node::Integer;
-      }
-    }
-  }
-  
-  return type;
+    return type;
 }

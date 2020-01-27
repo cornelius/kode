@@ -21,20 +21,16 @@
 
 #include "messagehandler.h"
 
-MessageHandler::MessageHandler()
+MessageHandler::MessageHandler() {}
+
+MessageHandler::~MessageHandler() {}
+
+void MessageHandler::warning(const QString &message)
 {
+    qWarning("Warning: %s", qPrintable(message));
 }
 
-MessageHandler::~MessageHandler()
+void MessageHandler::error(const QString &message)
 {
-}
-
-void MessageHandler::warning( const QString &message )
-{
-  qWarning( "Warning: %s", qPrintable( message ) );
-}
-
-void MessageHandler::error( const QString &message )
-{
-  qWarning( "Error: %s", qPrintable( message ) );
+    qWarning("Error: %s", qPrintable(message));
 }

@@ -25,9 +25,9 @@ Prefs *Prefs::mSelf = 0;
 
 Prefs *Prefs::self()
 {
-  if ( !mSelf ) {
-    mSelf = new Prefs();
-  }
+    if (!mSelf) {
+        mSelf = new Prefs();
+    }
 
-  return mSelf;
+    return mSelf;
 }

@@ -34,23 +34,22 @@ namespace KXForms {
 
 class Select1 : public GuiElement
 {
-  public:
-    Select1( Manager *, const QString &label, QWidget *parent, Properties *p );
+public:
+    Select1(Manager *, const QString &label, QWidget *parent, Properties *p);
 
     void loadData();
     void saveData();
 
     int space() const;
 
-    void parseElement( const QDomElement &formElement );
+    void parseElement(const QDomElement &formElement);
 
-  private:
+private:
     QList<QRadioButton *> mRadioButtons;
     QComboBox *mComboBox;
     QListWidget *mListWidget;
     QStringList mValues;
 };
-
 }
 
 #endif

@@ -30,17 +30,17 @@
 
 class KXMLCOMMON_EXPORT NSManager
 {
-  public:
+public:
     NSManager();
 
-    void setPrefix( const QString &prefix, const QString &uri );
+    void setPrefix(const QString &prefix, const QString &uri);
 
-    QString prefix( const QString &uri ) const;
-    QString uri( const QString &prefix ) const;
+    QString prefix(const QString &uri) const;
+    QString uri(const QString &prefix) const;
 
-    void splitName( const QString &qname, QString &prefix, QString &localname ) const;
-    QString fullName( const QString &nameSpace, const QString &localname ) const;
-    QString fullName( const QName &name ) const;
+    void splitName(const QString &qname, QString &prefix, QString &localname) const;
+    QString fullName(const QString &nameSpace, const QString &localname) const;
+    QString fullName(const QName &name) const;
 
     QStringList prefixes() const;
     QStringList uris() const;
@@ -53,9 +53,8 @@ class KXMLCOMMON_EXPORT NSManager
 
     void dump() const;
 
-  private:
+private:
     QMultiMap<QString, QString> mMap;
 };
 
 #endif
-

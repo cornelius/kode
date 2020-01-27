@@ -32,23 +32,23 @@ class QPushButton;
 
 class BinaryInputField : public SimpleInputField
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    BinaryInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type );
+public:
+    BinaryInputField(const QString &name, const QString &typeName, const XSD::SimpleType *type);
 
-    virtual void setXMLData( const QDomElement &element );
-    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+    virtual void setXMLData(const QDomElement &element);
+    virtual void xmlData(QDomDocument &document, QDomElement &parent);
 
-    virtual void setData( const QString &data );
+    virtual void setData(const QString &data);
     virtual QString data() const;
 
-    virtual QWidget *createWidget( QWidget *parent );
+    virtual QWidget *createWidget(QWidget *parent);
 
-  private slots:
-    void valueChanged( const QByteArray &value );
+private slots:
+    void valueChanged(const QByteArray &value);
 
-  private:
+private:
     BinaryWidget *mInputWidget;
 
     QByteArray mValue;
@@ -57,27 +57,27 @@ class BinaryInputField : public SimpleInputField
 
 class BinaryWidget : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    BinaryWidget( QWidget *parent );
+public:
+    BinaryWidget(QWidget *parent);
 
-    void setData( const QByteArray &data );
+    void setData(const QByteArray &data);
 
-  signals:
-    void valueChanged( const QByteArray &data );
+signals:
+    void valueChanged(const QByteArray &data);
 
-  private slots:
+private slots:
     void load();
     void save();
 
-  private:
+private:
     QByteArray mData;
 
     QGridLayout *mLayout;
     QPushButton *mLoadButton;
     QPushButton *mSaveButton;
-    QWidget* mMainWidget;
+    QWidget *mMainWidget;
 };
 
 #endif

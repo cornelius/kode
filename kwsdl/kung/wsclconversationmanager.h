@@ -28,16 +28,16 @@
 
 class WSCLConversationManager : public ConversationManager
 {
-  public:
+public:
     WSCLConversationManager();
-    WSCLConversationManager( const WSCL::Conversation &conversation );
+    WSCLConversationManager(const WSCL::Conversation &conversation);
     virtual ~WSCLConversationManager() {}
 
-    void setConversation( const WSCL::Conversation &conversation );
+    void setConversation(const WSCL::Conversation &conversation);
 
-    QStringList nextActions( const QString &currentAction, const QString &condition = QString() );
+    QStringList nextActions(const QString &currentAction, const QString &condition = QString());
 
-  private:
+private:
     WSCL::Conversation mConversation;
 };
 

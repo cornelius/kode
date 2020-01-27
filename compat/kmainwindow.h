@@ -27,13 +27,13 @@ class KStatusBar;
 
 class KMainWindow : public QMainWindow
 {
-  public:
+public:
     void setupGUI();
-    
+
     KActionCollection *actionCollection();
 
-    void setCaption( const QString & );
-    
+    void setCaption(const QString &);
+
     KStatusBar *statusBar();
 };
 

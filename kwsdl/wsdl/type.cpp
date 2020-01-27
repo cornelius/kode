@@ -29,48 +29,41 @@
 
 using namespace KWSDL;
 
-Type::Type()
-{
-}
+Type::Type() {}
 
-Type::Type( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+Type::Type(const QString &nameSpace) : Element(nameSpace) {}
 
-Type::~Type()
-{
-}
+Type::~Type() {}
 
-void Type::setType( const XSD::Types &types )
+void Type::setType(const XSD::Types &types)
 {
-  mTypes = types;
+    mTypes = types;
 }
 
 XSD::Types Type::types() const
 {
-  return mTypes;
+    return mTypes;
 }
 
-void Type::loadXML( ParserContext *context, const QDomElement &element )
+void Type::loadXML(ParserContext *context, const QDomElement &element)
 {
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    QString tagName = context->namespaceManager()->fullName( XSD::Parser::schemaUri(), "schema" );
-    if ( child.tagName() == tagName ) {
-      XSD::Parser parser( nameSpace() );
-      parser.parseSchemaTag( context, child );
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        QString tagName = context->namespaceManager()->fullName(XSD::Parser::schemaUri(), "schema");
+        if (child.tagName() == tagName) {
+            XSD::Parser parser(nameSpace());
+            parser.parseSchemaTag(context, child);
 
-      mTypes = parser.types();
+            mTypes = parser.types();
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void Type::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void Type::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( document );
-  Q_UNUSED( parent );
+    Q_UNUSED(context);
+    Q_UNUSED(document);
+    Q_UNUSED(parent);
 }

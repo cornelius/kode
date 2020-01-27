@@ -27,54 +27,50 @@ using namespace KODE;
 
 class Style::Private
 {
-  public:
+public:
 };
 
-Style::Style()
-  : d( 0 )
-{
-}
+Style::Style() : d(0) {}
 
-Style::Style( const Style &/*other*/ )
-  : d( 0 )
+Style::Style(const Style & /*other*/) : d(0)
 {
-//  *d = *other.d;
+    //  *d = *other.d;
 }
 
 Style::~Style()
 {
-  delete d;
+    delete d;
 }
 
-Style& Style::operator=( const Style &other )
+Style &Style::operator=(const Style &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    // *d = *other,d;
+
     return *this;
-
-  // *d = *other,d;
-
-  return *this;
 }
 
-QString Style::className( const QString &str )
+QString Style::className(const QString &str)
 {
-  Q_ASSERT(!str.isEmpty());
-  QString cl = upperFirst( str );
-  return cl;
+    Q_ASSERT(!str.isEmpty());
+    QString cl = upperFirst(str);
+    return cl;
 }
 
-QString Style::upperFirst( const QString &str )
+QString Style::upperFirst(const QString &str)
 {
-  if ( str.isEmpty() )
-    return str;
+    if (str.isEmpty())
+        return str;
 
-  return str[ 0 ].toUpper() + str.mid( 1 );
+    return str[0].toUpper() + str.mid(1);
 }
 
-QString Style::lowerFirst( const QString &str )
+QString Style::lowerFirst(const QString &str)
 {
-  if ( str.isEmpty() )
-    return str;
+    if (str.isEmpty())
+        return str;
 
-  return str[ 0 ].toLower() + str.mid( 1 );
+    return str[0].toLower() + str.mid(1);
 }

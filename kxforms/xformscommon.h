@@ -28,26 +28,25 @@ namespace KXForms {
 
 class XFormsCommon
 {
-  public:
+public:
     XFormsCommon();
 
-    void setLabel( const QString &label ) { mLabel = label; }
+    void setLabel(const QString &label) { mLabel = label; }
     QString label() const { return mLabel; }
-    
-    void setHint( const QString &hint ) { mHint = hint; }
+
+    void setHint(const QString &hint) { mHint = hint; }
     QString hint() const { return mHint; }
-    
-    void setTip( const QString &tip ) { mTip = tip; }
+
+    void setTip(const QString &tip) { mTip = tip; }
     QString tip() const { return mTip; }
 
-    static XFormsCommon parseElement( const QDomElement & );
-    
-  private:
+    static XFormsCommon parseElement(const QDomElement &);
+
+private:
     QString mLabel;
     QString mHint;
     QString mTip;
 };
-
 }
 
 #endif

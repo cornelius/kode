@@ -35,7 +35,7 @@ namespace KODE {
  */
 class KODE_EXPORT Style
 {
-  public:
+public:
     /**
      * Creates a new style.
      */
@@ -44,7 +44,7 @@ class KODE_EXPORT Style
     /**
      * Creates a new style from @param other.
      */
-    Style( const Style &other );
+    Style(const Style &other);
 
     /**
      * Destroys the style.
@@ -54,7 +54,7 @@ class KODE_EXPORT Style
     /**
      * Assignment operator.
      */
-    Style& operator=( const Style &other );
+    Style &operator=(const Style &other);
 
     /**
      * Converts the class name.
@@ -62,25 +62,24 @@ class KODE_EXPORT Style
      * The default implementation upper cases the first
      * character of the name.
      */
-    virtual QString className( const QString &str );
+    virtual QString className(const QString &str);
 
     /**
      * Returns a new version of @param str with the first
      * character be uppercase.
      */
-    static QString upperFirst( const QString &str );
+    static QString upperFirst(const QString &str);
 
     /**
      * Returns a new version of @param str with the first
      * character be lowercase.
      */
-    static QString lowerFirst( const QString &str );
+    static QString lowerFirst(const QString &str);
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

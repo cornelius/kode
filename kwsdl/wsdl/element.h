@@ -30,23 +30,21 @@ namespace KWSDL {
 
 class KWSDL_EXPORT Element
 {
-  public:
+public:
     Element();
-    Element( const QString &nameSpace );
+    Element(const QString &nameSpace);
     ~Element();
 
-    void setNameSpace( const QString &nameSpace );
+    void setNameSpace(const QString &nameSpace);
     QString nameSpace() const;
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
-  private:
+private:
     QString mNameSpace;
     QString mDocumentation;
 };
-
 }
 
 #endif // KWSDL_ELEMENT_H
-

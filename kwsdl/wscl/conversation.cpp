@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -23,100 +23,96 @@
 
 using namespace WSCL;
 
-Conversation::Conversation()
-{
-}
+Conversation::Conversation() {}
 
-Conversation::~Conversation()
-{
-}
+Conversation::~Conversation() {}
 
-void Conversation::setName( const QString &name )
+void Conversation::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Conversation::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Conversation::setVersion( const QString &version )
+void Conversation::setVersion(const QString &version)
 {
-  mVersion = version;
+    mVersion = version;
 }
 
 QString Conversation::version() const
 {
-  return mVersion;
+    return mVersion;
 }
 
-void Conversation::setDescription( const QString &description )
+void Conversation::setDescription(const QString &description)
 {
-  mDescription = description;
+    mDescription = description;
 }
 
 QString Conversation::description() const
 {
-  return mDescription;
+    return mDescription;
 }
 
-void Conversation::setNameSpace( const QString &nameSpace )
+void Conversation::setNameSpace(const QString &nameSpace)
 {
-  mNameSpace = nameSpace;
+    mNameSpace = nameSpace;
 }
 
 QString Conversation::nameSpace() const
 {
-  return mNameSpace;
+    return mNameSpace;
 }
 
-void Conversation::setSchema( const QString &schema )
+void Conversation::setSchema(const QString &schema)
 {
-  mSchema = schema;
+    mSchema = schema;
 }
 
 QString Conversation::schema() const
 {
-  return mSchema;
+    return mSchema;
 }
 
-void Conversation::setInitialInteraction( const QString &initialInteraction )
+void Conversation::setInitialInteraction(const QString &initialInteraction)
 {
-  mInitialInteraction = initialInteraction;
+    mInitialInteraction = initialInteraction;
 }
 
 QString Conversation::initialInteraction() const
 {
-  return mInitialInteraction;
+    return mInitialInteraction;
 }
 
-void Conversation::setFinalInteraction( const QString &finalInteraction )
+void Conversation::setFinalInteraction(const QString &finalInteraction)
 {
-  mFinalInteraction = finalInteraction;
+    mFinalInteraction = finalInteraction;
 }
 
 QString Conversation::finalInteraction() const
 {
-  return mFinalInteraction;
+    return mFinalInteraction;
 }
 
-void Conversation::setInteractions( const Interaction::List &interactions )
+void Conversation::setInteractions(const Interaction::List &interactions)
 {
-  mInteractions = interactions;
+    mInteractions = interactions;
 }
 
 Interaction::List Conversation::interactions() const
 {
-  return mInteractions;
+    return mInteractions;
 }
 
-void Conversation::setTransitions( const Transition::List &transitions )
+void Conversation::setTransitions(const Transition::List &transitions)
 {
-  mTransitions = transitions;
+    mTransitions = transitions;
 }
 
 Transition::List Conversation::transitions() const
 {
-  return mTransitions;
+    return mTransitions;
 }

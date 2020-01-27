@@ -23,132 +23,129 @@
 
 #include <kdebug.h>
 
-XmlBuilder::Node::Node( const QString &text )
-  : mText( text ), mXml( 0 )
-{
-}
+XmlBuilder::Node::Node(const QString &text) : mText(text), mXml(0) {}
 
-XmlBuilder::Node::Node( XmlBuilder *xml )
-  : mXml( xml )
-{
-}
+XmlBuilder::Node::Node(XmlBuilder *xml) : mXml(xml) {}
 
 bool XmlBuilder::Node::isText() const
 {
-  return !mXml;
+    return !mXml;
 }
 
 bool XmlBuilder::Node::isXml() const
 {
-  return mXml;
+    return mXml;
 }
 
 QString XmlBuilder::Node::text() const
 {
-  return mText;
+    return mText;
 }
 
 XmlBuilder *XmlBuilder::Node::xml() const
 {
-  return mXml;
+    return mXml;
 }
 
-
-XmlBuilder::XmlBuilder( const QString &tagName )
-  : mTagName( tagName ), mHasText( false ), mHasChildElements( false )
+XmlBuilder::XmlBuilder(const QString &tagName)
+    : mTagName(tagName), mHasText(false), mHasChildElements(false)
 {
 }
 
 XmlBuilder::~XmlBuilder()
 {
-  foreach( Node n, mChildren ) {
-    if ( n.xml() ) delete n.xml();
-  }
+    foreach (Node n, mChildren) {
+        if (n.xml())
+            delete n.xml();
+    }
 }
 
-XmlBuilder *XmlBuilder::tag( const QString &tagName, const QString &text )
+XmlBuilder *XmlBuilder::tag(const QString &tagName, const QString &text)
 {
-  XmlBuilder *builder = new XmlBuilder( tagName );
-  builder->text( text );
+    XmlBuilder *builder = new XmlBuilder(tagName);
+    builder->text(text);
 
-  mChildren.append( Node( builder ) );
-  mHasChildElements = true;
+    mChildren.append(Node(builder));
+    mHasChildElements = true;
 
-  return builder;
+    return builder;
 }
 
-XmlBuilder *XmlBuilder::attribute( const QString &name, const QString &value )
+XmlBuilder *XmlBuilder::attribute(const QString &name, const QString &value)
 {
-  mAttributes[ name ] = value;
+    mAttributes[name] = value;
 
-  return this;
+    return this;
 }
 
-XmlBuilder *XmlBuilder::text( const QString &text )
+XmlBuilder *XmlBuilder::text(const QString &text)
 {
-  if ( !text.isEmpty() ) {
-    mChildren.append( Node( text ) );
-    mHasText = true;
-  }
-
-  return this;
-}
-
-QString XmlBuilder::print( int indentation, bool newLine ) const
-{
-  QString out = indent( indentation ) + '<' + mTagName;
-
-  QMap<QString,QString>::ConstIterator it;
-  for( it = mAttributes.begin(); it != mAttributes.end(); ++it ) {
-    out += " " + it.key() + "=\"" + it.value() + "\"";
-  }
-
-  if ( isEmpty() ) {
-    out += "/>\n";
-  } else {
-    out += '>';
-    if ( !hasText() ) out += '\n';
-
-    foreach( Node child, mChildren ) {
-      if ( child.isText() ) {
-        out += child.text();
-      } else {
-        if ( hasText() ) {
-          out += child.xml()->print( 0, false );
-        } else {
-          out += child.xml()->print( indentation + 2 );
-        }
-      }
+    if (!text.isEmpty()) {
+        mChildren.append(Node(text));
+        mHasText = true;
     }
 
-    if ( !hasText() ) out += indent( indentation );
-    out += "</" + mTagName + '>';
-    if ( newLine ) out += '\n';
-  }
-
-  return out;
+    return this;
 }
 
-QString XmlBuilder::indent( int indent ) const
+QString XmlBuilder::print(int indentation, bool newLine) const
 {
-  QString txt;
-  for( int i = 0; i < indent; ++i ) {
-    txt += ' ';
-  }
-  return txt;
+    QString out = indent(indentation) + '<' + mTagName;
+
+    QMap<QString, QString>::ConstIterator it;
+    for (it = mAttributes.begin(); it != mAttributes.end(); ++it) {
+        out += " " + it.key() + "=\"" + it.value() + "\"";
+    }
+
+    if (isEmpty()) {
+        out += "/>\n";
+    } else {
+        out += '>';
+        if (!hasText())
+            out += '\n';
+
+        foreach (Node child, mChildren) {
+            if (child.isText()) {
+                out += child.text();
+            } else {
+                if (hasText()) {
+                    out += child.xml()->print(0, false);
+                } else {
+                    out += child.xml()->print(indentation + 2);
+                }
+            }
+        }
+
+        if (!hasText())
+            out += indent(indentation);
+        out += "</" + mTagName + '>';
+        if (newLine)
+            out += '\n';
+    }
+
+    return out;
+}
+
+QString XmlBuilder::indent(int indent) const
+{
+    QString txt;
+    for (int i = 0; i < indent; ++i) {
+        txt += ' ';
+    }
+    return txt;
 }
 
 bool XmlBuilder::isEmpty() const
 {
-  return mChildren.isEmpty();
+    return mChildren.isEmpty();
 }
 
 bool XmlBuilder::hasText() const
 {
-  return mHasText;
+    return mHasText;
 }
 
 bool XmlBuilder::hasChildElements() const
 {
-  return mHasChildElements;
+    return mHasChildElements;
 }

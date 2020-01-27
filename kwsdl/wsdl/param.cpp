@@ -27,63 +27,57 @@
 
 using namespace KWSDL;
 
-Param::Param()
-{
-}
+Param::Param() {}
 
-Param::Param( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+Param::Param(const QString &nameSpace) : Element(nameSpace) {}
 
-Param::~Param()
-{
-}
+Param::~Param() {}
 
-void Param::setName( const QString &name )
+void Param::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Param::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Param::setMessage( const QName &message )
+void Param::setMessage(const QName &message)
 {
-  mMessage = message;
+    mMessage = message;
 }
 
 QName Param::message() const
 {
-  return mMessage;
+    return mMessage;
 }
 
-void Param::loadXML( ParserContext *context, const QDomElement &element )
+void Param::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mName = element.attribute( "name" );
-  mMessage = element.attribute( "message" );
-  if ( mMessage.isEmpty() )
-    context->messageHandler()->warning( "Param: 'message' required" );
-  else {
-    if ( mMessage.prefix().isEmpty() )
-      mMessage.setNameSpace( nameSpace() );
+    mName = element.attribute("name");
+    mMessage = element.attribute("message");
+    if (mMessage.isEmpty())
+        context->messageHandler()->warning("Param: 'message' required");
+    else {
+        if (mMessage.prefix().isEmpty())
+            mMessage.setNameSpace(nameSpace());
+        else
+            mMessage.setNameSpace(context->namespaceManager()->uri(mMessage.prefix()));
+    }
+}
+
+void Param::saveXML(ParserContext *context, const QString &name, QDomDocument &document,
+                    QDomElement &parent) const
+{
+    QDomElement element = document.createElement(name);
+    parent.appendChild(element);
+
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
+
+    if (!mMessage.isEmpty())
+        element.setAttribute("message", mMessage.qname());
     else
-      mMessage.setNameSpace( context->namespaceManager()->uri( mMessage.prefix() ) );
-  }
-}
-
-void Param::saveXML( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const
-{
-  QDomElement element = document.createElement( name );
-  parent.appendChild( element );
-
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
-
-  if ( !mMessage.isEmpty() )
-    element.setAttribute( "message", mMessage.qname() );
-  else
-    context->messageHandler()->warning( "Param: 'message' required" );
+        context->messageHandler()->warning("Param: 'message' required");
 }

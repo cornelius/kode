@@ -27,16 +27,15 @@ namespace KXForms {
 
 class LayoutStyleAction : public EditorAction
 {
-  Q_OBJECT
-  public:
-    LayoutStyleAction( Editor *e );
+    Q_OBJECT
+public:
+    LayoutStyleAction(Editor *e);
     ~LayoutStyleAction();
 
-    void perform( GuiElement *e );
+    void perform(GuiElement *e);
 
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
+Q_SIGNALS:
+    void hintGenerated(const Hint &hint);
 };
-
 }
 #endif

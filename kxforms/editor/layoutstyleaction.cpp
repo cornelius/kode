@@ -33,39 +33,36 @@
 
 using namespace KXForms;
 
-LayoutStyleAction::LayoutStyleAction( Editor *e)
-: EditorAction( e )
+LayoutStyleAction::LayoutStyleAction(Editor *e) : EditorAction(e) {}
+
+LayoutStyleAction::~LayoutStyleAction() {}
+
+void LayoutStyleAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-LayoutStyleAction::~LayoutStyleAction()
-{
-}
+    QString style;
+    QStringList list;
+    bool ok;
+    int current = e->properties()->layoutStyle;
+    list << "horizontal"
+         << "vertical";
+    style = KInputDialog::getItem(i18n("Select the layout style"),
+                                  i18n("Layout style of %1:", e->ref().toString()), list, current,
+                                  false, &ok);
 
-void LayoutStyleAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    if (!ok) {
+        editor()->finishEdit();
+        return;
+    }
 
-  QString style;
-  QStringList list;
-  bool ok;
-  int current = e->properties()->layoutStyle;
-  list << "horizontal" << "vertical";
-  style = KInputDialog::getItem( i18n("Select the layout style"), i18n("Layout style of %1:", e->ref().toString()),
-      list, current, false, &ok );
+    Hint h;
+    h.setRef(e->id());
+    h.setValue(Hint::LayoutStyle, style);
+    emit hintGenerated(h);
 
-  if( !ok ) {
     editor()->finishEdit();
-    return;
-  }
-
-  Hint h;
-  h.setRef( e->id() );
-  h.setValue( Hint::LayoutStyle, style );
-  emit hintGenerated( h );
-
-  editor()->finishEdit();
 }
 
 #include "layoutstyleaction.moc"

@@ -32,15 +32,15 @@ namespace RNG {
 
 class KSCHEMA_EXPORT Pattern
 {
-  public:
+public:
     Pattern();
 
     bool isEmpty();
 
     QString asString();
 
-    void merge( Pattern p );
-  
+    void merge(Pattern p);
+
     bool optional;
     bool zeroOrMore;
     bool oneOrMore;
@@ -49,11 +49,11 @@ class KSCHEMA_EXPORT Pattern
 
 class KSCHEMA_EXPORT Reference
 {
-  public:
+public:
     typedef QList<Reference *> List;
-  
-    Reference() : substituted( false ) {}
-  
+
+    Reference() : substituted(false) {}
+
     QString name;
     Pattern pattern;
 
@@ -62,9 +62,9 @@ class KSCHEMA_EXPORT Reference
 
 class KSCHEMA_EXPORT Attribute
 {
-  public:
+public:
     typedef QList<Attribute *> List;
-  
+
     QString name;
     QStringList choices;
     QString defaultValue;
@@ -73,11 +73,11 @@ class KSCHEMA_EXPORT Attribute
 
 class KSCHEMA_EXPORT Element
 {
-  public:
+public:
     typedef QList<Element *> List;
-  
+
     Element();
-  
+
     QString name;
     Element::List elements;
     Attribute::List attributes;
@@ -89,47 +89,40 @@ class KSCHEMA_EXPORT Element
 
 class KSCHEMA_EXPORT ParserRelaxng
 {
-  public:
+public:
     ParserRelaxng();
 
-    Element *parse( const QDomElement &docElement );
+    Element *parse(const QDomElement &docElement);
 
-    Reference *parseReference( const QDomElement &referenceElement );
-    bool parseAttribute( const QDomElement &attributeElement,
-                               Attribute *a );
-    bool parseElement( const QDomElement &elementElement, Element *e,
-                       Pattern pattern );
+    Reference *parseReference(const QDomElement &referenceElement);
+    bool parseAttribute(const QDomElement &attributeElement, Attribute *a);
+    bool parseElement(const QDomElement &elementElement, Element *e, Pattern pattern);
 
-    void substituteReferences( Element *s );
+    void substituteReferences(Element *s);
 
-    Schema::Document convertToSchema( Element *start );
-    Schema::Element convertToSchemaElement( Element *e );
-    Schema::Attribute convertToSchemaAttribute( const QString &path,
-      Attribute *a );
-    Schema::Relation convertToRelation( const Pattern &pattern,
-      const QString &id );
+    Schema::Document convertToSchema(Element *start);
+    Schema::Element convertToSchemaElement(Element *e);
+    Schema::Attribute convertToSchemaAttribute(const QString &path, Attribute *a);
+    Schema::Relation convertToRelation(const Pattern &pattern, const QString &id);
 
-    void doIndent( int cols );
+    void doIndent(int cols);
 
-    void dumpPattern( Pattern pattern );
-    void dumpReferences( const Reference::List &references,
-                         int indent );
-    void dumpAttributes( const Attribute::List &attributes,
-                         int indent );
-    void dumpElements( const Element::List &elements, int indent );
-    void dumpElement( Element *element, int indent );
-    void dumpTree( Element *s );
+    void dumpPattern(Pattern pattern);
+    void dumpReferences(const Reference::List &references, int indent);
+    void dumpAttributes(const Attribute::List &attributes, int indent);
+    void dumpElements(const Element::List &elements, int indent);
+    void dumpElement(Element *element, int indent);
+    void dumpTree(Element *s);
     void dumpDefinitionMap();
 
-    void setVerbose( bool verbose = true );
+    void setVerbose(bool verbose = true);
 
-  private:
-    QMap<QString,Element::List> mDefinitionMap;
-    
+private:
+    QMap<QString, Element::List> mDefinitionMap;
+
     Schema::Document mDocument;
     bool mVerbose;
 };
-
 }
 
 #endif

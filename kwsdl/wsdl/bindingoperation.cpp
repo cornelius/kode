@@ -28,73 +28,68 @@
 
 using namespace KWSDL;
 
-BindingOperation::BindingOperation()
-{
-}
+BindingOperation::BindingOperation() {}
 
-BindingOperation::BindingOperation( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+BindingOperation::BindingOperation(const QString &nameSpace) : Element(nameSpace) {}
 
-BindingOperation::~BindingOperation()
-{
-}
+BindingOperation::~BindingOperation() {}
 
-void BindingOperation::setName( const QString &name )
+void BindingOperation::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString BindingOperation::name() const
 {
-  return mName;
+    return mName;
 }
 
-void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context, const QDomElement &element )
+void BindingOperation::loadXML(AbstractBinding *binding, ParserContext *context,
+                               const QDomElement &element)
 {
-  mName = element.attribute( "name" );
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( "BindingOperation: 'name' required" );
+    mName = element.attribute("name");
+    if (mName.isEmpty())
+        context->messageHandler()->warning("BindingOperation: 'name' required");
 
-  binding->parseOperation( context, mName, element );
+    binding->parseOperation(context, mName, element);
 
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    QName tagName = child.tagName();
-    if ( tagName.localName() == "input" ) {
-      binding->parseOperationInput( context, mName, child );
-    } else if ( tagName.localName() == "output" ) {
-      binding->parseOperationOutput( context, mName, child );
-    } else if ( tagName.localName() == "fault" ) {
-      binding->parseOperationFault( context, mName, child );
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        QName tagName = child.tagName();
+        if (tagName.localName() == "input") {
+            binding->parseOperationInput(context, mName, child);
+        } else if (tagName.localName() == "output") {
+            binding->parseOperationOutput(context, mName, child);
+        } else if (tagName.localName() == "fault") {
+            binding->parseOperationFault(context, mName, child);
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void BindingOperation::saveXML( const AbstractBinding *binding, ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void BindingOperation::saveXML(const AbstractBinding *binding, ParserContext *context,
+                               QDomDocument &document, QDomElement &parent) const
 {
-  QDomElement element = document.createElement( "operation" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("operation");
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
-  else
-    context->messageHandler()->warning( "BindingOperation: 'name' required" );
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
+    else
+        context->messageHandler()->warning("BindingOperation: 'name' required");
 
-  binding->synthesizeOperation( context, mName, document, element );
+    binding->synthesizeOperation(context, mName, document, element);
 
-  QDomElement inputElement = document.createElement( "input" );
-  element.appendChild( inputElement );
-  binding->synthesizeOperationInput( context, mName, document, inputElement );
+    QDomElement inputElement = document.createElement("input");
+    element.appendChild(inputElement);
+    binding->synthesizeOperationInput(context, mName, document, inputElement);
 
-  QDomElement outputElement = document.createElement( "output" );
-  element.appendChild( outputElement );
-  binding->synthesizeOperationOutput( context, mName, document, outputElement );
+    QDomElement outputElement = document.createElement("output");
+    element.appendChild(outputElement);
+    binding->synthesizeOperationOutput(context, mName, document, outputElement);
 
-  QDomElement faultElement = document.createElement( "fault" );
-  element.appendChild( faultElement );
-  binding->synthesizeOperationFault( context, mName, document, faultElement );
+    QDomElement faultElement = document.createElement("fault");
+    element.appendChild(faultElement);
+    binding->synthesizeOperationFault(context, mName, document, faultElement);
 }

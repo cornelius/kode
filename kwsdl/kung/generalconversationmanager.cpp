@@ -21,29 +21,28 @@
 
 #include "generalconversationmanager.h"
 
-GeneralConversationManager::GeneralConversationManager( const KWSDL::WSDL &wsdl )
-  : mWSDL( wsdl )
+GeneralConversationManager::GeneralConversationManager(const KWSDL::WSDL &wsdl) : mWSDL(wsdl)
 {
-  KWSDL::PortType::List porttypes = mWSDL.definitions().portTypes();
-  KWSDL::PortType::List::ConstIterator it;
-  for ( it = porttypes.constBegin(); it != porttypes.constEnd(); ++it ) {
-    KWSDL::PortType porttype = (*it);
-    const KWSDL::Operation::List operations = porttype.operations();
-    KWSDL::Operation::List::ConstIterator opIt;
-    for ( opIt = operations.constBegin(); opIt != operations.constEnd(); ++opIt ) {
-      mInputMessages.append( mWSDL.findMessage( (*opIt).input().message() ) );
-      mOutputMessages.append( mWSDL.findMessage( (*opIt).output().message() ) );
+    KWSDL::PortType::List porttypes = mWSDL.definitions().portTypes();
+    KWSDL::PortType::List::ConstIterator it;
+    for (it = porttypes.constBegin(); it != porttypes.constEnd(); ++it) {
+        KWSDL::PortType porttype = (*it);
+        const KWSDL::Operation::List operations = porttype.operations();
+        KWSDL::Operation::List::ConstIterator opIt;
+        for (opIt = operations.constBegin(); opIt != operations.constEnd(); ++opIt) {
+            mInputMessages.append(mWSDL.findMessage((*opIt).input().message()));
+            mOutputMessages.append(mWSDL.findMessage((*opIt).output().message()));
+        }
     }
-  }
 }
 
-QStringList GeneralConversationManager::nextActions( const QString&, const QString& )
+QStringList GeneralConversationManager::nextActions(const QString &, const QString &)
 {
-  QStringList actions;
+    QStringList actions;
 
-  KWSDL::Message::List::ConstIterator it;
-  for ( it = mInputMessages.constBegin(); it != mInputMessages.constEnd(); ++it )
-    actions.append( (*it).name() );
+    KWSDL::Message::List::ConstIterator it;
+    for (it = mInputMessages.constBegin(); it != mInputMessages.constEnd(); ++it)
+        actions.append((*it).name());
 
-  return actions;
+    return actions;
 }

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -30,27 +30,26 @@ namespace WSCL {
 
 class WSCL_EXPORT Transition
 {
-  public:
+public:
     typedef QList<Transition> List;
 
     Transition();
     ~Transition();
 
-    void setSourceInteraction( const QString &sourceInteraction );
+    void setSourceInteraction(const QString &sourceInteraction);
     QString sourceInteraction() const;
 
-    void setDestinationInteraction( const QString &destinationInteraction );
+    void setDestinationInteraction(const QString &destinationInteraction);
     QString destinationInteraction() const;
 
-    void setSourceInteractionCondition( const QString &sourceInteractionCondition );
+    void setSourceInteractionCondition(const QString &sourceInteractionCondition);
     QString sourceInteractionCondition() const;
 
-  private:
+private:
     QString mSourceInteraction;
     QString mDestinationInteraction;
     QString mSourceInteractionCondition;
 };
-
 }
 
 #endif

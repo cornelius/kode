@@ -31,53 +31,54 @@ namespace KXForms {
 
 class FormCreator
 {
-  public:
+public:
     FormCreator();
 
-    QString create( const Schema::Document & );
+    QString create(const Schema::Document &);
 
     /**
       Set hints. Previously set hints are removed.
     */
-    void setHints( const Hints & );
+    void setHints(const Hints &);
     /**
       Set hints. Previously set hints are kept, unless the new hints contain a
       hint for the same reference, which overrides the old hint.
     */
-    void mergeHints( const Hints & );
+    void mergeHints(const Hints &);
 
     Hints hints() const;
 
-  protected:
-    void createForm( XmlBuilder *xml, const Schema::Element &element );
-    void createDefaults( XmlBuilder *xml );
+protected:
+    void createForm(XmlBuilder *xml, const Schema::Element &element);
+    void createDefaults(XmlBuilder *xml);
 
-    void createLabel( XmlBuilder *parent, const Schema::Node &node );
+    void createLabel(XmlBuilder *parent, const Schema::Node &node);
 
-    QString createListItemLabel( const Reference &r, const Reference &path, const QString &itemType );
-    QString createListHeader( const Reference &r );
-    QString getLabel( const Reference &ref, const QString &fallback = QString(),
-      bool pluralize = false );
+    QString createListItemLabel(const Reference &r, const Reference &path, const QString &itemType);
+    QString createListHeader(const Reference &r);
+    QString getLabel(const Reference &ref, const QString &fallback = QString(),
+                     bool pluralize = false);
 
-    QString humanizeString( const QString &, bool pluralize = false );
+    QString humanizeString(const QString &, bool pluralize = false);
 
-  private:
-    void parseComplexType( const Schema::Element &r, XmlBuilder *xml, bool topLevel, Reference path );
-    void parseElement( const Schema::Element &element, XmlBuilder *xml );
-    void parseAttributes( const Schema::Element &element, XmlBuilder *xml, Reference path = Reference() );
-    void applyCommonHints( XmlBuilder *xml, const Reference &ref );
-    QList< Reference > collectSubElements( const Schema::Element &element, const Reference &path, int depth, bool includeAttributes );
+private:
+    void parseComplexType(const Schema::Element &r, XmlBuilder *xml, bool topLevel, Reference path);
+    void parseElement(const Schema::Element &element, XmlBuilder *xml);
+    void parseAttributes(const Schema::Element &element, XmlBuilder *xml,
+                         Reference path = Reference());
+    void applyCommonHints(XmlBuilder *xml, const Reference &ref);
+    QList<Reference> collectSubElements(const Schema::Element &element, const Reference &path,
+                                        int depth, bool includeAttributes);
 
+    bool choiceOnly(const Schema::Element &element);
 
-    bool choiceOnly( const Schema::Element &element );
-  private:
+private:
     Schema::Document mDocument;
 
     Hints mHints;
 
     QStringList mCollapsedForms;
 };
-
 }
 
 #endif

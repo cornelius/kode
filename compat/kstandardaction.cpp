@@ -20,37 +20,20 @@
 
 #include "kstandardaction.h"
 
-namespace KStandardAction
-{
+namespace KStandardAction {
 
-void openNew(const QObject *recvr, const char *slot,
-  KActionCollection* parent, const char *name )
-{
-}
+void openNew(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name) {}
 
-void open(const QObject *recvr, const char *slot,
-  KActionCollection* parent, const char *name )
-{
-}
+void open(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name) {}
 
-void save(const QObject *recvr, const char *slot,
-  KActionCollection* parent, const char *name )
-{
-}
+void save(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name) {}
 
-void saveAs(const QObject *recvr, const char *slot,
-  KActionCollection* parent, const char *name )
+void saveAs(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name) {}
+
+void quit(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name) {}
+
+void preferences(const QObject *recvr, const char *slot, KActionCollection *parent,
+                 const char *name)
 {
 }
-
-void quit(const QObject *recvr, const char *slot,
-  KActionCollection* parent, const char *name )
-{
-}
-
-void preferences(const QObject *recvr, const char *slot,
-  KActionCollection* parent, const char *name )
-{
-}
-
 }

@@ -27,7 +27,7 @@
 #include <QtTest/QtTest>
 #include <QDomDocument>
 
-class KXFormsTest: public QObject
+class KXFormsTest : public QObject
 {
     Q_OBJECT
 private slots:

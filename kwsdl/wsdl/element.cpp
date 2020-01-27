@@ -23,35 +23,28 @@
 
 using namespace KWSDL;
 
-Element::Element()
-{
-}
+Element::Element() {}
 
-Element::Element( const QString &nameSpace )
-  : mNameSpace( nameSpace )
-{
-}
+Element::Element(const QString &nameSpace) : mNameSpace(nameSpace) {}
 
-Element::~Element()
-{
-}
+Element::~Element() {}
 
-void Element::setNameSpace( const QString &nameSpace )
+void Element::setNameSpace(const QString &nameSpace)
 {
-  mNameSpace = nameSpace;
+    mNameSpace = nameSpace;
 }
 
 QString Element::nameSpace() const
 {
-  return mNameSpace;
+    return mNameSpace;
 }
 
-void Element::setDocumentation( const QString &documentation )
+void Element::setDocumentation(const QString &documentation)
 {
-  mDocumentation = documentation;
+    mDocumentation = documentation;
 }
 
 QString Element::documentation() const
 {
-  return mDocumentation;
+    return mDocumentation;
 }

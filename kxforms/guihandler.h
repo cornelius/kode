@@ -34,29 +34,30 @@ class FormGui;
 
 class GuiHandler
 {
-  public:
+public:
     /**
       Create GuiHandler and register it with the manager. The manager takes
       ownership of the GuiHandler object.
     */
-    GuiHandler( Manager * );
+    GuiHandler(Manager *);
     virtual ~GuiHandler();
 
-    virtual QWidget *createRootGui( QWidget *parent ) = 0;
-    virtual void createGui( const Reference &ref, QWidget *parent ) = 0;
+    virtual QWidget *createRootGui(QWidget *parent) = 0;
+    virtual void createGui(const Reference &ref, QWidget *parent) = 0;
 
     virtual QLayout *getTopLayout() const;
-    virtual void addWidget( QLayout *, QWidget * ) const;
-    virtual void addElement( QLayout *, QWidget *label, QWidget *widget, int x, int y, int width, int height, GuiElement::Properties *prop = 0, bool indented = false ) const;
+    virtual void addWidget(QLayout *, QWidget *) const;
+    virtual void addElement(QLayout *, QWidget *label, QWidget *widget, int x, int y, int width,
+                            int height, GuiElement::Properties *prop = 0,
+                            bool indented = false) const;
 
     virtual FormGui *currentGui() = 0;
 
     Manager *manager() const;
 
-  private:
+private:
     Manager *mManager;
 };
-
 }
 
 #endif

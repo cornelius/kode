@@ -40,15 +40,15 @@ class ComplexType;
  */
 class KSCHEMAWIDGETS_EXPORT InputField : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    typedef QList<InputField*> List;
+public:
+    typedef QList<InputField *> List;
 
     /**
       Constructs a input field.
      */
-    InputField( const QString &name );
+    InputField(const QString &name);
 
     /**
       Destructor.
@@ -63,17 +63,17 @@ class KSCHEMAWIDGETS_EXPORT InputField : public QObject
     /**
       Sets the xml data of this field.
      */
-    virtual void setXMLData( const QDomElement &element ) = 0;
+    virtual void setXMLData(const QDomElement &element) = 0;
 
     /**
       Returns the xml value of this field.
      */
-    virtual void xmlData( QDomDocument &document, QDomElement &parent ) = 0;
+    virtual void xmlData(QDomDocument &document, QDomElement &parent) = 0;
 
     /**
       Sets the plain data of this field as string.
      */
-    virtual void setData( const QString &data ) = 0;
+    virtual void setData(const QString &data) = 0;
 
     /**
       Returns the data of this field as string.
@@ -84,36 +84,36 @@ class KSCHEMAWIDGETS_EXPORT InputField : public QObject
       Returns a pointer to a new created input widget which can be used to
       to modify the value.
      */
-    virtual QWidget *createWidget( QWidget *parent ) = 0;
+    virtual QWidget *createWidget(QWidget *parent) = 0;
 
     /**
       Add a child field.
      */
-    virtual void appendChild( InputField *field );
+    virtual void appendChild(InputField *field);
 
     /**
       Removes a child field.
      */
-    virtual void removeChild( InputField *field );
+    virtual void removeChild(InputField *field);
 
     /**
       Returns a field with the given name or 0 when no field with this name
       exists.
      */
-    virtual InputField *childField( const QString &name ) const;
+    virtual InputField *childField(const QString &name) const;
 
     /**
       Returns a list of all child fields.
      */
     virtual InputField::List childFields() const;
 
-  signals:
+signals:
     /**
       This signal is emitted whenever the value is changed by the user.
      */
     void modified();
 
-  protected:
+protected:
     QString mName;
     InputField::List mFields;
 };
@@ -123,11 +123,11 @@ class KSCHEMAWIDGETS_EXPORT InputField : public QObject
  */
 class SimpleInputField : public InputField
 {
-  public:
-    SimpleInputField( const QString &name, const XSD::SimpleType *type );
+public:
+    SimpleInputField(const QString &name, const XSD::SimpleType *type);
     ~SimpleInputField();
 
-  protected:
+protected:
     XSD::SimpleType *mType;
 };
 
@@ -136,11 +136,11 @@ class SimpleInputField : public InputField
  */
 class ComplexInputField : public InputField
 {
-  public:
-    ComplexInputField( const QString &name, const XSD::ComplexType *type );
+public:
+    ComplexInputField(const QString &name, const XSD::ComplexType *type);
     ~ComplexInputField();
 
-  protected:
+protected:
     XSD::ComplexType *mType;
 };
 

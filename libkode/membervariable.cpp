@@ -25,54 +25,48 @@ using namespace KODE;
 
 class MemberVariable::Private
 {
-  public:
+public:
 };
 
-MemberVariable::MemberVariable()
-  : Variable(), d( 0 )
+MemberVariable::MemberVariable() : Variable(), d(0) {}
+
+MemberVariable::MemberVariable(const MemberVariable &other) : Variable(other), d(0)
 {
+    // *d = *other.d;
 }
 
-MemberVariable::MemberVariable( const MemberVariable &other )
-  : Variable( other ), d( 0 )
+MemberVariable::MemberVariable(const QString &name, const QString &type, bool isStatic)
+    : Variable(name, type, isStatic), d(0)
 {
-  // *d = *other.d;
-}
+    QString n;
 
-MemberVariable::MemberVariable( const QString &name, const QString &type,
-                                bool isStatic )
-  : Variable( name, type, isStatic ), d( 0 )
-{
-  QString n;
+    if (name.isEmpty()) {
+        n = "mUndefined";
+    } else if (name.length() >= 2 && name[0] == QChar('m') && (name[1].toUpper() == name[1])) {
+        n = name;
+    } else if (name == "q" || name == "d") {
+        n = name;
+    } else {
+        n = "m";
+        n += name[0].toUpper();
+        n += name.mid(1);
+    }
 
-  if ( name.isEmpty() ) {
-    n = "mUndefined";
-  } else if ( name.length() >= 2  && name[ 0 ] == QChar( 'm' ) &&
-              ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
-    n = name;
-  } else if ( name == "q" || name == "d" ) {
-    n = name;
-  } else {
-    n = "m";
-    n += name[ 0 ].toUpper();
-    n += name.mid( 1 );
-  }
-
-  setName( n );
+    setName(n);
 }
 
 MemberVariable::~MemberVariable()
 {
-  delete d;
+    delete d;
 }
 
-MemberVariable& MemberVariable::operator=( const MemberVariable &other )
+MemberVariable &MemberVariable::operator=(const MemberVariable &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    Variable::operator=(other);
+    // *d = *other.d;
+
     return *this;
-
-  Variable::operator=( other );
-  // *d = *other.d;
-
-  return *this;
 }

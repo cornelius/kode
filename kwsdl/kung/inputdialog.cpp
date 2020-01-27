@@ -23,15 +23,14 @@
 
 #include "inputdialog.h"
 
-InputDialog::InputDialog( QWidget *page, QWidget *parent )
-  : KDialog( parent)
+InputDialog::InputDialog(QWidget *page, QWidget *parent) : KDialog(parent)
 {
-  setButtons(Ok | Cancel);
-  setDefaultButton(Ok);
-  setModal(true);
-  showButtonSeparator(true);
+    setButtons(Ok | Cancel);
+    setDefaultButton(Ok);
+    setModal(true);
+    showButtonSeparator(true);
 
-  setMainWidget( page );
+    setMainWidget(page);
 
-  setButtonText( Ok, i18n( "Send" ) );
+    setButtonText(Ok, i18n("Send"));
 }

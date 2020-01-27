@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -27,9 +27,7 @@ namespace XSD {
 class Attribute::Private
 {
 public:
-    Private()
-     : mQualified(false), mUse(false)
-    {}
+    Private() : mQualified(false), mUse(false) {}
 
     QName mType;
     QString mDocumentation;
@@ -41,121 +39,113 @@ public:
     QName mArrayType;
 };
 
-Attribute::Attribute()
-  : XmlElement(), d(new Private)
-{
-}
+Attribute::Attribute() : XmlElement(), d(new Private) {}
 
-Attribute::Attribute( const QString &nameSpace )
-  : XmlElement( nameSpace ), d(new Private)
-{
-}
+Attribute::Attribute(const QString &nameSpace) : XmlElement(nameSpace), d(new Private) {}
 
-Attribute::Attribute( const Attribute &other )
- : XmlElement( other ), d(new Private)
+Attribute::Attribute(const Attribute &other) : XmlElement(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Attribute::~Attribute()
 {
-  delete d;
+    delete d;
 }
 
-Attribute &Attribute::operator=( const Attribute &other )
+Attribute &Attribute::operator=(const Attribute &other)
 {
-  if( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+    XmlElement::operator=(other);
+
     return *this;
-
-  *d = *other.d;
-  XmlElement::operator=( other );
-
-  return *this;
 }
 
-void Attribute::setType( const QName &type )
+void Attribute::setType(const QName &type)
 {
-  d->mType = type;
+    d->mType = type;
 }
 
 QName Attribute::type() const
 {
-  return d->mType;
+    return d->mType;
 }
 
-void Attribute::setDocumentation( const QString &documentation )
+void Attribute::setDocumentation(const QString &documentation)
 {
-  d->mDocumentation = documentation;
+    d->mDocumentation = documentation;
 }
 
 QString Attribute::documentation() const
 {
-  return d->mDocumentation;
+    return d->mDocumentation;
 }
 
-void Attribute::setDefaultValue( const QString &defaultValue )
+void Attribute::setDefaultValue(const QString &defaultValue)
 {
-  d->mDefaultValue = defaultValue;
+    d->mDefaultValue = defaultValue;
 }
 
 QString Attribute::defaultValue() const
 {
-  return d->mDefaultValue;
+    return d->mDefaultValue;
 }
 
-void Attribute::setFixedValue( const QString &fixedValue )
+void Attribute::setFixedValue(const QString &fixedValue)
 {
-  d->mFixedValue = fixedValue;
+    d->mFixedValue = fixedValue;
 }
 
 QString Attribute::fixedValue() const
 {
-  return d->mFixedValue;
+    return d->mFixedValue;
 }
 
-void Attribute::setIsQualified( bool isQualified )
+void Attribute::setIsQualified(bool isQualified)
 {
-  d->mQualified = isQualified;
+    d->mQualified = isQualified;
 }
 
 bool Attribute::isQualified() const
 {
-  return d->mQualified;
+    return d->mQualified;
 }
 
-void Attribute::setIsUsed( bool isUsed )
+void Attribute::setIsUsed(bool isUsed)
 {
-  d->mUse = isUsed;
+    d->mUse = isUsed;
 }
 
 bool Attribute::isUsed() const
 {
-  return d->mUse;
+    return d->mUse;
 }
 
-void Attribute::setReference( const QName &reference )
+void Attribute::setReference(const QName &reference)
 {
-  d->mReference = reference;
+    d->mReference = reference;
 }
 
 QName Attribute::reference() const
 {
-  return d->mReference;
+    return d->mReference;
 }
 
 bool Attribute::isResolved() const
 {
-  return !d->mType.isEmpty();
+    return !d->mType.isEmpty();
 }
 
-void Attribute::setArrayType( const QName &arrayType )
+void Attribute::setArrayType(const QName &arrayType)
 {
-  d->mArrayType = arrayType;
+    d->mArrayType = arrayType;
 }
 
 QName Attribute::arrayType() const
 {
-  return d->mArrayType;
+    return d->mArrayType;
 }
-
 }

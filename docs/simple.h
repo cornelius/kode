@@ -25,40 +25,40 @@
 
 class Food
 {
-  public:
+public:
     typedef QList<Food> List;
 
-  public:
-    void setName( const QString &v );
+public:
+    void setName(const QString &v);
     QString name() const;
-    void setTaste( const QString &v );
+    void setTaste(const QString &v);
     QString taste() const;
     /**
       Parse XML object from DOM element.
      */
-    static Food parseElement( const QDomElement &element, bool *ok );
+    static Food parseElement(const QDomElement &element, bool *ok);
     QString writeElement();
 
-  private:
+private:
     QString mName;
     QString mTaste;
 };
 
 class Simple
 {
-  public:
-    void addFood( const Food &v );
-    void setFoodList( const Food::List &v );
+public:
+    void addFood(const Food &v);
+    void setFoodList(const Food::List &v);
     Food::List foodList() const;
     /**
       Parse XML object from DOM element.
      */
-    static Simple parseElement( const QDomElement &element, bool *ok );
+    static Simple parseElement(const QDomElement &element, bool *ok);
     QString writeElement();
-    static Simple parseFile( const QString &filename, bool *ok );
-    bool writeFile( const QString &filename );
+    static Simple parseFile(const QString &filename, bool *ok);
+    bool writeFile(const QString &filename);
 
-  private:
+private:
     Food::List mFoodList;
 };
 

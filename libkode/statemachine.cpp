@@ -28,89 +28,85 @@ using namespace KODE;
 
 class StateMachine::Private
 {
-  public:
-    QMap<QString,Code> mStateMap;
+public:
+    QMap<QString, Code> mStateMap;
     QString mInitialState;
 };
 
-StateMachine::StateMachine()
-  : d( new Private )
-{
-}
+StateMachine::StateMachine() : d(new Private) {}
 
-StateMachine::StateMachine( const StateMachine &other )
-  : d( new Private )
+StateMachine::StateMachine(const StateMachine &other) : d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 StateMachine::~StateMachine()
 {
-  delete d;
+    delete d;
 }
 
-StateMachine& StateMachine::operator=( const StateMachine &other )
+StateMachine &StateMachine::operator=(const StateMachine &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void StateMachine::setState( const QString &state, const Code &code )
+void StateMachine::setState(const QString &state, const Code &code)
 {
-  d->mStateMap.insert( state, code );
+    d->mStateMap.insert(state, code);
 
-  if ( d->mInitialState.isEmpty() )
+    if (d->mInitialState.isEmpty())
+        d->mInitialState = state;
+}
+
+void StateMachine::setInitialState(const QString &state)
+{
     d->mInitialState = state;
-}
-
-void StateMachine::setInitialState( const QString &state )
-{
-  d->mInitialState = state;
 }
 
 Code StateMachine::stateDefinition() const
 {
-  Code code;
+    Code code;
 
-  QStringList states;
-  QMap<QString,Code>::ConstIterator it;
-  for ( it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it ) {
-    states.append( it.key() );
-  }
+    QStringList states;
+    QMap<QString, Code>::ConstIterator it;
+    for (it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it) {
+        states.append(it.key());
+    }
 
-  code += "enum State { " + states.join( ", " ) + " };";
-  code += "State state = " + d->mInitialState + ';';
+    code += "enum State { " + states.join(", ") + " };";
+    code += "State state = " + d->mInitialState + ';';
 
-  return code;
+    return code;
 }
 
 Code StateMachine::transitionLogic() const
 {
-  Code code;
+    Code code;
 
-  code += "switch( state ) {";
-  code.indent();
-
-  QMap<QString,Code>::ConstIterator it;
-  for ( it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it ) {
-    code += "case " + it.key() + ':';
+    code += "switch( state ) {";
     code.indent();
-    code.addBlock( it.value() );
+
+    QMap<QString, Code>::ConstIterator it;
+    for (it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it) {
+        code += "case " + it.key() + ':';
+        code.indent();
+        code.addBlock(it.value());
+        code += "break;";
+        code.unindent();
+    }
+
+    code += "default:";
+    code.indent();
     code += "break;";
     code.unindent();
-  }
 
-  code += "default:";
-  code.indent();
-  code += "break;";
-  code.unindent();
+    code.unindent();
+    code += '}';
 
-  code.unindent();
-  code += '}';
-
-  return code;
+    return code;
 }

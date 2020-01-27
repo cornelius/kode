@@ -28,39 +28,36 @@ using namespace KODE;
 
 class Function::Argument::ArgumentPrivate
 {
-  public:
+public:
     QString declaration;
     QString defaultArgument;
 };
 
-Function::Argument::Argument( const QString &declaration,
-  const QString &defaultArgument )
-  : d( new ArgumentPrivate )
+Function::Argument::Argument(const QString &declaration, const QString &defaultArgument)
+    : d(new ArgumentPrivate)
 {
-  d->declaration = declaration;
-  d->defaultArgument = defaultArgument;
+    d->declaration = declaration;
+    d->defaultArgument = defaultArgument;
 }
 
 QString Function::Argument::headerDeclaration() const
 {
-  if ( d->defaultArgument.isEmpty() ) {
-    return d->declaration;
-  } else {
-    return d->declaration + " = " + d->defaultArgument;
-  }
+    if (d->defaultArgument.isEmpty()) {
+        return d->declaration;
+    } else {
+        return d->declaration + " = " + d->defaultArgument;
+    }
 }
 
 QString Function::Argument::bodyDeclaration() const
 {
-  return d->declaration;
+    return d->declaration;
 }
-
 
 class Function::FunctionPrivate
 {
-  public:
-    FunctionPrivate()
-      : mAccess( Public ), mIsConst( false ), mIsStatic( false ), mVirtualMode( NotVirtual )
+public:
+    FunctionPrivate() : mAccess(Public), mIsConst(false), mIsStatic(false), mVirtualMode(NotVirtual)
     {
     }
 
@@ -76,191 +73,186 @@ class Function::FunctionPrivate
     Function::VirtualMode mVirtualMode;
 };
 
-Function::Function()
-  : d( new FunctionPrivate )
+Function::Function() : d(new FunctionPrivate) {}
+
+Function::Function(const Function &other) : d(new FunctionPrivate)
 {
+    *d = *other.d;
 }
 
-Function::Function( const Function &other )
-  : d( new FunctionPrivate )
+Function::Function(const QString &name, const QString &returnType, int access, bool isStatic)
+    : d(new FunctionPrivate)
 {
-  *d = *other.d;
-}
-
-Function::Function( const QString &name, const QString &returnType,
-                    int access, bool isStatic )
-  : d( new FunctionPrivate )
-{
-  d->mAccess = access;
-  d->mIsStatic = isStatic;
-  d->mName = name;
-  setReturnType(returnType);
+    d->mAccess = access;
+    d->mIsStatic = isStatic;
+    d->mName = name;
+    setReturnType(returnType);
 }
 
 Function::~Function()
 {
-  delete d;
+    delete d;
 }
 
-Function& Function::operator=( const Function &other )
+Function &Function::operator=(const Function &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void Function::setConst( bool isConst )
+void Function::setConst(bool isConst)
 {
-  d->mIsConst = isConst;
+    d->mIsConst = isConst;
 }
 
 bool Function::isConst() const
 {
-  return d->mIsConst;
+    return d->mIsConst;
 }
 
-void Function::setStatic( bool isStatic )
+void Function::setStatic(bool isStatic)
 {
-  d->mIsStatic = isStatic;
+    d->mIsStatic = isStatic;
 }
 
 bool Function::isStatic() const
 {
-  return d->mIsStatic;
+    return d->mIsStatic;
 }
 
-void Function::addArgument( const Function::Argument &argument )
+void Function::addArgument(const Function::Argument &argument)
 {
-  d->mArguments.append( argument );
+    d->mArguments.append(argument);
 }
 
-void Function::addArgument( const QString &argument, const QString &defaultArgument )
+void Function::addArgument(const QString &argument, const QString &defaultArgument)
 {
-  d->mArguments.append( Argument( argument, defaultArgument ) );
+    d->mArguments.append(Argument(argument, defaultArgument));
 }
 
-void Function::setArgumentString( const QString &argumentString )
+void Function::setArgumentString(const QString &argumentString)
 {
-  d->mArguments.clear();
+    d->mArguments.clear();
 
-  const QStringList arguments = argumentString.split( "," );
-  QStringList::ConstIterator it;
-  for ( it = arguments.constBegin(); it != arguments.constEnd(); ++it ) {
-    addArgument( *it );
-  }
+    const QStringList arguments = argumentString.split(",");
+    QStringList::ConstIterator it;
+    for (it = arguments.constBegin(); it != arguments.constEnd(); ++it) {
+        addArgument(*it);
+    }
 }
 
 Function::Argument::List Function::arguments() const
 {
-  return d->mArguments;
+    return d->mArguments;
 }
 
-void Function::addInitializer( const QString &initializer )
+void Function::addInitializer(const QString &initializer)
 {
-  d->mInitializers.append( initializer );
+    d->mInitializers.append(initializer);
 }
 
 QStringList Function::initializers() const
 {
-  return d->mInitializers;
+    return d->mInitializers;
 }
 
-void Function::setBody( const QString &body )
+void Function::setBody(const QString &body)
 {
-  d->mBody = body;
+    d->mBody = body;
 }
 
-void Function::setBody( const Code &body )
+void Function::setBody(const Code &body)
 {
-  d->mBody = body.text();
+    d->mBody = body.text();
 }
 
-void Function::addBodyLine( const QString &bodyLine )
+void Function::addBodyLine(const QString &bodyLine)
 {
-  d->mBody.append( bodyLine );
-  if ( bodyLine.right( 1 ) != "\n" )
-    d->mBody.append( '\n' );
+    d->mBody.append(bodyLine);
+    if (bodyLine.right(1) != "\n")
+        d->mBody.append('\n');
 }
 
 QString Function::body() const
 {
-  return d->mBody;
+    return d->mBody;
 }
 
-void Function::setAccess( int access )
+void Function::setAccess(int access)
 {
-  d->mAccess = access;
+    d->mAccess = access;
 }
 
 int Function::access() const
 {
-  return d->mAccess;
+    return d->mAccess;
 }
 
 QString Function::accessAsString() const
 {
-  QString access;
+    QString access;
 
-  if ( d->mAccess & Public )
-    access = "public";
-  if ( d->mAccess & Protected )
-    access = "protected";
-  if ( d->mAccess & Private )
-    access = "private";
+    if (d->mAccess & Public)
+        access = "public";
+    if (d->mAccess & Protected)
+        access = "protected";
+    if (d->mAccess & Private)
+        access = "private";
 
-  if ( d->mAccess & Signal )
-    access = "signals";
-  if ( d->mAccess & Slot )
-    access += " slots";
+    if (d->mAccess & Signal)
+        access = "signals";
+    if (d->mAccess & Slot)
+        access += " slots";
 
-  return access;
+    return access;
 }
 
-void Function::setReturnType( const QString &returnType )
+void Function::setReturnType(const QString &returnType)
 {
-  Q_ASSERT(returnType != "*");
-  d->mReturnType = returnType;
+    Q_ASSERT(returnType != "*");
+    d->mReturnType = returnType;
 }
 
 QString Function::returnType() const
 {
-  return d->mReturnType;
+    return d->mReturnType;
 }
 
-void Function::setName( const QString &name )
+void Function::setName(const QString &name)
 {
-  d->mName = name;
+    d->mName = name;
 }
 
 QString Function::name() const
 {
-  return d->mName;
+    return d->mName;
 }
 
-void Function::setDocs( const QString &docs )
+void Function::setDocs(const QString &docs)
 {
-  d->mDocs = docs;
+    d->mDocs = docs;
 }
 
 QString Function::docs() const
 {
-  return d->mDocs;
+    return d->mDocs;
 }
 
 bool Function::hasArguments() const
 {
-  return !d->mArguments.isEmpty();
+    return !d->mArguments.isEmpty();
 }
 
-void Function::setVirtualMode( Function::VirtualMode v )
+void Function::setVirtualMode(Function::VirtualMode v)
 {
-  d->mVirtualMode = v;
+    d->mVirtualMode = v;
 }
 
 Function::VirtualMode Function::virtualMode() const
 {
-  return d->mVirtualMode;
+    return d->mVirtualMode;
 }

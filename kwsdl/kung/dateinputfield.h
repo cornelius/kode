@@ -31,23 +31,23 @@ class KDatePicker;
 
 class DateInputField : public SimpleInputField
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    DateInputField( const QString &name, const XSD::SimpleType *type );
+public:
+    DateInputField(const QString &name, const XSD::SimpleType *type);
 
-    virtual void setXMLData( const QDomElement &element );
-    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+    virtual void setXMLData(const QDomElement &element);
+    virtual void xmlData(QDomDocument &document, QDomElement &parent);
 
-    virtual void setData( const QString &data );
+    virtual void setData(const QString &data);
     virtual QString data() const;
 
-    virtual QWidget *createWidget( QWidget *parent );
+    virtual QWidget *createWidget(QWidget *parent);
 
-  private slots:
-    void inputChanged( const QDate & );
+private slots:
+    void inputChanged(const QDate &);
 
-  private:
+private:
     KDatePicker *mInputWidget;
     QDate mValue;
 };

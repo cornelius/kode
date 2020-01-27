@@ -20,20 +20,16 @@
 
 #include "kmainwindow.h"
 
-void KMainWindow::setupGUI()
-{
-}
+void KMainWindow::setupGUI() {}
 
 KActionCollection *KMainWindow::actionCollection()
 {
-  return 0;
+    return 0;
 }
 
-void KMainWindow::setCaption( const QString & )
-{
-}
+void KMainWindow::setCaption(const QString &) {}
 
 KStatusBar *KMainWindow::statusBar()
 {
-  return 0;
+    return 0;
 }

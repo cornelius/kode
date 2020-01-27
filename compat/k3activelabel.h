@@ -24,13 +24,10 @@
 
 class K3ActiveLabel : public QLabel
 {
-  public:
-    K3ActiveLabel( QWidget *parent ) : QLabel( parent ) {}
+public:
+    K3ActiveLabel(QWidget *parent) : QLabel(parent) {}
 
-    void setHtml( const QString &txt )
-    {
-      setText( txt );
-    }
+    void setHtml(const QString &txt) { setText(txt); }
 };
 
 #endif

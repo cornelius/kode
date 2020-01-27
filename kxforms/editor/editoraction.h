@@ -31,21 +31,20 @@ class GuiElement;
 
 class EditorAction : public QObject
 {
-  Q_OBJECT
-  public:
-    EditorAction( Editor *e );
+    Q_OBJECT
+public:
+    EditorAction(Editor *e);
     virtual ~EditorAction();
 
-    virtual void perform( GuiElement *e ) = 0;
+    virtual void perform(GuiElement *e) = 0;
 
     Editor *editor() const { return mEditor; }
 
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
+Q_SIGNALS:
+    void hintGenerated(const Hint &hint);
 
-  private:
+private:
     Editor *mEditor;
 };
-
 }
 #endif

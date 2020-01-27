@@ -43,70 +43,69 @@ class FormGui;
 class BreadCrumbLabel : public K3ActiveLabel
 {
     Q_OBJECT
-  public:
-    BreadCrumbLabel( QWidget *parent );
-    
-  public slots:
-    void openLink( const QUrl &link );
+public:
+    BreadCrumbLabel(QWidget *parent);
 
-  signals:
-    void crumbClicked( int index );
+public slots:
+    void openLink(const QUrl &link);
+
+signals:
+    void crumbClicked(int index);
 };
 
 class BreadCrumbNavigator : public QFrame
 {
     Q_OBJECT
-  public:
-    BreadCrumbNavigator( QWidget *parent );
+public:
+    BreadCrumbNavigator(QWidget *parent);
 
-    void push( FormGui * );
+    void push(FormGui *);
     FormGui *pop();
 
     FormGui *last() const;
     int count() const;
 
-  signals:
-    void guiSelected( FormGui * );
+signals:
+    void guiSelected(FormGui *);
 
-  protected:
+protected:
     void updateLabel();
 
-  protected slots:
-    void slotCrumbClicked( int index );
+protected slots:
+    void slotCrumbClicked(int index);
 
-  private:
+private:
     QStack<FormGui *> mHistory;
 
-    BreadCrumbLabel *mLabel; 
+    BreadCrumbLabel *mLabel;
 };
 
 class GuiHandlerFlat : public QObject, public GuiHandler
 {
     Q_OBJECT
-  public:
-    GuiHandlerFlat( Manager * );
+public:
+    GuiHandlerFlat(Manager *);
 
-    QWidget *createRootGui( QWidget *parent );
-    void createGui( const Reference &ref, QWidget *parent );
+    QWidget *createRootGui(QWidget *parent);
+    void createGui(const Reference &ref, QWidget *parent);
 
-    FormGui *currentGui() { return static_cast<FormGui *>( mStackWidget->currentWidget() ); }
+    FormGui *currentGui() { return static_cast<FormGui *>(mStackWidget->currentWidget()); }
 
-  protected:
-    FormGui *createGui( Form *form, QWidget *parent );
+protected:
+    FormGui *createGui(Form *form, QWidget *parent);
 
-  protected slots:
+protected slots:
     void goBack();
 
-    void showGui( FormGui *gui );
+    void showGui(FormGui *gui);
 
-  private:
+private:
     QWidget *mMainWidget;
-    
+
     BreadCrumbNavigator *mBreadCrumbNavigator;
     QStackedWidget *mStackWidget;
     QPushButton *mBackButton;
 };
-
 }
 
 #endif

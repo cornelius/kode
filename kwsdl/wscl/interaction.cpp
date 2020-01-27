@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -23,72 +23,66 @@
 
 using namespace WSCL;
 
-Interaction::Interaction()
-  : mType( Empty )
-{
-}
+Interaction::Interaction() : mType(Empty) {}
 
-Interaction::~Interaction()
-{
-}
+Interaction::~Interaction() {}
 
-void Interaction::setId( const QString &id )
+void Interaction::setId(const QString &id)
 {
-  mId = id;
+    mId = id;
 }
 
 QString Interaction::id() const
 {
-  return mId;
+    return mId;
 }
 
-void Interaction::setType( Type type )
+void Interaction::setType(Type type)
 {
-  mType = type;
+    mType = type;
 }
 
 Interaction::Type Interaction::type() const
 {
-  return mType;
+    return mType;
 }
 
-void Interaction::setSendReceiveDocument( const SendReceiveDocument &document )
+void Interaction::setSendReceiveDocument(const SendReceiveDocument &document)
 {
-  mSendReceiveDocument = document;
+    mSendReceiveDocument = document;
 }
 
 SendReceiveDocument Interaction::sendReceiveDocument() const
 {
-  return mSendReceiveDocument;
+    return mSendReceiveDocument;
 }
 
-void Interaction::setReceiveSendDocument( const ReceiveSendDocument &document )
+void Interaction::setReceiveSendDocument(const ReceiveSendDocument &document)
 {
-  mReceiveSendDocument = document;
+    mReceiveSendDocument = document;
 }
 
 ReceiveSendDocument Interaction::receiveSendDocument() const
 {
-  return mReceiveSendDocument;
+    return mReceiveSendDocument;
 }
 
-void Interaction::setReceiveDocument( const ReceiveDocument &document )
+void Interaction::setReceiveDocument(const ReceiveDocument &document)
 {
-  mReceiveDocument = document;
+    mReceiveDocument = document;
 }
 
 ReceiveDocument Interaction::receiveDocument() const
 {
-  return mReceiveDocument;
+    return mReceiveDocument;
 }
 
-void Interaction::setSendDocument( const SendDocument &document )
+void Interaction::setSendDocument(const SendDocument &document)
 {
-  mSendDocument = document;
+    mSendDocument = document;
 }
 
 SendDocument Interaction::sendDocument() const
 {
-  return mSendDocument;
+    return mSendDocument;
 }
-

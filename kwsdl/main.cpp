@@ -35,48 +35,47 @@
 #include <QTimer>
 #include <QCoreApplication>
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
-  KAboutData aboutData( "kwsdl_compiler", 0, ki18n( "KDE wsdl compiler" ), "0.1",
-                        ki18n( "KDE WSDL Compiler" ),
-                        KAboutData::License_LGPL );
+    KAboutData aboutData("kwsdl_compiler", 0, ki18n("KDE wsdl compiler"), "0.1",
+                         ki18n("KDE WSDL Compiler"), KAboutData::License_LGPL);
 
-  aboutData.addAuthor( ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org" );
+    aboutData.addAuthor(ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org");
 
-  KComponentData wsdlInstance( &aboutData );
+    KComponentData wsdlInstance(&aboutData);
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
+    KCmdLineArgs::init(argc, argv, &aboutData);
 
-  KCmdLineOptions options;
-  options.add("c");
-  options.add("configfile <file>", ki18n( "Configuration file" ), "kwsdl.cfg");
-  options.add("d");
-  options.add("outputDirectory <dir>", ki18n( "Directory to generate files in" ), ".");
-  options.add("+wsdl", ki18n( "WSDL file" ));
-  KCmdLineArgs::addCmdLineOptions( options );
+    KCmdLineOptions options;
+    options.add("c");
+    options.add("configfile <file>", ki18n("Configuration file"), "kwsdl.cfg");
+    options.add("d");
+    options.add("outputDirectory <dir>", ki18n("Directory to generate files in"), ".");
+    options.add("+wsdl", ki18n("WSDL file"));
+    KCmdLineArgs::addCmdLineOptions(options);
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  QCoreApplication app( argc, argv );
+    QCoreApplication app(argc, argv);
 
-  if ( args->isSet( "configfile" ) ) {
-    if ( !Settings::self()->load( args->getOption( "configfile" ) ) )
-      return 1;
-  } else {
-    if ( args->count() != 1 ) {
-      KCmdLineArgs::usageError( i18n( "Neither a config file nor a WSDL url is given." ) );
+    if (args->isSet("configfile")) {
+        if (!Settings::self()->load(args->getOption("configfile")))
+            return 1;
+    } else {
+        if (args->count() != 1) {
+            KCmdLineArgs::usageError(i18n("Neither a config file nor a WSDL url is given."));
+        }
     }
-  }
 
-  if ( args->isSet( "outputDirectory" ) )
-    Settings::self()->setOutputDirectory( args->getOption( "outputDirectory" ) );
+    if (args->isSet("outputDirectory"))
+        Settings::self()->setOutputDirectory(args->getOption("outputDirectory"));
 
-  if ( args->count() == 1 )
-    Settings::self()->setWsdlUrl( args->url( 0 ).path() );
+    if (args->count() == 1)
+        Settings::self()->setWsdlUrl(args->url(0).path());
 
-  KWSDL::Compiler compiler;
+    KWSDL::Compiler compiler;
 
-  QTimer::singleShot( 0, &compiler, SLOT( run() ) );
+    QTimer::singleShot(0, &compiler, SLOT(run()));
 
-  return app.exec();
+    return app.exec();
 }

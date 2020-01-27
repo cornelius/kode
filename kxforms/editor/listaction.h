@@ -27,16 +27,15 @@ namespace KXForms {
 
 class ListAction : public EditorAction
 {
-  Q_OBJECT
-  public:
-    ListAction( Editor *e );
+    Q_OBJECT
+public:
+    ListAction(Editor *e);
     ~ListAction();
 
-    void perform( GuiElement *e );
+    void perform(GuiElement *e);
 
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
+Q_SIGNALS:
+    void hintGenerated(const Hint &hint);
 };
-
 }
 #endif

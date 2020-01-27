@@ -23,20 +23,16 @@ class QObject;
 class KActionCollection;
 class KAction;
 
-namespace KStandardAction
-{
-  void openNew(const QObject *recvr, const char *slot,
-    KActionCollection* parent, const char *name = 0 );
-  void open(const QObject *recvr, const char *slot,
-    KActionCollection* parent, const char *name = 0 );
-  void save(const QObject *recvr, const char *slot,
-    KActionCollection* parent, const char *name = 0 );
-  void saveAs(const QObject *recvr, const char *slot,
-    KActionCollection* parent, const char *name = 0 );
-  void quit(const QObject *recvr, const char *slot,
-    KActionCollection* parent, const char *name = 0 );
-  void preferences(const QObject *recvr, const char *slot,
-    KActionCollection* parent, const char *name = 0 );
+namespace KStandardAction {
+void openNew(const QObject *recvr, const char *slot, KActionCollection *parent,
+             const char *name = 0);
+void open(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name = 0);
+void save(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name = 0);
+void saveAs(const QObject *recvr, const char *slot, KActionCollection *parent,
+            const char *name = 0);
+void quit(const QObject *recvr, const char *slot, KActionCollection *parent, const char *name = 0);
+void preferences(const QObject *recvr, const char *slot, KActionCollection *parent,
+                 const char *name = 0);
 }
 
 #endif

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -27,9 +27,7 @@ namespace XSD {
 class ComplexType::Private
 {
 public:
-    Private()
-      : mAnonymous(false), mIsArray(false)
-    {}
+    Private() : mAnonymous(false), mIsArray(false) {}
 
     QString mDocumentation;
 
@@ -44,130 +42,122 @@ public:
     QName mBaseTypeName;
 };
 
-ComplexType::ComplexType( const QString &nameSpace )
-  : XSDType( nameSpace ), d(new Private)
-{
-}
+ComplexType::ComplexType(const QString &nameSpace) : XSDType(nameSpace), d(new Private) {}
 
-ComplexType::ComplexType()
-  : XSDType(), d(new Private)
-{
-}
+ComplexType::ComplexType() : XSDType(), d(new Private) {}
 
-ComplexType::ComplexType( const ComplexType &other )
-  : XSDType( other ), d(new Private)
+ComplexType::ComplexType(const ComplexType &other) : XSDType(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 ComplexType::~ComplexType()
 {
-  delete d;
+    delete d;
 }
 
-ComplexType &ComplexType::operator=( const ComplexType &other )
+ComplexType &ComplexType::operator=(const ComplexType &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void ComplexType::setDocumentation( const QString &documentation )
+void ComplexType::setDocumentation(const QString &documentation)
 {
-  d->mDocumentation = documentation;
+    d->mDocumentation = documentation;
 }
 
 QString ComplexType::documentation() const
 {
-  return d->mDocumentation;
+    return d->mDocumentation;
 }
 
-void ComplexType::setBaseTypeName( const QName &baseTypeName )
+void ComplexType::setBaseTypeName(const QName &baseTypeName)
 {
-  d->mBaseTypeName = baseTypeName;
+    d->mBaseTypeName = baseTypeName;
 }
 
 QName ComplexType::baseTypeName() const
 {
-  return d->mBaseTypeName;
+    return d->mBaseTypeName;
 }
 
-void ComplexType::setBaseDerivation( Derivation derivation )
+void ComplexType::setBaseDerivation(Derivation derivation)
 {
-  d->mBaseDerivation = derivation;
+    d->mBaseDerivation = derivation;
 }
 
 ComplexType::Derivation ComplexType::baseDerivation() const
 {
-  return d->mBaseDerivation;
+    return d->mBaseDerivation;
 }
 
 bool ComplexType::isSimple() const
 {
-  return false;
+    return false;
 }
 
-void ComplexType::setIsArray( bool isArray )
+void ComplexType::setIsArray(bool isArray)
 {
-  d->mIsArray = isArray;
+    d->mIsArray = isArray;
 }
 
 bool ComplexType::isArray() const
 {
-  return d->mIsArray;
+    return d->mIsArray;
 }
 
-void ComplexType::setAnonymous( bool anonymous )
+void ComplexType::setAnonymous(bool anonymous)
 {
-  d->mAnonymous = anonymous;
+    d->mAnonymous = anonymous;
 }
 
 bool ComplexType::isAnonymous() const
 {
-  return d->mAnonymous;
+    return d->mAnonymous;
 }
 
-void ComplexType::setElements( const Element::List &elements )
+void ComplexType::setElements(const Element::List &elements)
 {
-  d->mElements = elements;
+    d->mElements = elements;
 }
 
 Element::List ComplexType::elements() const
 {
-  return d->mElements;
+    return d->mElements;
 }
 
-void ComplexType::setAttributes( const Attribute::List &attributes )
+void ComplexType::setAttributes(const Attribute::List &attributes)
 {
-  d->mAttributes = attributes;
+    d->mAttributes = attributes;
 }
 
 Attribute::List ComplexType::attributes() const
 {
-  return d->mAttributes;
+    return d->mAttributes;
 }
 
-void ComplexType::setAttributeGroups( const AttributeGroup::List &attributeGroups )
+void ComplexType::setAttributeGroups(const AttributeGroup::List &attributeGroups)
 {
-  d->mAttributeGroups = attributeGroups;
+    d->mAttributeGroups = attributeGroups;
 }
 
 AttributeGroup::List ComplexType::attributeGroups() const
 {
-  return d->mAttributeGroups;
+    return d->mAttributeGroups;
 }
 
-void ComplexType::addAttribute( const Attribute &attribute )
+void ComplexType::addAttribute(const Attribute &attribute)
 {
-  d->mAttributes.append( attribute );
+    d->mAttributes.append(attribute);
 }
 
-void ComplexType::addElement( const Element &element )
+void ComplexType::addElement(const Element &element)
 {
-  d->mElements.append( element );
+    d->mElements.append(element);
 }
-
 }

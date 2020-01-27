@@ -32,41 +32,38 @@
 
 using namespace KXForms;
 
-ReadOnlyAction::ReadOnlyAction( Editor *e)
-: EditorAction( e )
+ReadOnlyAction::ReadOnlyAction(Editor *e) : EditorAction(e) {}
+
+ReadOnlyAction::~ReadOnlyAction() {}
+
+void ReadOnlyAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-ReadOnlyAction::~ReadOnlyAction()
-{
-}
+    QString newRO;
+    bool ok;
+    QStringList list;
+    list << "true"
+         << "false";
 
-void ReadOnlyAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    int currentRO = 0;
+    if (e->properties())
+        currentRO = e->properties()->readonly ? 0 : 1;
 
-  QString newRO;
-  bool ok;
-  QStringList list;
-  list << "true" << "false";
+    newRO = KInputDialog::getItem(i18n("Select the ReadOnly mode"),
+                                  i18n("ReadOnly mode for %1:", e->ref().toString()), list,
+                                  currentRO, false, &ok);
 
-  int currentRO = 0;
-  if( e->properties() )
-     currentRO = e->properties()->readonly ? 0 : 1;
+    if (ok) {
+        kDebug() << "New Mode:" << newRO;
+        Hint h;
+        h.setRef(e->id());
+        h.setValue(Hint::ReadOnly, newRO);
+        emit hintGenerated(h);
+    }
 
-  newRO = KInputDialog::getItem( i18n("Select the ReadOnly mode"), i18n("ReadOnly mode for %1:", e->ref().toString()),
-      list, currentRO, false, &ok );
-
-  if( ok ) {
-    kDebug() <<"New Mode:" << newRO;
-    Hint h;
-    h.setRef( e->id() );
-    h.setValue( Hint::ReadOnly, newRO );
-    emit hintGenerated( h );
-  }
-
-  editor()->finishEdit();
+    editor()->finishEdit();
 }
 
 #include "readonlyaction.moc"

@@ -24,80 +24,78 @@
 
 #include "inputfield.h"
 
-InputField::InputField( const QString &name )
-  : QObject( 0 ),
-    mName( name )
+InputField::InputField(const QString &name) : QObject(0), mName(name)
 {
-  setObjectName( QString( "InputField( %1 )" ).arg( name ).toLatin1() );
+    setObjectName(QString("InputField( %1 )").arg(name).toLatin1());
 }
 
 InputField::~InputField()
 {
-  InputField::List::Iterator it;
-  for ( it = mFields.begin(); it != mFields.end(); ++it )
-    delete *it;
+    InputField::List::Iterator it;
+    for (it = mFields.begin(); it != mFields.end(); ++it)
+        delete *it;
 
-  mFields.clear();
+    mFields.clear();
 }
 
 QString InputField::name() const
 {
-  return mName;
+    return mName;
 }
 
-void InputField::appendChild( InputField *field )
+void InputField::appendChild(InputField *field)
 {
-  mFields.append( field );
+    mFields.append(field);
 }
 
-void InputField::removeChild( InputField *field )
+void InputField::removeChild(InputField *field)
 {
-  mFields.removeAll( field );
+    mFields.removeAll(field);
 }
 
-InputField *InputField::childField( const QString &name ) const
+InputField *InputField::childField(const QString &name) const
 {
-  InputField::List::ConstIterator it;
-  for ( it = mFields.begin(); it != mFields.end(); ++it )
-    if ( (*it)->name() == name )
-      return *it;
+    InputField::List::ConstIterator it;
+    for (it = mFields.begin(); it != mFields.end(); ++it)
+        if ((*it)->name() == name)
+            return *it;
 
-  return 0;
+    return 0;
 }
 
 InputField::List InputField::childFields() const
 {
-  return mFields;
+    return mFields;
 }
 
-SimpleInputField::SimpleInputField( const QString &name, const XSD::SimpleType *type )
-  : InputField( name ), mType( 0 )
+SimpleInputField::SimpleInputField(const QString &name, const XSD::SimpleType *type)
+    : InputField(name), mType(0)
 {
-  if ( type ) {
-    mType = new XSD::SimpleType();
-    *mType = *type;
-  }
+    if (type) {
+        mType = new XSD::SimpleType();
+        *mType = *type;
+    }
 }
 
 SimpleInputField::~SimpleInputField()
 {
-  delete mType;
-  mType = 0;
+    delete mType;
+    mType = 0;
 }
 
-ComplexInputField::ComplexInputField( const QString &name, const XSD::ComplexType *type )
-  : InputField( name ), mType( 0 )
+ComplexInputField::ComplexInputField(const QString &name, const XSD::ComplexType *type)
+    : InputField(name), mType(0)
 {
-  if ( type ) {
-    mType = new XSD::ComplexType();
-    *mType = *type;
-  }
+    if (type) {
+        mType = new XSD::ComplexType();
+        *mType = *type;
+    }
 }
 
 ComplexInputField::~ComplexInputField()
 {
-  delete mType;
-  mType = 0;
+    delete mType;
+    mType = 0;
 }
 
 #include "inputfield.moc"

@@ -27,11 +27,8 @@ using namespace KODE;
 
 class File::Private
 {
-  public:
-    Private()
-      : mProject()
-    {
-    }
+public:
+    Private() : mProject() {}
 
     QString mHeaderFilename;
     QString mImplFilename;
@@ -48,56 +45,52 @@ class File::Private
     Code mFileCode;
 };
 
-File::File()
-  : d( new Private )
-{
-}
+File::File() : d(new Private) {}
 
-File::File( const File &other )
-  : d( new Private )
+File::File(const File &other) : d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 File::~File()
 {
-  delete d;
+    delete d;
 }
 
-File& File::operator=( const File &other )
+File &File::operator=(const File &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void File::setFilename( const QString& filename )
+void File::setFilename(const QString &filename)
 {
-  d->mImplFilename = filename + ".cpp";
-  d->mHeaderFilename = filename + ".h";
+    d->mImplFilename = filename + ".cpp";
+    d->mHeaderFilename = filename + ".h";
 }
 
-void File::setImplementationFilename( const QString &filename )
+void File::setImplementationFilename(const QString &filename)
 {
-  d->mImplFilename = filename;
+    d->mImplFilename = filename;
 }
 
-void File::setHeaderFilename( const QString &filename )
+void File::setHeaderFilename(const QString &filename)
 {
-  d->mHeaderFilename = filename;
+    d->mHeaderFilename = filename;
 }
 
 QString File::filenameHeader() const
 {
-    if ( !d->mHeaderFilename.isEmpty() )
-      return d->mHeaderFilename;
+    if (!d->mHeaderFilename.isEmpty())
+        return d->mHeaderFilename;
 
-    if ( !d->mClasses.isEmpty() ) {
-      QString className = d->mClasses[ 0 ].name();
-      return className.toLower() + ".h";
+    if (!d->mClasses.isEmpty()) {
+        QString className = d->mClasses[0].name();
+        return className.toLower() + ".h";
     }
 
     return QString();
@@ -105,188 +98,187 @@ QString File::filenameHeader() const
 
 QString File::filenameImplementation() const
 {
-    if ( !d->mImplFilename.isEmpty() )
-      return d->mImplFilename;
+    if (!d->mImplFilename.isEmpty())
+        return d->mImplFilename;
 
-    if ( !d->mClasses.isEmpty() ) {
-      QString className = d->mClasses[ 0 ].name();
-      return className.toLower() + ".cpp";
+    if (!d->mClasses.isEmpty()) {
+        QString className = d->mClasses[0].name();
+        return className.toLower() + ".cpp";
     }
 
     return QString();
 }
 
-void File::setNameSpace( const QString &nameSpace )
+void File::setNameSpace(const QString &nameSpace)
 {
-  d->mNameSpace = nameSpace;
+    d->mNameSpace = nameSpace;
 }
 
 QString File::nameSpace() const
 {
-  return d->mNameSpace;
+    return d->mNameSpace;
 }
 
-void File::setProject( const QString &project )
+void File::setProject(const QString &project)
 {
-  if ( project.isEmpty() )
-    return;
+    if (project.isEmpty())
+        return;
 
-  d->mProject = project;
+    d->mProject = project;
 }
 
 QString File::project() const
 {
-  return d->mProject;
+    return d->mProject;
 }
 
-void File::addCopyright( int year, const QString &name, const QString &email )
+void File::addCopyright(int year, const QString &name, const QString &email)
 {
-  QString str = "Copyright (c) " + QString::number( year ) + ' ' + name + " <"
-                + email + '>';
+    QString str = "Copyright (c) " + QString::number(year) + ' ' + name + " <" + email + '>';
 
-  d->mCopyrightStrings.append( str );
+    d->mCopyrightStrings.append(str);
 }
 
 QStringList File::copyrightStrings() const
 {
-  return d->mCopyrightStrings;
+    return d->mCopyrightStrings;
 }
 
-void File::setLicense( const License &license )
+void File::setLicense(const License &license)
 {
-  d->mLicense = license;
+    d->mLicense = license;
 }
 
 License File::license() const
 {
-  return d->mLicense;
+    return d->mLicense;
 }
 
-void File::addInclude( const QString &_include )
+void File::addInclude(const QString &_include)
 {
-  QString include = _include;
-  if ( !include.endsWith( ".h" ) )
-    include.append( ".h" );
+    QString include = _include;
+    if (!include.endsWith(".h"))
+        include.append(".h");
 
-  if ( !d->mIncludes.contains( include ) )
-    d->mIncludes.append( include );
+    if (!d->mIncludes.contains(include))
+        d->mIncludes.append(include);
 }
 
 QStringList File::includes() const
 {
-  return d->mIncludes;
+    return d->mIncludes;
 }
 
-void File::insertClass( const Class &newClass )
+void File::insertClass(const Class &newClass)
 {
-  Q_ASSERT(!newClass.name().isEmpty());
-  Class::List::Iterator it;
-  for ( it = d->mClasses.begin(); it != d->mClasses.end(); ++it ) {
-    if ( (*it).qualifiedName() == newClass.qualifiedName() ) {
-      it = d->mClasses.erase( it );
-      d->mClasses.insert( it, newClass );
-      return;
+    Q_ASSERT(!newClass.name().isEmpty());
+    Class::List::Iterator it;
+    for (it = d->mClasses.begin(); it != d->mClasses.end(); ++it) {
+        if ((*it).qualifiedName() == newClass.qualifiedName()) {
+            it = d->mClasses.erase(it);
+            d->mClasses.insert(it, newClass);
+            return;
+        }
     }
-  }
 
-  d->mClasses.append( newClass );
+    d->mClasses.append(newClass);
 }
 
 Class::List File::classes() const
 {
-  return d->mClasses;
+    return d->mClasses;
 }
 
-bool File::hasClass( const QString &name )
+bool File::hasClass(const QString &name)
 {
-  Class::List::ConstIterator it;
-  for ( it = d->mClasses.constBegin(); it != d->mClasses.constEnd(); ++it ) {
-    if ( (*it).name() == name )
-      break;
-  }
+    Class::List::ConstIterator it;
+    for (it = d->mClasses.constBegin(); it != d->mClasses.constEnd(); ++it) {
+        if ((*it).name() == name)
+            break;
+    }
 
-  return it != d->mClasses.constEnd();
+    return it != d->mClasses.constEnd();
 }
 
-Class File::findClass( const QString &name )
+Class File::findClass(const QString &name)
 {
-  Class::List::ConstIterator it;
-  for ( it = d->mClasses.constBegin(); it != d->mClasses.constEnd(); ++it ) {
-    if ( (*it).name() == name )
-      return *it;
-  }
+    Class::List::ConstIterator it;
+    for (it = d->mClasses.constBegin(); it != d->mClasses.constEnd(); ++it) {
+        if ((*it).name() == name)
+            return *it;
+    }
 
-  return Class();
+    return Class();
 }
 
-void File::addFileVariable( const Variable &variable )
+void File::addFileVariable(const Variable &variable)
 {
-  d->mFileVariables.append( variable );
+    d->mFileVariables.append(variable);
 }
 
 Variable::List File::fileVariables() const
 {
-  return d->mFileVariables;
+    return d->mFileVariables;
 }
 
-void File::addFileFunction( const Function &function )
+void File::addFileFunction(const Function &function)
 {
-  d->mFileFunctions.append( function );
+    d->mFileFunctions.append(function);
 }
 
 Function::List File::fileFunctions() const
 {
-  return d->mFileFunctions;
+    return d->mFileFunctions;
 }
 
-void File::addFileEnum( const Enum &enumValue )
+void File::addFileEnum(const Enum &enumValue)
 {
-  d->mFileEnums.append( enumValue );
+    d->mFileEnums.append(enumValue);
 }
 
 Enum::List File::fileEnums() const
 {
-  return d->mFileEnums;
+    return d->mFileEnums;
 }
 
-void File::addExternCDeclaration( const QString &externalCDeclaration )
+void File::addExternCDeclaration(const QString &externalCDeclaration)
 {
-  d->mExternCDeclarations.append( externalCDeclaration );
+    d->mExternCDeclarations.append(externalCDeclaration);
 }
 
 QStringList File::externCDeclarations() const
 {
-  return d->mExternCDeclarations;
+    return d->mExternCDeclarations;
 }
 
-void File::addFileCode( const Code &code )
+void File::addFileCode(const Code &code)
 {
-  d->mFileCode = code;
+    d->mFileCode = code;
 }
 
 Code File::fileCode() const
 {
-  return d->mFileCode;
+    return d->mFileCode;
 }
 
 void File::clearClasses()
 {
-  d->mClasses.clear();
+    d->mClasses.clear();
 }
 
 void File::clearFileFunctions()
 {
-  d->mFileFunctions.clear();
+    d->mFileFunctions.clear();
 }
 
 void File::clearFileVariables()
 {
-  d->mFileVariables.clear();
+    d->mFileVariables.clear();
 }
 
 void File::clearCode()
 {
-  clearClasses();
-  clearFileFunctions();
-  clearFileVariables();
+    clearClasses();
+    clearFileFunctions();
+    clearFileVariables();
 }

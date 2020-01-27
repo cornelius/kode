@@ -31,7 +31,7 @@ namespace KODE {
  */
 class KODE_EXPORT Code
 {
-  public:
+public:
     /**
      * Creates a new code block.
      */
@@ -40,12 +40,12 @@ class KODE_EXPORT Code
     /**
      * Creates a new code block from @param other.
      */
-    Code( const Code &other );
+    Code(const Code &other);
 
     /**
      * Creates a new code block with the given @param indent.
      */
-    Code( int indent );
+    Code(int indent);
 
     /**
      * Destroys the code block.
@@ -55,7 +55,7 @@ class KODE_EXPORT Code
     /**
      * Assignment operator.
      */
-    Code& operator=( const Code &other );
+    Code &operator=(const Code &other);
 
     /**
      * Clears all lines from the code block.
@@ -70,7 +70,7 @@ class KODE_EXPORT Code
     /**
      * Sets the @param indent of the code block.
      */
-    void setIndent( int indent );
+    void setIndent(int indent);
 
     /**
      * Indents the code block by one level.
@@ -90,42 +90,42 @@ class KODE_EXPORT Code
     /**
      * Adds the given @param line to the code block.
      */
-    void addLine( const QString &line );
+    void addLine(const QString &line);
 
     /**
      * Adds the given @param line to the code block.
      */
-    void addLine( const char line );
+    void addLine(const char line);
 
     /**
      * Adds the given @param block to the code block.
      * The current indent will be prepended before every line of the block.
      */
-    void addBlock( const Code &block );
+    void addBlock(const Code &block);
 
     /**
      * Adds the given @param block to the code block.
      * The current indent will be prepended before every line of the block.
      */
-    void addBlock( const QString &block );
+    void addBlock(const QString &block);
 
     /**
      * Adds the given @param block with the given indent
      * to the code block.
      */
-    void addBlock( const QString &block, int indent );
+    void addBlock(const QString &block, int indent);
 
     /**
      * Adds the given @param text to the code block and wrapps
      * it if it's too long.
      */
-    void addWrappedText( const QString &text );
+    void addWrappedText(const QString &text);
 
     /**
      * Adds the given @param text to the code block and wrapps
      * it at word boundaries if it's too long.
      */
-    void addFormattedText( const QString &text );
+    void addFormattedText(const QString &text);
 
     /**
      * Adds a new line to the code block.
@@ -136,54 +136,53 @@ class KODE_EXPORT Code
      * Adds the given @param line to the code block
      * and appends a '\r\n' automatically.
      */
-    Code &operator+=( const QString &line );
+    Code &operator+=(const QString &line);
 
     /**
      * Adds the given @param line to the code block
      * and appends a '\r\n' automatically.
      */
-    Code &operator+=( const QByteArray& line );
+    Code &operator+=(const QByteArray &line);
 
     /**
      * Adds the given @param line to the code block
      * and appends a '\r\n' automatically.
      */
-    Code &operator+=( const char *line );
+    Code &operator+=(const char *line);
 
     /**
      * Adds the given @param line to the code block
      * and appends a '\r\n' automatically.
      */
-    Code &operator+=( const char line );
+    Code &operator+=(const char line);
 
     /**
      * Adds the given @param block to the code block.
      * @param block is supposed to be fully indented already
      * (otherwise, use addBlock)
      */
-    Code &operator+=( const Code &block );
+    Code &operator+=(const Code &block);
 
     /**
      * Returns a string filled up with spaces, depending on
      * the level @param count and the indent value.
      */
-    static QString spaces( int count );
+    static QString spaces(int count);
 
     /**
      * Sets the default indentation used by indent().
      */
-    static void setDefaultIndentation( int indent );
+    static void setDefaultIndentation(int indent);
 
     /**
      * Returns the default indentation used by indent().
      */
     static int defaultIndentation();
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

@@ -30,37 +30,31 @@ namespace XSD {
 
 class SCHEMA_EXPORT Compositor
 {
-  public:
+public:
     typedef QList<Compositor> List;
 
-    enum Type {
-      Invalid,
-      Choice,
-      Sequence,
-      All
-    };
+    enum Type { Invalid, Choice, Sequence, All };
 
     Compositor();
-    Compositor( Type type );
-    Compositor( const Compositor &other );
+    Compositor(Type type);
+    Compositor(const Compositor &other);
     ~Compositor();
 
-    Compositor &operator=( const Compositor &other );
+    Compositor &operator=(const Compositor &other);
 
     bool isValid() const;
 
-    void setType( Type type );
+    void setType(Type type);
     Type type() const;
 
-    void addChild( const QName &childName );
-    void setChildren( const QName::List &children );
+    void addChild(const QName &childName);
+    void setChildren(const QName::List &children);
     QName::List children() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

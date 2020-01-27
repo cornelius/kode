@@ -22,17 +22,8 @@
 
 #include <stdio.h>
 
-kDebug::kDebug()
-  : QTextStream( stderr )
-{
-}
+kDebug::kDebug() : QTextStream(stderr) {}
 
-kWarning::kWarning()
-  : QTextStream( stderr )
-{
-}
+kWarning::kWarning() : QTextStream(stderr) {}
 
-kError::kError()
-  : QTextStream( stderr )
-{
-}
+kError::kError() : QTextStream(stderr) {}

@@ -27,50 +27,50 @@
 
 class XmlBuilder
 {
-  public:
+public:
     typedef QList<XmlBuilder> List;
 
-    XmlBuilder( const QString &tagName );
+    XmlBuilder(const QString &tagName);
     ~XmlBuilder();
 
-    XmlBuilder *tag( const QString &tagName, const QString &text = QString() );
+    XmlBuilder *tag(const QString &tagName, const QString &text = QString());
 
-    XmlBuilder *attribute( const QString &name, const QString &value );
+    XmlBuilder *attribute(const QString &name, const QString &value);
 
-    XmlBuilder *text( const QString &text );
+    XmlBuilder *text(const QString &text);
 
-    QString print( int indent = 0, bool newLine = true ) const;
+    QString print(int indent = 0, bool newLine = true) const;
 
     bool isEmpty() const;
 
     bool hasText() const;
     bool hasChildElements() const;
 
-  protected:
-    QString indent( int indent ) const;
+protected:
+    QString indent(int indent) const;
 
-  private:
+private:
     class Node
     {
-      public:
+    public:
         typedef QList<Node> List;
 
-        Node( const QString & );
-        Node( XmlBuilder * );
+        Node(const QString &);
+        Node(XmlBuilder *);
 
         bool isText() const;
         bool isXml() const;
-      
+
         QString text() const;
         XmlBuilder *xml() const;
 
-      private:
+    private:
         QString mText;
         XmlBuilder *mXml;
     };
-    
+
     QString mTagName;
-    QMap<QString,QString> mAttributes;
+    QMap<QString, QString> mAttributes;
     Node::List mChildren;
     bool mHasText;
     bool mHasChildElements;

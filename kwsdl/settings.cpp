@@ -31,143 +31,140 @@ Settings *Settings::mSelf = 0;
 
 static K3StaticDeleter<Settings> settingsDeleter;
 
-Settings::Settings()
-  : mTransport( KDETransport )
+Settings::Settings() : mTransport(KDETransport)
 {
-  mOutputDirectory = QDir::current().path();
-  mOutputFileName = "kwsdl_generated";
+    mOutputDirectory = QDir::current().path();
+    mOutputFileName = "kwsdl_generated";
 }
 
-Settings::~Settings()
+Settings::~Settings() {}
+
+Settings *Settings::self()
 {
+    if (!mSelf)
+        settingsDeleter.setObject(mSelf, new Settings);
+
+    return mSelf;
 }
 
-Settings* Settings::self()
+bool Settings::load(const QString &fileName)
 {
-  if ( !mSelf )
-    settingsDeleter.setObject( mSelf, new Settings );
-
-  return mSelf;
-}
-
-bool Settings::load( const QString &fileName )
-{
-  QFile file( fileName );
-  if ( !file.open( QIODevice::ReadOnly ) ) {
-    qDebug( "Settings::load: Can't open %s.", qPrintable( file.fileName() ) );
-    return false;
-  }
-
-  QString errorMsg;
-  int line, column;
-  QDomDocument document;
-  if ( !document.setContent( &file, &errorMsg, &line, &column ) ) {
-    qDebug( "Settings::load: Can't parse configuration '%s (%d:%d)'.",
-            qPrintable( errorMsg ), line, column );
-    return false;
-  }
-
-  QDomElement element = document.documentElement();
-  if ( element.tagName() != "kwsdlcfg" ) {
-    qDebug( "Settings::load: Unknown xml format." );
-    return false;
-  }
-
-  element = element.firstChildElement();
-  while ( !element.isNull() ) {
-    if ( element.tagName() == "wsdlUrl" ) {
-      setWsdlUrl( element.text() );
-    } else if ( element.tagName() == "outputFileName" ) {
-      setOutputFileName( element.text() );
-    } else if ( element.tagName() == "outputDirectory" ) {
-      setOutputDirectory( element.text() );
-    } else if ( element.tagName() == "namespaceMapping" ) {
-      const QString prefix = element.attribute( "prefix" );
-      const QString uri = element.attribute( "uri" );
-
-      if ( !prefix.isEmpty() && !uri.isEmpty() )
-        mNamespaceMapping.insert( uri, prefix );
-    } else if ( element.tagName() == "transport" ) {
-      const QString data = element.text();
-      if ( data == "KDE" )
-        setTransport( KDETransport );
-      else if ( data == "Qt" )
-        setTransport( QtTransport );
-      else if ( data == "Custom" )
-        setTransport( CustomTransport );
-    } else {
-      qDebug( "Settings::load: Unknown xml element %s.", qPrintable( element.tagName() ) );
-      return false;
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug("Settings::load: Can't open %s.", qPrintable(file.fileName()));
+        return false;
     }
 
-    element = element.nextSiblingElement();
-  }
+    QString errorMsg;
+    int line, column;
+    QDomDocument document;
+    if (!document.setContent(&file, &errorMsg, &line, &column)) {
+        qDebug("Settings::load: Can't parse configuration '%s (%d:%d)'.", qPrintable(errorMsg),
+               line, column);
+        return false;
+    }
 
-  return true;
+    QDomElement element = document.documentElement();
+    if (element.tagName() != "kwsdlcfg") {
+        qDebug("Settings::load: Unknown xml format.");
+        return false;
+    }
+
+    element = element.firstChildElement();
+    while (!element.isNull()) {
+        if (element.tagName() == "wsdlUrl") {
+            setWsdlUrl(element.text());
+        } else if (element.tagName() == "outputFileName") {
+            setOutputFileName(element.text());
+        } else if (element.tagName() == "outputDirectory") {
+            setOutputDirectory(element.text());
+        } else if (element.tagName() == "namespaceMapping") {
+            const QString prefix = element.attribute("prefix");
+            const QString uri = element.attribute("uri");
+
+            if (!prefix.isEmpty() && !uri.isEmpty())
+                mNamespaceMapping.insert(uri, prefix);
+        } else if (element.tagName() == "transport") {
+            const QString data = element.text();
+            if (data == "KDE")
+                setTransport(KDETransport);
+            else if (data == "Qt")
+                setTransport(QtTransport);
+            else if (data == "Custom")
+                setTransport(CustomTransport);
+        } else {
+            qDebug("Settings::load: Unknown xml element %s.", qPrintable(element.tagName()));
+            return false;
+        }
+
+        element = element.nextSiblingElement();
+    }
+
+    return true;
 }
 
-void Settings::setWsdlUrl( const QString &wsdlUrl )
+void Settings::setWsdlUrl(const QString &wsdlUrl)
 {
-  mWsdlUrl = wsdlUrl;
+    mWsdlUrl = wsdlUrl;
 
-  if ( QDir::isRelativePath( mWsdlUrl ) )
-    mWsdlUrl = QDir::current().path() + '/' + mWsdlUrl;
+    if (QDir::isRelativePath(mWsdlUrl))
+        mWsdlUrl = QDir::current().path() + '/' + mWsdlUrl;
 }
 
 QString Settings::wsdlUrl() const
 {
-  return mWsdlUrl;
+    return mWsdlUrl;
 }
 
 QString Settings::wsdlBaseUrl() const
 {
-  return mWsdlUrl.left( mWsdlUrl.lastIndexOf( '/' ) );
+    return mWsdlUrl.left(mWsdlUrl.lastIndexOf('/'));
 }
 
 QString Settings::wsdlFileName() const
 {
-  return mWsdlUrl.mid( mWsdlUrl.lastIndexOf( '/' ) + 1 );
+    return mWsdlUrl.mid(mWsdlUrl.lastIndexOf('/') + 1);
 }
 
-void Settings::setOutputFileName( const QString &outputFileName )
+void Settings::setOutputFileName(const QString &outputFileName)
 {
-  mOutputFileName = outputFileName;
+    mOutputFileName = outputFileName;
 }
 
 QString Settings::outputFileName() const
 {
-  return mOutputFileName;
+    return mOutputFileName;
 }
 
-void Settings::setOutputDirectory( const QString &outputDirectory )
+void Settings::setOutputDirectory(const QString &outputDirectory)
 {
-  mOutputDirectory = outputDirectory;
+    mOutputDirectory = outputDirectory;
 
-  if ( !mOutputDirectory.endsWith( "/" ) )
-    mOutputDirectory.append( "/" );
+    if (!mOutputDirectory.endsWith("/"))
+        mOutputDirectory.append("/");
 }
 
 QString Settings::outputDirectory() const
 {
-  return mOutputDirectory;
+    return mOutputDirectory;
 }
 
-void Settings::setNamespaceMapping( const NSMapping &namespaceMapping )
+void Settings::setNamespaceMapping(const NSMapping &namespaceMapping)
 {
-  mNamespaceMapping = namespaceMapping;
+    mNamespaceMapping = namespaceMapping;
 }
 
 Settings::NSMapping Settings::namespaceMapping() const
 {
-  return mNamespaceMapping;
+    return mNamespaceMapping;
 }
 
-void Settings::setTransport( Transport transport )
+void Settings::setTransport(Transport transport)
 {
-  mTransport = transport;
+    mTransport = transport;
 }
 
 Settings::Transport Settings::transport() const
 {
-  return mTransport;
+    return mTransport;
 }

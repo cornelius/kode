@@ -38,42 +38,36 @@ namespace KWSDL {
 
 class KWSDL_EXPORT Binding : public Element
 {
-  public:
+public:
     typedef QList<Binding> List;
 
-    enum Type
-    {
-      SOAPBinding,
-      HTTPBinding,
-      MIMEBinding,
-      UnknownBinding
-    };
+    enum Type { SOAPBinding, HTTPBinding, MIMEBinding, UnknownBinding };
 
     Binding();
-    Binding( const QString &nameSpace );
+    Binding(const QString &nameSpace);
     ~Binding();
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setPortTypeName( const QName &portTypeName );
+    void setPortTypeName(const QName &portTypeName);
     QName portTypeName() const;
 
-    void setType( Type type );
+    void setType(Type type);
     Type type() const;
 
-    void setOperations( const BindingOperation::List &operations );
+    void setOperations(const BindingOperation::List &operations);
     BindingOperation::List operations() const;
 
-    //void setSoapBinding( const SoapBinding &soapBinding );
+    // void setSoapBinding( const SoapBinding &soapBinding );
     SoapBinding soapBinding() const;
 
     const AbstractBinding *binding() const;
 
-    void loadXML( ParserContext *context, const QDomElement &element );
-    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+    void loadXML(ParserContext *context, const QDomElement &element);
+    void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     QString mName;
     QName mPortTypeName;
     BindingOperation::List mOperations;
@@ -81,8 +75,6 @@ class KWSDL_EXPORT Binding : public Element
     Type mType;
     SoapBinding mSoapBinding;
 };
-
 }
 
 #endif // KWSDL_BINDING_H
-

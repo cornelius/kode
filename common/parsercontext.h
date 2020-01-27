@@ -34,7 +34,7 @@ class MessageHandler;
  */
 class KXMLCOMMON_EXPORT ParserContext
 {
-  public:
+public:
     /**
       Constructs a ParserContext.
      */
@@ -48,38 +48,37 @@ class KXMLCOMMON_EXPORT ParserContext
     /**
       Sets the namespace handler for this context.
      */
-    void setNamespaceManager( NSManager *manager );
+    void setNamespaceManager(NSManager *manager);
 
     /**
       Returns the namespace handler of this context.
      */
-    NSManager* namespaceManager() const;
+    NSManager *namespaceManager() const;
 
     /**
       Sets the message handler for this context.
      */
-    void setMessageHandler( MessageHandler *handler );
+    void setMessageHandler(MessageHandler *handler);
 
     /**
       Returns the message handler of this context.
      */
-    MessageHandler* messageHandler() const;
+    MessageHandler *messageHandler() const;
 
     /**
       Sets the base URL where the document is located.
      */
-    void setDocumentBaseUrl( const QString &url );
+    void setDocumentBaseUrl(const QString &url);
 
     /**
       Returns the document base url.
      */
     QString documentBaseUrl() const;
 
-  private:
+private:
     NSManager *mNamespaceManager;
     MessageHandler *mMessageHandler;
     QString mDocumentBaseUrl;
 };
 
 #endif
-

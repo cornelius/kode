@@ -26,70 +26,70 @@
 
 #include "doubleinputfield.h"
 
-DoubleInputField::DoubleInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
-  : SimpleInputField( name, type ),
-    mValue( 0 ), mTypeName( typeName )
+DoubleInputField::DoubleInputField(const QString &name, const QString &typeName,
+                                   const XSD::SimpleType *type)
+    : SimpleInputField(name, type), mValue(0), mTypeName(typeName)
 {
 }
 
-void DoubleInputField::setXMLData( const QDomElement &element )
+void DoubleInputField::setXMLData(const QDomElement &element)
 {
-  if ( mName != element.tagName() ) {
-    qDebug( "DoubleInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
-    return;
-  }
+    if (mName != element.tagName()) {
+        qDebug("DoubleInputField: Wrong dom element passed: expected %s, got %s", qPrintable(mName),
+               qPrintable(element.tagName()));
+        return;
+    }
 
-  setData( element.text() );
+    setData(element.text());
 }
 
-void DoubleInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void DoubleInputField::xmlData(QDomDocument &document, QDomElement &parent)
 {
-  QDomElement element = document.createElement( mName );
-  element.setAttribute( "xsi:type", "xsd:" + mTypeName );
-  QDomText text = document.createTextNode( data() );
-  element.appendChild( text );
+    QDomElement element = document.createElement(mName);
+    element.setAttribute("xsi:type", "xsd:" + mTypeName);
+    QDomText text = document.createTextNode(data());
+    element.appendChild(text);
 
-  parent.appendChild( element );
+    parent.appendChild(element);
 }
 
-void DoubleInputField::setData( const QString &data )
+void DoubleInputField::setData(const QString &data)
 {
-  mValue = data.toDouble();
+    mValue = data.toDouble();
 }
 
 QString DoubleInputField::data() const
 {
-  return QString::number( mValue );
+    return QString::number(mValue);
 }
 
-QWidget *DoubleInputField::createWidget( QWidget *parent )
+QWidget *DoubleInputField::createWidget(QWidget *parent)
 {
-  mInputWidget = new QDoubleSpinBox( parent );
+    mInputWidget = new QDoubleSpinBox(parent);
 
-  if ( mType ) {
-    if ( mType->facetType() & XSD::SimpleType::MININC )
-      mInputWidget->setMinimum( mType->facetMinimumInclusive() );
-    if ( mType->facetType() & XSD::SimpleType::MINEX )
-      mInputWidget->setMinimum( mType->facetMinimumExclusive() + 1 );
-    if ( mType->facetType() & XSD::SimpleType::MAXINC )
-      mInputWidget->setMaximum( mType->facetMaximumInclusive() );
-    if ( mType->facetType() & XSD::SimpleType::MAXEX )
-      mInputWidget->setMaximum( mType->facetMaximumExclusive() - 1 );
-  }
+    if (mType) {
+        if (mType->facetType() & XSD::SimpleType::MININC)
+            mInputWidget->setMinimum(mType->facetMinimumInclusive());
+        if (mType->facetType() & XSD::SimpleType::MINEX)
+            mInputWidget->setMinimum(mType->facetMinimumExclusive() + 1);
+        if (mType->facetType() & XSD::SimpleType::MAXINC)
+            mInputWidget->setMaximum(mType->facetMaximumInclusive());
+        if (mType->facetType() & XSD::SimpleType::MAXEX)
+            mInputWidget->setMaximum(mType->facetMaximumExclusive() - 1);
+    }
 
-  mInputWidget->setValue( mValue );
+    mInputWidget->setValue(mValue);
 
-  connect( mInputWidget, SIGNAL( valueChanged( double ) ),
-           this, SLOT( inputChanged( double ) ) );
+    connect(mInputWidget, SIGNAL(valueChanged(double)), this, SLOT(inputChanged(double)));
 
-  return mInputWidget;
+    return mInputWidget;
 }
 
-void DoubleInputField::inputChanged( double value )
+void DoubleInputField::inputChanged(double value)
 {
-  mValue = value;
+    mValue = value;
 
-  emit modified();
+    emit modified();
 }
 
 #include "doubleinputfield.moc"

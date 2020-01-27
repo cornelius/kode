@@ -37,47 +37,47 @@ namespace KXForms {
 
 class Manager;
 
-
 class FormGui : public QWidget
 {
     Q_OBJECT
-  public:
+public:
     typedef QList<FormGui *> List;
 
+    FormGui(const QString &label, Manager *, QWidget *parent);
 
-    FormGui( const QString &label, Manager *, QWidget *parent );
+    void parseElement(const QDomElement &, QLayout *l = 0, const QString &overrideLabel = QString(),
+                      Layout *overrideGroup = 0);
 
-    void parseElement( const QDomElement &, QLayout *l = 0, const QString &overrideLabel = QString(), Layout *overrideGroup = 0 );
-
-    void setRef( const Reference &ref );
+    void setRef(const Reference &ref);
     Reference ref() const;
 
     QString label() const;
 
-    void loadData( const QDomDocument & );
+    void loadData(const QDomDocument &);
     void saveData();
 
-    void setLabelHidden( bool );
+    void setLabelHidden(bool);
 
     GuiElement::List elements();
 
-    QMap< QString, QString > groups() { return mGroups; }
+    QMap<QString, QString> groups() { return mGroups; }
 
     int sizeThreshold() { return mSizeThreshold; }
 
-  signals:
+signals:
     void editingFinished();
 
-  protected:
-    void setRefLabel( const Reference &ref );
+protected:
+    void setRefLabel(const Reference &ref);
 
-    void parseAttributeElements( GuiElement *parent, QDomElement &e );
+    void parseAttributeElements(GuiElement *parent, QDomElement &e);
 
-    QDomElement findContextElement( const QDomDocument &doc );
+    QDomElement findContextElement(const QDomDocument &doc);
 
-    bool hasGroups( const QDomElement & );
-    void setupGroups( QLayout *, const QDomElement &element );
-  private:
+    bool hasGroups(const QDomElement &);
+    void setupGroups(QLayout *, const QDomElement &element);
+
+private:
     Manager *mManager;
 
     Reference mRef;
@@ -92,12 +92,11 @@ class FormGui : public QWidget
     QPushButton *mEditButton;
 
     QTabWidget *mTabWidget;
-    QMap< QString, QString > mGroups;
+    QMap<QString, QString> mGroups;
 
     bool mLabelHidden;
     int mSizeThreshold;
 };
-
 }
 
 #endif

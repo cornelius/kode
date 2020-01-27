@@ -20,5 +20,4 @@
 #ifndef KACTIONCOLLECTION_H
 #define KACTIONCOLLECTION_H
 
-
 #endif

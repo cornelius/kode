@@ -26,36 +26,37 @@ class KAboutData;
 
 struct KCmdLineOptions
 {
-   const char *name;
-   const char *description;
-   const char *def; // Default
+    const char *name;
+    const char *description;
+    const char *def; // Default
 };
 
-#define KCmdLineLastOption { 0, 0, 0 }
+#define KCmdLineLastOption                                                                         \
+    {                                                                                              \
+        0, 0, 0                                                                                    \
+    }
 
 class KCmdLineArgs
 {
     friend class KApplication;
-  public:
 
-    static void addCmdLineOptions( const KCmdLineOptions *options );
+public:
+    static void addCmdLineOptions(const KCmdLineOptions *options);
 
-    bool isSet( const QString & ) const;
-    QString getOption( const QString & );
-    
+    bool isSet(const QString &) const;
+    QString getOption(const QString &);
+
     int count() const;
-    
-    KUrl url( int index ) const;
 
-    static void init(int _argc,
-                   char **_argv,
-                   const KAboutData *about );
+    KUrl url(int index) const;
+
+    static void init(int _argc, char **_argv, const KAboutData *about);
 
     static KCmdLineArgs *parsedArgs();
 
-  private:
+private:
     static KCmdLineArgs *mParsedArgs;
-  
+
     static int *qt_argc();
     static char ***qt_argv();
 

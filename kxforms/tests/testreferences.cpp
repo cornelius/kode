@@ -31,48 +31,47 @@
 
 using namespace KXForms;
 
-static const char description[] =
-    I18N_NOOP("References Test Program");
+static const char description[] = I18N_NOOP("References Test Program");
 
-static void checkReference( const QString &str )
+static void checkReference(const QString &str)
 {
-  Reference ref( str );
+    Reference ref(str);
 
-  QString s = ref.toString();
+    QString s = ref.toString();
 
-  if ( s == str ) {
-    kDebug() <<"OK  REF:" << str;
-  } else {
-    kDebug() <<"ERR REF:" << str <<" GOT:" << s;
-  }
+    if (s == str) {
+        kDebug() << "OK  REF:" << str;
+    } else {
+        kDebug() << "ERR REF:" << str << " GOT:" << s;
+    }
 }
 
 int main(int argc, char **argv)
 {
-  KAboutData about("testreferences", 0, ki18n("TestReferences"), "0.1",
-    ki18n(description),
-    KAboutData::License_GPL, ki18n("(C) 2005 Cornelius Schumacher"), KLocalizedString(), 0,
-    "schumacher@kde.org");
-  about.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
-  KComponentData instance( &about );
-  QCoreApplication app( argc, argv );
+    KAboutData about("testreferences", 0, ki18n("TestReferences"), "0.1", ki18n(description),
+                     KAboutData::License_GPL, ki18n("(C) 2005 Cornelius Schumacher"),
+                     KLocalizedString(), 0, "schumacher@kde.org");
+    about.addAuthor(ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org");
+    KComponentData instance(&about);
+    QCoreApplication app(argc, argv);
 
-  checkReference( "/one/two/three" );
-  checkReference( "relative" );
-  checkReference( "/one/two[2]" );
-  checkReference( "/one/two[2]/three[2]" );
-  checkReference( "/one/@attribute" );
-  checkReference( "relative/more/more" );
+    checkReference("/one/two/three");
+    checkReference("relative");
+    checkReference("/one/two[2]");
+    checkReference("/one/two[2]/three[2]");
+    checkReference("/one/@attribute");
+    checkReference("relative/more/more");
 
-  Reference r1 = "one";
-  kDebug() <<"R1:" << r1.toString();
-  Reference r2 = "two";
-  Reference r3 = r1 + r2;
-  kDebug() <<"R3:" << r3.toString();
-  
-  Reference r4 = "one/twox";
-  
-  if ( r3 == r4 ) kDebug() <<"YES";
-  else kDebug() <<"NO";
+    Reference r1 = "one";
+    kDebug() << "R1:" << r1.toString();
+    Reference r2 = "two";
+    Reference r3 = r1 + r2;
+    kDebug() << "R3:" << r3.toString();
+
+    Reference r4 = "one/twox";
+
+    if (r3 == r4)
+        kDebug() << "YES";
+    else
+        kDebug() << "NO";
 }
-

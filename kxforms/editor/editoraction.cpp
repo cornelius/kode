@@ -24,13 +24,8 @@
 
 using namespace KXForms;
 
-EditorAction::EditorAction( Editor *e)
-: mEditor( e )
-{
-}
+EditorAction::EditorAction(Editor *e) : mEditor(e) {}
 
-EditorAction::~EditorAction()
-{
-}
+EditorAction::~EditorAction() {}
 
 #include "editoraction.moc"

@@ -40,7 +40,7 @@ class ClassList;
  */
 class KODE_EXPORT Class
 {
-  public:
+public:
     typedef ClassList List;
 
     /**
@@ -51,14 +51,14 @@ class KODE_EXPORT Class
     /**
      * Creates a new class object from @param other.
      */
-    Class( const Class &other );
+    Class(const Class &other);
 
     /**
      * Creates a new class object with a given @param name.
      *
      * @param nameSpace The namespace the class object should be part of.
      */
-    Class( const QString &name, const QString &nameSpace = QString() );
+    Class(const QString &name, const QString &nameSpace = QString());
 
     /**
      * Destroys the class object.
@@ -68,7 +68,7 @@ class KODE_EXPORT Class
     /**
      * Assignment operator.
      */
-    Class& operator=( const Class &other );
+    Class &operator=(const Class &other);
 
     /**
      * Returns whether this class object is valid.
@@ -82,12 +82,12 @@ class KODE_EXPORT Class
      * This will treat anything except the last substring, as a namespace.
      * So this is not suited for nested classes. Use Class(A::B, NS) for nested classes.
      */
-    void setNamespaceAndName( const QString& name );
+    void setNamespaceAndName(const QString &name);
 
     /**
      * Sets the @param name of the class object.
      */
-    void setName( const QString &name );
+    void setName(const QString &name);
 
     /**
      * Returns the name of the class object.
@@ -97,7 +97,7 @@ class KODE_EXPORT Class
     /**
      * Sets the namespace the class object should be part of.
      */
-    void setNameSpace( const QString &nameSpace );
+    void setNameSpace(const QString &nameSpace);
 
     /**
      * Returns the namespace the class object is part of.
@@ -113,7 +113,7 @@ class KODE_EXPORT Class
       Set export declaration with given name. This adds an include of a file
       name_export.h and a prefix to class declaration of NAME_EXPORT.
     */
-    void setExportDeclaration( const QString &name );
+    void setExportDeclaration(const QString &name);
 
     /**
       Return name of export declaration.
@@ -124,7 +124,7 @@ class KODE_EXPORT Class
      * Sets whether the class object shall use a d-pointer to store
      * its member variables.
      */
-    void setUseDPointer( bool useDPointer, const QString& dPointer = "d" );
+    void setUseDPointer(bool useDPointer, const QString &dPointer = "d");
 
     /**
      * Returns whether the class object uses a d-pointer.
@@ -144,7 +144,7 @@ class KODE_EXPORT Class
      *
      * Setting this to true automatically sets canBeCopied to true and useDPointer to true.
      */
-    void setUseSharedData( bool b, const QString& dPointer = "d" );
+    void setUseSharedData(bool b, const QString &dPointer = "d");
 
     /**
      * Returns whether the class object uses a QSharedDataPointer d-pointer.
@@ -155,7 +155,7 @@ class KODE_EXPORT Class
      * Sets whether the class can be copied (generates a copy constructor
      * and an operator= implementations, in case a d pointer is used).
      */
-    void setCanBeCopied( bool b );
+    void setCanBeCopied(bool b);
 
     /**
      * Returns whether the class instances can be copied.
@@ -169,8 +169,7 @@ class KODE_EXPORT Class
      *             printed as '#include <qfile.h>' in the header file.
      * @param forwardDeclaration The forward declaration like 'QFile'
      */
-    void addInclude( const QString &file,
-                     const QString &forwardDeclaration = QString() );
+    void addInclude(const QString &file, const QString &forwardDeclaration = QString());
 
     /**
      * Adds several includes to the class object.
@@ -178,8 +177,8 @@ class KODE_EXPORT Class
      * @param files A list of include files like 'qfile.h'
      * @param forwardDeclaration A list of forward declarations like 'QFile'
      */
-    void addIncludes( const QStringList &files,
-                      const QStringList &forwardDeclarations = QStringList() );
+    void addIncludes(const QStringList &files,
+                     const QStringList &forwardDeclarations = QStringList());
 
     /**
      * Returns the list of includes.
@@ -198,12 +197,12 @@ class KODE_EXPORT Class
      *             will be printed as '#include "qfile.h"' in the
      *             implementation.
      */
-    void addHeaderInclude( const QString &file );
+    void addHeaderInclude(const QString &file);
 
     /**
      * Adds a list of header includes to the class object.
      */
-    void addHeaderIncludes( const QStringList &files );
+    void addHeaderIncludes(const QStringList &files);
 
     /**
      * Returns the list of header includes.
@@ -213,7 +212,7 @@ class KODE_EXPORT Class
     /**
      * Adds a @param function to the class object.
      */
-    void addFunction( const Function &function );
+    void addFunction(const Function &function);
 
     /**
      * Returns the list of all functions.
@@ -223,7 +222,7 @@ class KODE_EXPORT Class
     /**
      * Adds a member @param variable to the class object.
      */
-    void addMemberVariable( const MemberVariable &variable );
+    void addMemberVariable(const MemberVariable &variable);
 
     /**
      * Returns the list of all member variables.
@@ -235,7 +234,7 @@ class KODE_EXPORT Class
      *
      * @param baseClass A class object which describes the base class.
      */
-    void addBaseClass( const Class &baseClass );
+    void addBaseClass(const Class &baseClass);
 
     /**
      * Returns the list of all base classes.
@@ -245,7 +244,7 @@ class KODE_EXPORT Class
     /**
      * Adds a typedef to the class object.
      */
-    void addTypedef( const Typedef &typedefValue );
+    void addTypedef(const Typedef &typedefValue);
 
     /**
      * Returns the list of all typedefs.
@@ -255,7 +254,7 @@ class KODE_EXPORT Class
     /**
      * Adds an enum to the class object.
      */
-    void addEnum( const Enum &enumValue );
+    void addEnum(const Enum &enumValue);
 
     /**
      * Returns the list of all enums.
@@ -266,12 +265,12 @@ class KODE_EXPORT Class
      * Returns true, if the enum with the given name already exists. Returns
      * false, if not.
      */
-    bool hasEnum( const QString &name ) const;
+    bool hasEnum(const QString &name) const;
 
     /**
      * Sets the @param documentation of the class object.
      */
-    void setDocs( const QString &documentation );
+    void setDocs(const QString &documentation);
 
     /**
      * Returns the documentation of the class object.
@@ -282,7 +281,7 @@ class KODE_EXPORT Class
      * Returns whether the class object has a function with
      * the given @param name.
      */
-    bool hasFunction( const QString &name ) const;
+    bool hasFunction(const QString &name) const;
 
     /**
      * Returns whether the class object is a QObject.
@@ -307,7 +306,7 @@ class KODE_EXPORT Class
     /**
      * Adds a nested class to this class.
      */
-    void addNestedClass( const Class &nestedClass );
+    void addNestedClass(const Class &nestedClass);
 
     /**
      * Return the list of all nested classes.
@@ -321,25 +320,25 @@ class KODE_EXPORT Class
     /**
      * Set the name of the parent class in a nested class.
      */
-    void setParentClassName( const QString &name );
+    void setParentClassName(const QString &name);
 
     /**
      * Adds a declaration macro at the top of the class, like Q_PROPERTY(...)
      * or Q_INTERFACES(...).
      */
-    void addDeclarationMacro( const QString& macro );
+    void addDeclarationMacro(const QString &macro);
 
     /**
      * Returns the list of declaration macros added by addDeclarationMacro()
      */
     QStringList declarationMacros() const;
 
-  private:
+private:
     class Private;
-    Private* d;
+    Private *d;
 };
 
-class ClassList: public QList<Class>
+class ClassList : public QList<Class>
 {
 public:
     /**
@@ -350,15 +349,13 @@ public:
      * for dependencies, usually because them come from underlying libraries.
      * All classes starting with Q are automatically excluded
      */
-    void sortByDependencies( const QStringList& excludedClasses = QStringList() );
+    void sortByDependencies(const QStringList &excludedClasses = QStringList());
     // maybe we could have a bool ignoreUnknownClasses, too, for people who write bugfree code...
-
 
     QStringList classNames() const;
 
-    iterator findClass(const QString& name);
+    iterator findClass(const QString &name);
 };
-
 }
 
 #endif

@@ -29,21 +29,21 @@
 
 class ClassProperty
 {
-  public:
+public:
     typedef QList<ClassProperty> List;
 
-    ClassProperty( const QString &type, const QString &name );
+    ClassProperty(const QString &type, const QString &name);
 
     QString type() const;
     QString name() const;
 
-    void setIsList( bool );
+    void setIsList(bool);
     bool isList() const;
 
-    void setTargetHasId( bool );
+    void setTargetHasId(bool);
     bool targetHasId() const;
 
-  private:
+private:
     QString m_type;
     QString m_name;
 
@@ -53,28 +53,28 @@ class ClassProperty
 
 class ClassDescription
 {
-  public:
-    ClassDescription( const QString &name );
+public:
+    ClassDescription(const QString &name);
 
     QString name() const;
 
-    void addProperty( const ClassProperty & );
-    void addProperty( const QString &type, const QString &name );
+    void addProperty(const ClassProperty &);
+    void addProperty(const QString &type, const QString &name);
 
     ClassProperty::List properties() const;
 
-    bool hasProperty( const QString &name ) const;
+    bool hasProperty(const QString &name) const;
 
-    void addEnum(const KODE::Enum & classEnum);
-    void addEnum( const QString &name, const QStringList &enumItems );
+    void addEnum(const KODE::Enum &classEnum);
+    void addEnum(const QString &name, const QStringList &enumItems);
 
     KODE::Enum::List enums() const;
 
-    bool hasEnum( const QString &name ) const;
+    bool hasEnum(const QString &name) const;
 
 private:
     QString m_name;
-    
+
     ClassProperty::List m_properties;
     KODE::Enum::List m_enums;
 };

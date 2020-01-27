@@ -29,7 +29,7 @@
 class QLabel;
 class RemoteFile;
 namespace KXForms {
-  class Hints;
+class Hints;
 }
 
 using namespace KXForms;
@@ -45,51 +45,51 @@ using namespace KXForms;
 class MainWindow : public KXmlGuiWindow
 {
     Q_OBJECT
-  public:
+public:
     MainWindow();
     virtual ~MainWindow();
 
-    bool load( const KUrl & );
-    bool save( const KUrl & );
+    bool load(const KUrl &);
+    bool save(const KUrl &);
 
-    void loadSchema( const KUrl & );
-    void loadHints( const KUrl & );
-    void loadForm( const KUrl & );
+    void loadSchema(const KUrl &);
+    void loadHints(const KUrl &);
+    void loadForm(const KUrl &);
 
-    void setVersion( const QString & );
+    void setVersion(const QString &);
 
     KXForms::Manager *formsManager();
 
-  protected:
+protected:
     void parseSchema();
-    void parseForm( const QString &data );
+    void parseForm(const QString &data);
 
-  protected slots:
-    void slotGetSchemaResult( bool ok );
-    void slotGetHintsResult( bool ok );
-    void slotGetFormResult( bool ok );
-    void slotGetDataResult( bool ok );
-    void slotPutDataResult( bool ok );
+protected slots:
+    void slotGetSchemaResult(bool ok);
+    void slotGetHintsResult(bool ok);
+    void slotGetFormResult(bool ok);
+    void slotGetDataResult(bool ok);
+    void slotPutDataResult(bool ok);
 
     bool save();
 
-    void refresh( const Hints &h );
+    void refresh(const Hints &h);
 
-  private slots:
+private slots:
     void fileNew();
     void fileOpen();
     void fileSaveAs();
     void optionsPreferences();
     void exportKxformsDocument();
 
-    void changeStatusbar(const QString& text);
-    void changeCaption(const QString& text);
+    void changeStatusbar(const QString &text);
+    void changeCaption(const QString &text);
 
-  private:
+private:
     void setupAccel();
     void setupActions();
 
-  private:
+private:
     QLabel *mLabel;
 
     KXForms::Manager mFormsManager;

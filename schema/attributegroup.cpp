@@ -30,55 +30,50 @@ public:
     Attribute::List mAttributes;
 };
 
-AttributeGroup::AttributeGroup()
-  : XmlElement(), d(new Private)
-{
-}
+AttributeGroup::AttributeGroup() : XmlElement(), d(new Private) {}
 
-AttributeGroup::AttributeGroup( const AttributeGroup &other )
-  : XmlElement( other ), d(new Private)
+AttributeGroup::AttributeGroup(const AttributeGroup &other) : XmlElement(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 AttributeGroup::~AttributeGroup()
 {
-  delete d;
+    delete d;
 }
 
-AttributeGroup &AttributeGroup::operator=( const AttributeGroup &other )
+AttributeGroup &AttributeGroup::operator=(const AttributeGroup &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void AttributeGroup::setReference( const QName &reference )
+void AttributeGroup::setReference(const QName &reference)
 {
-  d->mReference = reference;
+    d->mReference = reference;
 }
 
 QName AttributeGroup::reference() const
 {
-  return d->mReference;
+    return d->mReference;
 }
 
-void AttributeGroup::setAttributes( const Attribute::List &attributes )
+void AttributeGroup::setAttributes(const Attribute::List &attributes)
 {
-  d->mAttributes = attributes;
+    d->mAttributes = attributes;
 }
 
 Attribute::List AttributeGroup::attributes() const
 {
-  return d->mAttributes;
+    return d->mAttributes;
 }
 
 bool AttributeGroup::isResolved() const
 {
-  return !d->mAttributes.isEmpty();
+    return !d->mAttributes.isEmpty();
 }
-
 }

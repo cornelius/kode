@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -30,40 +30,33 @@ namespace WSCL {
 
 class WSCL_EXPORT Interaction
 {
-  public:
+public:
     typedef QList<Interaction> List;
 
-    enum Type
-    {
-      ReceiveSend,
-      SendReceive,
-      Receive,
-      Send,
-      Empty
-    };
+    enum Type { ReceiveSend, SendReceive, Receive, Send, Empty };
 
     Interaction();
     ~Interaction();
 
-    void setId( const QString &id );
+    void setId(const QString &id);
     QString id() const;
 
-    void setType( Type type );
+    void setType(Type type);
     Type type() const;
 
-    void setSendReceiveDocument( const SendReceiveDocument &document );
+    void setSendReceiveDocument(const SendReceiveDocument &document);
     SendReceiveDocument sendReceiveDocument() const;
 
-    void setReceiveSendDocument( const ReceiveSendDocument &document );
+    void setReceiveSendDocument(const ReceiveSendDocument &document);
     ReceiveSendDocument receiveSendDocument() const;
 
-    void setReceiveDocument( const ReceiveDocument &document );
+    void setReceiveDocument(const ReceiveDocument &document);
     ReceiveDocument receiveDocument() const;
 
-    void setSendDocument( const SendDocument &document );
+    void setSendDocument(const SendDocument &document);
     SendDocument sendDocument() const;
 
-  private:
+private:
     QString mId;
     Type mType;
 
@@ -72,7 +65,6 @@ class WSCL_EXPORT Interaction
     ReceiveDocument mReceiveDocument;
     SendDocument mSendDocument;
 };
-
 }
 
 #endif

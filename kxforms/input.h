@@ -32,8 +32,8 @@ namespace KXForms {
 class Input : public GuiElement
 {
     Q_OBJECT
-  public:
-    Input( Manager *, const QString &label, QWidget *parent, Properties *p );
+public:
+    Input(Manager *, const QString &label, QWidget *parent, Properties *p);
 
     void loadData();
     void saveData();
@@ -41,18 +41,17 @@ class Input : public GuiElement
 
     QString value() const;
 
-  signals:
+signals:
     void returnPressed();
 
-  protected slots:
+protected slots:
     void emitValueChanged();
 
-  private:
+private:
     KLineEdit *mLineEdit;
     QSpinBox *mSpinBox;
     QCheckBox *mCheckBox;
 };
-
 }
 
 #endif

@@ -24,10 +24,10 @@
 
 class KInputDialog : QInputDialog
 {
-  public:
-    static QString getItem( const QString &caption, const QString &label,
-      const QStringList &list, int current=0, bool editable=false,
-      bool *ok=0, QWidget *parent=0 );  
+public:
+    static QString getItem(const QString &caption, const QString &label, const QStringList &list,
+                           int current = 0, bool editable = false, bool *ok = 0,
+                           QWidget *parent = 0);
 };
 
 #endif
