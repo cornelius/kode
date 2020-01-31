@@ -22,6 +22,10 @@ specified through WSDL descriptions.
 
 We use the [Qt coding style](https://wiki.qt.io/Qt_Coding_Style) and [conventions](https://wiki.qt.io/Coding_Conventions). Each commit is checked by a github action with clang-formatter.
 
+## C++11
+
+The usage of C++11 feature is [accepted](https://github.com/cornelius/kode/issues/17)
+
 
 If you have questions or comments please contact Cornelius Schumacher
 <schumacher@kde.org> or Tobias Koenig <tokoe@kde.org>.
