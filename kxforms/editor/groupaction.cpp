@@ -36,41 +36,38 @@
 
 using namespace KXForms;
 
-GroupAction::GroupAction( Editor *e)
-: EditorAction( e )
+GroupAction::GroupAction(Editor *e) : EditorAction(e) {}
+
+GroupAction::~GroupAction() {}
+
+void GroupAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-GroupAction::~GroupAction()
-{
-}
+    bool ok;
 
-void GroupAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    QStringList groups;
+    foreach (QString s, editor()->manager()->currentGui()->groups().keys())
+        groups << s;
+    kDebug() << editor()->manager()->currentGui()->ref().toString() << " :"
+             << editor()->manager()->currentGui()->groups().keys();
+    int currentGroup = groups.indexOf(e->properties()->group);
+    QString newGroup;
 
-  bool ok;
+    newGroup = KInputDialog::getItem(i18n("Select new group"),
+                                     i18n("Group for %1:", e->ref().toString()), groups,
+                                     currentGroup, false, &ok);
 
-  QStringList groups;
-  foreach( QString s, editor()->manager()->currentGui()->groups().keys() )
-    groups << s;
-  kDebug() << editor()->manager()->currentGui()->ref().toString() <<" :" << editor()->manager()->currentGui()->groups().keys();
-  int currentGroup = groups.indexOf( e->properties()->group );
-  QString newGroup;
+    if (ok) {
+        kDebug() << "New Group:" << newGroup;
+        Hint h;
+        h.setRef(e->id());
+        h.setValue(Hint::GroupReference, newGroup);
+        emit hintGenerated(h);
+    }
 
-  newGroup = KInputDialog::getItem( i18n("Select new group"), i18n("Group for %1:", e->ref().toString()),
-      groups, currentGroup, false, &ok );
-
-  if( ok ) {
-    kDebug() <<"New Group:" << newGroup;
-    Hint h;
-    h.setRef( e->id() );
-    h.setValue( Hint::GroupReference, newGroup );
-    emit hintGenerated( h );
-  }
-
-  editor()->finishEdit();
+    editor()->finishEdit();
 }
 
 #include "groupaction.moc"

@@ -34,813 +34,790 @@ static QString soapBindingTransportHTTP = "http://schemas.xmlsoap.org/soap/http"
 static QString soapStandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap/";
 static QString soapEncStandardNamespace = "http://schemas.xmlsoap.org/soap/encoding/";
 
-static QString soapPrefix( ParserContext *context )
+static QString soapPrefix(ParserContext *context)
 {
-  QString prefix = context->namespaceManager()->prefix( soapStandardNamespace );
-  if ( !prefix.isEmpty() )
-    return prefix + ':';
-  else
-    return QString();
+    QString prefix = context->namespaceManager()->prefix(soapStandardNamespace);
+    if (!prefix.isEmpty())
+        return prefix + ':';
+    else
+        return QString();
 }
 
-SoapBinding::Binding::Binding()
-  : mTransport( HTTPTransport ),
-    mStyle( DocumentStyle )
-{
-}
+SoapBinding::Binding::Binding() : mTransport(HTTPTransport), mStyle(DocumentStyle) {}
 
-SoapBinding::Binding::~Binding()
-{
-}
+SoapBinding::Binding::~Binding() {}
 
-void SoapBinding::Binding::setTransport( Transport transport )
+void SoapBinding::Binding::setTransport(Transport transport)
 {
-  mTransport = transport;
+    mTransport = transport;
 }
 
 SoapBinding::Transport SoapBinding::Binding::transport() const
 {
-  return mTransport;
+    return mTransport;
 }
 
-void SoapBinding::Binding::setStyle( Style style )
+void SoapBinding::Binding::setStyle(Style style)
 {
-  mStyle = style;
+    mStyle = style;
 }
 
 SoapBinding::Style SoapBinding::Binding::style() const
 {
-  return mStyle;
+    return mStyle;
 }
 
-void SoapBinding::Binding::loadXML( ParserContext *context, const QDomElement &element )
+void SoapBinding::Binding::loadXML(ParserContext *context, const QDomElement &element)
 {
-  if ( element.hasAttribute( "transport" ) ) {
-    if ( element.attribute( "transport" ) == soapBindingTransportHTTP ) {
-      mTransport = HTTPTransport;
-    } else
-      context->messageHandler()->warning( "SoapBinding::Binding: unknown 'transport' value" );
-  }
+    if (element.hasAttribute("transport")) {
+        if (element.attribute("transport") == soapBindingTransportHTTP) {
+            mTransport = HTTPTransport;
+        } else
+            context->messageHandler()->warning("SoapBinding::Binding: unknown 'transport' value");
+    }
 
-  if ( element.hasAttribute( "style" ) ) {
-    if ( element.attribute( "style" ) == "rpc" )
-      mStyle = RPCStyle;
-    else if ( element.attribute( "style" ) == "document" )
-      mStyle = DocumentStyle;
+    if (element.hasAttribute("style")) {
+        if (element.attribute("style") == "rpc")
+            mStyle = RPCStyle;
+        else if (element.attribute("style") == "document")
+            mStyle = DocumentStyle;
+        else
+            context->messageHandler()->warning("SoapBinding::Binding: unknown 'style' value");
+    }
+}
+
+void SoapBinding::Binding::saveXML(ParserContext *context, QDomDocument &document,
+                                   QDomElement &parent) const
+{
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "binding");
+    parent.appendChild(element);
+
+    if (mTransport == HTTPTransport)
+        element.setAttribute("transport", soapBindingTransportHTTP);
     else
-      context->messageHandler()->warning( "SoapBinding::Binding: unknown 'style' value" );
-  }
-}
+        context->messageHandler()->warning("SoapBinding::Binding: unknown 'transport' value");
 
-void SoapBinding::Binding::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
-{
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "binding" );
-  parent.appendChild( element );
-
-  if ( mTransport == HTTPTransport )
-    element.setAttribute( "transport", soapBindingTransportHTTP );
-  else
-    context->messageHandler()->warning( "SoapBinding::Binding: unknown 'transport' value" );
-
-  if ( mStyle == RPCStyle )
-    element.setAttribute( "style", "rpc" );
-  else
-    element.setAttribute( "style", "document" );
-}
-
-
-SoapBinding::Operation::Operation()
-  : mStyle( DocumentStyle )
-{
-}
-
-SoapBinding::Operation::Operation( const QString &name )
-  : mName( name ), mStyle( DocumentStyle )
-{
-}
-
-SoapBinding::Operation::~Operation()
-{
-}
-
-void SoapBinding::Operation::loadXML( ParserContext *context, const QDomElement &element )
-{
-  mSoapAction = element.attribute( "soapAction" );
-
-  if ( element.hasAttribute( "style" ) ) {
-    if ( element.attribute( "style" ) == "rpc" )
-      mStyle = RPCStyle;
-    else if ( element.attribute( "style" ) == "document" )
-      mStyle = DocumentStyle;
+    if (mStyle == RPCStyle)
+        element.setAttribute("style", "rpc");
     else
-      context->messageHandler()->warning( "SoapBinding::Operation: unknown 'style' value" );
-  }
-
-  // TODO: fallback is style value of soap:binding
+        element.setAttribute("style", "document");
 }
 
-void SoapBinding::Operation::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+SoapBinding::Operation::Operation() : mStyle(DocumentStyle) {}
+
+SoapBinding::Operation::Operation(const QString &name) : mName(name), mStyle(DocumentStyle) {}
+
+SoapBinding::Operation::~Operation() {}
+
+void SoapBinding::Operation::loadXML(ParserContext *context, const QDomElement &element)
 {
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "operation" );
-  parent.appendChild( element );
+    mSoapAction = element.attribute("soapAction");
 
-  if ( !mSoapAction.isEmpty() )
-    element.setAttribute( "soapAction", mSoapAction );
+    if (element.hasAttribute("style")) {
+        if (element.attribute("style") == "rpc")
+            mStyle = RPCStyle;
+        else if (element.attribute("style") == "document")
+            mStyle = DocumentStyle;
+        else
+            context->messageHandler()->warning("SoapBinding::Operation: unknown 'style' value");
+    }
 
-  if ( mStyle == RPCStyle )
-    element.setAttribute( "style", "rpc" );
-  else
-    element.setAttribute( "style", "document" );
+    // TODO: fallback is style value of soap:binding
 }
 
-void SoapBinding::Operation::setName( const QString &name )
+void SoapBinding::Operation::saveXML(ParserContext *context, QDomDocument &document,
+                                     QDomElement &parent) const
 {
-  mName = name;
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "operation");
+    parent.appendChild(element);
+
+    if (!mSoapAction.isEmpty())
+        element.setAttribute("soapAction", mSoapAction);
+
+    if (mStyle == RPCStyle)
+        element.setAttribute("style", "rpc");
+    else
+        element.setAttribute("style", "document");
+}
+
+void SoapBinding::Operation::setName(const QString &name)
+{
+    mName = name;
 }
 
 QString SoapBinding::Operation::name() const
 {
-  return mName;
+    return mName;
 }
 
-void SoapBinding::Operation::setAction( const QString &action )
+void SoapBinding::Operation::setAction(const QString &action)
 {
-  mSoapAction = action;
+    mSoapAction = action;
 }
 
 QString SoapBinding::Operation::action() const
 {
-  return mSoapAction;
+    return mSoapAction;
 }
 
-void SoapBinding::Operation::setStyle( Style style )
+void SoapBinding::Operation::setStyle(Style style)
 {
-  mStyle = style;
+    mStyle = style;
 }
 
 SoapBinding::Style SoapBinding::Operation::style() const
 {
-  return mStyle;
+    return mStyle;
 }
 
-void SoapBinding::Operation::setInput( const Body &input )
+void SoapBinding::Operation::setInput(const Body &input)
 {
-  mInputBody = input;
+    mInputBody = input;
 }
 
 SoapBinding::Body SoapBinding::Operation::input() const
 {
-  return mInputBody;
+    return mInputBody;
 }
 
-void SoapBinding::Operation::setOutput( const Body &output )
+void SoapBinding::Operation::setOutput(const Body &output)
 {
-  mOutputBody = output;
+    mOutputBody = output;
 }
 
 SoapBinding::Body SoapBinding::Operation::output() const
 {
-  return mOutputBody;
+    return mOutputBody;
 }
 
-void SoapBinding::Operation::setInputHeader( const Header &inputHeader )
+void SoapBinding::Operation::setInputHeader(const Header &inputHeader)
 {
-  mInputHeader = inputHeader;
+    mInputHeader = inputHeader;
 }
 
 SoapBinding::Header SoapBinding::Operation::inputHeader() const
 {
-  return mInputHeader;
+    return mInputHeader;
 }
 
-void SoapBinding::Operation::setOutputHeader( const Header &outputHeader )
+void SoapBinding::Operation::setOutputHeader(const Header &outputHeader)
 {
-  mOutputHeader = outputHeader;
+    mOutputHeader = outputHeader;
 }
 
 SoapBinding::Header SoapBinding::Operation::outputHeader() const
 {
-  return mOutputHeader;
+    return mOutputHeader;
 }
 
-void SoapBinding::Operation::setFault( const Fault &fault )
+void SoapBinding::Operation::setFault(const Fault &fault)
 {
-  mFault = fault;
+    mFault = fault;
 }
 
 SoapBinding::Fault SoapBinding::Operation::fault() const
 {
-  return mFault;
+    return mFault;
 }
 
-SoapBinding::Body::Body()
-  : mUse( LiteralUse )
-{
-}
+SoapBinding::Body::Body() : mUse(LiteralUse) {}
 
-SoapBinding::Body::~Body()
-{
-}
+SoapBinding::Body::~Body() {}
 
-void SoapBinding::Body::setEncodingStyle( const QString &encodingStyle )
+void SoapBinding::Body::setEncodingStyle(const QString &encodingStyle)
 {
-  mEncodingStyle = encodingStyle;
+    mEncodingStyle = encodingStyle;
 }
 
 QString SoapBinding::Body::encodingStyle() const
 {
-  return mEncodingStyle;
+    return mEncodingStyle;
 }
 
-void SoapBinding::Body::setPart( const QString &part )
+void SoapBinding::Body::setPart(const QString &part)
 {
-  mPart = part;
+    mPart = part;
 }
 
 QString SoapBinding::Body::part() const
 {
-  return mPart;
+    return mPart;
 }
 
-void SoapBinding::Body::setUse( Use use )
+void SoapBinding::Body::setUse(Use use)
 {
-  mUse = use;
+    mUse = use;
 }
 
 SoapBinding::Use SoapBinding::Body::use() const
 {
-  return mUse;
+    return mUse;
 }
 
-void SoapBinding::Body::setNameSpace( const QString &nameSpace )
+void SoapBinding::Body::setNameSpace(const QString &nameSpace)
 {
-  mNameSpace = nameSpace;
+    mNameSpace = nameSpace;
 }
 
 QString SoapBinding::Body::nameSpace() const
 {
-  return mNameSpace;
+    return mNameSpace;
 }
 
-void SoapBinding::Body::loadXML( ParserContext *context, const QDomElement &element )
+void SoapBinding::Body::loadXML(ParserContext *context, const QDomElement &element)
 {
-  if ( element.hasAttribute( "encodingStyle" ) )
-    mEncodingStyle = element.attribute( "encodingStyle" );
-  else
-    mEncodingStyle = QString();
-
-  mPart = element.attribute( "part" );
-  mNameSpace = element.attribute( "namespace" );
-
-  if ( element.hasAttribute( "use" ) ) {
-    if ( element.attribute( "use" ) == "literal" )
-      mUse = LiteralUse;
-    else if ( element.attribute( "use" ) == "encoded" )
-      mUse = EncodedUse;
+    if (element.hasAttribute("encodingStyle"))
+        mEncodingStyle = element.attribute("encodingStyle");
     else
-      context->messageHandler()->warning( "SoapBinding::Body: unknown 'use' value" );
-  }
+        mEncodingStyle = QString();
+
+    mPart = element.attribute("part");
+    mNameSpace = element.attribute("namespace");
+
+    if (element.hasAttribute("use")) {
+        if (element.attribute("use") == "literal")
+            mUse = LiteralUse;
+        else if (element.attribute("use") == "encoded")
+            mUse = EncodedUse;
+        else
+            context->messageHandler()->warning("SoapBinding::Body: unknown 'use' value");
+    }
 }
 
-void SoapBinding::Body::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::Body::saveXML(ParserContext *context, QDomDocument &document,
+                                QDomElement &parent) const
 {
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "body" );
-  parent.appendChild( element );
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "body");
+    parent.appendChild(element);
 
-  if ( !mEncodingStyle.isEmpty() )
-    element.setAttribute( "encodingStyle", mEncodingStyle );
-  if ( !mPart.isEmpty() )
-    element.setAttribute( "part", mPart );
-  if ( !mNameSpace.isEmpty() )
-    element.setAttribute( "namespace", mNameSpace );
+    if (!mEncodingStyle.isEmpty())
+        element.setAttribute("encodingStyle", mEncodingStyle);
+    if (!mPart.isEmpty())
+        element.setAttribute("part", mPart);
+    if (!mNameSpace.isEmpty())
+        element.setAttribute("namespace", mNameSpace);
 
-  if ( mUse == LiteralUse )
-    element.setAttribute( "use", "literal" );
-  else
-    element.setAttribute( "use", "encoded" );
+    if (mUse == LiteralUse)
+        element.setAttribute("use", "literal");
+    else
+        element.setAttribute("use", "encoded");
 }
 
+SoapBinding::Fault::Fault() : mUse(LiteralUse) {}
 
-SoapBinding::Fault::Fault()
-  : mUse( LiteralUse )
-{
-}
+SoapBinding::Fault::~Fault() {}
 
-SoapBinding::Fault::~Fault()
+void SoapBinding::Fault::setEncodingStyle(const QString &encodingStyle)
 {
-}
-
-void SoapBinding::Fault::setEncodingStyle( const QString &encodingStyle )
-{
-  mEncodingStyle = encodingStyle;
+    mEncodingStyle = encodingStyle;
 }
 
 QString SoapBinding::Fault::encodingStyle() const
 {
-  return mEncodingStyle;
+    return mEncodingStyle;
 }
 
-void SoapBinding::Fault::setUse( Use use )
+void SoapBinding::Fault::setUse(Use use)
 {
-  mUse = use;
+    mUse = use;
 }
 
 SoapBinding::Use SoapBinding::Fault::use() const
 {
-  return mUse;
+    return mUse;
 }
 
-void SoapBinding::Fault::setNameSpace( const QString &nameSpace )
+void SoapBinding::Fault::setNameSpace(const QString &nameSpace)
 {
-  mNameSpace = nameSpace;
+    mNameSpace = nameSpace;
 }
 
 QString SoapBinding::Fault::nameSpace() const
 {
-  return mNameSpace;
+    return mNameSpace;
 }
-void SoapBinding::Fault::loadXML( ParserContext *context, const QDomElement &element )
+void SoapBinding::Fault::loadXML(ParserContext *context, const QDomElement &element)
 {
-  if ( element.hasAttribute( "encodingStyle" ) )
-    mEncodingStyle = element.attribute( "encodingStyle" );
-  else
-    mEncodingStyle = QString();
-
-  mNameSpace = element.attribute( "namespace" );
-
-  if ( element.hasAttribute( "use" ) ) {
-    if ( element.attribute( "use" ) == "literal" )
-      mUse = LiteralUse;
-    else if ( element.attribute( "use" ) == "encoded" )
-      mUse = EncodedUse;
+    if (element.hasAttribute("encodingStyle"))
+        mEncodingStyle = element.attribute("encodingStyle");
     else
-      context->messageHandler()->warning( "SoapBinding::Fault: unknown 'use' value" );
-  }
+        mEncodingStyle = QString();
+
+    mNameSpace = element.attribute("namespace");
+
+    if (element.hasAttribute("use")) {
+        if (element.attribute("use") == "literal")
+            mUse = LiteralUse;
+        else if (element.attribute("use") == "encoded")
+            mUse = EncodedUse;
+        else
+            context->messageHandler()->warning("SoapBinding::Fault: unknown 'use' value");
+    }
 }
 
-void SoapBinding::Fault::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::Fault::saveXML(ParserContext *context, QDomDocument &document,
+                                 QDomElement &parent) const
 {
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "fault" );
-  parent.appendChild( element );
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "fault");
+    parent.appendChild(element);
 
-  if ( !mEncodingStyle.isEmpty() )
-    element.setAttribute( "encodingStyle", mEncodingStyle );
-  if ( !mNameSpace.isEmpty() )
-    element.setAttribute( "namespace", mNameSpace );
+    if (!mEncodingStyle.isEmpty())
+        element.setAttribute("encodingStyle", mEncodingStyle);
+    if (!mNameSpace.isEmpty())
+        element.setAttribute("namespace", mNameSpace);
 
-  if ( mUse == LiteralUse )
-    element.setAttribute( "use", "literal" );
-  else
-    element.setAttribute( "use", "encoded" );
+    if (mUse == LiteralUse)
+        element.setAttribute("use", "literal");
+    else
+        element.setAttribute("use", "encoded");
 }
 
+SoapBinding::Header::Header() : mUse(LiteralUse) {}
 
-SoapBinding::Header::Header()
-  : mUse( LiteralUse )
-{
-}
+SoapBinding::Header::~Header() {}
 
-SoapBinding::Header::~Header()
+void SoapBinding::Header::setHeaderFault(const HeaderFault &headerFault)
 {
-}
-
-void SoapBinding::Header::setHeaderFault( const HeaderFault &headerFault )
-{
-  mHeaderFault = headerFault;
+    mHeaderFault = headerFault;
 }
 
 SoapBinding::HeaderFault SoapBinding::Header::headerFault() const
 {
-  return mHeaderFault;
+    return mHeaderFault;
 }
 
-void SoapBinding::Header::setMessage( const QName &message )
+void SoapBinding::Header::setMessage(const QName &message)
 {
-  mMessage = message;
+    mMessage = message;
 }
 
 QName SoapBinding::Header::message() const
 {
-  return mMessage;
+    return mMessage;
 }
 
-void SoapBinding::Header::setPart( const QString &part )
+void SoapBinding::Header::setPart(const QString &part)
 {
-  mPart = part;
+    mPart = part;
 }
 
 QString SoapBinding::Header::part() const
 {
-  return mPart;
+    return mPart;
 }
 
-void SoapBinding::Header::setUse( const Use &use )
+void SoapBinding::Header::setUse(const Use &use)
 {
-  mUse = use;
+    mUse = use;
 }
 
 SoapBinding::Use SoapBinding::Header::use() const
 {
-  return mUse;
+    return mUse;
 }
 
-void SoapBinding::Header::setEncodingStyle( const QString encodingStyle )
+void SoapBinding::Header::setEncodingStyle(const QString encodingStyle)
 {
-  mEncodingStyle = encodingStyle;
+    mEncodingStyle = encodingStyle;
 }
 
 QString SoapBinding::Header::encodingStyle() const
 {
-  return mEncodingStyle;
+    return mEncodingStyle;
 }
 
-void SoapBinding::Header::setNameSpace( const QString &nameSpace )
+void SoapBinding::Header::setNameSpace(const QString &nameSpace)
 {
-  mNameSpace = nameSpace;
+    mNameSpace = nameSpace;
 }
 
 QString SoapBinding::Header::nameSpace() const
 {
-  return mNameSpace;
+    return mNameSpace;
 }
 
-void SoapBinding::Header::loadXML( ParserContext *context, const QDomElement &element )
+void SoapBinding::Header::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mMessage = element.attribute( "message" );
-  if ( mMessage.isEmpty() )
-    context->messageHandler()->warning( "SoapBinding::Header: 'message' required" );
-  else {
-    if ( !mMessage.prefix().isEmpty() )
-      mMessage.setNameSpace( context->namespaceManager()->uri( mMessage.prefix() ) );
-  }
-
-  mPart = element.attribute( "part" );
-  if ( mPart.isEmpty() )
-    context->messageHandler()->warning( "SoapBinding::Header: 'part' required" );
-
-  if ( element.attribute( "use" ) == "literal" )
-    mUse = LiteralUse;
-  else if ( element.attribute( "use" ) == "encoded" )
-    mUse = EncodedUse;
-  else if ( element.attribute( "use" ).isEmpty() )
-    context->messageHandler()->warning( "SoapBinding::Header: 'use' required" );
-  else
-    context->messageHandler()->warning( "SoapBinding::Header: unknown 'use' value" );
-
-  if ( element.hasAttribute( "encodingStyle" ) )
-    mEncodingStyle = element.attribute( "encodingStyle" );
-  else
-    mEncodingStyle = QString();
-
-  mNameSpace = element.attribute( "namespace" );
-
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "headerfault" ) {
-      mHeaderFault.loadXML( context, child );
-    } else {
-      context->messageHandler()->warning( QString( "SoapBinding::Header: unknown tag %1" ).arg( child.tagName() ) );
+    mMessage = element.attribute("message");
+    if (mMessage.isEmpty())
+        context->messageHandler()->warning("SoapBinding::Header: 'message' required");
+    else {
+        if (!mMessage.prefix().isEmpty())
+            mMessage.setNameSpace(context->namespaceManager()->uri(mMessage.prefix()));
     }
 
-    child = child.nextSiblingElement();
-  }
+    mPart = element.attribute("part");
+    if (mPart.isEmpty())
+        context->messageHandler()->warning("SoapBinding::Header: 'part' required");
+
+    if (element.attribute("use") == "literal")
+        mUse = LiteralUse;
+    else if (element.attribute("use") == "encoded")
+        mUse = EncodedUse;
+    else if (element.attribute("use").isEmpty())
+        context->messageHandler()->warning("SoapBinding::Header: 'use' required");
+    else
+        context->messageHandler()->warning("SoapBinding::Header: unknown 'use' value");
+
+    if (element.hasAttribute("encodingStyle"))
+        mEncodingStyle = element.attribute("encodingStyle");
+    else
+        mEncodingStyle = QString();
+
+    mNameSpace = element.attribute("namespace");
+
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        if (child.tagName() == soapPrefix(context) + "headerfault") {
+            mHeaderFault.loadXML(context, child);
+        } else {
+            context->messageHandler()->warning(
+                    QString("SoapBinding::Header: unknown tag %1").arg(child.tagName()));
+        }
+
+        child = child.nextSiblingElement();
+    }
 }
 
-void SoapBinding::Header::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::Header::saveXML(ParserContext *context, QDomDocument &document,
+                                  QDomElement &parent) const
 {
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "header" );
-  parent.appendChild( element );
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "header");
+    parent.appendChild(element);
 
-  if ( !mMessage.isEmpty() )
-    element.setAttribute( "message", mMessage.qname() );
-  else
-    context->messageHandler()->warning( "SoapBinding::Header: 'message' required" );
+    if (!mMessage.isEmpty())
+        element.setAttribute("message", mMessage.qname());
+    else
+        context->messageHandler()->warning("SoapBinding::Header: 'message' required");
 
-  if ( !mPart.isEmpty() )
-    element.setAttribute( "part", mPart );
-  else
-    context->messageHandler()->warning( "SoapBinding::Header: 'part' required" );
+    if (!mPart.isEmpty())
+        element.setAttribute("part", mPart);
+    else
+        context->messageHandler()->warning("SoapBinding::Header: 'part' required");
 
-  if ( !mEncodingStyle.isEmpty() )
-    element.setAttribute( "encodingStyle", mEncodingStyle );
-  if ( !mNameSpace.isEmpty() )
-    element.setAttribute( "namespace", mNameSpace );
+    if (!mEncodingStyle.isEmpty())
+        element.setAttribute("encodingStyle", mEncodingStyle);
+    if (!mNameSpace.isEmpty())
+        element.setAttribute("namespace", mNameSpace);
 
-  if ( mUse == LiteralUse )
-    element.setAttribute( "use", "literal" );
-  else
-    element.setAttribute( "use", "encoded" );
+    if (mUse == LiteralUse)
+        element.setAttribute("use", "literal");
+    else
+        element.setAttribute("use", "encoded");
 
-  mHeaderFault.saveXML( context, document, element );
+    mHeaderFault.saveXML(context, document, element);
 }
 
+SoapBinding::HeaderFault::HeaderFault() : mUse(LiteralUse) {}
 
-SoapBinding::HeaderFault::HeaderFault()
-  : mUse( LiteralUse )
-{
-}
+SoapBinding::HeaderFault::~HeaderFault() {}
 
-SoapBinding::HeaderFault::~HeaderFault()
+void SoapBinding::HeaderFault::setMessage(const QName &message)
 {
-}
-
-void SoapBinding::HeaderFault::setMessage( const QName &message )
-{
-  mMessage = message;
+    mMessage = message;
 }
 
 QName SoapBinding::HeaderFault::message() const
 {
-  return mMessage;
+    return mMessage;
 }
 
-void SoapBinding::HeaderFault::setEncodingStyle( const QString &encodingStyle )
+void SoapBinding::HeaderFault::setEncodingStyle(const QString &encodingStyle)
 {
-  mEncodingStyle = encodingStyle;
+    mEncodingStyle = encodingStyle;
 }
 
 QString SoapBinding::HeaderFault::encodingStyle() const
 {
-  return mEncodingStyle;
+    return mEncodingStyle;
 }
 
-void SoapBinding::HeaderFault::setPart( const QString &part )
+void SoapBinding::HeaderFault::setPart(const QString &part)
 {
-  mPart = part;
+    mPart = part;
 }
 
 QString SoapBinding::HeaderFault::part() const
 {
-  return mPart;
+    return mPart;
 }
 
-void SoapBinding::HeaderFault::setUse( Use use )
+void SoapBinding::HeaderFault::setUse(Use use)
 {
-  mUse = use;
+    mUse = use;
 }
 
 SoapBinding::Use SoapBinding::HeaderFault::use() const
 {
-  return mUse;
+    return mUse;
 }
 
-void SoapBinding::HeaderFault::setNameSpace( const QString &nameSpace )
+void SoapBinding::HeaderFault::setNameSpace(const QString &nameSpace)
 {
-  mNameSpace = nameSpace;
+    mNameSpace = nameSpace;
 }
 
 QString SoapBinding::HeaderFault::nameSpace() const
 {
-  return mNameSpace;
+    return mNameSpace;
 }
 
-void SoapBinding::HeaderFault::loadXML( ParserContext *context, const QDomElement &element )
+void SoapBinding::HeaderFault::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mMessage = element.attribute( "message" );
-  if ( mMessage.isEmpty() )
-    context->messageHandler()->warning( "SoapBinding::HeaderFault: 'message' required" );
+    mMessage = element.attribute("message");
+    if (mMessage.isEmpty())
+        context->messageHandler()->warning("SoapBinding::HeaderFault: 'message' required");
 
-  mPart = element.attribute( "part" );
-  if ( mPart.isEmpty() )
-    context->messageHandler()->warning( "SoapBinding::HeaderFault: 'part' required" );
+    mPart = element.attribute("part");
+    if (mPart.isEmpty())
+        context->messageHandler()->warning("SoapBinding::HeaderFault: 'part' required");
 
-  if ( element.attribute( "use" ) == "literal" )
-    mUse = LiteralUse;
-  else if ( element.attribute( "use" ) == "encoded" )
-    mUse = EncodedUse;
-  else if ( element.attribute( "use" ).isEmpty() )
-    context->messageHandler()->warning( "SoapBinding::HeaderFault: 'use' required" );
-  else
-    context->messageHandler()->warning( "SoapBinding::HeaderFault: unknown 'use' value" );
+    if (element.attribute("use") == "literal")
+        mUse = LiteralUse;
+    else if (element.attribute("use") == "encoded")
+        mUse = EncodedUse;
+    else if (element.attribute("use").isEmpty())
+        context->messageHandler()->warning("SoapBinding::HeaderFault: 'use' required");
+    else
+        context->messageHandler()->warning("SoapBinding::HeaderFault: unknown 'use' value");
 
-  if ( element.hasAttribute( "encodingStyle" ) )
-    mEncodingStyle = element.attribute( "encodingStyle" );
-  else
-    mEncodingStyle = QString();
+    if (element.hasAttribute("encodingStyle"))
+        mEncodingStyle = element.attribute("encodingStyle");
+    else
+        mEncodingStyle = QString();
 
-  mNameSpace = element.attribute( "namespace" );
+    mNameSpace = element.attribute("namespace");
 }
 
-void SoapBinding::HeaderFault::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::HeaderFault::saveXML(ParserContext *context, QDomDocument &document,
+                                       QDomElement &parent) const
 {
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "headerfault" );
-  parent.appendChild( element );
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "headerfault");
+    parent.appendChild(element);
 
-  if ( !mMessage.isEmpty() )
-    element.setAttribute( "message", mMessage.qname() );
-  else
-    context->messageHandler()->warning( "SoapBinding::HeaderFault: 'message' required" );
+    if (!mMessage.isEmpty())
+        element.setAttribute("message", mMessage.qname());
+    else
+        context->messageHandler()->warning("SoapBinding::HeaderFault: 'message' required");
 
-  if ( !mPart.isEmpty() )
-    element.setAttribute( "part", mPart );
-  else
-    context->messageHandler()->warning( "SoapBinding::HeaderFault: 'part' required" );
+    if (!mPart.isEmpty())
+        element.setAttribute("part", mPart);
+    else
+        context->messageHandler()->warning("SoapBinding::HeaderFault: 'part' required");
 
-  if ( !mEncodingStyle.isEmpty() )
-    element.setAttribute( "encodingStyle", mEncodingStyle );
-  if ( !mNameSpace.isEmpty() )
-    element.setAttribute( "namespace", mNameSpace );
+    if (!mEncodingStyle.isEmpty())
+        element.setAttribute("encodingStyle", mEncodingStyle);
+    if (!mNameSpace.isEmpty())
+        element.setAttribute("namespace", mNameSpace);
 
-  if ( mUse == LiteralUse )
-    element.setAttribute( "use", "literal" );
-  else
-    element.setAttribute( "use", "encoded" );
+    if (mUse == LiteralUse)
+        element.setAttribute("use", "literal");
+    else
+        element.setAttribute("use", "encoded");
 }
 
+SoapBinding::Address::Address() {}
 
-SoapBinding::Address::Address()
-{
-}
+SoapBinding::Address::~Address() {}
 
-SoapBinding::Address::~Address()
+void SoapBinding::Address::setLocation(const QUrl &location)
 {
-}
-
-void SoapBinding::Address::setLocation( const QUrl &location )
-{
-  mLocation = location;
+    mLocation = location;
 }
 
 QUrl SoapBinding::Address::location() const
 {
-  return mLocation;
+    return mLocation;
 }
 
-void SoapBinding::setOperations( const Operation::Map &operations )
+void SoapBinding::setOperations(const Operation::Map &operations)
 {
-  mOperations = operations;
+    mOperations = operations;
 }
 
 SoapBinding::Operation::Map SoapBinding::operations() const
 {
-  return mOperations;
+    return mOperations;
 }
 
-void SoapBinding::Address::loadXML( ParserContext *context, const QDomElement &element )
+void SoapBinding::Address::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mLocation = element.attribute( "location" );
-  if ( !mLocation.isValid() )
-    context->messageHandler()->warning( "SoapBinding::Address: 'location' required" );
+    mLocation = element.attribute("location");
+    if (!mLocation.isValid())
+        context->messageHandler()->warning("SoapBinding::Address: 'location' required");
 }
 
-void SoapBinding::Address::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::Address::saveXML(ParserContext *context, QDomDocument &document,
+                                   QDomElement &parent) const
 {
-  QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "address" );
-  parent.appendChild( element );
+    QDomElement element =
+            document.createElementNS(soapStandardNamespace, soapPrefix(context) + "address");
+    parent.appendChild(element);
 
-  if ( mLocation.isValid() )
-    element.setAttribute( "location", mLocation.toString() );
-  else
-    context->messageHandler()->warning( "SoapBinding::Address: 'location' required" );
+    if (mLocation.isValid())
+        element.setAttribute("location", mLocation.toString());
+    else
+        context->messageHandler()->warning("SoapBinding::Address: 'location' required");
 }
 
+SoapBinding::SoapBinding() {}
 
-SoapBinding::SoapBinding()
-{
-}
+SoapBinding::~SoapBinding() {}
 
-SoapBinding::~SoapBinding()
+void SoapBinding::setAddress(const Address &address)
 {
-}
-
-void SoapBinding::setAddress( const Address &address )
-{
-  mAddress = address;
+    mAddress = address;
 }
 
 SoapBinding::Address SoapBinding::address() const
 {
-  return mAddress;
+    return mAddress;
 }
 
-void SoapBinding::setBinding( const Binding &binding )
+void SoapBinding::setBinding(const Binding &binding)
 {
-  mBinding = binding;
+    mBinding = binding;
 }
 
 SoapBinding::Binding SoapBinding::binding() const
 {
-  return mBinding;
+    return mBinding;
 }
 
-void SoapBinding::parseBinding( ParserContext *context, const QDomElement &parent )
+void SoapBinding::parseBinding(ParserContext *context, const QDomElement &parent)
 {
-  mBinding.loadXML( context, parent );
+    mBinding.loadXML(context, parent);
 }
 
-void SoapBinding::parseOperation( ParserContext *context, const QString &name, const QDomElement &parent )
+void SoapBinding::parseOperation(ParserContext *context, const QString &name,
+                                 const QDomElement &parent)
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "operation" ) {
-      Operation op( name );
-      op.loadXML( context, child );
-      mOperations.insert( name, op );
+    QDomElement child = parent.firstChildElement();
+    while (!child.isNull()) {
+        if (child.tagName() == soapPrefix(context) + "operation") {
+            Operation op(name);
+            op.loadXML(context, child);
+            mOperations.insert(name, op);
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void SoapBinding::parseOperationInput( ParserContext *context, const QString &name, const QDomElement &parent )
+void SoapBinding::parseOperationInput(ParserContext *context, const QString &name,
+                                      const QDomElement &parent)
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "body" ) {
-      Operation &op = mOperations[ name ];
-      Body inputBody;
-      inputBody.loadXML( context, child );
-      op.setInput( inputBody );
-    } else if ( child.tagName() == soapPrefix( context ) + "header" ) {
-      Operation &op = mOperations[ name ];
-      Header inputHeader;
-      inputHeader.loadXML( context, child );
-      op.setInputHeader( inputHeader );
+    QDomElement child = parent.firstChildElement();
+    while (!child.isNull()) {
+        if (child.tagName() == soapPrefix(context) + "body") {
+            Operation &op = mOperations[name];
+            Body inputBody;
+            inputBody.loadXML(context, child);
+            op.setInput(inputBody);
+        } else if (child.tagName() == soapPrefix(context) + "header") {
+            Operation &op = mOperations[name];
+            Header inputHeader;
+            inputHeader.loadXML(context, child);
+            op.setInputHeader(inputHeader);
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void SoapBinding::parseOperationOutput( ParserContext *context, const QString &name, const QDomElement &parent )
+void SoapBinding::parseOperationOutput(ParserContext *context, const QString &name,
+                                       const QDomElement &parent)
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "body" ) {
-      Operation &op = mOperations[ name ];
-      Body outputBody;
-      outputBody.loadXML( context, child );
-      op.setOutput( outputBody );
-    } else if ( child.tagName() == soapPrefix( context ) + "header" ) {
-      Operation &op = mOperations[ name ];
-      Header outputHeader;
-      outputHeader.loadXML( context, child );
-      op.setOutputHeader( outputHeader );
+    QDomElement child = parent.firstChildElement();
+    while (!child.isNull()) {
+        if (child.tagName() == soapPrefix(context) + "body") {
+            Operation &op = mOperations[name];
+            Body outputBody;
+            outputBody.loadXML(context, child);
+            op.setOutput(outputBody);
+        } else if (child.tagName() == soapPrefix(context) + "header") {
+            Operation &op = mOperations[name];
+            Header outputHeader;
+            outputHeader.loadXML(context, child);
+            op.setOutputHeader(outputHeader);
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void SoapBinding::parseOperationFault( ParserContext *context, const QString &name, const QDomElement &parent )
+void SoapBinding::parseOperationFault(ParserContext *context, const QString &name,
+                                      const QDomElement &parent)
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "fault" ) {
-      Operation &op = mOperations[ name ];
-      Fault fault;
-      fault.loadXML( context, child );
-      op.setFault( fault );
+    QDomElement child = parent.firstChildElement();
+    while (!child.isNull()) {
+        if (child.tagName() == soapPrefix(context) + "fault") {
+            Operation &op = mOperations[name];
+            Fault fault;
+            fault.loadXML(context, child);
+            op.setFault(fault);
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void SoapBinding::parsePort( ParserContext *context, const QDomElement &parent )
+void SoapBinding::parsePort(ParserContext *context, const QDomElement &parent)
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "address" ) {
-      mAddress.loadXML( context, child );
+    QDomElement child = parent.firstChildElement();
+    while (!child.isNull()) {
+        if (child.tagName() == soapPrefix(context) + "address") {
+            mAddress.loadXML(context, child);
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void SoapBinding::synthesizeBinding( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::synthesizeBinding(ParserContext *context, QDomDocument &document,
+                                    QDomElement &parent) const
 {
-  mBinding.saveXML( context, document, parent );
+    mBinding.saveXML(context, document, parent);
 }
 
-void SoapBinding::synthesizeOperation( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::synthesizeOperation(ParserContext *context, const QString &name,
+                                      QDomDocument &document, QDomElement &parent) const
 {
-  const Operation &op = mOperations[ name ];
-  op.saveXML( context, document, parent );
+    const Operation &op = mOperations[name];
+    op.saveXML(context, document, parent);
 }
 
-void SoapBinding::synthesizeOperationInput( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::synthesizeOperationInput(ParserContext *context, const QString &name,
+                                           QDomDocument &document, QDomElement &parent) const
 {
-  const Operation &op = mOperations[ name ];
-  op.input().saveXML( context, document, parent );
-  op.inputHeader().saveXML( context, document, parent );
+    const Operation &op = mOperations[name];
+    op.input().saveXML(context, document, parent);
+    op.inputHeader().saveXML(context, document, parent);
 }
 
-void SoapBinding::synthesizeOperationOutput( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::synthesizeOperationOutput(ParserContext *context, const QString &name,
+                                            QDomDocument &document, QDomElement &parent) const
 {
-  const Operation &op = mOperations[ name ];
-  op.output().saveXML( context, document, parent );
-  op.outputHeader().saveXML( context, document, parent );
+    const Operation &op = mOperations[name];
+    op.output().saveXML(context, document, parent);
+    op.outputHeader().saveXML(context, document, parent);
 }
 
-void SoapBinding::synthesizeOperationFault( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::synthesizeOperationFault(ParserContext *context, const QString &name,
+                                           QDomDocument &document, QDomElement &parent) const
 {
-  const Operation &op = mOperations[ name ];
-  op.fault().saveXML( context, document, parent );
+    const Operation &op = mOperations[name];
+    op.fault().saveXML(context, document, parent);
 }
 
-void SoapBinding::synthesizePort( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void SoapBinding::synthesizePort(ParserContext *context, QDomDocument &document,
+                                 QDomElement &parent) const
 {
-  mAddress.saveXML( context, document, parent );
+    mAddress.saveXML(context, document, parent);
 }

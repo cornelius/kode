@@ -34,159 +34,157 @@
 
 #include "listinputfield.h"
 
-ListInputField::ListInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
-  : SimpleInputField( name, type ), mTypeName( typeName )
+ListInputField::ListInputField(const QString &name, const QString &typeName,
+                               const XSD::SimpleType *type)
+    : SimpleInputField(name, type), mTypeName(typeName)
 {
 }
 
-void ListInputField::setXMLData( const QDomElement &element )
+void ListInputField::setXMLData(const QDomElement &element)
 {
-  InputField::List::Iterator it;
-  for ( it = mFields.begin(); it != mFields.end(); ++it ) {
-    delete *it;
-  }
-  mFields.clear();
-
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement child = node.toElement();
-    if ( !child.isNull() ) {
-      InputField *field = InputFieldFactory::self()->createField( name(), mTypeName );
-      if ( field ) {
-        field->setXMLData( child );
-        appendChild( field );
-      } else
-        qDebug( "ListInputField: Unable to create field of type %s", qPrintable( mTypeName ) );
+    InputField::List::Iterator it;
+    for (it = mFields.begin(); it != mFields.end(); ++it) {
+        delete *it;
     }
+    mFields.clear();
 
-    node = node.nextSibling();
-  }
+    QDomNode node = element.firstChild();
+    while (!node.isNull()) {
+        QDomElement child = node.toElement();
+        if (!child.isNull()) {
+            InputField *field = InputFieldFactory::self()->createField(name(), mTypeName);
+            if (field) {
+                field->setXMLData(child);
+                appendChild(field);
+            } else
+                qDebug("ListInputField: Unable to create field of type %s", qPrintable(mTypeName));
+        }
+
+        node = node.nextSibling();
+    }
 }
 
-void ListInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void ListInputField::xmlData(QDomDocument &document, QDomElement &parent)
 {
-  InputField::List::Iterator it;
-  for ( it = mFields.begin(); it != mFields.end(); ++it ) {
-    (*it)->xmlData( document, parent );
-  }
+    InputField::List::Iterator it;
+    for (it = mFields.begin(); it != mFields.end(); ++it) {
+        (*it)->xmlData(document, parent);
+    }
 }
 
-void ListInputField::setData( const QString& )
-{
-}
+void ListInputField::setData(const QString &) {}
 
 QString ListInputField::data() const
 {
-  return QString();
+    return QString();
 }
 
-QWidget *ListInputField::createWidget( QWidget *parent )
+QWidget *ListInputField::createWidget(QWidget *parent)
 {
-  mInputWidget = new ListWidget( this, name(), mTypeName, parent );
+    mInputWidget = new ListWidget(this, name(), mTypeName, parent);
 
-  return mInputWidget;
+    return mInputWidget;
 }
 
-
-ListWidget::ListWidget( InputField *parentField, const QString &name, const QString &type, QWidget *parent )
-  : QWidget( parent ),
-    mParentField( parentField ), mName( name ), mType( type )
+ListWidget::ListWidget(InputField *parentField, const QString &name, const QString &type,
+                       QWidget *parent)
+    : QWidget(parent), mParentField(parentField), mName(name), mType(type)
 {
-  QGridLayout *layout = new QGridLayout( this );
-  layout->setSpacing( 6 );
-  layout->setMargin( 11 );
+    QGridLayout *layout = new QGridLayout(this);
+    layout->setSpacing(6);
+    layout->setMargin(11);
 
-  mView = new QListWidget( this );
-  layout->addWidget( mView, 0, 0, 4, 1);
+    mView = new QListWidget(this);
+    layout->addWidget(mView, 0, 0, 4, 1);
 
-  mAddButton = new QPushButton( i18n( "Add" ), this );
-  layout->addWidget( mAddButton, 0, 1 );
+    mAddButton = new QPushButton(i18n("Add"), this);
+    layout->addWidget(mAddButton, 0, 1);
 
-  mEditButton = new QPushButton( i18n( "Edit..." ), this );
-  layout->addWidget( mEditButton, 1, 1 );
+    mEditButton = new QPushButton(i18n("Edit..."), this);
+    layout->addWidget(mEditButton, 1, 1);
 
-  mRemoveButton = new QPushButton( i18n( "Remove" ), this );
-  layout->addWidget( mRemoveButton, 2, 1 );
+    mRemoveButton = new QPushButton(i18n("Remove"), this);
+    layout->addWidget(mRemoveButton, 2, 1);
 
-  connect( mAddButton, SIGNAL( clicked() ), SLOT( add() ) );
-  connect( mEditButton, SIGNAL( clicked() ), SLOT( edit() ) );
-  connect( mRemoveButton, SIGNAL( clicked() ), SLOT( remove() ) );
+    connect(mAddButton, SIGNAL(clicked()), SLOT(add()));
+    connect(mEditButton, SIGNAL(clicked()), SLOT(edit()));
+    connect(mRemoveButton, SIGNAL(clicked()), SLOT(remove()));
 
-  update();
+    update();
 }
 
 void ListWidget::update()
 {
-  int pos = mView->currentRow();
-  mView->clear();
+    int pos = mView->currentRow();
+    mView->clear();
 
-  const InputField::List fields = mParentField->childFields();
-  InputField::List::ConstIterator it;
-  for ( it = fields.begin(); it != fields.end(); ++it )
-    mView->addItem( (*it)->name() );
+    const InputField::List fields = mParentField->childFields();
+    InputField::List::ConstIterator it;
+    for (it = fields.begin(); it != fields.end(); ++it)
+        mView->addItem((*it)->name());
 
-  mView->setCurrentRow( pos );
+    mView->setCurrentRow(pos);
 
-  updateButtons();
+    updateButtons();
 }
 
 void ListWidget::add()
 {
-  InputField *field = InputFieldFactory::self()->createField( mName, mType );
-  if ( !field ) {
-    qDebug( "ListInputField: Unable to create field of type %s", qPrintable( mType ) );
-    return;
-  }
+    InputField *field = InputFieldFactory::self()->createField(mName, mType);
+    if (!field) {
+        qDebug("ListInputField: Unable to create field of type %s", qPrintable(mType));
+        return;
+    }
 
-  InputDialog dlg( field->createWidget( this ), this );
-  if ( dlg.exec() ) {
-    mParentField->appendChild( field );
+    InputDialog dlg(field->createWidget(this), this);
+    if (dlg.exec()) {
+        mParentField->appendChild(field);
 
-    update();
-  } else
-    delete field;
+        update();
+    } else
+        delete field;
 }
 
 void ListWidget::edit()
 {
-  int pos = mView->currentRow();
+    int pos = mView->currentRow();
 
-  if ( pos == -1 )
-    return;
+    if (pos == -1)
+        return;
 
-  InputField *field = mParentField->childFields()[ pos ];
-  if ( !field )
-    return;
+    InputField *field = mParentField->childFields()[pos];
+    if (!field)
+        return;
 
-  OutputDialog dlg( field->createWidget( this ), this );
-  dlg.exec();
+    OutputDialog dlg(field->createWidget(this), this);
+    dlg.exec();
 
-  update();
+    update();
 }
 
 void ListWidget::remove()
 {
-  int pos = mView->currentRow();
+    int pos = mView->currentRow();
 
-  if ( pos == -1 )
-    return;
+    if (pos == -1)
+        return;
 
-  InputField *field = mParentField->childFields()[ pos ];
-  if ( !field )
-    return;
+    InputField *field = mParentField->childFields()[pos];
+    if (!field)
+        return;
 
-  mParentField->removeChild( field );
-  delete field;
+    mParentField->removeChild(field);
+    delete field;
 
-  update();
+    update();
 }
 
 void ListWidget::updateButtons()
 {
-  bool enabled = (mParentField->childFields().count() > 0);
+    bool enabled = (mParentField->childFields().count() > 0);
 
-  mEditButton->setEnabled( enabled );
-  mRemoveButton->setEnabled( enabled );
+    mEditButton->setEnabled(enabled);
+    mRemoveButton->setEnabled(enabled);
 }
 
 #include "listinputfield.moc"

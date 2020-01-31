@@ -27,45 +27,40 @@ using namespace KODE;
 
 class Typedef::Private
 {
-  public:
+public:
     QString mType;
     QString mAlias;
 };
 
-Typedef::Typedef()
-  : d( new Private )
+Typedef::Typedef() : d(new Private) {}
+
+Typedef::Typedef(const Typedef &other) : d(new Private)
 {
+    *d = *other.d;
 }
 
-Typedef::Typedef( const Typedef &other )
-  : d( new Private )
+Typedef::Typedef(const QString &type, const QString &alias) : d(new Private)
 {
-  *d = *other.d;
-}
-
-Typedef::Typedef( const QString &type, const QString &alias )
-  : d( new Private )
-{
-  d->mType = type;
-  d->mAlias = alias;
+    d->mType = type;
+    d->mAlias = alias;
 }
 
 Typedef::~Typedef()
 {
-  delete d;
+    delete d;
 }
 
-Typedef& Typedef::operator=( const Typedef &other )
+Typedef &Typedef::operator=(const Typedef &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
 QString Typedef::declaration() const
 {
-  return "typedef " + d->mType + ' ' + d->mAlias + ';';
+    return "typedef " + d->mType + ' ' + d->mAlias + ';';
 }

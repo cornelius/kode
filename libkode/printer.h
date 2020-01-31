@@ -37,7 +37,7 @@ namespace KODE {
  */
 class KODE_EXPORT Printer
 {
-  public:
+public:
     /**
      * Creates a new printer.
      */
@@ -46,13 +46,13 @@ class KODE_EXPORT Printer
     /**
      * Creates a new printer from @param other.
      */
-    Printer( const Printer &other );
+    Printer(const Printer &other);
 
     /**
      * Creates a new printer, which uses the given @param style
      * to format the C++ code.
      */
-    Printer( const Style &style );
+    Printer(const Style &style);
 
     /**
      * Destroys the printer.
@@ -62,39 +62,39 @@ class KODE_EXPORT Printer
     /**
      * Assignment operator.
      */
-    Printer& operator=( const Printer &other );
+    Printer &operator=(const Printer &other);
 
     /**
      * Sets whether the implementation shall contain a comment
      * which warns about changing the C++ code manually.
      */
-    void setCreationWarning( bool value );
+    void setCreationWarning(bool value);
 
     /**
      * Sets the name of the @param generator which shall be
      * included in the C++ code.
      */
-    void setGenerator( const QString &generator );
+    void setGenerator(const QString &generator);
 
     /**
      * Sets the directory where the decleration and implementation
      * files shall be stored. If now directory is set, the current
      * working directory is used.
      */
-    void setOutputDirectory( const QString &outputDirectory );
+    void setOutputDirectory(const QString &outputDirectory);
 
     /**
      * Sets the name of the source file which is included in
      * the generator statement.
      */
-    void setSourceFile( const QString &sourceFile );
+    void setSourceFile(const QString &sourceFile);
 
     /**
      * Sets whether labels (public:, private: etc.) should define
      * an indentation level. I.e. they are indented and then their
      * contents are indented even more.
      */
-    void setLabelsDefineIndent( bool b );
+    void setLabelsDefineIndent(bool b);
 
     /**
      * Sets whether labels should be indented.
@@ -104,12 +104,12 @@ class KODE_EXPORT Printer
      * setIndentLabels(true) + setLabelsDefineIndent(true) -> kdepim coding style, default here.
      * setIndentLabels(false) + setLabelsDefineIndent(true) -> doesn't really make sense.
      */
-    void setIndentLabels( bool b );
+    void setIndentLabels(bool b);
 
     /**
      * Prints the header of the class definitions in @param file.
      */
-    void printHeader( const File &file );
+    void printHeader(const File &file);
 
     /**
      * Prints the implementation of the class definitions in @param file.
@@ -117,7 +117,7 @@ class KODE_EXPORT Printer
      * @param createHeaderInclude If true, the header for the declaration of
      *                            this implementation is included.
      */
-    void printImplementation( const File &file, bool createHeaderInclude = true );
+    void printImplementation(const File &file, bool createHeaderInclude = true);
 
     /**
      * @brief printCodeIntoFile
@@ -127,12 +127,12 @@ class KODE_EXPORT Printer
      * @param code reference to a Code object which contents needs to be printed
      * @param file the target file in unopened state with filename set
      */
-    void printCodeIntoFile (const Code &code, QFile *file);
+    void printCodeIntoFile(const Code &code, QFile *file);
 
     /**
      * Prints a automake file as defined by @param autoMakefile.
      */
-    //void printAutoMakefile( const AutoMakefile &autoMakefile );
+    // void printAutoMakefile( const AutoMakefile &autoMakefile );
 
     /**
      * Returns the function signature for the given @param function
@@ -141,17 +141,16 @@ class KODE_EXPORT Printer
      * If @param forImplementation is true, the class qualifier
      * is part of the signature as well, and default args are removed.
      */
-    QString functionSignature( const Function &function,
-                               const QString &className = QString(),
-                               bool forImplementation = false );
+    QString functionSignature(const Function &function, const QString &className = QString(),
+                              bool forImplementation = false);
 
     /**
      * @brief setVerbose enable/disable outputting verbose logs
      * @param verbose
      */
-    void setVerbose( bool verbose );
+    void setVerbose(bool verbose);
 
-  protected:
+protected:
     /**
      * Returns the creation warning.
      *
@@ -165,14 +164,12 @@ class KODE_EXPORT Printer
      * Reimplement this method to provide a custom license
      * header.
      */
-    virtual QString licenseHeader( const File &file ) const;
+    virtual QString licenseHeader(const File &file) const;
 
-
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

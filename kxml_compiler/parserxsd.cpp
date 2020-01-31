@@ -33,220 +33,216 @@
 
 using namespace RNG;
 
-ParserXsd::ParserXsd() : mVerbose ( false )
+ParserXsd::ParserXsd() : mVerbose(false) {}
+
+void ParserXsd::setVerbose(bool verbose)
 {
+    mVerbose = verbose;
 }
 
-void ParserXsd::setVerbose( bool verbose )
+Schema::Document ParserXsd::parse(const QString &data)
 {
-  mVerbose = verbose;
-}
-
-Schema::Document ParserXsd::parse( const QString &data )
-{
-  if ( mVerbose ) {
-    qDebug() << "----ParserXsd::parse() string";
-  }
-
-  NSManager namespaceManager;
-  MessageHandler messageHandler;
-  ParserContext context;
-  context.setNamespaceManager( &namespaceManager );
-  context.setMessageHandler( &messageHandler );
-
-  XSD::Parser parser;
-  if ( !parser.parseString( &context, data ) ) {
-    qDebug() << "Error parsing data.";
-    return Schema::Document();
-  } else {
-    return parse( parser );
-  }
-}
-
-Schema::Document ParserXsd::parse( QFile &file )
-{
-  if ( mVerbose ) {
-    qDebug() << "----ParserXsd::parse() file";
-  }
-
-  NSManager namespaceManager;
-  MessageHandler messageHandler;
-  ParserContext context;
-  context.setNamespaceManager( &namespaceManager );
-  context.setMessageHandler( &messageHandler );
-
-  XSD::Parser parser;
-  if ( !parser.parseFile( &context, file ) ) {
-    qDebug() << "Error parsing file " << file.fileName();
-
-    return Schema::Document();
-  } else {
-    return parse( parser );
-  }
-}
-
-Schema::Document ParserXsd::parse( const XSD::Parser &parser )
-{
-  XSD::Types types = parser.types();
-
-  foreach ( XSD::Element element, types.elements() ) {
-    if ( mVerbose ) {
-      qDebug() << "Element: " << element.name();
-//      qDebug() << "  Annotations: " << element.annotations().count();
-//      qDebug() << "  " << element.minOccurs() << ","
-//        << element.maxOccurs();
-    }
-    Schema::Element e;
-    e.setIdentifier( element.name() );
-    e.setName( element.name() );
-    XSD::ComplexType complexType = types.complexType( element );
-    if ( complexType.contentModel() == XSD::XSDType::MIXED ) {
-      if ( mVerbose ) {
-        qDebug() << "  Mixed";
-      }
-      e.setText( true );
-    } else if ( complexType.contentModel() == XSD::XSDType::SIMPLE &&
-            !complexType.baseTypeName().isEmpty() ) {
-      if ( complexType.baseTypeName().qname() == "xs:string" ) {
-        e.setBaseType( Schema::Node::String );
-      } else if ( complexType.baseTypeName().qname() == "xs:boolean" ) {
-        e.setBaseType( Schema::Node::Boolean );
-      } else if ( complexType.baseTypeName().qname() == "xs:normalizedString" ) {
-        e.setBaseType( Schema::Node::NormalizedString );
-      } else if ( complexType.baseTypeName().qname() == "xs:token" ) {
-        e.setBaseType( Schema::Node::Token );
-      }
+    if (mVerbose) {
+        qDebug() << "----ParserXsd::parse() string";
     }
 
-    if ( element.type().qname() == "xs:string" ) {
-      e.setType( Schema::Node::String );
-    } else if ( element.type().qname() == "xs:boolean" ) {
-      e.setType( Schema::Node::Boolean );
-    } else if ( element.type().qname() == "xs:normalizedString" ) {
-      e.setType( Schema::Node::NormalizedString );
-    } else if ( element.type().qname() == "xs:token" ) {
-      e.setType( Schema::Node::Token );
+    NSManager namespaceManager;
+    MessageHandler messageHandler;
+    ParserContext context;
+    context.setNamespaceManager(&namespaceManager);
+    context.setMessageHandler(&messageHandler);
+
+    XSD::Parser parser;
+    if (!parser.parseString(&context, data)) {
+        qDebug() << "Error parsing data.";
+        return Schema::Document();
     } else {
-      e.setType( Schema::Node::ComplexType );
+        return parse(parser);
+    }
+}
+
+Schema::Document ParserXsd::parse(QFile &file)
+{
+    if (mVerbose) {
+        qDebug() << "----ParserXsd::parse() file";
     }
 
-    foreach( XSD::Element subElement, complexType.elements() ) {
-      if ( mVerbose ) {
-        qDebug() << "  Element: " << subElement.name();
-        qDebug() << "    " << subElement.minOccurs() << ","
-          << subElement.maxOccurs();
-      }
+    NSManager namespaceManager;
+    MessageHandler messageHandler;
+    ParserContext context;
+    context.setNamespaceManager(&namespaceManager);
+    context.setMessageHandler(&messageHandler);
 
-      Schema::Relation eRelation( subElement.name() );
-      eRelation.setMinOccurs( subElement.minOccurs() );
-      if ( subElement.maxOccurs() == XSD::Parser::UNBOUNDED ) {
-        eRelation.setMaxOccurs( Schema::Relation::Unbounded );
-      } else {
-        eRelation.setMaxOccurs( subElement.maxOccurs() );
-      }
-      XSD::Compositor compositor = subElement.compositor();
-      if ( mVerbose ) {
-        qDebug() << "  Compositor " << compositor.type();
-      }
-      if ( compositor.type() == XSD::Compositor::Choice ) {
-        QString choice;
-        foreach( QName qname, compositor.children() ) {
-          if ( !choice.isEmpty() ) choice += '+';
-          choice += qname.qname();
+    XSD::Parser parser;
+    if (!parser.parseFile(&context, file)) {
+        qDebug() << "Error parsing file " << file.fileName();
+
+        return Schema::Document();
+    } else {
+        return parse(parser);
+    }
+}
+
+Schema::Document ParserXsd::parse(const XSD::Parser &parser)
+{
+    XSD::Types types = parser.types();
+
+    foreach (XSD::Element element, types.elements()) {
+        if (mVerbose) {
+            qDebug() << "Element: " << element.name();
+            //      qDebug() << "  Annotations: " << element.annotations().count();
+            //      qDebug() << "  " << element.minOccurs() << ","
+            //        << element.maxOccurs();
         }
-        eRelation.setChoice( choice );
-      }
-      e.addElementRelation( eRelation );
-    }
+        Schema::Element e;
+        e.setIdentifier(element.name());
+        e.setName(element.name());
+        XSD::ComplexType complexType = types.complexType(element);
+        if (complexType.contentModel() == XSD::XSDType::MIXED) {
+            if (mVerbose) {
+                qDebug() << "  Mixed";
+            }
+            e.setText(true);
+        } else if (complexType.contentModel() == XSD::XSDType::SIMPLE
+                   && !complexType.baseTypeName().isEmpty()) {
+            if (complexType.baseTypeName().qname() == "xs:string") {
+                e.setBaseType(Schema::Node::String);
+            } else if (complexType.baseTypeName().qname() == "xs:boolean") {
+                e.setBaseType(Schema::Node::Boolean);
+            } else if (complexType.baseTypeName().qname() == "xs:normalizedString") {
+                e.setBaseType(Schema::Node::NormalizedString);
+            } else if (complexType.baseTypeName().qname() == "xs:token") {
+                e.setBaseType(Schema::Node::Token);
+            }
+        }
 
-    foreach( XSD::Attribute attribute, complexType.attributes() ) {
-      if ( mVerbose ) {
-        qDebug() << "  Attribute: " << attribute.name();
-      }
-
-      Schema::Relation aRelation( attribute.name() );
-      e.addAttributeRelation( aRelation );
-
-      Schema::Attribute a;
-      a.setIdentifier( attribute.name() );
-      a.setName( attribute.name() );
-      a.setElementName( element.name() );
-
-      if ( !attribute.type().isEmpty() ) {
-        if ( attribute.type().qname() == "xs:string" ) {
-          a.setType( Schema::Node::String );
-        } else if ( attribute.type().qname() == "xs:integer" ) {
-          a.setType( Schema::Node::Integer );
-        } else if ( attribute.type().qname() == "xs:int" ) {
-          a.setType( Schema::Node::Int );
-        } else if ( attribute.type().qname() == "xs:decimal" ) {
-          a.setType( Schema::Node::Decimal );
-        } else if ( attribute.type().qname() == "xs:boolean" ) {
-          a.setType( Schema::Node::Boolean );
-        } else if ( attribute.type().qname() == "xs:date" ) {
-          a.setType( Schema::Node::Date );
+        if (element.type().qname() == "xs:string") {
+            e.setType(Schema::Node::String);
+        } else if (element.type().qname() == "xs:boolean") {
+            e.setType(Schema::Node::Boolean);
+        } else if (element.type().qname() == "xs:normalizedString") {
+            e.setType(Schema::Node::NormalizedString);
+        } else if (element.type().qname() == "xs:token") {
+            e.setType(Schema::Node::Token);
         } else {
-          QName name = attribute.type();
-          XSD::SimpleType simpleType = types.simpleType( name, element.name() );
-          setType( a, simpleType );
+            e.setType(Schema::Node::ComplexType);
         }
-      }
 
-      a.setRequired(attribute.isUsed());
-      a.setDefaultValue(attribute.defaultValue());
+        foreach (XSD::Element subElement, complexType.elements()) {
+            if (mVerbose) {
+                qDebug() << "  Element: " << subElement.name();
+                qDebug() << "    " << subElement.minOccurs() << "," << subElement.maxOccurs();
+            }
 
-      mDocument.addAttribute( a );
+            Schema::Relation eRelation(subElement.name());
+            eRelation.setMinOccurs(subElement.minOccurs());
+            if (subElement.maxOccurs() == XSD::Parser::UNBOUNDED) {
+                eRelation.setMaxOccurs(Schema::Relation::Unbounded);
+            } else {
+                eRelation.setMaxOccurs(subElement.maxOccurs());
+            }
+            XSD::Compositor compositor = subElement.compositor();
+            if (mVerbose) {
+                qDebug() << "  Compositor " << compositor.type();
+            }
+            if (compositor.type() == XSD::Compositor::Choice) {
+                QString choice;
+                foreach (QName qname, compositor.children()) {
+                    if (!choice.isEmpty())
+                        choice += '+';
+                    choice += qname.qname();
+                }
+                eRelation.setChoice(choice);
+            }
+            e.addElementRelation(eRelation);
+        }
+
+        foreach (XSD::Attribute attribute, complexType.attributes()) {
+            if (mVerbose) {
+                qDebug() << "  Attribute: " << attribute.name();
+            }
+
+            Schema::Relation aRelation(attribute.name());
+            e.addAttributeRelation(aRelation);
+
+            Schema::Attribute a;
+            a.setIdentifier(attribute.name());
+            a.setName(attribute.name());
+            a.setElementName(element.name());
+
+            if (!attribute.type().isEmpty()) {
+                if (attribute.type().qname() == "xs:string") {
+                    a.setType(Schema::Node::String);
+                } else if (attribute.type().qname() == "xs:integer") {
+                    a.setType(Schema::Node::Integer);
+                } else if (attribute.type().qname() == "xs:int") {
+                    a.setType(Schema::Node::Int);
+                } else if (attribute.type().qname() == "xs:decimal") {
+                    a.setType(Schema::Node::Decimal);
+                } else if (attribute.type().qname() == "xs:boolean") {
+                    a.setType(Schema::Node::Boolean);
+                } else if (attribute.type().qname() == "xs:date") {
+                    a.setType(Schema::Node::Date);
+                } else {
+                    QName name = attribute.type();
+                    XSD::SimpleType simpleType = types.simpleType(name, element.name());
+                    setType(a, simpleType);
+                }
+            }
+
+            a.setRequired(attribute.isUsed());
+            a.setDefaultValue(attribute.defaultValue());
+
+            mDocument.addAttribute(a);
+        }
+
+        setAnnotations(e, element.annotations());
+
+        mDocument.addElement(e);
+
+        if (mDocument.startElement().isEmpty()) {
+            mDocument.setStartElement(e);
+        }
     }
 
-    setAnnotations( e, element.annotations() );
+    setAnnotations(mDocument, parser.annotations());
 
-    mDocument.addElement( e );
-
-    if ( mDocument.startElement().isEmpty() ) {
-      mDocument.setStartElement( e );
+    if (mVerbose) {
+        qDebug() << "----ParserXsd::parse() done";
     }
-  }
 
-  setAnnotations( mDocument, parser.annotations() );
+    //  return Schema::Document();
 
-  if ( mVerbose ) {
-    qDebug() << "----ParserXsd::parse() done";
-  }
-
-//  return Schema::Document();
-
-  return mDocument;
+    return mDocument;
 }
 
-void ParserXsd::setAnnotations( Schema::Annotatable &annotatable,
-  XSD::Annotation::List annotations )
+void ParserXsd::setAnnotations(Schema::Annotatable &annotatable, XSD::Annotation::List annotations)
 {
-  QString documentation;
-  QList<QDomElement> domElements;
-  foreach ( XSD::Annotation a, annotations ) {
-    if ( a.isDocumentation() ) documentation.append( a.documentation() );
-    if ( a.isAppinfo() ) {
-      domElements.append( a.domElement() );
+    QString documentation;
+    QList<QDomElement> domElements;
+    foreach (XSD::Annotation a, annotations) {
+        if (a.isDocumentation())
+            documentation.append(a.documentation());
+        if (a.isAppinfo()) {
+            domElements.append(a.domElement());
+        }
     }
-  }
-  annotatable.setDocumentation( documentation );
-  annotatable.setAnnotations( domElements );
+    annotatable.setDocumentation(documentation);
+    annotatable.setAnnotations(domElements);
 }
 
-void ParserXsd::setType( Schema::Node &node, const XSD::SimpleType &simpleType )
+void ParserXsd::setType(Schema::Node &node, const XSD::SimpleType &simpleType)
 {
-  if ( simpleType.subType() == XSD::SimpleType::TypeRestriction ) {
-    if ( simpleType.facetType() == XSD::SimpleType::NONE ) {
-      // Nothing to do.
-    } else if ( simpleType.facetType() == XSD::SimpleType::ENUM ) {
-      node.setType( Schema::Node::Enumeration );
-      node.setEnumerationValues( simpleType.facetEnums() );
+    if (simpleType.subType() == XSD::SimpleType::TypeRestriction) {
+        if (simpleType.facetType() == XSD::SimpleType::NONE) {
+            // Nothing to do.
+        } else if (simpleType.facetType() == XSD::SimpleType::ENUM) {
+            node.setType(Schema::Node::Enumeration);
+            node.setEnumerationValues(simpleType.facetEnums());
+        } else {
+            qDebug() << "SimpleType::facetType(): " << simpleType.facetType() << " not supported.";
+        }
     } else {
-      qDebug() << "SimpleType::facetType(): " << simpleType.facetType()
-        << " not supported.";
+        qDebug() << "SimpleType::subType: " << simpleType.subType() << " not supported.";
     }
-  } else {
-    qDebug() << "SimpleType::subType: " << simpleType.subType()
-      << " not supported.";
-  }
 }

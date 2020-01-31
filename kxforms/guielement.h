@@ -36,45 +36,44 @@ class Manager;
 
 class GuiElement : public QObject
 {
-  Q_OBJECT
-  public:
-
+    Q_OBJECT
+public:
     enum Appearance { Undefined = -1, Minimal, Compact, Full };
     enum LayoutStyle { Horizontal, Vertical };
-    struct Properties {
-        Properties() : readonly( false ),
-            appearance( Undefined ), layoutStyle( Horizontal ) {}
+    struct Properties
+    {
+        Properties() : readonly(false), appearance(Undefined), layoutStyle(Horizontal) {}
         QString type;
         QString constraint;
         bool readonly;
         QMap<QString, QString> relevance;
         QString group;
-        QList< QDomElement> positions;
+        QList<QDomElement> positions;
         Appearance appearance;
         LayoutStyle layoutStyle;
     };
 
     typedef QList<GuiElement *> List;
 
-    GuiElement( QWidget *parent, Manager *m, Properties *p );
+    GuiElement(QWidget *parent, Manager *m, Properties *p);
     virtual ~GuiElement();
 
-    virtual void parseElement( const QDomElement & ) {}
-    static void parseProperties( const QDomElement &, Properties * );
+    virtual void parseElement(const QDomElement &) {}
+    static void parseProperties(const QDomElement &, Properties *);
 
-    void setRef( const Reference & );
+    void setRef(const Reference &);
     Reference ref() const;
 
     virtual Reference id() const { return mRef; }
 
     QDomElement context() const;
 
-    QDomElement createElement( const Reference & );
+    QDomElement createElement(const Reference &);
 
-    void loadData( const QDomElement &context );
+    void loadData(const QDomElement &context);
     void save();
 
-    void setActionTypes( Editor::ActionTypes t ) { mActionTypes = t; }
+    void setActionTypes(Editor::ActionTypes t) { mActionTypes = t; }
     Editor::ActionTypes actionTypes() const { return mActionTypes; }
 
     virtual QWidget *widget() const { return mWidget; }
@@ -88,23 +87,23 @@ class GuiElement : public QObject
 
     Properties *properties() const { return mProperties; }
 
-    void setTip( const QString &tip );
+    void setTip(const QString &tip);
 
-    void addAttributeElement( GuiElement *e ) { mAttributeElements.append( e ); }
+    void addAttributeElement(GuiElement *e) { mAttributeElements.append(e); }
     GuiElement::List attributeElements() { return mAttributeElements; }
 
-  signals:
-    void valueChanged( const QString &, const QString & );
+signals:
+    void valueChanged(const QString &, const QString &);
 
-  public slots:
-    void slotValueChanged( const QString &, const QString & );
-    void setRelevant( bool );
+public slots:
+    void slotValueChanged(const QString &, const QString &);
+    void setRelevant(bool);
 
-  protected:
+protected:
     virtual void applyProperties();
-    virtual void setWidget( QWidget * );
+    virtual void setWidget(QWidget *);
 
-  protected:
+protected:
     QWidget *mParent;
     QLabel *mLabel;
     QWidget *mWidget;
@@ -112,12 +111,11 @@ class GuiElement : public QObject
     Properties *mProperties;
     GuiElement::List mAttributeElements;
 
-  private:
+private:
     Reference mRef;
     QDomElement mContext;
     Editor::ActionTypes mActionTypes;
 };
-
 }
 
 #endif

@@ -26,72 +26,66 @@
 
 using namespace KWSDL;
 
-PortType::PortType()
-{
-}
+PortType::PortType() {}
 
-PortType::PortType( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+PortType::PortType(const QString &nameSpace) : Element(nameSpace) {}
 
-PortType::~PortType()
-{
-}
+PortType::~PortType() {}
 
-void PortType::setName( const QString &name )
+void PortType::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString PortType::name() const
 {
-  return mName;
+    return mName;
 }
 
-void PortType::setOperations( const Operation::List &operations )
+void PortType::setOperations(const Operation::List &operations)
 {
-  mOperations = operations;
+    mOperations = operations;
 }
 
 Operation::List PortType::operations() const
 {
-  return mOperations;
+    return mOperations;
 }
 
-void PortType::loadXML( ParserContext *context, const QDomElement &element )
+void PortType::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mName = element.attribute( "name" );
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( "PortType: 'name' required" );
+    mName = element.attribute("name");
+    if (mName.isEmpty())
+        context->messageHandler()->warning("PortType: 'name' required");
 
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    QName tagName = child.tagName();
-    if ( tagName.localName() == "operation" ) {
-      Operation operation( nameSpace() );
-      operation.loadXML( context, child );
-      mOperations.append( operation );
-    } else {
-      context->messageHandler()->warning( QString( "PortType: unknown tag %1" ).arg( child.tagName() ) );
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        QName tagName = child.tagName();
+        if (tagName.localName() == "operation") {
+            Operation operation(nameSpace());
+            operation.loadXML(context, child);
+            mOperations.append(operation);
+        } else {
+            context->messageHandler()->warning(
+                    QString("PortType: unknown tag %1").arg(child.tagName()));
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void PortType::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void PortType::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  QDomElement element = document.createElement( "portType" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("portType");
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
-  else
-    context->messageHandler()->warning( "PortType: 'name' required" );
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
+    else
+        context->messageHandler()->warning("PortType: 'name' required");
 
-  Operation::List::ConstIterator it( mOperations.begin() );
-  const Operation::List::ConstIterator endIt( mOperations.end() );
-  for ( ; it != endIt; ++it )
-    (*it).saveXML( context, document, element );
+    Operation::List::ConstIterator it(mOperations.begin());
+    const Operation::List::ConstIterator endIt(mOperations.end());
+    for (; it != endIt; ++it)
+        (*it).saveXML(context, document, element);
 }

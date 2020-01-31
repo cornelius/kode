@@ -27,86 +27,79 @@
 
 using namespace KWSDL;
 
-Port::Port()
-{
-}
+Port::Port() {}
 
-Port::Port( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+Port::Port(const QString &nameSpace) : Element(nameSpace) {}
 
-Port::~Port()
-{
-}
+Port::~Port() {}
 
-void Port::setName( const QString &name )
+void Port::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Port::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Port::setBindingName( const QName &bindingName )
+void Port::setBindingName(const QName &bindingName)
 {
-  mBindingName = bindingName;
+    mBindingName = bindingName;
 }
 
 QName Port::bindingName() const
 {
-  return mBindingName;
+    return mBindingName;
 }
 
-void Port::loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element )
+void Port::loadXML(ParserContext *context, Binding::List *bindings, const QDomElement &element)
 {
-  mName = element.attribute( "name" );
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Port: 'name' required" );
+    mName = element.attribute("name");
+    if (mName.isEmpty())
+        context->messageHandler()->warning("Port: 'name' required");
 
-  mBindingName = element.attribute( "binding" );
-  if ( mBindingName.isEmpty() )
-    context->messageHandler()->warning( "Port: 'binding' required" );
-  else
-    if ( mBindingName.nameSpace().isEmpty() )
-      mBindingName.setNameSpace( nameSpace() );
+    mBindingName = element.attribute("binding");
+    if (mBindingName.isEmpty())
+        context->messageHandler()->warning("Port: 'binding' required");
+    else if (mBindingName.nameSpace().isEmpty())
+        mBindingName.setNameSpace(nameSpace());
 
-  for ( int i = 0; i < bindings->count(); ++i ) {
-    if ( (*bindings)[ i ].name() == mBindingName.localName() ) {
-      AbstractBinding *binding = const_cast<AbstractBinding*>( (*bindings)[i].binding() );
-      if ( binding )
-        binding->parsePort( context, element );
-      //else // ignore unimplemented bindings
-      //  context->messageHandler()->error( "No binding set" );
+    for (int i = 0; i < bindings->count(); ++i) {
+        if ((*bindings)[i].name() == mBindingName.localName()) {
+            AbstractBinding *binding = const_cast<AbstractBinding *>((*bindings)[i].binding());
+            if (binding)
+                binding->parsePort(context, element);
+            // else // ignore unimplemented bindings
+            //  context->messageHandler()->error( "No binding set" );
+        }
     }
-  }
 }
 
-void Port::saveXML( ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent ) const
+void Port::saveXML(ParserContext *context, const Binding::List *bindings, QDomDocument &document,
+                   QDomElement &parent) const
 {
-  QDomElement element = document.createElement( "port" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("port");
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
-  else
-    context->messageHandler()->warning( "Port: 'name' required" );
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
+    else
+        context->messageHandler()->warning("Port: 'name' required");
 
-  if ( !mBindingName.isEmpty() )
-    element.setAttribute( "binding", mBindingName.qname() );
-  else
-    context->messageHandler()->warning( "Port: 'binding' required" );
+    if (!mBindingName.isEmpty())
+        element.setAttribute("binding", mBindingName.qname());
+    else
+        context->messageHandler()->warning("Port: 'binding' required");
 
-  for ( int i = 0; i < bindings->count(); ++i ) {
-    if ( (*bindings)[ i ].name() == mBindingName.localName() ) {
-      const AbstractBinding *binding = (*bindings)[i].binding();
+    for (int i = 0; i < bindings->count(); ++i) {
+        if ((*bindings)[i].name() == mBindingName.localName()) {
+            const AbstractBinding *binding = (*bindings)[i].binding();
 
-      if ( binding )
-        binding->synthesizePort( context, document, element );
-      //else // ignore unimplemented bindings
-      //  context->messageHandler()->error( "No binding set" );
+            if (binding)
+                binding->synthesizePort(context, document, element);
+            // else // ignore unimplemented bindings
+            //  context->messageHandler()->error( "No binding set" );
+        }
     }
-  }
 }

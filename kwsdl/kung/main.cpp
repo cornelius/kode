@@ -29,35 +29,34 @@
 #include <kurl.h>
 #include "loader.h"
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
-  KAboutData aboutData( "kung", 0, ki18n( "KDE WSDL Interpreter" ), "0.1",
-                        ki18n( "KDE WSDL Interpreter" ),
-                        KAboutData::License_LGPL );
+    KAboutData aboutData("kung", 0, ki18n("KDE WSDL Interpreter"), "0.1",
+                         ki18n("KDE WSDL Interpreter"), KAboutData::License_LGPL);
 
-  aboutData.addAuthor( ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org" );
+    aboutData.addAuthor(ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org");
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
+    KCmdLineArgs::init(argc, argv, &aboutData);
 
-  KCmdLineOptions options;
-  options.add("+wsdl", ki18n( "Location of WSDL file" ));
-  KCmdLineArgs::addCmdLineOptions( options );
+    KCmdLineOptions options;
+    options.add("+wsdl", ki18n("Location of WSDL file"));
+    KCmdLineArgs::addCmdLineOptions(options);
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  if ( args->count() == 0 ) {
-    kError() <<"No WSDL file given.";
-    return 1;
-  }
+    if (args->count() == 0) {
+        kError() << "No WSDL file given.";
+        return 1;
+    }
 
-  // KApplication requires DBUS which should be made optional
-  QApplication app(argc, argv);
-  KComponentData instance("kung");
+    // KApplication requires DBUS which should be made optional
+    QApplication app(argc, argv);
+    KComponentData instance("kung");
 
-  Loader loader;
-  loader.setWSDLUrl( args->url( 0 ).path() );
+    Loader loader;
+    loader.setWSDLUrl(args->url(0).path());
 
-  QTimer::singleShot( 0, &loader, SLOT( run() ) );
+    QTimer::singleShot(0, &loader, SLOT(run()));
 
-  return app.exec();
+    return app.exec();
 }

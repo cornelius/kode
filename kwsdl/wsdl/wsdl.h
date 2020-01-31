@@ -30,27 +30,26 @@ namespace KWSDL {
 
 class KWSDL_EXPORT WSDL
 {
-  public:
+public:
     WSDL();
     ~WSDL();
 
-    void setDefinitions( const Definitions &definitions );
+    void setDefinitions(const Definitions &definitions);
     Definitions definitions() const;
 
-    void setNamespaceManager( const NSManager &namespaceManager );
+    void setNamespaceManager(const NSManager &namespaceManager);
     NSManager namespaceManager() const;
 
-    Binding findBinding( const QName &bindingName ) const;
-    BindingOperation findBindingOperation( const Binding &binding, const QString &operationName );
-    PortType findPortType( const QName &portTypeName ) const;
-    Message findMessage( const QName &messageName ) const;
-    XSD::Element findElement( const QName &elementName ) const;
+    Binding findBinding(const QName &bindingName) const;
+    BindingOperation findBindingOperation(const Binding &binding, const QString &operationName);
+    PortType findPortType(const QName &portTypeName) const;
+    Message findMessage(const QName &messageName) const;
+    XSD::Element findElement(const QName &elementName) const;
 
-  private:
+private:
     Definitions mDefinitions;
     NSManager mNamespaceManager;
 };
-
 }
 
 #endif

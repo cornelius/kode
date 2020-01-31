@@ -28,171 +28,169 @@ using namespace KXForms;
 
 int Layout::Element::space() const
 {
-  int space = element()->space();
+    int space = element()->space();
 
-  foreach( GuiElement *e, element()->attributeElements() )
-    space += e->space();
+    foreach (GuiElement *e, element()->attributeElements())
+        space += e->space();
 
-  return space;
+    return space;
 }
 
 int Layout::Element::width() const
 {
-  int width = 1;
+    int width = 1;
 
-  Layout::Element *it = rightElement();
-  while( it ) {
-    width++;
-    it = it->rightElement();
-  }
+    Layout::Element *it = rightElement();
+    while (it) {
+        width++;
+        it = it->rightElement();
+    }
 
-  return width;
+    return width;
 }
 
 int Layout::Element::height() const
 {
-  int height = 1;
+    int height = 1;
 
-  const Layout::Element *it = this;
-  while( it ) {
-    int h = 0;
-    const Layout::Element *it2 = it;
-    while( it2 ) {
-      h++;
-      h += it2->element()->attributeElements().size();
-      it2 = it2->belowElement();
+    const Layout::Element *it = this;
+    while (it) {
+        int h = 0;
+        const Layout::Element *it2 = it;
+        while (it2) {
+            h++;
+            h += it2->element()->attributeElements().size();
+            it2 = it2->belowElement();
+        }
+        height = qMax(height, h);
+        it = it->rightElement();
     }
-    height = qMax( height, h );
-    it = it->rightElement();
-  }
 
-  return height;
+    return height;
 }
 
 Layout::~Layout()
 {
-  foreach( Element *e, mOrderedList )
-    delete e;
+    foreach (Element *e, mOrderedList)
+        delete e;
 }
 
-void Layout::addElement( GuiElement *guiElem )
+void Layout::addElement(GuiElement *guiElem)
 {
-  mElements.append( guiElem );
-  mOrdered = false;
+    mElements.append(guiElem);
+    mOrdered = false;
 }
 
 void Layout::order()
 {
-  if( mOrdered )
-    return;
+    if (mOrdered)
+        return;
 
-  foreach( Element *e, mOrderedList )
-    delete e;
-  mOrderedList.clear();
+    foreach (Element *e, mOrderedList)
+        delete e;
+    mOrderedList.clear();
 
-  foreach( GuiElement *e, mElements )
-  {
-    mOrderedList.append( new Element( e ) );
-  }
-
-  foreach( Element *e, mOrderedList ) {
-    foreach( QDomElement pos, e->element()->properties()->positions ) {
-      kDebug() << e->element()->ref().toString() <<" :" << pos.text();
-      Element *refEntry = findElement( Reference( pos.text() ) );
-      if( refEntry ) {
-        if( pos.tagName() == "rightOf" ) {
-          e->setLeft( refEntry );
-          refEntry->setRight( e );
-          mOrderedList.removeAt( mOrderedList.indexOf( e ) );
-          Element *child = e->belowElement();
-          while( child ) {
-            if( mOrderedList.contains( child ) )
-              mOrderedList.removeAt( mOrderedList.indexOf( child ) );
-            child = child->belowElement();
-          }
-        } else if( pos.tagName() == "leftOf" ) {
-          e->setRight( refEntry );
-          refEntry->setLeft( e );
-          mOrderedList.removeAt( mOrderedList.indexOf( refEntry ) );
-          Element *child = refEntry->belowElement();
-          while( child ) {
-            if( mOrderedList.contains( child ) )
-              mOrderedList.removeAt( mOrderedList.indexOf( child ) );
-            child = child->belowElement();
-          }
-        } else if( pos.tagName() == "above" ) {
-          e->setBelow( refEntry );
-          refEntry->setAbove( e );
-          mOrderedList.move( mOrderedList.indexOf( e ), mOrderedList.indexOf( refEntry ) );
-        } else if( pos.tagName() == "below" ) {
-          e->setAbove( refEntry );
-          refEntry->setBelow( e );
-          if( mOrderedList.contains( refEntry ) )
-            mOrderedList.move( mOrderedList.indexOf( refEntry ), mOrderedList.indexOf( e ) );
-          else
-            mOrderedList.removeAt( mOrderedList.indexOf( e ) );
-        }
-      }
+    foreach (GuiElement *e, mElements) {
+        mOrderedList.append(new Element(e));
     }
-  }
-  mOrdered = true;
+
+    foreach (Element *e, mOrderedList) {
+        foreach (QDomElement pos, e->element()->properties()->positions) {
+            kDebug() << e->element()->ref().toString() << " :" << pos.text();
+            Element *refEntry = findElement(Reference(pos.text()));
+            if (refEntry) {
+                if (pos.tagName() == "rightOf") {
+                    e->setLeft(refEntry);
+                    refEntry->setRight(e);
+                    mOrderedList.removeAt(mOrderedList.indexOf(e));
+                    Element *child = e->belowElement();
+                    while (child) {
+                        if (mOrderedList.contains(child))
+                            mOrderedList.removeAt(mOrderedList.indexOf(child));
+                        child = child->belowElement();
+                    }
+                } else if (pos.tagName() == "leftOf") {
+                    e->setRight(refEntry);
+                    refEntry->setLeft(e);
+                    mOrderedList.removeAt(mOrderedList.indexOf(refEntry));
+                    Element *child = refEntry->belowElement();
+                    while (child) {
+                        if (mOrderedList.contains(child))
+                            mOrderedList.removeAt(mOrderedList.indexOf(child));
+                        child = child->belowElement();
+                    }
+                } else if (pos.tagName() == "above") {
+                    e->setBelow(refEntry);
+                    refEntry->setAbove(e);
+                    mOrderedList.move(mOrderedList.indexOf(e), mOrderedList.indexOf(refEntry));
+                } else if (pos.tagName() == "below") {
+                    e->setAbove(refEntry);
+                    refEntry->setBelow(e);
+                    if (mOrderedList.contains(refEntry))
+                        mOrderedList.move(mOrderedList.indexOf(refEntry), mOrderedList.indexOf(e));
+                    else
+                        mOrderedList.removeAt(mOrderedList.indexOf(e));
+                }
+            }
+        }
+    }
+    mOrdered = true;
 }
 
-Layout::Element *Layout::findElement( const Reference &ref ) const
+Layout::Element *Layout::findElement(const Reference &ref) const
 {
-  Element *found = 0;
-  foreach( Element *e, mOrderedList ) {
-    kDebug() << e->element()->ref().toString() <<" :" << ref.toString();
-    found = findElement( e, ref );
-    if( found )
-      return found;
-  }
+    Element *found = 0;
+    foreach (Element *e, mOrderedList) {
+        kDebug() << e->element()->ref().toString() << " :" << ref.toString();
+        found = findElement(e, ref);
+        if (found)
+            return found;
+    }
 
-  return 0;
+    return 0;
 }
 
-Layout::Element *Layout::findElement( Layout::Element *e, const Reference &ref ) const
+Layout::Element *Layout::findElement(Layout::Element *e, const Reference &ref) const
 {
-  if( e->element()->ref().matches( ref, false ) )
-      return e;
-  foreach( Element *e, e->children() ) {
-    kDebug() << e->element()->ref().toString() <<" :" << ref.toString();
-    if( e->element()->ref().matches( ref, false ) )
-      return e;
-  }
+    if (e->element()->ref().matches(ref, false))
+        return e;
+    foreach (Element *e, e->children()) {
+        kDebug() << e->element()->ref().toString() << " :" << ref.toString();
+        if (e->element()->ref().matches(ref, false))
+            return e;
+    }
 
-  return 0;
+    return 0;
 }
 
-QList< Layout::Element * > Layout::orderedList() const
+QList<Layout::Element *> Layout::orderedList() const
 {
-  return mOrderedList;
+    return mOrderedList;
 }
 
 int Layout::space() const
 {
-  int space = 0;
-  foreach( Element *e, mOrderedList ) {
-    space += e->space();
-  }
-  return space;
+    int space = 0;
+    foreach (Element *e, mOrderedList) {
+        space += e->space();
+    }
+    return space;
 }
 
 int Layout::width() const
 {
-  int width = 0;
-  foreach( Element *e, mOrderedList ) {
-    width = qMax( width, e->width() );
-  }
-  return width;
+    int width = 0;
+    foreach (Element *e, mOrderedList) {
+        width = qMax(width, e->width());
+    }
+    return width;
 }
 
 int Layout::height() const
 {
-  int height = 0;
-  foreach( Element *e, mOrderedList ) {
-    height = qMax( height, e->height() );
-  }
-  return height;
+    int height = 0;
+    foreach (Element *e, mOrderedList) {
+        height = qMax(height, e->height());
+    }
+    return height;
 }
-

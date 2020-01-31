@@ -26,76 +26,73 @@
 
 namespace KXForms {
 
- class ListItem
- {
- public:
-     ListItem(const QList<QVariant> &data, ListItem *parent = 0);
-     ~ListItem();
+class ListItem
+{
+public:
+    ListItem(const QList<QVariant> &data, ListItem *parent = 0);
+    ~ListItem();
 
-     void appendChild(ListItem *child);
+    void appendChild(ListItem *child);
 
-     ListItem *child(int row);
-     int childCount() const;
-     int columnCount() const;
-     QVariant data(int column) const;
-     int row() const;
-     ListItem *parent();
-     void removeChild( int row );
-     void moveChild( int from, int to );
+    ListItem *child(int row);
+    int childCount() const;
+    int columnCount() const;
+    QVariant data(int column) const;
+    int row() const;
+    ListItem *parent();
+    void removeChild(int row);
+    void moveChild(int from, int to);
 
-     void setItemData( const QList<QVariant> & );
-     QList<QVariant> itemData();
+    void setItemData(const QList<QVariant> &);
+    QList<QVariant> itemData();
 
-     Reference ref() { return mReference; }
-     void setReference( const Reference &ref ) { mReference = ref; }
+    Reference ref() { return mReference; }
+    void setReference(const Reference &ref) { mReference = ref; }
 
- private:
-     QList<ListItem*> mChildItems;
-     QList<QVariant> mItemData;
-     ListItem *mParentItem;
-     Reference mReference;
- };
-
-
+private:
+    QList<ListItem *> mChildItems;
+    QList<QVariant> mItemData;
+    ListItem *mParentItem;
+    Reference mReference;
+};
 
 class ListModel : public QAbstractListModel
 {
-  public:
-    ListModel( QObject *parent );
+public:
+    ListModel(QObject *parent);
     ~ListModel();
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QModelIndex parent(const QModelIndex &index) const;
 
     void recalculateSegmentCounts();
-    void recalculateSegmentCounts( ListItem *parent );
+    void recalculateSegmentCounts(ListItem *parent);
 
-    ListItem *addItem( ListItem *parent, const QStringList &label, const Reference &ref );
-    ListItem *item( const QModelIndex &index );
+    ListItem *addItem(ListItem *parent, const QStringList &label, const Reference &ref);
+    ListItem *item(const QModelIndex &index);
 
-    int itemCount( ListItem *parent, const QString &itemClass );
+    int itemCount(ListItem *parent, const QString &itemClass);
 
-    void setLabel( const QString & );
+    void setLabel(const QString &);
     QString label() const;
 
-    void setHeaders( const QStringList &headers );
+    void setHeaders(const QStringList &headers);
 
     void clear();
 
-    QModelIndex moveItem( QModelIndex index, int to );
+    QModelIndex moveItem(QModelIndex index, int to);
 
-  private:
+private:
     QString mLabel;
     ListItem *rootItem;
 };
-
 }
 
 #endif

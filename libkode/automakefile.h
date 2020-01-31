@@ -34,10 +34,10 @@ namespace KODE {
  */
 class KODE_EXPORT AutoMakefile
 {
-  public:
+public:
     class KODE_EXPORT Target
     {
-      public:
+    public:
         typedef QList<Target> List;
 
         /**
@@ -48,12 +48,12 @@ class KODE_EXPORT AutoMakefile
         /**
          * Creates a new target from @other.
          */
-        Target( const Target &other );
+        Target(const Target &other);
 
         /**
          * Creates a new target with a given @type and @name.
          */
-        Target( const QString &type, const QString &name );
+        Target(const QString &type, const QString &name);
 
         /**
          * Destroys the target.
@@ -63,12 +63,12 @@ class KODE_EXPORT AutoMakefile
         /**
          * Assignment operator.
          */
-        Target& operator=( const Target &other );
+        Target &operator=(const Target &other);
 
         /**
          * Sets the @param type of the target.
          */
-        void setType( const QString &type );
+        void setType(const QString &type);
 
         /**
          * Returns the type of the target.
@@ -78,7 +78,7 @@ class KODE_EXPORT AutoMakefile
         /**
          * Sets the @param name of the target.
          */
-        void setName( const QString &name );
+        void setName(const QString &name);
 
         /**
          * Returns the name of the target.
@@ -88,7 +88,7 @@ class KODE_EXPORT AutoMakefile
         /**
          * Sets the @param sources of the target.
          */
-        void setSources( const QString &sources );
+        void setSources(const QString &sources);
 
         /**
          * Returns the sources of the target.
@@ -98,7 +98,7 @@ class KODE_EXPORT AutoMakefile
         /**
          * Sets the LIBADD of the target to @param libAdd.
          */
-        void setLibAdd( const QString &libAdd );
+        void setLibAdd(const QString &libAdd);
 
         /**
          * Returns the LIBADD of the target.
@@ -108,7 +108,7 @@ class KODE_EXPORT AutoMakefile
         /**
          * Sets the LDADD of the target to @param ldAdd.
          */
-        void setLdAdd( const QString &ldAdd );
+        void setLdAdd(const QString &ldAdd);
 
         /**
          * Returns the LDADD of the target.
@@ -118,18 +118,17 @@ class KODE_EXPORT AutoMakefile
         /**
          * Sets the LDFLAGS of the target to @param ldFlags.
          */
-        void setLdFlags( const QString &ldFlags );
+        void setLdFlags(const QString &ldFlags);
 
         /**
          * Returns the LDFLAGS of the target.
          */
         QString ldFlags() const;
 
-      private:
+    private:
         class Private;
-        Private* d;
+        Private *d;
     };
-
 
     /**
      * Creates a new automake file.
@@ -139,7 +138,7 @@ class KODE_EXPORT AutoMakefile
     /**
      * Creates a new automake file from @param other.
      */
-    AutoMakefile( const AutoMakefile &other );
+    AutoMakefile(const AutoMakefile &other);
 
     /**
      * Destroys the automake file.
@@ -149,12 +148,12 @@ class KODE_EXPORT AutoMakefile
     /**
      * Assignment operator.
      */
-    AutoMakefile& operator=( const AutoMakefile &other );
+    AutoMakefile &operator=(const AutoMakefile &other);
 
     /**
      * Add @param target to the automake file.
      */
-    void addTarget( const Target &target );
+    void addTarget(const Target &target);
 
     /**
      * Returns the list of targets of the automake file.
@@ -167,8 +166,7 @@ class KODE_EXPORT AutoMakefile
      * @param variable The variable name.
      * @param value The value of the variable.
      */
-    void addEntry( const QString &variable,
-                   const QString &value = QString() );
+    void addEntry(const QString &variable, const QString &value = QString());
 
     /**
      * Adds an empty line to the automake file.
@@ -180,11 +178,10 @@ class KODE_EXPORT AutoMakefile
      */
     QString text() const;
 
-  private:
+private:
     class Private;
-    Private* d;
+    Private *d;
 };
-
 }
 
 #endif

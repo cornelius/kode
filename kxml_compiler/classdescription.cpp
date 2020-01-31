@@ -21,95 +21,92 @@
 
 #include "classdescription.h"
 
-ClassProperty::ClassProperty( const QString &type, const QString &name )
-  : m_type( type ), m_name( name ), m_isList( false ), m_targetHasId( false )
+ClassProperty::ClassProperty(const QString &type, const QString &name)
+    : m_type(type), m_name(name), m_isList(false), m_targetHasId(false)
 {
 }
 
 QString ClassProperty::type() const
 {
-  return m_type;
+    return m_type;
 }
 
 QString ClassProperty::name() const
 {
-  return m_name;
+    return m_name;
 }
 
-void ClassProperty::setIsList( bool v )
+void ClassProperty::setIsList(bool v)
 {
-  m_isList = v;
+    m_isList = v;
 }
 
 bool ClassProperty::isList() const
 {
-  return m_isList;
+    return m_isList;
 }
 
-void ClassProperty::setTargetHasId( bool v )
+void ClassProperty::setTargetHasId(bool v)
 {
-  m_targetHasId = v;
+    m_targetHasId = v;
 }
 
 bool ClassProperty::targetHasId() const
 {
-  return m_targetHasId;
+    return m_targetHasId;
 }
 
-
-ClassDescription::ClassDescription( const QString &name )
-  : m_name( name )
-{
-}
+ClassDescription::ClassDescription(const QString &name) : m_name(name) {}
 
 QString ClassDescription::name() const
 {
-  return m_name;
+    return m_name;
 }
 
-void ClassDescription::addProperty( const QString &type, const QString &name )
+void ClassDescription::addProperty(const QString &type, const QString &name)
 {
-  m_properties.append( ClassProperty( type, name ) );
+    m_properties.append(ClassProperty(type, name));
 }
 
-void ClassDescription::addProperty( const ClassProperty &p )
+void ClassDescription::addProperty(const ClassProperty &p)
 {
-  m_properties.append( p );
+    m_properties.append(p);
 }
 
 ClassProperty::List ClassDescription::properties() const
 {
-  return m_properties;
+    return m_properties;
 }
 
-bool ClassDescription::hasProperty( const QString &name ) const
+bool ClassDescription::hasProperty(const QString &name) const
 {
-  foreach( ClassProperty p, m_properties ) {
-    if ( p.name() == name ) return true;
-  }
-  return false;
+    foreach (ClassProperty p, m_properties) {
+        if (p.name() == name)
+            return true;
+    }
+    return false;
 }
 
 void ClassDescription::addEnum(const KODE::Enum &classEnum)
 {
-  m_enums.append( classEnum );
+    m_enums.append(classEnum);
 }
 
 void ClassDescription::addEnum(const QString &name, const QStringList &enumItems)
 {
-  m_enums.append( KODE::Enum(name, enumItems) );
+    m_enums.append(KODE::Enum(name, enumItems));
 }
 
 KODE::Enum::List ClassDescription::enums() const
 {
-  return m_enums;
+    return m_enums;
 }
 
 bool ClassDescription::hasEnum(const QString &name) const
 {
-  foreach( KODE::Enum e, m_enums ) {
-    if ( e.name() == name ) return true;
-  }
-  return false;
+    foreach (KODE::Enum e, m_enums) {
+        if (e.name() == name)
+            return true;
+    }
+    return false;
 }
-

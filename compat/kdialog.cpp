@@ -20,20 +20,13 @@
 
 #include "kdialog.h"
 
-KDialog::KDialog( QWidget *parent )
-  : QDialog( parent )
+KDialog::KDialog(QWidget *parent) : QDialog(parent) {}
+
+void KDialog::setMainWidget(QWidget *widget)
 {
+    mMainWidget = widget;
 }
 
-void KDialog::setMainWidget( QWidget *widget )
-{
-  mMainWidget = widget;
-}
+void KDialog::setCaption(const QString &) {}
 
-void KDialog::setCaption( const QString & )
-{
-}
-
-void KDialog::setButtons( ButtonCodes )
-{
-}
+void KDialog::setButtons(ButtonCodes) {}

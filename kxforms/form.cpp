@@ -27,45 +27,42 @@
 
 using namespace KXForms;
 
-Form::Form( Manager *m )
-  : mManager( m )
-{
-}
+Form::Form(Manager *m) : mManager(m) {}
 
-void Form::setRef( const QString &ref )
+void Form::setRef(const QString &ref)
 {
-  mRef = ref;
+    mRef = ref;
 }
 
 QString Form::ref() const
 {
-  return mRef;
+    return mRef;
 }
 
-void Form::setElement( const QDomElement &element )
+void Form::setElement(const QDomElement &element)
 {
-  mElement = element;
+    mElement = element;
 }
 
 QDomElement Form::element() const
 {
-  return mElement;
+    return mElement;
 }
 
 bool Form::isValid() const
 {
-  return !mRef.isEmpty();
+    return !mRef.isEmpty();
 }
 
 QString Form::label() const
 {
-  QDomNode n;
-  for ( n = mElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    QString tag = e.tagName();
-    if ( tag == "xf:label" ) {
-      return e.text();
+    QDomNode n;
+    for (n = mElement.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        QString tag = e.tagName();
+        if (tag == "xf:label") {
+            return e.text();
+        }
     }
-  }
-  return QString();
+    return QString();
 }

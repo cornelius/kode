@@ -97,7 +97,7 @@
 */
 class KResult
 {
-  public:
+public:
     /**
       Type of result:
       Ok - Operation successfully completed
@@ -108,8 +108,16 @@ class KResult
     /**
       Specific type of error.
     */
-    enum ErrorType { NotAnError, Undefined, InvalidUrl, WrongParameter,
-                     ConnectionFailed, WriteError, ReadError, ParseError };
+    enum ErrorType {
+        NotAnError,
+        Undefined,
+        InvalidUrl,
+        WrongParameter,
+        ConnectionFailed,
+        WriteError,
+        ReadError,
+        ParseError
+    };
 
     /**
       Construct KResult object. Default type is Ok.
@@ -118,16 +126,16 @@ class KResult
     /**
       Copy constructor.
     */
-    KResult( const KResult & );
+    KResult(const KResult &);
     /**
       Create KResult object of given type.
     */
-    KResult( Type );
+    KResult(Type);
     /**
       Create error KResult object of given error type and optional detailed error
       message.
     */
-    KResult( ErrorType, const QString &details = QString() );
+    KResult(ErrorType, const QString &details = QString());
 
     /**
       Destruct KResult object.
@@ -171,7 +179,7 @@ class KResult
       information like the URL which was tried, the file which could not be
       written or which parameter was missing.
     */
-    void setDetails( const QString & );
+    void setDetails(const QString &);
     /**
       Return detailed error message. See details().
     */
@@ -188,7 +196,7 @@ class KResult
       The full error messages including the messages from chained objects can be
       accessed through chainedMessage().
     */
-    KResult &chain( const KResult & );
+    KResult &chain(const KResult &);
 
     /**
       Return true, if the KResult object has a chained KResult object, otherwise
@@ -206,7 +214,7 @@ class KResult
     */
     QString chainedMessage() const;
 
-  private:
+private:
     Type mType;
     ErrorType mErrorType;
     QString mDetails;
@@ -218,11 +226,11 @@ class KResult
 */
 class KResultOk : public KResult
 {
-  public:
+public:
     /**
       Create KResult object of type Ok.
     */
-    KResultOk() : KResult( Ok ) {}
+    KResultOk() : KResult(Ok) {}
 };
 
 /**
@@ -230,11 +238,11 @@ class KResultOk : public KResult
 */
 class KResultInProgress : public KResult
 {
-  public:
+public:
     /**
       Create KResult object of type InProgress.
     */
-    KResultInProgress() : KResult( InProgress ) {}
+    KResultInProgress() : KResult(InProgress) {}
 };
 
 /**
@@ -242,21 +250,20 @@ class KResultInProgress : public KResult
 */
 class KResultError : public KResult
 {
-  public:
+public:
     /**
       Create KResult object of type Error.
     */
-    KResultError() : KResult( Error ) {}
+    KResultError() : KResult(Error) {}
     /**
       Create KResult object of type Error with given error type and optionally
       a detailed error message.
     */
-    KResultError( ErrorType error, const QString &details = QString() )
-      : KResult( error, details ) {}
+    KResultError(ErrorType error, const QString &details = QString()) : KResult(error, details) {}
     /**
       Create KResult object of type Error with given detailed error message.
     */
-    KResultError( const QString &details ) : KResult( Undefined, details ) {}
+    KResultError(const QString &details) : KResult(Undefined, details) {}
 };
 
 #endif

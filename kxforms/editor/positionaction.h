@@ -27,17 +27,16 @@ namespace KXForms {
 
 class PositionAction : public EditorAction
 {
-  Q_OBJECT
-  public:
-    PositionAction( Editor *e );
+    Q_OBJECT
+public:
+    PositionAction(Editor *e);
     ~PositionAction();
 
-    void perform( GuiElement *e );
-    void perform( GuiElement *e, GuiElement *target );
+    void perform(GuiElement *e);
+    void perform(GuiElement *e, GuiElement *target);
 
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
+Q_SIGNALS:
+    void hintGenerated(const Hint &hint);
 };
-
 }
 #endif

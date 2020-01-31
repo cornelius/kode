@@ -30,264 +30,276 @@
 using namespace KXForms;
 
 Manager::Manager()
-  : mGuiHandler( 0 ), mDefaultProperties( new GuiElement::Properties() ), mDataLoaded( false ), 
-    mDispatcher( new Dispatcher() ), mEditor( new Editor( this ) )
+    : mGuiHandler(0),
+      mDefaultProperties(new GuiElement::Properties()),
+      mDataLoaded(false),
+      mDispatcher(new Dispatcher()),
+      mEditor(new Editor(this))
 {
 }
 
 Manager::~Manager()
 {
-  clearForms();
+    clearForms();
 
-  delete mGuiHandler;
-  delete mDispatcher;
-  delete mEditor;
+    delete mGuiHandler;
+    delete mDispatcher;
+    delete mEditor;
 }
 
-void Manager::setGuiHandler( GuiHandler *handler )
+void Manager::setGuiHandler(GuiHandler *handler)
 {
-  mGuiHandler = handler;
+    mGuiHandler = handler;
 }
 
-bool Manager::parseForms( const QString &xml )
+bool Manager::parseForms(const QString &xml)
 {
-  kDebug() <<"Manager::parseForms()";
+    kDebug() << "Manager::parseForms()";
 
-  clearForms();
+    clearForms();
 
-  QDomDocument doc;
-  doc.setContent( xml );
+    QDomDocument doc;
+    doc.setContent(xml);
 
-  QDomElement docElement = doc.documentElement();
+    QDomElement docElement = doc.documentElement();
 
-  if ( docElement.tagName() != "kxforms" ) {
-    kError() <<"Top element is '" << docElement.tagName() <<
-      "'. Expected 'kxforms'.";
-    return false;
-  }
-
-  QDomNode n;
-  for( n = docElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if ( e.tagName() =="form" ) {
-      Form *form = parseForm( e );
-      if ( !form ) return false;
-      mForms.append( form );
-    } else if( e.tagName() == "defaults" ) {
-      kDebug() <<"Found a defaults-element";
-      GuiElement::parseProperties( e, mDefaultProperties );
-    } else {
-      kError() <<"Expected 'form' or 'defaults' element. Got '" << e.tagName() <<"'";
-      return false;
+    if (docElement.tagName() != "kxforms") {
+        kError() << "Top element is '" << docElement.tagName() << "'. Expected 'kxforms'.";
+        return false;
     }
-  }
 
-  if ( hasData() ) loadData();
+    QDomNode n;
+    for (n = docElement.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        if (e.tagName() == "form") {
+            Form *form = parseForm(e);
+            if (!form)
+                return false;
+            mForms.append(form);
+        } else if (e.tagName() == "defaults") {
+            kDebug() << "Found a defaults-element";
+            GuiElement::parseProperties(e, mDefaultProperties);
+        } else {
+            kError() << "Expected 'form' or 'defaults' element. Got '" << e.tagName() << "'";
+            return false;
+        }
+    }
 
-  return true;
+    if (hasData())
+        loadData();
+
+    return true;
 }
 
-Form *Manager::parseForm( const QDomElement &element )
+Form *Manager::parseForm(const QDomElement &element)
 {
-  QString ref = element.attribute( "ref" );
-  kDebug() <<"Manager::parseForm() ref '" << ref <<"'";
-  if ( ref.isEmpty() ) return 0;
+    QString ref = element.attribute("ref");
+    kDebug() << "Manager::parseForm() ref '" << ref << "'";
+    if (ref.isEmpty())
+        return 0;
 
-  Form *form = new Form( this );
-  form->setElement( element );
-  form->setRef( ref );
+    Form *form = new Form(this);
+    form->setElement(element);
+    form->setRef(ref);
 
-  return form;
+    return form;
 }
 
 Form *Manager::rootForm()
 {
-  if ( mForms.isEmpty() ) {
-    kError() <<"No forms.";
+    if (mForms.isEmpty()) {
+        kError() << "No forms.";
+        return 0;
+    }
+
+    return mForms.first();
+}
+
+Form *Manager::form(const QString &ref)
+{
+    Form::List::ConstIterator it;
+    for (it = mForms.constBegin(); it != mForms.constEnd(); ++it) {
+        if ((*it)->ref() == ref)
+            return *it;
+    }
     return 0;
-  }
-
-  return mForms.first();
 }
 
-Form *Manager::form( const QString &ref )
+KResult Manager::loadData(const QString &xml)
 {
-  Form::List::ConstIterator it;
-  for( it = mForms.constBegin(); it != mForms.constEnd(); ++it ) {
-    if ( (*it)->ref() == ref ) return *it;
-  }
-  return 0;
-}
+    kDebug() << "Manager::loadData()";
 
-KResult Manager::loadData( const QString &xml )
-{
-  kDebug() <<"Manager::loadData()";
+    if (mForms.isEmpty()) {
+        kDebug() << "No Forms";
+    }
 
-  if ( mForms.isEmpty() ) {
-    kDebug() <<"No Forms";
-  }
+    QXmlInputSource source;
+    source.setData(xml);
+    QXmlSimpleReader reader;
+    reader.setFeature("http://xml.org/sax/features/namespaces", true);
+    reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
 
-  QXmlInputSource source;
-  source.setData( xml );
-  QXmlSimpleReader reader;
-  reader.setFeature( "http://xml.org/sax/features/namespaces", true );
-  reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", false );
+    QString errorMsg;
+    int errorLine;
+    int errorCol;
+    if (!mData.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol)) {
+        QString msg = i18n("%1 (line %2, column %3)", errorMsg, errorLine, errorCol);
+        return KResultError(KResult::ParseError, msg);
+    }
 
-  QString errorMsg;
-  int errorLine;
-  int errorCol;
-  if ( !mData.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
-    QString msg = i18n("%1 (line %2, column %3)", errorMsg, errorLine, errorCol );
-    return KResultError( KResult::ParseError, msg );
-  }
+    QString schemaLocationAttribute = mData.documentElement().attributeNS(
+            "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
+    QStringList schemaLocation = schemaLocationAttribute.simplified().split(" ");
 
-  QString schemaLocationAttribute = mData.documentElement().attributeNS(
-    "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation" );
-  QStringList schemaLocation =
-    schemaLocationAttribute.simplified().split( " " );
-
-  if ( schemaLocation.count() > 1 ) {
-    mSchemaUri = schemaLocation[ 1 ];
-  } else {
-    mSchemaUri.clear();
-  }
+    if (schemaLocation.count() > 1) {
+        mSchemaUri = schemaLocation[1];
+    } else {
+        mSchemaUri.clear();
+    }
 
 #if 1
-  if ( !mData.setContent( xml, &errorMsg, &errorLine, &errorCol ) ) {
-    QString msg = i18n("%1 (line %2, column %3)", errorMsg, errorLine, errorCol );
-    return KResultError( KResult::ParseError, msg );
-  }
+    if (!mData.setContent(xml, &errorMsg, &errorLine, &errorCol)) {
+        QString msg = i18n("%1 (line %2, column %3)", errorMsg, errorLine, errorCol);
+        return KResultError(KResult::ParseError, msg);
+    }
 #endif
 
-  loadData();
+    loadData();
 
-  mDataLoaded = true;
+    mDataLoaded = true;
 
-  return KResultOk();
+    return KResultOk();
 }
 
 void Manager::loadData()
 {
-  FormGui::List::ConstIterator it;
-  for( it = mGuis.constBegin(); it != mGuis.constEnd(); ++it ) {
-    (*it)->loadData( mData );
-  }
+    FormGui::List::ConstIterator it;
+    for (it = mGuis.constBegin(); it != mGuis.constEnd(); ++it) {
+        (*it)->loadData(mData);
+    }
 }
 
-KResult Manager::saveData( QString &xml )
+KResult Manager::saveData(QString &xml)
 {
-  kDebug() <<"Manager::saveData()";
-  
-  if ( !mDataLoaded ) return KResultError( i18n("No data loaded.") );
+    kDebug() << "Manager::saveData()";
 
-  FormGui::List::ConstIterator it;
-  for( it = mGuis.constBegin(); it != mGuis.constEnd(); ++it ) {
-    (*it)->saveData();
-  }
-  
-  xml = mData.toString( 2 );
-  xml.append( "\n" );
-  
-  return KResultOk();
+    if (!mDataLoaded)
+        return KResultError(i18n("No data loaded."));
+
+    FormGui::List::ConstIterator it;
+    for (it = mGuis.constBegin(); it != mGuis.constEnd(); ++it) {
+        (*it)->saveData();
+    }
+
+    xml = mData.toString(2);
+    xml.append("\n");
+
+    return KResultOk();
 }
 
 void Manager::clearForms()
 {
-  Form::List::ConstIterator it;
-  for( it = mForms.constBegin(); it != mForms.constEnd(); ++it ) {
-    delete *it;
-  }
-  mForms.clear();
+    Form::List::ConstIterator it;
+    for (it = mForms.constBegin(); it != mForms.constEnd(); ++it) {
+        delete *it;
+    }
+    mForms.clear();
 }
 
-QWidget *Manager::createRootGui( QWidget *parent )
+QWidget *Manager::createRootGui(QWidget *parent)
 {
-  if ( !mGuiHandler ) {
-    kError() <<"Manager::createRootGui(): No GuiHandler";
-    return 0;
-  }
+    if (!mGuiHandler) {
+        kError() << "Manager::createRootGui(): No GuiHandler";
+        return 0;
+    }
 
-  return mGuiHandler->createRootGui( parent );
+    return mGuiHandler->createRootGui(parent);
 }
 
-void Manager::createGui( const Reference &ref, GuiElement *parent )
+void Manager::createGui(const Reference &ref, GuiElement *parent)
 {
-  if ( !mGuiHandler ) {
-    kError() <<"Manager::createGui(): No GuiHandler";
-    return;
-  }
+    if (!mGuiHandler) {
+        kError() << "Manager::createGui(): No GuiHandler";
+        return;
+    }
 
-  mGuiHandler->createGui( ref, parent->widget() );
+    mGuiHandler->createGui(ref, parent->widget());
 }
 
-void Manager::registerGui( FormGui *gui )
+void Manager::registerGui(FormGui *gui)
 {
-  mGuis.append( gui );
+    mGuis.append(gui);
 }
 
-void Manager::unregisterGui( FormGui *gui )
+void Manager::unregisterGui(FormGui *gui)
 {
-  mGuis.removeAll( gui );
+    mGuis.removeAll(gui);
 }
 
 bool Manager::hasData() const
 {
-  return mDataLoaded;
+    return mDataLoaded;
 }
 
 QDomDocument Manager::document() const
 {
-  return mData;
+    return mData;
 }
 
-void Manager::loadData( FormGui *gui )
+void Manager::loadData(FormGui *gui)
 {
-  gui->loadData( mData );
+    gui->loadData(mData);
 }
 
-QDomElement Manager::applyReference( const Reference &ref )
+QDomElement Manager::applyReference(const Reference &ref)
 {
-  return ref.apply( mData );
+    return ref.apply(mData);
 }
 
 QString Manager::schemaUri() const
 {
-  return mSchemaUri;
+    return mSchemaUri;
 }
 
 QLayout *Manager::getTopLayout() const
 {
-  return mGuiHandler->getTopLayout();
+    return mGuiHandler->getTopLayout();
 }
 
-void Manager::addWidget( QLayout *l, QWidget *w ) const
+void Manager::addWidget(QLayout *l, QWidget *w) const
 {
-  mGuiHandler->addWidget( l, w );
+    mGuiHandler->addWidget(l, w);
 }
 
-void Manager::addElementRow( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight ) const
+void Manager::addElementRow(QLayout *l, Layout::Element *e, int totalWidth, int totalHeight) const
 {
-  QGridLayout *gl = dynamic_cast<QGridLayout *>( l );
-  int row = gl ? gl->rowCount() : 0;
+    QGridLayout *gl = dynamic_cast<QGridLayout *>(l);
+    int row = gl ? gl->rowCount() : 0;
 
-  addElementRowElement( l, e, totalWidth, totalHeight, 0, row );
+    addElementRowElement(l, e, totalWidth, totalHeight, 0, row);
 }
 
-void Manager::addElementRowElement( QLayout *l, Layout::Element *e, int totalWidth, int totalHeight, int xPosition, int yPosition ) const
+void Manager::addElementRowElement(QLayout *l, Layout::Element *e, int totalWidth, int totalHeight,
+                                   int xPosition, int yPosition) const
 {
-  int width = e->rightElement() ? 1 : totalWidth - xPosition;
-  int height = e->belowElement() ? 1 : totalHeight - e->element()->attributeElements().size();
+    int width = e->rightElement() ? 1 : totalWidth - xPosition;
+    int height = e->belowElement() ? 1 : totalHeight - e->element()->attributeElements().size();
 
-//   kDebug() << e->element()->ref().toString() <<":" << xPosition << yPosition << width << height << totalWidth << totalHeight;
-  mGuiHandler->addElement( l, e->element()->labelWidget(), e->element()->widget(), xPosition,yPosition, width, height, e->element()->properties() );
+    //   kDebug() << e->element()->ref().toString() <<":" << xPosition << yPosition << width <<
+    //   height << totalWidth << totalHeight;
+    mGuiHandler->addElement(l, e->element()->labelWidget(), e->element()->widget(), xPosition,
+                            yPosition, width, height, e->element()->properties());
 
-  foreach( GuiElement *a, e->element()->attributeElements() ) {
-    ++yPosition;
-    mGuiHandler->addElement( l, a->labelWidget(), a->widget(), xPosition, yPosition, width, 1, a->properties(), true );
-  }
+    foreach (GuiElement *a, e->element()->attributeElements()) {
+        ++yPosition;
+        mGuiHandler->addElement(l, a->labelWidget(), a->widget(), xPosition, yPosition, width, 1,
+                                a->properties(), true);
+    }
 
-  if( e->rightElement() )
-    addElementRowElement( l, e->rightElement(), totalWidth, totalHeight, xPosition+1, yPosition );
-  if( e->belowElement() )
-    addElementRowElement( l, e->belowElement(), totalWidth, totalHeight-1, xPosition, yPosition+1 );
+    if (e->rightElement())
+        addElementRowElement(l, e->rightElement(), totalWidth, totalHeight, xPosition + 1,
+                             yPosition);
+    if (e->belowElement())
+        addElementRowElement(l, e->belowElement(), totalWidth, totalHeight - 1, xPosition,
+                             yPosition + 1);
 }

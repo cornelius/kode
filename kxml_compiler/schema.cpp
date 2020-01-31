@@ -25,461 +25,447 @@
 
 using namespace Schema;
 
-Document::Document()
-{
-}
+Document::Document() {}
 
-
-void Document::setStartElement( const Element &e )
+void Document::setStartElement(const Element &e)
 {
-  mStartElement = e;
+    mStartElement = e;
 }
 
 Element Document::startElement() const
 {
-  return mStartElement;
+    return mStartElement;
 }
 
-
-void Document::addElement( const Element &e )
+void Document::addElement(const Element &e)
 {
-  mElements.append( e );
+    mElements.append(e);
 }
 
 Element::List Document::elements() const
 {
-  return mElements;
+    return mElements;
 }
 
-bool Document::hasElement( const Element &element )
+bool Document::hasElement(const Element &element)
 {
-  foreach( Element e, mElements ) {
-    if ( e.identifier() == element.identifier() ) return true;
-  }
-  return false;
+    foreach (Element e, mElements) {
+        if (e.identifier() == element.identifier())
+            return true;
+    }
+    return false;
 }
 
-Element Document::element( const QString &identifier ) const
+Element Document::element(const QString &identifier) const
 {
-  foreach( Element e, mElements ) {
-    if ( e.identifier() == identifier ) return e;
-  }
-  return Element();
+    foreach (Element e, mElements) {
+        if (e.identifier() == identifier)
+            return e;
+    }
+    return Element();
 }
 
-Element Document::element( const Relation &relation ) const
+Element Document::element(const Relation &relation) const
 {
-  return element( relation.target() );
+    return element(relation.target());
 }
 
 Element::List Document::usedElements() const
 {
-  mUsedElements.clear();
-  findUsedElements( mStartElement );
-  return mUsedElements;
+    mUsedElements.clear();
+    findUsedElements(mStartElement);
+    return mUsedElements;
 }
 
-void Document::findUsedElements( const Element &e ) const
+void Document::findUsedElements(const Element &e) const
 {
-  addUsedElement( e );
+    addUsedElement(e);
 
-  foreach( Relation r, e.elementRelations() ) {
-    Element e2 = element( r );
-    if ( (!e2.mixed() || r.isList() ) && addUsedElement( e2 )  ) {
-      findUsedElements( e2 );
+    foreach (Relation r, e.elementRelations()) {
+        Element e2 = element(r);
+        if ((!e2.mixed() || r.isList()) && addUsedElement(e2)) {
+            findUsedElements(e2);
+        }
     }
-  }
 }
 
-bool Document::addUsedElement( const Element &element ) const
+bool Document::addUsedElement(const Element &element) const
 {
-  bool found = false;
-  foreach( Element usedElement, mUsedElements ) {
-    if ( usedElement.identifier() == element.identifier() ) {
-      found = true;
-      break;
+    bool found = false;
+    foreach (Element usedElement, mUsedElements) {
+        if (usedElement.identifier() == element.identifier()) {
+            found = true;
+            break;
+        }
     }
-  }
-  if ( !found ) {
-    mUsedElements.prepend( element );
-    return true;
-  } else {
-    return false;
-  }
+    if (!found) {
+        mUsedElements.prepend(element);
+        return true;
+    } else {
+        return false;
+    }
 }
 
-void Document::addAttribute( const Attribute &a )
+void Document::addAttribute(const Attribute &a)
 {
-  mAttributes.append( a );
+    mAttributes.append(a);
 }
 
 Attribute::List Document::attributes() const
 {
-  return mAttributes;
+    return mAttributes;
 }
 
-bool Document::hasAttribute( const Attribute &attribute )
+bool Document::hasAttribute(const Attribute &attribute)
 {
-  foreach( Attribute a, mAttributes ) {
-    if ( a.identifier() == attribute.identifier() ) return true;
-  }
-  return false;
-}
-
-Attribute Document::attribute(const QString &identifier , const QString &elementName) const
-{
-  foreach( Attribute a, mAttributes ) {
-    if ( a.identifier() == identifier ) {
-      if (elementName.isEmpty())
-        return a;
-      else {
-        if (a.elementName() == elementName)
-          return a;
-      }
+    foreach (Attribute a, mAttributes) {
+        if (a.identifier() == attribute.identifier())
+            return true;
     }
-  }
-  return Attribute();
+    return false;
 }
 
-Attribute Document::attribute(const Relation &relation , const QString &parentName) const
+Attribute Document::attribute(const QString &identifier, const QString &elementName) const
 {
-  return attribute( relation.target(), parentName );
+    foreach (Attribute a, mAttributes) {
+        if (a.identifier() == identifier) {
+            if (elementName.isEmpty())
+                return a;
+            else {
+                if (a.elementName() == elementName)
+                    return a;
+            }
+        }
+    }
+    return Attribute();
+}
+
+Attribute Document::attribute(const Relation &relation, const QString &parentName) const
+{
+    return attribute(relation.target(), parentName);
 }
 
 bool Document::isEmpty() const
 {
-  return mElements.isEmpty();
+    return mElements.isEmpty();
 }
 
 void Document::dump() const
 {
-  foreach( Element e, mElements ) {
-    qDebug() << "ELEMENT" << e.identifier() << ":" << e.name() << e.type();
-    if ( e.text() ) qDebug() << " TEXT";
-    if ( e.mixed() ) qDebug() << " MIXED";
-    foreach( Relation r, e.elementRelations() ) {
-      qDebug() << r.asString( "ELEMENT" );
+    foreach (Element e, mElements) {
+        qDebug() << "ELEMENT" << e.identifier() << ":" << e.name() << e.type();
+        if (e.text())
+            qDebug() << " TEXT";
+        if (e.mixed())
+            qDebug() << " MIXED";
+        foreach (Relation r, e.elementRelations()) {
+            qDebug() << r.asString("ELEMENT");
+        }
+        foreach (Relation r, e.attributeRelations()) {
+            qDebug() << r.asString("ATTRIBUTE");
+        }
     }
-    foreach( Relation r, e.attributeRelations() ) {
-      qDebug() << r.asString( "ATTRIBUTE" );
+    foreach (Attribute a, mAttributes) {
+        qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name() << a.type();
     }
-  }
-  foreach( Attribute a, mAttributes ) {
-    qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name() << a.type();
-  }
 }
 
-Relation::Relation()
-  : mMinOccurs( 1 ), mMaxOccurs( 1 )
+Relation::Relation() : mMinOccurs(1), mMaxOccurs(1) {}
+
+Relation::Relation(const QString &target) : mTarget(target), mMinOccurs(1), mMaxOccurs(1) {}
+
+void Relation::setMinOccurs(int v)
 {
+    mMinOccurs = v;
 }
 
-Relation::Relation( const QString &target )
-  : mTarget( target ), mMinOccurs( 1 ), mMaxOccurs( 1 )
+void Relation::setMaxOccurs(int v)
 {
-}
-
-void Relation::setMinOccurs( int v )
-{
-  mMinOccurs = v;
-}
-
-void Relation::setMaxOccurs( int v )
-{
-  mMaxOccurs = v;
+    mMaxOccurs = v;
 }
 
 int Relation::minOccurs() const
 {
-  return mMinOccurs;
+    return mMinOccurs;
 }
 
 int Relation::maxOccurs() const
 {
-  return mMaxOccurs;
+    return mMaxOccurs;
 }
 
 bool Relation::isOptional() const
 {
-  return mMinOccurs == 0 && mMaxOccurs == 1;
+    return mMinOccurs == 0 && mMaxOccurs == 1;
 }
 
 bool Relation::isRequired() const
 {
-  return mMinOccurs == 1 && mMaxOccurs == 1;
+    return mMinOccurs == 1 && mMaxOccurs == 1;
 }
 
 bool Relation::isList() const
 {
-  return mMaxOccurs > 1 || mMaxOccurs == Unbounded;
+    return mMaxOccurs > 1 || mMaxOccurs == Unbounded;
 }
 
-void Relation::setTarget( const QString &identifier )
+void Relation::setTarget(const QString &identifier)
 {
-  mTarget = identifier;
+    mTarget = identifier;
 }
 
 QString Relation::target() const
 {
-  return mTarget;
+    return mTarget;
 }
 
-void Relation::setChoice( const QString &choice )
+void Relation::setChoice(const QString &choice)
 {
-  mChoice = choice;
+    mChoice = choice;
 }
 
 QString Relation::choice() const
 {
-  return mChoice;
+    return mChoice;
 }
 
-QString Relation::asString( const QString &type ) const
+QString Relation::asString(const QString &type) const
 {
-  QString out = "  R " + type + ": " + target() + " (" +
-    QString::number( minOccurs() ) + ',';
-  if ( maxOccurs() == Relation::Unbounded ) {
-    out += "UNBOUNDED";
-  } else {
-    out += QString::number( maxOccurs() );
-  }
-  out += ')';
+    QString out = "  R " + type + ": " + target() + " (" + QString::number(minOccurs()) + ',';
+    if (maxOccurs() == Relation::Unbounded) {
+        out += "UNBOUNDED";
+    } else {
+        out += QString::number(maxOccurs());
+    }
+    out += ')';
 
-  return out;
+    return out;
 }
 
+Node::Node() : mType(String), mBaseType(None) {}
 
-Node::Node()
-  : mType( String ), mBaseType( None )
-{
-}
+Node::~Node() {}
 
-Node::~Node()
+void Node::setType(Type t)
 {
-}
-
-void Node::setType( Type t )
-{
-  mType = t;
+    mType = t;
 }
 
 Node::Type Node::type() const
 {
-  return mType;
+    return mType;
 }
 
-void Node::setIdentifier( const QString &i )
+void Node::setIdentifier(const QString &i)
 {
-  mIdentifier = i;
+    mIdentifier = i;
 }
 
 QString Node::identifier() const
 {
-  return mIdentifier;
+    return mIdentifier;
 }
 
-void Node::setName( const QString &n )
+void Node::setName(const QString &n)
 {
-  mName = n;
+    mName = n;
 }
 
 QString Node::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Node::setBaseType( Type type )
+void Node::setBaseType(Type type)
 {
-  mBaseType = type;
+    mBaseType = type;
 }
 
 Node::Type Node::baseType() const
 {
-  return mBaseType;
+    return mBaseType;
 }
 
 bool Node::isValid() const
 {
-  return !mIdentifier.isEmpty() && !mName.isEmpty();
+    return !mIdentifier.isEmpty() && !mName.isEmpty();
 }
 
-void Node::setEnumerationValues( const QStringList &v )
+void Node::setEnumerationValues(const QStringList &v)
 {
-  mEnumerationValues = v;
+    mEnumerationValues = v;
 }
 
 QStringList Node::enumerationValues() const
 {
-  return mEnumerationValues;
+    return mEnumerationValues;
 }
 
-
-void Annotatable::setDocumentation( const QString &str )
+void Annotatable::setDocumentation(const QString &str)
 {
-  mDocumentation = str;
+    mDocumentation = str;
 }
 
 QString Annotatable::documentation() const
 {
-  return mDocumentation;
+    return mDocumentation;
 }
 
-void Annotatable::setAnnotations( const QList<QDomElement> &a )
+void Annotatable::setAnnotations(const QList<QDomElement> &a)
 {
-  mAnnotations = a;
+    mAnnotations = a;
 }
 
 QList<QDomElement> Annotatable::annotations() const
 {
-  return mAnnotations;
+    return mAnnotations;
 }
 
-
-Element::Element()
-  : mText( false )
-{
-}
+Element::Element() : mText(false) {}
 
 QString Element::ref() const
 {
-  return name();
+    return name();
 }
 
-bool Element::hasRelation( const QString &identifier ) const
+bool Element::hasRelation(const QString &identifier) const
 {
-  return hasElementRelation( identifier ) || hasAttributeRelation( identifier );
+    return hasElementRelation(identifier) || hasAttributeRelation(identifier);
 }
 
-void Element::addElementRelation( const Relation &r )
+void Element::addElementRelation(const Relation &r)
 {
-  mElementRelations.append( r );
+    mElementRelations.append(r);
 }
 
-bool Element::hasElementRelation( const Element &element ) const
+bool Element::hasElementRelation(const Element &element) const
 {
-  Relation::List::ConstIterator it;
-  for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
-    if ( (*it).target() == element.identifier() ) return true;
-  }
-  return false;
+    Relation::List::ConstIterator it;
+    for (it = mElementRelations.begin(); it != mElementRelations.end(); ++it) {
+        if ((*it).target() == element.identifier())
+            return true;
+    }
+    return false;
 }
 
-bool Element::hasElementRelation( const QString &identifier ) const
+bool Element::hasElementRelation(const QString &identifier) const
 {
-  Relation::List::ConstIterator it;
-  for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
-    if ( (*it).target() == identifier ) return true;
-  }
-  return false;
+    Relation::List::ConstIterator it;
+    for (it = mElementRelations.begin(); it != mElementRelations.end(); ++it) {
+        if ((*it).target() == identifier)
+            return true;
+    }
+    return false;
 }
 
-Relation &Element::elementRelation( const Element &element )
+Relation &Element::elementRelation(const Element &element)
 {
-  Relation::List::Iterator it;
-  for( it = mElementRelations.begin(); it != mElementRelations.end(); ++it ) {
-    if ( (*it).target() == element.identifier() ) return *it;
-  }
-  return mNullRelation;
+    Relation::List::Iterator it;
+    for (it = mElementRelations.begin(); it != mElementRelations.end(); ++it) {
+        if ((*it).target() == element.identifier())
+            return *it;
+    }
+    return mNullRelation;
 }
 
 Relation::List Element::elementRelations() const
 {
-  return mElementRelations;
+    return mElementRelations;
 }
 
 bool Element::hasElementRelations() const
 {
-  return !mElementRelations.isEmpty();
+    return !mElementRelations.isEmpty();
 }
 
-void Element::addAttributeRelation( const Relation &r )
+void Element::addAttributeRelation(const Relation &r)
 {
-  mAttributeRelations.append( r );
+    mAttributeRelations.append(r);
 }
 
-bool Element::hasAttributeRelation( const Attribute &attribute ) const
+bool Element::hasAttributeRelation(const Attribute &attribute) const
 {
-  Relation::List::ConstIterator it;
-  for( it = mAttributeRelations.begin(); it != mAttributeRelations.end(); ++it ) {
-    if ( (*it).target() == attribute.identifier() ) return true;
-  }
-  return false;
+    Relation::List::ConstIterator it;
+    for (it = mAttributeRelations.begin(); it != mAttributeRelations.end(); ++it) {
+        if ((*it).target() == attribute.identifier())
+            return true;
+    }
+    return false;
 }
 
-bool Element::hasAttributeRelation( const QString &identifier ) const
+bool Element::hasAttributeRelation(const QString &identifier) const
 {
-  Relation::List::ConstIterator it;
-  for( it = mAttributeRelations.begin(); it != mAttributeRelations.end(); ++it ) {
-    if ( (*it).target() == identifier ) return true;
-  }
-  return false;
+    Relation::List::ConstIterator it;
+    for (it = mAttributeRelations.begin(); it != mAttributeRelations.end(); ++it) {
+        if ((*it).target() == identifier)
+            return true;
+    }
+    return false;
 }
 
 Relation::List Element::attributeRelations() const
 {
-  return mAttributeRelations;
+    return mAttributeRelations;
 }
 
 bool Element::hasAttributeRelations() const
 {
-  return !mAttributeRelations.isEmpty();
+    return !mAttributeRelations.isEmpty();
 }
 
 bool Element::mixed() const
 {
-  return mText && !mElementRelations.isEmpty();
+    return mText && !mElementRelations.isEmpty();
 }
 
-void Element::setText( bool text )
+void Element::setText(bool text)
 {
-  mText = text;
+    mText = text;
 }
 
 bool Element::text() const
 {
-  return mText;
+    return mText;
 }
 
 bool Element::isEmpty() const
 {
-  return !mText && mElementRelations.isEmpty();
+    return !mText && mElementRelations.isEmpty();
 }
 
-Attribute::Attribute()
-{
-}
+Attribute::Attribute() {}
 
 bool Attribute::required() const
 {
-  return mRequired;
+    return mRequired;
 }
 
 void Attribute::setRequired(bool required)
 {
-  mRequired = required;
+    mRequired = required;
 }
 
 QString Attribute::defaultValue() const
 {
-  return mDefVal;
+    return mDefVal;
 }
 
 void Attribute::setDefaultValue(const QString defVal)
 {
-  mDefVal = defVal;
+    mDefVal = defVal;
 }
 
 QString Attribute::ref() const
 {
-  return '@' + name();
+    return '@' + name();
 }
 
 void Attribute::setElementName(const QString &parentName)
 {
-  mElementName = parentName;
+    mElementName = parentName;
 }
 
 QString Attribute::elementName() const
 {
-  return mElementName;
+    return mElementName;
 }

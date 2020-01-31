@@ -35,44 +35,44 @@ class FormGui;
 
 class EditorWidget : public QWidget
 {
-  Q_OBJECT
-  public:
-    EditorWidget( Editor *e, FormGui *parent = 0 );
+    Q_OBJECT
+public:
+    EditorWidget(Editor *e, FormGui *parent = 0);
 
-    void setGuiElements( const GuiElement::List &list );
+    void setGuiElements(const GuiElement::List &list);
 
     GuiElement *hoveredElement() { return mHoveredElement; }
 
-    GuiElement *selectElement( Editor::SelectionMode sm );
+    GuiElement *selectElement(Editor::SelectionMode sm);
 
-    void setInEdit( bool b );
+    void setInEdit(bool b);
 
-  public Q_SLOTS:
+public Q_SLOTS:
     void showActionMenu();
     void showHints();
     void editDefaults();
 
-  protected:
+protected:
     void init();
 
-    void mouseMoveEvent( QMouseEvent *event );
-    void mousePressEvent( QMouseEvent *event );
-    void mouseReleaseEvent( QMouseEvent *event );
-    void paintEvent( QPaintEvent *event );
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event);
 
-    void drawInterface( QPainter *p, const QRect &, GuiElement *e );
-    void highlightElement( QPainter *p, const QRect &, GuiElement *e );
-    void targetElement( QPainter *p, const QRect &, GuiElement *e );
-    void printMessage( QPainter *p, const QRect &, const QString &msg );
-    void drawGlobalInterface( QPainter *p );
-    void drawGroups( QPainter *p );
-    void drawWidgetFrames( QPainter *p );
+    void drawInterface(QPainter *p, const QRect &, GuiElement *e);
+    void highlightElement(QPainter *p, const QRect &, GuiElement *e);
+    void targetElement(QPainter *p, const QRect &, GuiElement *e);
+    void printMessage(QPainter *p, const QRect &, const QString &msg);
+    void drawGlobalInterface(QPainter *p);
+    void drawGroups(QPainter *p);
+    void drawWidgetFrames(QPainter *p);
 
-  private:
+private:
     Editor *mEditor;
     FormGui *mGui;
-    QMap< GuiElement *, QRect > mElementMap;
-    QMap< QString, QRect > mGroupMap;
+    QMap<GuiElement *, QRect> mElementMap;
+    QMap<QString, QRect> mGroupMap;
 
     QWidget *mInterfaceWidget;
     QPushButton *mEditButton;
@@ -94,6 +94,5 @@ class EditorWidget : public QWidget
     QPoint mDragPoint;
     GuiElement *mDraggedElement;
 };
-
 }
 #endif

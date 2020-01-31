@@ -40,307 +40,310 @@
 
 #include <iostream>
 
-ParserCreatorDom::ParserCreatorDom( Creator *c )
-  : ParserCreator( c )
+ParserCreatorDom::ParserCreatorDom(Creator *c) : ParserCreator(c) {}
+
+void ParserCreatorDom::createElementParser(KODE::Class &c, const Schema::Element &e)
 {
-}
+    QString functionName;
+    if (creator()->externalParser())
+        functionName = "parseElement" + c.name();
+    else
+        functionName = "parseElement";
 
-void ParserCreatorDom::createElementParser( KODE::Class &c,
-  const Schema::Element &e )
-{
-  QString functionName;
-  if ( creator()->externalParser() ) functionName = "parseElement" + c.name();
-  else functionName = "parseElement";
+    KODE::Function parser(functionName, c.name());
+    parser.setStatic(true);
+    parser.setDocs("Parse XML object from DOM element.");
 
-  KODE::Function parser( functionName, c.name() );
-  parser.setStatic( true );
-  parser.setDocs( "Parse XML object from DOM element." );
+    c.addHeaderInclude("QDomElement");
 
-  c.addHeaderInclude( "QDomElement" );
+    parser.addArgument("const QDomElement &element");
+    parser.addArgument("bool *ok");
 
-  parser.addArgument( "const QDomElement &element" );
-  parser.addArgument( "bool *ok" );
+    KODE::Code code;
 
-  KODE::Code code;
-
-  code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
-  code.indent();
-  code += creator()->errorStream() + " << \"Expected '" + e.name() +
-    "', got '\" << element.tagName() << \"'.\";";
-  code += "if ( ok ) *ok = false;";
-  code += "return " + c.name() + "();";
-  code.unindent();
-  code += '}';
-  code.newLine();
-
-  code += c.name() + " result = " + c.name() + "();";
-  code.newLine();
-
-  if ( e.hasElementRelations() ) {
-    code += "QDomNode n;";
-    code += "for( n = element.firstChild(); !n.isNull();"
-                " n = n.nextSibling() ) {";
+    code += "if ( element.tagName() != \"" + e.name() + "\" ) {";
     code.indent();
-    code += "QDomElement e = n.toElement();";
-
-    Schema::Relation::List elementRelations = e.elementRelations();
-    Schema::Relation::List::ConstIterator it;
-    for( it = elementRelations.constBegin(); it != elementRelations.constEnd(); ++it ) {
-      QString condition;
-      if ( it != elementRelations.constBegin() ) condition = "else ";
-      condition += "if";
-
-      code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
-      code.indent();
-
-      QString className = Namer::getClassName( (*it).target() );
-
-      Schema::Element targetElement =
-        creator()->document().element( (*it).target() );
-
-      if ( targetElement.text() && !targetElement.hasAttributeRelations() &&
-           !(*it).isList() ) {
-        QString data = stringToDataConverter( "e.text()", targetElement.type() );
-        code += "result.set" + className + "( " + data + " );";
-      } else {
-        code += "bool ok;";
-        QString line = className + " o = ";
-        if ( creator()->externalParser() ) {
-          line += "parseElement" + className;
-        } else {
-          line += className + "::parseElement";
-        }
-        line += "( e, &ok );";
-        code += line;
-
-        if ( (*it).isList() ) {
-          code += "if ( ok ) result.add" + className + "( o );";
-        } else {
-          code += "if ( ok ) result.set" + className + "( o );";
-        }
-      }
-
-      code.unindent();
-      code += '}';
-    }
-
+    code += creator()->errorStream() + " << \"Expected '" + e.name()
+            + "', got '\" << element.tagName() << \"'.\";";
+    code += "if ( ok ) *ok = false;";
+    code += "return " + c.name() + "();";
     code.unindent();
     code += '}';
     code.newLine();
-  }
-  
-  if ( e.text() ) {
-    code += "result.setValue( " + stringToDataConverter( "element.text()", e.type() ) + " );";
-  }
 
-  foreach( Schema::Relation r, e.attributeRelations() ) {
-    Schema::Attribute a = creator()->document().attribute( r, e.name() );
+    code += c.name() + " result = " + c.name() + "();";
+    code.newLine();
 
-    if (a.enumerationValues().count()) {
-      QString enumName = Namer::sanitize( a.name() );
-
-      if (!a.required()) { // if not required generate conditions
-        code += "if (element.hasAttribute(\"" + a.name() + "\"))  {";
+    if (e.hasElementRelations()) {
+        code += "QDomNode n;";
+        code += "for( n = element.firstChild(); !n.isNull();"
+                " n = n.nextSibling() ) {";
         code.indent();
-      }
-      code += Namer::getClassName(a.name()) + "Enum" + " " + enumName+ " = " +
-              KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumFromString( element.attribute( \"" + a.name() + "\" ), ok  );";
-      code += "if (ok && *ok == false) {";
-      code.indent();
-      code += "qCritical() << \"Invalid string: \\\"\" << element.attribute( \"" + a.name() + "\" ) << \"\\\" in the \\\"" + a.name() + "\\\" element\";";
-      code += "return " + c.name() + "();";
-      code.unindent();
-      code += "} else {";
-      code.indent();
-      code += "result.set" + Namer::getClassName( a.name() ) +
-              "( " + enumName + " );";
-      code.unindent();
-      code += "}";
+        code += "QDomElement e = n.toElement();";
 
-      if (!a.required()) {
-        code.unindent();
-        code += "} else {";
-        code.indent();
-        code += "result.set" + Namer::getClassName(a.name()) + "(" + KODE::Style::lowerFirst(Namer::getClassName(a.name())) + "EnumFromString(\""+a.defaultValue()+"\"));";
-        code.unindent();
-        code += "}";
-      }
-    } else {
-      QString data = stringToDataConverter( "element.attribute( \"" + a.name() + "\" )", a.type() );
+        Schema::Relation::List elementRelations = e.elementRelations();
+        Schema::Relation::List::ConstIterator it;
+        for (it = elementRelations.constBegin(); it != elementRelations.constEnd(); ++it) {
+            QString condition;
+            if (it != elementRelations.constBegin())
+                condition = "else ";
+            condition += "if";
 
-      code += "result.set" + Namer::getClassName( a.name() ) +
-              "( " + data + " );";
+            code += condition + " ( e.tagName() == \"" + (*it).target() + "\" ) {";
+            code.indent();
+
+            QString className = Namer::getClassName((*it).target());
+
+            Schema::Element targetElement = creator()->document().element((*it).target());
+
+            if (targetElement.text() && !targetElement.hasAttributeRelations() && !(*it).isList()) {
+                QString data = stringToDataConverter("e.text()", targetElement.type());
+                code += "result.set" + className + "( " + data + " );";
+            } else {
+                code += "bool ok;";
+                QString line = className + " o = ";
+                if (creator()->externalParser()) {
+                    line += "parseElement" + className;
+                } else {
+                    line += className + "::parseElement";
+                }
+                line += "( e, &ok );";
+                code += line;
+
+                if ((*it).isList()) {
+                    code += "if ( ok ) result.add" + className + "( o );";
+                } else {
+                    code += "if ( ok ) result.set" + className + "( o );";
+                }
+            }
+
+            code.unindent();
+            code += '}';
+        }
+
+        code.unindent();
+        code += '}';
+        code.newLine();
     }
-  }
-  code.newLine();
 
-  code += "if ( ok ) *ok = true;";
-  code += "return result;";
+    if (e.text()) {
+        code += "result.setValue( " + stringToDataConverter("element.text()", e.type()) + " );";
+    }
 
-  parser.setBody( code );
+    foreach (Schema::Relation r, e.attributeRelations()) {
+        Schema::Attribute a = creator()->document().attribute(r, e.name());
 
-  if ( creator()->externalParser() ) {
-    creator()->parserClass().addFunction( parser );
-    creator()->parserClass().addHeaderInclude( "qdom.h" );
-  } else {
-    c.addFunction( parser );
-  }
+        if (a.enumerationValues().count()) {
+            QString enumName = Namer::sanitize(a.name());
+
+            if (!a.required()) { // if not required generate conditions
+                code += "if (element.hasAttribute(\"" + a.name() + "\"))  {";
+                code.indent();
+            }
+            code += Namer::getClassName(a.name()) + "Enum" + " " + enumName + " = "
+                    + KODE::Style::lowerFirst(Namer::getClassName(a.name()))
+                    + "EnumFromString( element.attribute( \"" + a.name() + "\" ), ok  );";
+            code += "if (ok && *ok == false) {";
+            code.indent();
+            code += "qCritical() << \"Invalid string: \\\"\" << element.attribute( \"" + a.name()
+                    + "\" ) << \"\\\" in the \\\"" + a.name() + "\\\" element\";";
+            code += "return " + c.name() + "();";
+            code.unindent();
+            code += "} else {";
+            code.indent();
+            code += "result.set" + Namer::getClassName(a.name()) + "( " + enumName + " );";
+            code.unindent();
+            code += "}";
+
+            if (!a.required()) {
+                code.unindent();
+                code += "} else {";
+                code.indent();
+                code += "result.set" + Namer::getClassName(a.name()) + "("
+                        + KODE::Style::lowerFirst(Namer::getClassName(a.name()))
+                        + "EnumFromString(\"" + a.defaultValue() + "\"));";
+                code.unindent();
+                code += "}";
+            }
+        } else {
+            QString data =
+                    stringToDataConverter("element.attribute( \"" + a.name() + "\" )", a.type());
+
+            code += "result.set" + Namer::getClassName(a.name()) + "( " + data + " );";
+        }
+    }
+    code.newLine();
+
+    code += "if ( ok ) *ok = true;";
+    code += "return result;";
+
+    parser.setBody(code);
+
+    if (creator()->externalParser()) {
+        creator()->parserClass().addFunction(parser);
+        creator()->parserClass().addHeaderInclude("qdom.h");
+    } else {
+        c.addFunction(parser);
+    }
 }
 
-void ParserCreatorDom::createFileParser( const Schema::Element &element )
+void ParserCreatorDom::createFileParser(const Schema::Element &element)
 {
-//   qDebug() <<"Creator::createFileParserDom()";
+    //   qDebug() <<"Creator::createFileParserDom()";
 
-  QString className = Namer::getClassName( element.name() );
+    QString className = Namer::getClassName(element.name());
 
-  KODE::Class c;
+    KODE::Class c;
 
-  if ( creator()->externalParser() ) {
-    c = creator()->parserClass();
-  } else {
-    c = creator()->file().findClass( className );
-  }
+    if (creator()->externalParser()) {
+        c = creator()->parserClass();
+    } else {
+        c = creator()->file().findClass(className);
+    }
 
-  if ( creator()->useKde() ) {
-    c.addInclude( "qDebug.h" );
-  } else {
-    c.addInclude( "QtDebug" );
-  }
+    if (creator()->useKde()) {
+        c.addInclude("qDebug.h");
+    } else {
+        c.addInclude("QtDebug");
+    }
 
-  KODE::Function parser( "parseFile", className );
-  parser.setStatic( true );
+    KODE::Function parser("parseFile", className);
+    parser.setStatic(true);
 
-  parser.addArgument( "const QString &filename" );
-  parser.addArgument( "bool *ok" );
+    parser.addArgument("const QString &filename");
+    parser.addArgument("bool *ok");
 
-  c.addInclude( "QFile" );
-  c.addInclude( "QDomDocument" );
+    c.addInclude("QFile");
+    c.addInclude("QDomDocument");
 
-  KODE::Code code;
+    KODE::Code code;
 
-  code += "QFile file( filename );";
-  code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
-  code += "  " + creator()->errorStream() + " << \"Unable to open file '\" << filename << \"'\";";
-  code += "  if ( ok ) *ok = false;";
-  code += "  return " + className + "();";
-  code += '}';
-  code += "";
-  code += "QString errorMsg;";
-  code += "int errorLine, errorCol;";
-  code += "QDomDocument doc;";
-  code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
-  code += "  " + creator()->errorStream() + " << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
-  code += "  if ( ok ) *ok = false;";
-  code += "  return " + className + "();";
-  code += '}';
+    code += "QFile file( filename );";
+    code += "if ( !file.open( QIODevice::ReadOnly ) ) {";
+    code += "  " + creator()->errorStream() + " << \"Unable to open file '\" << filename << \"'\";";
+    code += "  if ( ok ) *ok = false;";
+    code += "  return " + className + "();";
+    code += '}';
+    code += "";
+    code += "QString errorMsg;";
+    code += "int errorLine, errorCol;";
+    code += "QDomDocument doc;";
+    code += "if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {";
+    code += "  " + creator()->errorStream()
+            + " << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
+    code += "  if ( ok ) *ok = false;";
+    code += "  return " + className + "();";
+    code += '}';
 
-  code.newLine();
+    code.newLine();
 
-  code += "bool documentOk;";
-  QString line = className + " c = parseElement";
-  if ( creator()->externalParser() ) line += className;
-  line += "( doc.documentElement(), &documentOk );";
-  code += line;
+    code += "bool documentOk;";
+    QString line = className + " c = parseElement";
+    if (creator()->externalParser())
+        line += className;
+    line += "( doc.documentElement(), &documentOk );";
+    code += line;
 
-  code += "if ( ok ) {";
-  code += "  *ok = documentOk;";
-  code += '}';
-  code += "return c;";
+    code += "if ( ok ) {";
+    code += "  *ok = documentOk;";
+    code += '}';
+    code += "return c;";
 
-  parser.setBody( code );
+    parser.setBody(code);
 
-  c.addFunction( parser );
+    c.addFunction(parser);
 
-  if ( creator()->externalParser() ) {
-    creator()->setParserClass( c );
-  } else {
-    creator()->file().insertClass( c );
-  }
+    if (creator()->externalParser()) {
+        creator()->setParserClass(c);
+    } else {
+        creator()->file().insertClass(c);
+    }
 
-  if ( creator()->useQEnums() )
-    c.setQGadget(c.enums().count());
+    if (creator()->useQEnums())
+        c.setQGadget(c.enums().count());
 }
 
-void ParserCreatorDom::createStringParser( const Schema::Element &element )
+void ParserCreatorDom::createStringParser(const Schema::Element &element)
 {
-  QString className = Namer::getClassName( element.name() );
+    QString className = Namer::getClassName(element.name());
 
-  KODE::Class c;
+    KODE::Class c;
 
-  if ( creator()->externalParser() ) {
-    c = creator()->parserClass();
-  } else {
-    c = creator()->file().findClass( className );
-  }
+    if (creator()->externalParser()) {
+        c = creator()->parserClass();
+    } else {
+        c = creator()->file().findClass(className);
+    }
 
-  if ( creator()->useKde() ) {
-    c.addInclude( "qDebug.h" );
-  } else {
-    c.addInclude( "QtDebug" );
-  } 
+    if (creator()->useKde()) {
+        c.addInclude("qDebug.h");
+    } else {
+        c.addInclude("QtDebug");
+    }
 
-  KODE::Function parser( "parseString", className );
-  parser.setStatic( true );
+    KODE::Function parser("parseString", className);
+    parser.setStatic(true);
 
-  parser.addArgument( "const QString &xml" );
-  parser.addArgument( "bool *ok" );
+    parser.addArgument("const QString &xml");
+    parser.addArgument("bool *ok");
 
-  c.addInclude( "QFile" );
-  c.addInclude( "QDomDocument" );
+    c.addInclude("QFile");
+    c.addInclude("QDomDocument");
 
-  KODE::Code code;
+    KODE::Code code;
 
-  code += "QString errorMsg;";
-  code += "int errorLine, errorCol;";
-  code += "QDomDocument doc;";
-  code += "if ( !doc.setContent( xml, false, &errorMsg, &errorLine, &errorCol ) ) {";
-  code += "  " + creator()->errorStream() + " << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
-  code += "  if ( ok ) *ok = false;";
-  code += "  return " + className + "();";
-  code += '}';
+    code += "QString errorMsg;";
+    code += "int errorLine, errorCol;";
+    code += "QDomDocument doc;";
+    code += "if ( !doc.setContent( xml, false, &errorMsg, &errorLine, &errorCol ) ) {";
+    code += "  " + creator()->errorStream()
+            + " << errorMsg << \" at \" << errorLine << \",\" << errorCol;";
+    code += "  if ( ok ) *ok = false;";
+    code += "  return " + className + "();";
+    code += '}';
 
-  code.newLine();
+    code.newLine();
 
-  code += "bool documentOk;";
-  QString line = className + " c = parseElement";
-  if ( creator()->externalParser() ) line += className;
-  line += "( doc.documentElement(), &documentOk );";
-  code += line;
+    code += "bool documentOk;";
+    QString line = className + " c = parseElement";
+    if (creator()->externalParser())
+        line += className;
+    line += "( doc.documentElement(), &documentOk );";
+    code += line;
 
-  code += "if ( ok ) {";
-  code += "  *ok = documentOk;";
-  code += '}';
-  code += "return c;";
+    code += "if ( ok ) {";
+    code += "  *ok = documentOk;";
+    code += '}';
+    code += "return c;";
 
-  parser.setBody( code );
+    parser.setBody(code);
 
-  c.addFunction( parser );
+    c.addFunction(parser);
 
-  if ( creator()->externalParser() ) {
-    creator()->setParserClass( c );
-  } else {
-    creator()->file().insertClass( c );
-  }
+    if (creator()->externalParser()) {
+        creator()->setParserClass(c);
+    } else {
+        creator()->file().insertClass(c);
+    }
 }
 
-QString ParserCreatorDom::stringToDataConverter( const QString &data,
-  Schema::Node::Type type )
+QString ParserCreatorDom::stringToDataConverter(const QString &data, Schema::Node::Type type)
 {
-  QString converter;
-  if ( type == Schema::Element::Int ) {
-    converter = data + ".toInt()";
-  } else if ( type == Schema::Element::Integer ) {
-    converter = data + ".toLongLong()";
-  } else if ( type == Schema::Element::Decimal ) {
-    converter = data + ".toDouble()";
-  } else if ( type == Schema::Element::Boolean ) {
-    converter = "(" + data + " == \"1\" || " + data + " == \"true\")";
-  } else if ( type == Schema::Element::Date ) {
-    converter = "QDate::fromString( " + data + ", \"yyyyMMdd\" )";
-  } else if ( type == Schema::Element::DateTime ) {
-    converter = "QDateTime::fromString( " + data + ", \"yyyyMMddThhmmssZ\" )";
-  } else {
-    converter = data;
-  }
-  return converter;
+    QString converter;
+    if (type == Schema::Element::Int) {
+        converter = data + ".toInt()";
+    } else if (type == Schema::Element::Integer) {
+        converter = data + ".toLongLong()";
+    } else if (type == Schema::Element::Decimal) {
+        converter = data + ".toDouble()";
+    } else if (type == Schema::Element::Boolean) {
+        converter = "(" + data + " == \"1\" || " + data + " == \"true\")";
+    } else if (type == Schema::Element::Date) {
+        converter = "QDate::fromString( " + data + ", \"yyyyMMdd\" )";
+    } else if (type == Schema::Element::DateTime) {
+        converter = "QDateTime::fromString( " + data + ", \"yyyyMMddThhmmssZ\" )";
+    } else {
+        converter = data;
+    }
+    return converter;
 }

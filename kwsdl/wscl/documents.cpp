@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -23,85 +23,82 @@
 
 using namespace WSCL;
 
-void XMLDocument::setId( const QString &id )
+void XMLDocument::setId(const QString &id)
 {
-  mId = id;
+    mId = id;
 }
 
 QString XMLDocument::id() const
 {
-  return mId;
+    return mId;
 }
 
-void XMLDocument::setSchema( const QString &schema )
+void XMLDocument::setSchema(const QString &schema)
 {
-  mSchema = schema;
+    mSchema = schema;
 }
 
 QString XMLDocument::schema() const
 {
-  return mSchema;
+    return mSchema;
 }
 
-
-void ReceiveSendDocument::setInputDocument( const XMLDocument &document )
+void ReceiveSendDocument::setInputDocument(const XMLDocument &document)
 {
-  mInputDocument = document;
+    mInputDocument = document;
 }
 
 XMLDocument ReceiveSendDocument::inputDocument() const
 {
-  return mInputDocument;
+    return mInputDocument;
 }
 
-void ReceiveSendDocument::setOutputDocuments( const XMLDocument::List &documents )
+void ReceiveSendDocument::setOutputDocuments(const XMLDocument::List &documents)
 {
-  mOutputDocuments = documents;
+    mOutputDocuments = documents;
 }
 
 XMLDocument::List ReceiveSendDocument::outputDocuments() const
 {
-  return mOutputDocuments;
+    return mOutputDocuments;
 }
 
-
-void SendReceiveDocument::setInputDocuments( const XMLDocument::List &documents )
+void SendReceiveDocument::setInputDocuments(const XMLDocument::List &documents)
 {
-  mInputDocuments = documents;
+    mInputDocuments = documents;
 }
 
 XMLDocument::List SendReceiveDocument::inputDocuments() const
 {
-  return mInputDocuments;
+    return mInputDocuments;
 }
 
-void SendReceiveDocument::setOutputDocument( const XMLDocument &document )
+void SendReceiveDocument::setOutputDocument(const XMLDocument &document)
 {
-  mOutputDocument = document;
+    mOutputDocument = document;
 }
 
 XMLDocument SendReceiveDocument::outputDocument() const
 {
-  return mOutputDocument;
+    return mOutputDocument;
 }
 
-void ReceiveDocument::setInputDocument( const XMLDocument &document )
+void ReceiveDocument::setInputDocument(const XMLDocument &document)
 {
-  mInputDocument = document;
+    mInputDocument = document;
 }
 
 XMLDocument ReceiveDocument::inputDocument() const
 {
-  return mInputDocument;
+    return mInputDocument;
 }
 
-void SendDocument::setOutputDocument( const XMLDocument &document )
+void SendDocument::setOutputDocument(const XMLDocument &document)
 {
-  mOutputDocument = document;
+    mOutputDocument = document;
 }
 
 XMLDocument SendDocument::outputDocument() const
 {
-  return mOutputDocument;
+    return mOutputDocument;
 }
-

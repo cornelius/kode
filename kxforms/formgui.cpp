@@ -43,332 +43,338 @@
 
 using namespace KXForms;
 
-
-FormGui::FormGui( const QString &label, Manager *m, QWidget *parent )
-  : QWidget( parent ), mManager( m ), mTabWidget( 0 ), mLabelHidden( false ), mSizeThreshold( 100 )
+FormGui::FormGui(const QString &label, Manager *m, QWidget *parent)
+    : QWidget(parent), mManager(m), mTabWidget(0), mLabelHidden(false), mSizeThreshold(100)
 {
-  kDebug() <<"FormGui()";
+    kDebug() << "FormGui()";
 
-  mTopLayout = mManager->getTopLayout();
-  setLayout( mTopLayout );
+    mTopLayout = mManager->getTopLayout();
+    setLayout(mTopLayout);
 
-  mLabel = new QLabel( label, this );
-  QFont f = mLabel->font();
-  f.setBold( true );
-  mLabel->setFont( f );
-  mLabel->hide();
-  mManager->addWidget( mTopLayout, mLabel );
+    mLabel = new QLabel(label, this);
+    QFont f = mLabel->font();
+    f.setBold(true);
+    mLabel->setFont(f);
+    mLabel->hide();
+    mManager->addWidget(mTopLayout, mLabel);
 
-  mRefLabel = new QLabel( this );
-  f = mRefLabel->font();
-  f.setPointSize( f.pointSize() - 2 );
-  mRefLabel->setFont( f );
-  mManager->addWidget( mTopLayout, mRefLabel );
+    mRefLabel = new QLabel(this);
+    f = mRefLabel->font();
+    f.setPointSize(f.pointSize() - 2);
+    mRefLabel->setFont(f);
+    mManager->addWidget(mTopLayout, mRefLabel);
 
-  setRefLabel( "[undefined reference]" );
+    setRefLabel("[undefined reference]");
 
-  if ( !Prefs::developerMode() ) {
-    mRefLabel->hide();
-  }
+    if (!Prefs::developerMode()) {
+        mRefLabel->hide();
+    }
 }
 
-void FormGui::setRef( const Reference &ref )
+void FormGui::setRef(const Reference &ref)
 {
-  mRef = ref;
+    mRef = ref;
 
-  if ( mRef.isEmpty() ) setRefLabel( i18n("[empty reference]") );
-  else setRefLabel( mRef );
+    if (mRef.isEmpty())
+        setRefLabel(i18n("[empty reference]"));
+    else
+        setRefLabel(mRef);
 }
 
-void FormGui::setRefLabel( const Reference &ref )
+void FormGui::setRefLabel(const Reference &ref)
 {
-  mRefLabel->setText( i18n("Reference: %1", ref.toString() ) );
+    mRefLabel->setText(i18n("Reference: %1", ref.toString()));
 }
 
 Reference FormGui::ref() const
 {
-  return mRef;
+    return mRef;
 }
 
 QString FormGui::label() const
 {
-  return mLabel->text();
+    return mLabel->text();
 }
 
-void FormGui::setLabelHidden( bool hidden )
+void FormGui::setLabelHidden(bool hidden)
 {
-  mLabelHidden = hidden;
+    mLabelHidden = hidden;
 }
 
-void FormGui::parseElement( const QDomElement &element, QLayout *l, const QString &overrideLabel, Layout *overrideGroup )
+void FormGui::parseElement(const QDomElement &element, QLayout *l, const QString &overrideLabel,
+                           Layout *overrideGroup)
 {
-  kDebug() <<"FormGui::parseElement()";
-  kDebug() << element.tagName() << element.attribute("ref");
-  QMap< QString, Layout > layoutMap;
+    kDebug() << "FormGui::parseElement()";
+    kDebug() << element.tagName() << element.attribute("ref");
+    QMap<QString, Layout> layoutMap;
 
-  bool hasList = false;
-  QLayout *layout = l ? l : mTopLayout;
+    bool hasList = false;
+    QLayout *layout = l ? l : mTopLayout;
 
-  QDomNode n;
-  for ( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    QString tag = e.tagName();
-    kDebug() <<"  Found element '" << tag <<"'";
+    QDomNode n;
+    for (n = element.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        QString tag = e.tagName();
+        kDebug() << "  Found element '" << tag << "'";
 
-    XFormsCommon c = XFormsCommon::parseElement( e );
-    if( !overrideLabel.isEmpty() )
-      c.setLabel( overrideLabel );
+        XFormsCommon c = XFormsCommon::parseElement(e);
+        if (!overrideLabel.isEmpty())
+            c.setLabel(overrideLabel);
 
-    GuiElement *guiElement = 0;
-    GuiElement::Properties *properties = new GuiElement::Properties();
-    *properties = *mManager->defaultProperties();
-    GuiElement::parseProperties( e, properties );
+        GuiElement *guiElement = 0;
+        GuiElement::Properties *properties = new GuiElement::Properties();
+        *properties = *mManager->defaultProperties();
+        GuiElement::parseProperties(e, properties);
 
-    if ( tag == "xf:label" ) {
-      mLabel->setText( e.text() );
-      if ( !mLabelHidden ) mLabel->show();
-    } else if ( tag == "list" ) {
-      guiElement = new KXForms::List( mManager, c.label(), this, properties );
-      guiElement->setRef( ref() );
-      static_cast<KXForms::List *>(guiElement)->setId( e.attribute( "id" ) );
-      hasList = true;
-    } else if ( tag == "xf:input" ) {
-      Input *input = new Input( mManager, c.label(), this, properties );
-      connect( input, SIGNAL( returnPressed() ), SIGNAL( editingFinished() ) );
-      guiElement = input;
-      guiElement->setRef( e.attribute( "ref" ) );
-    } else if ( tag == "xf:textarea" ) {
-      guiElement = new TextArea( mManager, c.label(), this, properties );
-      guiElement->setRef( e.attribute( "ref" ) );
-    } else if ( tag == "xf:select1" ) {
-      guiElement = new Select1( mManager, c.label(), this, properties );
-      guiElement->setRef( e.attribute( "ref" ) );
-    } else if ( tag == "xf:select" ) {
-      guiElement = new Select( mManager, c.label(), this, properties );
-      guiElement->setRef( e.attribute( "ref" ) );
-    } else if ( tag == "kxf:section" ) {
-      if( e.attribute( "visible" ) != "false" ) {
-        bool externalLabel = (e.attribute( "externalLabel" ) == "true" );
-        guiElement = new Section( mManager, c.label(), this, properties, externalLabel );
-        guiElement->setRef( e.attribute( "ref" ) );
-        parseElement( e, static_cast<Section *>( guiElement )->layout(), e.attribute( "overrideLabel" ));
-      } else {
-        parseElement( e, layout, e.attribute( "overrideLabel" ), &layoutMap[properties->group] );
-      }
-    } else if ( tag == "attributes" ) {
-      parseElement( e, layout, QString(), &layoutMap[properties->group] );
-    } else {
-      kWarning() <<"  Unsupported element:" << tag;
-      delete properties;
-    }
-    if( guiElement ) {
-      if( !c.tip().isEmpty() )
-        guiElement->setTip( c.tip() );
-      guiElement->parseElement( e );
-      parseAttributeElements( guiElement, e );
-      if( overrideGroup )
-        overrideGroup->addElement( guiElement );
-      else
-        layoutMap[properties->group].addElement( guiElement );
-    }
-  }
-
-  QMap< QString, Layout >::iterator it;
-  QString elemThreshold = element.attribute( "sizeThreshold" );
-  if( elemThreshold.length() > 0 ) 
-    mSizeThreshold = elemThreshold.toInt();
-  int space = 0;
-  bool grouped = false;
-
-  int totalSpace = 0;
-  for( it = layoutMap.begin(); it != layoutMap.end(); ++it ){
-    it.value().order();
-    totalSpace += it.value().space();
-  }
-
-  kDebug() << hasGroups( element );
-  if( (hasGroups( element ) || totalSpace > mSizeThreshold) &&
-       layoutMap.size() > 1 ) {
-    setupGroups( layout, element );
-    layout = 0;
-    grouped = true;
-  }
-
-  for( it = layoutMap.begin(); it != layoutMap.end(); ++it ) {
-    it.value().order();
-    QList< Layout::Element * > list = it.value().orderedList();
-
-    space += it.value().space();
-    int height = it.value().height();
-    int width = it.value().width();
-
-    if( ( space > mSizeThreshold && grouped ) || !layout ) {
-      space = it.value().space();
-      layout = mManager->getTopLayout();
-      QWidget *w = new QWidget( mTabWidget );
-      w->setLayout( layout );
-      QString title = mGroups[ it.key() ];
-      if( title.isEmpty() )
-        title = mGroups.values().first();
-      if( mTabWidget ) {
-        mTabWidget->addTab( w, title );
-      }
-    } else if( mTabWidget ) {
-      int index = mTabWidget->indexOf( layout->parentWidget() );
-      QString title = mTabWidget->tabText( index );
-      if( !mGroups[ it.key() ].isEmpty() ) {
-        if( !title.isEmpty() )
-          title += QString(" && ");
-        title += mGroups[ it.key() ];
-      }
-      if( mTabWidget )
-        mTabWidget->setTabText( index, title );
+        if (tag == "xf:label") {
+            mLabel->setText(e.text());
+            if (!mLabelHidden)
+                mLabel->show();
+        } else if (tag == "list") {
+            guiElement = new KXForms::List(mManager, c.label(), this, properties);
+            guiElement->setRef(ref());
+            static_cast<KXForms::List *>(guiElement)->setId(e.attribute("id"));
+            hasList = true;
+        } else if (tag == "xf:input") {
+            Input *input = new Input(mManager, c.label(), this, properties);
+            connect(input, SIGNAL(returnPressed()), SIGNAL(editingFinished()));
+            guiElement = input;
+            guiElement->setRef(e.attribute("ref"));
+        } else if (tag == "xf:textarea") {
+            guiElement = new TextArea(mManager, c.label(), this, properties);
+            guiElement->setRef(e.attribute("ref"));
+        } else if (tag == "xf:select1") {
+            guiElement = new Select1(mManager, c.label(), this, properties);
+            guiElement->setRef(e.attribute("ref"));
+        } else if (tag == "xf:select") {
+            guiElement = new Select(mManager, c.label(), this, properties);
+            guiElement->setRef(e.attribute("ref"));
+        } else if (tag == "kxf:section") {
+            if (e.attribute("visible") != "false") {
+                bool externalLabel = (e.attribute("externalLabel") == "true");
+                guiElement = new Section(mManager, c.label(), this, properties, externalLabel);
+                guiElement->setRef(e.attribute("ref"));
+                parseElement(e, static_cast<Section *>(guiElement)->layout(),
+                             e.attribute("overrideLabel"));
+            } else {
+                parseElement(e, layout, e.attribute("overrideLabel"),
+                             &layoutMap[properties->group]);
+            }
+        } else if (tag == "attributes") {
+            parseElement(e, layout, QString(), &layoutMap[properties->group]);
+        } else {
+            kWarning() << "  Unsupported element:" << tag;
+            delete properties;
+        }
+        if (guiElement) {
+            if (!c.tip().isEmpty())
+                guiElement->setTip(c.tip());
+            guiElement->parseElement(e);
+            parseAttributeElements(guiElement, e);
+            if (overrideGroup)
+                overrideGroup->addElement(guiElement);
+            else
+                layoutMap[properties->group].addElement(guiElement);
+        }
     }
 
-    foreach( Layout::Element *e, list ) {
-      mManager->addElementRow( layout, e, width, height );
+    QMap<QString, Layout>::iterator it;
+    QString elemThreshold = element.attribute("sizeThreshold");
+    if (elemThreshold.length() > 0)
+        mSizeThreshold = elemThreshold.toInt();
+    int space = 0;
+    bool grouped = false;
+
+    int totalSpace = 0;
+    for (it = layoutMap.begin(); it != layoutMap.end(); ++it) {
+        it.value().order();
+        totalSpace += it.value().space();
     }
 
-    foreach( GuiElement *guiElem, it.value().elements() ) {
-      mGuiElements.append( guiElem );
+    kDebug() << hasGroups(element);
+    if ((hasGroups(element) || totalSpace > mSizeThreshold) && layoutMap.size() > 1) {
+        setupGroups(layout, element);
+        layout = 0;
+        grouped = true;
     }
-  }
 
-  kDebug() <<"FormGui::parseElement() done";
+    for (it = layoutMap.begin(); it != layoutMap.end(); ++it) {
+        it.value().order();
+        QList<Layout::Element *> list = it.value().orderedList();
+
+        space += it.value().space();
+        int height = it.value().height();
+        int width = it.value().width();
+
+        if ((space > mSizeThreshold && grouped) || !layout) {
+            space = it.value().space();
+            layout = mManager->getTopLayout();
+            QWidget *w = new QWidget(mTabWidget);
+            w->setLayout(layout);
+            QString title = mGroups[it.key()];
+            if (title.isEmpty())
+                title = mGroups.values().first();
+            if (mTabWidget) {
+                mTabWidget->addTab(w, title);
+            }
+        } else if (mTabWidget) {
+            int index = mTabWidget->indexOf(layout->parentWidget());
+            QString title = mTabWidget->tabText(index);
+            if (!mGroups[it.key()].isEmpty()) {
+                if (!title.isEmpty())
+                    title += QString(" && ");
+                title += mGroups[it.key()];
+            }
+            if (mTabWidget)
+                mTabWidget->setTabText(index, title);
+        }
+
+        foreach (Layout::Element *e, list) {
+            mManager->addElementRow(layout, e, width, height);
+        }
+
+        foreach (GuiElement *guiElem, it.value().elements()) {
+            mGuiElements.append(guiElem);
+        }
+    }
+
+    kDebug() << "FormGui::parseElement() done";
 }
 
-
-void FormGui::parseAttributeElements( GuiElement *parent, QDomElement &e )
+void FormGui::parseAttributeElements(GuiElement *parent, QDomElement &e)
 {
-  QDomNode n;
-  for( n = e.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if( e.tagName() != "attributes" )
-      continue;
+    QDomNode n;
+    for (n = e.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        if (e.tagName() != "attributes")
+            continue;
 
-    QDomNode n2;
-    for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
-      QDomElement e2 = n2.toElement();
-      QString tag = e2.tagName();
+        QDomNode n2;
+        for (n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling()) {
+            QDomElement e2 = n2.toElement();
+            QString tag = e2.tagName();
 
-      XFormsCommon c = XFormsCommon::parseElement( e2 );
-      GuiElement::Properties *properties = new GuiElement::Properties;
-      GuiElement::parseProperties( e2, properties );
-      GuiElement *guiElement = 0;
+            XFormsCommon c = XFormsCommon::parseElement(e2);
+            GuiElement::Properties *properties = new GuiElement::Properties;
+            GuiElement::parseProperties(e2, properties);
+            GuiElement *guiElement = 0;
 
-      kDebug() <<"Got an attribute element:" << tag <<" label:" << c.label();
+            kDebug() << "Got an attribute element:" << tag << " label:" << c.label();
 
-      if ( tag == "list" ) {
-        guiElement = new KXForms::List( mManager, c.label(), this, properties );
-        guiElement->setRef( ref() );
-      } else if ( tag == "xf:input" ) {
-        Input *input = new Input( mManager, c.label(), this, properties );
-        connect( input, SIGNAL( returnPressed() ), SIGNAL( editingFinished() ) );
-        guiElement = input;
-        guiElement->setRef( e2.attribute( "ref" ) );
-      }else if ( tag == "xf:select1" ) {
-        guiElement = new Select1( mManager, c.label(), this, properties );
-        guiElement->setRef( e2.attribute( "ref" ) );
-      } else {
-        kWarning() <<"  Unsupported element:" << tag;
-        delete properties;
-      }
+            if (tag == "list") {
+                guiElement = new KXForms::List(mManager, c.label(), this, properties);
+                guiElement->setRef(ref());
+            } else if (tag == "xf:input") {
+                Input *input = new Input(mManager, c.label(), this, properties);
+                connect(input, SIGNAL(returnPressed()), SIGNAL(editingFinished()));
+                guiElement = input;
+                guiElement->setRef(e2.attribute("ref"));
+            } else if (tag == "xf:select1") {
+                guiElement = new Select1(mManager, c.label(), this, properties);
+                guiElement->setRef(e2.attribute("ref"));
+            } else {
+                kWarning() << "  Unsupported element:" << tag;
+                delete properties;
+            }
 
-      if( guiElement ) {
-        parent->addAttributeElement( guiElement );
-      }
+            if (guiElement) {
+                parent->addAttributeElement(guiElement);
+            }
+        }
     }
-  }
 }
 
-QDomElement FormGui::findContextElement( const QDomDocument &doc )
+QDomElement FormGui::findContextElement(const QDomDocument &doc)
 {
-  return ref().apply( doc );
+    return ref().apply(doc);
 }
 
-void FormGui::loadData( const QDomDocument &doc )
+void FormGui::loadData(const QDomDocument &doc)
 {
-  kDebug() <<"FormGui::loadData()" << ref().toString();
+    kDebug() << "FormGui::loadData()" << ref().toString();
 
-  QDomElement contextElement = findContextElement( doc );
+    QDomElement contextElement = findContextElement(doc);
 
-  GuiElement::List::ConstIterator itGui;
-  for( itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui ) {
-    (*itGui)->loadData( contextElement );
-  }
+    GuiElement::List::ConstIterator itGui;
+    for (itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui) {
+        (*itGui)->loadData(contextElement);
+    }
 }
 
 void FormGui::saveData()
 {
-  GuiElement::List::ConstIterator itGui;
-  QString invalidElements;
+    GuiElement::List::ConstIterator itGui;
+    QString invalidElements;
 
-  bool valid = true;
-  for( itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui ) {
-    if( !(*itGui)->isValid() ) {
-      valid = false;
-      invalidElements += QString( " - %1 (constraint: %2)\n" ).arg( (*itGui)->ref().path(), (*itGui)->properties()->constraint  );
+    bool valid = true;
+    for (itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui) {
+        if (!(*itGui)->isValid()) {
+            valid = false;
+            invalidElements +=
+                    QString(" - %1 (constraint: %2)\n")
+                            .arg((*itGui)->ref().path(), (*itGui)->properties()->constraint);
+        }
     }
-  }
-  if( valid ) {
-    for( itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui ) {
-      (*itGui)->save();
+    if (valid) {
+        for (itGui = mGuiElements.constBegin(); itGui != mGuiElements.constEnd(); ++itGui) {
+            (*itGui)->save();
+        }
+    } else {
+        kDebug() << "Not all elements were valid";
+        KMessageBox::error(this,
+                           i18n("There were elements not matching their constraint:\n")
+                                   + invalidElements);
     }
-  } else {
-    kDebug() <<"Not all elements were valid";
-    KMessageBox::error( this, i18n( "There were elements not matching their constraint:\n" ) + invalidElements );
-  }
 }
 
-bool FormGui::hasGroups( const QDomElement &element )
+bool FormGui::hasGroups(const QDomElement &element)
 {
-  QDomElement e = element.firstChildElement( "groups" );
-  if( e.isNull() )
-    return false;
-  e = e.firstChild().toElement();
+    QDomElement e = element.firstChildElement("groups");
+    if (e.isNull())
+        return false;
+    e = e.firstChild().toElement();
 
-  while( !e.isNull() ) {
-    if( e.tagName() == "group" ) {
-      mGroups[ e.attribute( "id" ) ] = e.text();
+    while (!e.isNull()) {
+        if (e.tagName() == "group") {
+            mGroups[e.attribute("id")] = e.text();
+        }
+        e = e.nextSibling().toElement();
     }
-    e = e.nextSibling().toElement();
-  }
-  return true;
+    return true;
 }
 
-void FormGui::setupGroups( QLayout *l, const QDomElement &element )
+void FormGui::setupGroups(QLayout *l, const QDomElement &element)
 {
-  mTabWidget = new QTabWidget( this );
-  l->addWidget( mTabWidget );
-  QDomElement e = element.firstChildElement( "groups" ).firstChild().toElement();
-  while( !e.isNull() ) {
-    if( e.tagName() == "group" ) {
-      kDebug() <<"Adding group:" << e.attribute("id" );
+    mTabWidget = new QTabWidget(this);
+    l->addWidget(mTabWidget);
+    QDomElement e = element.firstChildElement("groups").firstChild().toElement();
+    while (!e.isNull()) {
+        if (e.tagName() == "group") {
+            kDebug() << "Adding group:" << e.attribute("id");
+        }
+        e = e.nextSibling().toElement();
     }
-    e = e.nextSibling().toElement();
-  }
 }
 
 GuiElement::List FormGui::elements()
 {
-  if( !mTabWidget )
-    return mGuiElements;
-  else {
-    GuiElement::List list;
-    int currentIndex = mTabWidget->currentIndex();
-    foreach( GuiElement *e, mGuiElements ) {
-      QWidget *it = e->widget();
-      while( it->parentWidget() ) {
-        if( mTabWidget->indexOf( it ) >= 0 &&
-             mTabWidget->indexOf( it ) == currentIndex ) {
-          list.append( e );
-          break;
+    if (!mTabWidget)
+        return mGuiElements;
+    else {
+        GuiElement::List list;
+        int currentIndex = mTabWidget->currentIndex();
+        foreach (GuiElement *e, mGuiElements) {
+            QWidget *it = e->widget();
+            while (it->parentWidget()) {
+                if (mTabWidget->indexOf(it) >= 0 && mTabWidget->indexOf(it) == currentIndex) {
+                    list.append(e);
+                    break;
+                }
+                it = it->parentWidget();
+            }
         }
-        it = it->parentWidget();
-      }
+        return list;
     }
-    return list;
-  }
 }
 
 #include "formgui.moc"

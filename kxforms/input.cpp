@@ -33,104 +33,103 @@
 
 using namespace KXForms;
 
-Input::Input( Manager *m, const QString &label, QWidget *parent, Properties *p )
-  : GuiElement( parent, m, p )
+Input::Input(Manager *m, const QString &label, QWidget *parent, Properties *p)
+    : GuiElement(parent, m, p)
 {
-  mManager->dispatcher()->registerElement( this );
-  setActionTypes( Editor::CommonActions | Editor::InputActions );
+    mManager->dispatcher()->registerElement(this);
+    setActionTypes(Editor::CommonActions | Editor::InputActions);
 
-  mLabel = new QLabel( label, mParent );
-  QWidget *w;
-  if( mProperties->type == "xs:integer" ) {
-    mSpinBox = new QSpinBox( mParent );
-    mSpinBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-    w = mSpinBox;
-    connect( mSpinBox, SIGNAL( valueChanged(int) ), SLOT( emitValueChanged() ) );
-  } else if( mProperties->type == "xs:boolean" ) {
-    mCheckBox = new QCheckBox( mParent );
-    mCheckBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-    w = mCheckBox;
-    connect( mCheckBox, SIGNAL( stateChanged(int) ), SLOT( emitValueChanged() ) );
-  } else {
-    mLineEdit = new KLineEdit( mParent );
-    mLineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    w = mLineEdit;
-    connect( mLineEdit, SIGNAL( textChanged(QString) ), SLOT( emitValueChanged() ) );
-    connect( mLineEdit, SIGNAL( returnPressed() ), SIGNAL( returnPressed() ) );
-  }
-  setWidget( w );
+    mLabel = new QLabel(label, mParent);
+    QWidget *w;
+    if (mProperties->type == "xs:integer") {
+        mSpinBox = new QSpinBox(mParent);
+        mSpinBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        w = mSpinBox;
+        connect(mSpinBox, SIGNAL(valueChanged(int)), SLOT(emitValueChanged()));
+    } else if (mProperties->type == "xs:boolean") {
+        mCheckBox = new QCheckBox(mParent);
+        mCheckBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        w = mCheckBox;
+        connect(mCheckBox, SIGNAL(stateChanged(int)), SLOT(emitValueChanged()));
+    } else {
+        mLineEdit = new KLineEdit(mParent);
+        mLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        w = mLineEdit;
+        connect(mLineEdit, SIGNAL(textChanged(QString)), SLOT(emitValueChanged()));
+        connect(mLineEdit, SIGNAL(returnPressed()), SIGNAL(returnPressed()));
+    }
+    setWidget(w);
 
-  applyProperties();
+    applyProperties();
 }
 
 void Input::loadData()
 {
-  kDebug() <<"Input::loadData()" << ref().toString() <<"context:"
-    << context().tagName();
-  if( mProperties->type == "xs:integer" ) {
-    QString txt = ref().applyString( context() );
-    bool ok;
-    int value = txt.toInt( &ok );
-    if( ok )
-      mSpinBox->setValue( value );
-  } else if( mProperties->type == "xs:boolean" ) {
-    QString txt = ref().applyString( context() );
-    mCheckBox->setChecked( txt == "true" );
-  } else {
-    QString txt = ref().applyString( context() );
-    mLineEdit->setText( txt );
-  }
-  emitValueChanged();
+    kDebug() << "Input::loadData()" << ref().toString() << "context:" << context().tagName();
+    if (mProperties->type == "xs:integer") {
+        QString txt = ref().applyString(context());
+        bool ok;
+        int value = txt.toInt(&ok);
+        if (ok)
+            mSpinBox->setValue(value);
+    } else if (mProperties->type == "xs:boolean") {
+        QString txt = ref().applyString(context());
+        mCheckBox->setChecked(txt == "true");
+    } else {
+        QString txt = ref().applyString(context());
+        mLineEdit->setText(txt);
+    }
+    emitValueChanged();
 }
 
 void Input::saveData()
 {
-  kDebug() <<"Input::saveData()";
+    kDebug() << "Input::saveData()";
 
-  Reference::Segment s = ref().segments().last();
+    Reference::Segment s = ref().segments().last();
 
-  if ( s.isAttribute() ) {
-    ref().applyAttributeContext( context() ).setAttribute( s.name(), value() );
-  } else {
-    QDomElement e = ref().applyElement( context() );
-    if ( e.isNull() ) {
-      e = createElement( ref() );
-    }
-    QDomText t = e.firstChild().toText();
-    if ( t.isNull() ) {
-      t = mManager->document().createTextNode( value() );
-      e.appendChild( t ); 
+    if (s.isAttribute()) {
+        ref().applyAttributeContext(context()).setAttribute(s.name(), value());
     } else {
-      t.setData( value() );
+        QDomElement e = ref().applyElement(context());
+        if (e.isNull()) {
+            e = createElement(ref());
+        }
+        QDomText t = e.firstChild().toText();
+        if (t.isNull()) {
+            t = mManager->document().createTextNode(value());
+            e.appendChild(t);
+        } else {
+            t.setData(value());
+        }
     }
-  }
 }
 
 void Input::emitValueChanged()
 {
-  emit valueChanged( ref().toString(), value() );
+    emit valueChanged(ref().toString(), value());
 }
 
 bool Input::isValid() const
 {
-  kDebug() << mProperties->constraint <<" :" << value();
-  if( mProperties->constraint.isEmpty() )
-    return true;
+    kDebug() << mProperties->constraint << " :" << value();
+    if (mProperties->constraint.isEmpty())
+        return true;
 
-  QRegExp regExp( mProperties->constraint );
+    QRegExp regExp(mProperties->constraint);
 
-  return (value().indexOf( regExp ) >= 0);
+    return (value().indexOf(regExp) >= 0);
 }
 
 QString Input::value() const
 {
-  if( mProperties->type == "xs:integer" ) {
-    return QString::number( mSpinBox->value() );
-  } else if( mProperties->type == "xs:boolean" ) {
-    return mCheckBox->isChecked() ? "true" : "false";
-  } else {
-    return mLineEdit->text();
-  }
+    if (mProperties->type == "xs:integer") {
+        return QString::number(mSpinBox->value());
+    } else if (mProperties->type == "xs:boolean") {
+        return mCheckBox->isChecked() ? "true" : "false";
+    } else {
+        return mLineEdit->text();
+    }
 }
 
 #include "input.moc"

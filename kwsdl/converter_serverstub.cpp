@@ -23,7 +23,4 @@
 
 using namespace KWSDL;
 
-void Converter::convertServerService()
-{
-}
-
+void Converter::convertServerService() {}

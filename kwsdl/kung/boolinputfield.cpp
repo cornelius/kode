@@ -23,62 +23,60 @@
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 
-
 #include "boolinputfield.h"
 
-BoolInputField::BoolInputField( const QString &name, const XSD::SimpleType *type )
-  : SimpleInputField( name, type ),
-    mValue( false )
+BoolInputField::BoolInputField(const QString &name, const XSD::SimpleType *type)
+    : SimpleInputField(name, type), mValue(false)
 {
 }
 
-void BoolInputField::setXMLData( const QDomElement &element )
+void BoolInputField::setXMLData(const QDomElement &element)
 {
-  if ( mName != element.tagName() ) {
-    qDebug( "BoolInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
-    return;
-  }
+    if (mName != element.tagName()) {
+        qDebug("BoolInputField: Wrong dom element passed: expected %s, got %s", qPrintable(mName),
+               qPrintable(element.tagName()));
+        return;
+    }
 
-  setData( element.text() );
+    setData(element.text());
 }
 
-void BoolInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void BoolInputField::xmlData(QDomDocument &document, QDomElement &parent)
 {
-  QDomElement element = document.createElement( mName );
-  element.setAttribute( "xsi:type", "xsd:boolean" );
-  QDomText text = document.createTextNode( data() );
-  element.appendChild( text );
+    QDomElement element = document.createElement(mName);
+    element.setAttribute("xsi:type", "xsd:boolean");
+    QDomText text = document.createTextNode(data());
+    element.appendChild(text);
 
-  parent.appendChild( element );
+    parent.appendChild(element);
 }
 
-void BoolInputField::setData( const QString &data )
+void BoolInputField::setData(const QString &data)
 {
-  mValue = ( data.toLower() == "true" );
+    mValue = (data.toLower() == "true");
 }
 
 QString BoolInputField::data() const
 {
-  return ( mValue ? "true" : "false" );
+    return (mValue ? "true" : "false");
 }
 
-QWidget *BoolInputField::createWidget( QWidget *parent )
+QWidget *BoolInputField::createWidget(QWidget *parent)
 {
-  mInputWidget = new QCheckBox( parent );
+    mInputWidget = new QCheckBox(parent);
 
-  mInputWidget->setChecked( mValue );
+    mInputWidget->setChecked(mValue);
 
-  connect( mInputWidget, SIGNAL( toggled( bool ) ),
-           this, SLOT( inputChanged( bool ) ) );
+    connect(mInputWidget, SIGNAL(toggled(bool)), this, SLOT(inputChanged(bool)));
 
-  return mInputWidget;
+    return mInputWidget;
 }
 
-void BoolInputField::inputChanged( bool value )
+void BoolInputField::inputChanged(bool value)
 {
-  mValue = value;
+    mValue = value;
 
-  emit modified();
+    emit modified();
 }
 
 #include "boolinputfield.moc"

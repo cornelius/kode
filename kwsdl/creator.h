@@ -28,12 +28,11 @@ namespace KWSDL {
 
 class Creator
 {
-  public:
+public:
     Creator();
 
-    void create( const KODE::Class::List &list );
+    void create(const KODE::Class::List &list);
 };
-
 }
 
 #endif

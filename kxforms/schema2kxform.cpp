@@ -44,70 +44,70 @@
 
 int main(int argc, char **argv)
 {
-  KApplication::disableAutoDcopRegistration();
+    KApplication::disableAutoDcopRegistration();
 
-  KAboutData about("schema2kxform", 0, ki18n("Schema to KXForms Converter"),
-    "0.1", ki18n("Schema to KXForms Converter"),
-    KAboutData::License_GPL, ki18n("(C) 2006 Cornelius Schumacher"), KLocalizedString(), 0,
-    "schumacher@kde.org");
-  about.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
+    KAboutData about("schema2kxform", 0, ki18n("Schema to KXForms Converter"), "0.1",
+                     ki18n("Schema to KXForms Converter"), KAboutData::License_GPL,
+                     ki18n("(C) 2006 Cornelius Schumacher"), KLocalizedString(), 0,
+                     "schumacher@kde.org");
+    about.addAuthor(ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org");
 
-  KCmdLineArgs::init(argc, argv, &about);
+    KCmdLineArgs::init(argc, argv, &about);
 
-  KCmdLineOptions options;
-  options.add("ugh <file>", ki18n("UI Generation Hints"));
-  options.add("+schema", ki18n("Schema of XML file"));
-  KCmdLineArgs::addCmdLineOptions(options);
+    KCmdLineOptions options;
+    options.add("ugh <file>", ki18n("UI Generation Hints"));
+    options.add("+schema", ki18n("Schema of XML file"));
+    KCmdLineArgs::addCmdLineOptions(options);
 
-  KApplication app( false );
+    KApplication app(false);
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  if ( args->count() < 1 ) {
-    std::cerr << "Too few arguments." << std::endl;
-    return 1;
-  }
-  if ( args->count() > 1 ) {
-    std::cerr << "Too many arguments." << std::endl;
-    return 1;
-  }
-
-  QString schemaFilename = args->url( 0 ).path();
-
-  QFile schemaFile( schemaFilename );
-  if ( !schemaFile.open( QIODevice::ReadOnly ) ) {
-    kError() <<"Unable to open '" << schemaFilename <<"'";
-    return 1;
-  }
-
-  KXForms::Hints hints;
-
-  if ( args->isSet("ugh" ) ) {
-    QString ughFileName = args->getOption( "ugh" );
-    QFile ughFile( ughFileName );
-    if ( !ughFile.open( QIODevice::ReadOnly ) ) {
-      kError() <<"Unable to open '" << ughFileName;
-      return 1;
+    if (args->count() < 1) {
+        std::cerr << "Too few arguments." << std::endl;
+        return 1;
+    }
+    if (args->count() > 1) {
+        std::cerr << "Too many arguments." << std::endl;
+        return 1;
     }
 
-    hints.parseFile( ughFile );
+    QString schemaFilename = args->url(0).path();
 
-    foreach( KXForms::Hint h, hints.hints() ) {
-      kDebug() <<"Hint" << h.ref() << h.label();
+    QFile schemaFile(schemaFilename);
+    if (!schemaFile.open(QIODevice::ReadOnly)) {
+        kError() << "Unable to open '" << schemaFilename << "'";
+        return 1;
     }
-  }
 
-  ParserXsd parser;
-  Schema::Document schemaDocument = parser.parse( schemaFile );
+    KXForms::Hints hints;
 
-  KXForms::Hints schemaHints;
-  schemaHints.extractHints( schemaDocument );
+    if (args->isSet("ugh")) {
+        QString ughFileName = args->getOption("ugh");
+        QFile ughFile(ughFileName);
+        if (!ughFile.open(QIODevice::ReadOnly)) {
+            kError() << "Unable to open '" << ughFileName;
+            return 1;
+        }
 
-  KXForms::FormCreator creator;
-  creator.setHints( schemaHints );
-  creator.mergeHints( hints );
-  
-  QString form = creator.create( schemaDocument );
+        hints.parseFile(ughFile);
 
-  std::cout << form.toLocal8Bit().data();
+        foreach (KXForms::Hint h, hints.hints()) {
+            kDebug() << "Hint" << h.ref() << h.label();
+        }
+    }
+
+    ParserXsd parser;
+    Schema::Document schemaDocument = parser.parse(schemaFile);
+
+    KXForms::Hints schemaHints;
+    schemaHints.extractHints(schemaDocument);
+
+    KXForms::FormCreator creator;
+    creator.setHints(schemaHints);
+    creator.mergeHints(hints);
+
+    QString form = creator.create(schemaDocument);
+
+    std::cout << form.toLocal8Bit().data();
 }

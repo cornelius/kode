@@ -38,24 +38,24 @@ class Manager;
 
 class GlobalSettingsDialog : public KDialog
 {
-  Q_OBJECT
-  public:
-    GlobalSettingsDialog( Manager *manager, QWidget *parent );
+    Q_OBJECT
+public:
+    GlobalSettingsDialog(Manager *manager, QWidget *parent);
 
     Hints hints() { return mHints; }
 
-  protected:
+protected:
     virtual void accept();
 
-  private:
+private:
     void load();
 
-  private Q_SLOTS:
+private Q_SLOTS:
     void slotAddGroup();
     void slotEditGroup();
     void slotDeleteGroup();
 
-  private:
+private:
     GuiElement::Properties mDefaultProperties;
 
     Hints mHints;
@@ -71,9 +71,8 @@ class GlobalSettingsDialog : public KDialog
     QPushButton *mDeleteGroupButton;
     QSpinBox *mSizeThresholdSpin;
 
-    QMap< QString, QString > mGroups;
+    QMap<QString, QString> mGroups;
 };
-
 }
 
 #endif

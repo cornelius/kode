@@ -38,89 +38,77 @@ using namespace KXForms;
 
 class ListActionDialog : public KDialog
 {
-  public:
-    ListActionDialog( const QString &caption, QWidget *parent );
+public:
+    ListActionDialog(const QString &caption, QWidget *parent);
 
     bool showHeader();
-    void setShowHeader( bool a ) { mChkHeader->setChecked( a ); }
+    void setShowHeader(bool a) { mChkHeader->setChecked(a); }
     bool showFilter();
-    void setShowFilter( bool a ) { mChkFilter->setChecked( a ); }
+    void setShowFilter(bool a) { mChkFilter->setChecked(a); }
 
-  private:
+private:
     QCheckBox *mChkHeader;
     QCheckBox *mChkFilter;
 };
 
-ListActionDialog::ListActionDialog( const QString &caption, QWidget *parent )
-: KDialog( parent )
+ListActionDialog::ListActionDialog(const QString &caption, QWidget *parent) : KDialog(parent)
 {
-  setCaption( caption );
+    setCaption(caption);
 
-  setButtons( KDialog::Ok | KDialog::Cancel );
-  setDefaultButton( KDialog::Ok );
-  showButtonSeparator( true );
+    setButtons(KDialog::Ok | KDialog::Cancel);
+    setDefaultButton(KDialog::Ok);
+    showButtonSeparator(true);
 
-  QWidget *page = new QWidget(this);
-  setMainWidget(page);
+    QWidget *page = new QWidget(this);
+    setMainWidget(page);
 
-  QVBoxLayout *topLayout = new QVBoxLayout( page );	
-  topLayout->addSpacing( spacingHint() );
+    QVBoxLayout *topLayout = new QVBoxLayout(page);
+    topLayout->addSpacing(spacingHint());
 
-  mChkHeader = new QCheckBox( i18n("Show Headers"), page );
-  topLayout->addWidget( mChkHeader );
+    mChkHeader = new QCheckBox(i18n("Show Headers"), page);
+    topLayout->addWidget(mChkHeader);
 
-  mChkFilter = new QCheckBox( i18n("Show Filterline"), page );
-  topLayout->addWidget( mChkFilter );
+    mChkFilter = new QCheckBox(i18n("Show Filterline"), page);
+    topLayout->addWidget(mChkFilter);
 }
 
 bool ListActionDialog::showHeader()
 {
-  return mChkHeader->checkState() == Qt::Checked;
+    return mChkHeader->checkState() == Qt::Checked;
 }
 
 bool ListActionDialog::showFilter()
 {
-  return mChkFilter->checkState() == Qt::Checked;
+    return mChkFilter->checkState() == Qt::Checked;
 }
 
+ListAction::ListAction(Editor *e) : EditorAction(e) {}
 
+ListAction::~ListAction() {}
 
-
-
-
-
-ListAction::ListAction( Editor *e)
-: EditorAction( e )
+void ListAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-ListAction::~ListAction()
-{
-}
+    List::ListProperties prop;
+    if (List *l = dynamic_cast<List *>(e))
+        prop = l->listProperties();
 
-void ListAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    ListActionDialog *dlg = new ListActionDialog(i18n("Edit %1", e->ref().toString()), e->widget());
+    dlg->setShowHeader(prop.showHeader);
+    dlg->setShowFilter(prop.showFilter);
+    if (dlg->exec() == QDialog::Accepted) {
 
-  List::ListProperties prop;
-  if( List *l = dynamic_cast< List *>( e ) )
-    prop = l->listProperties();
+        Hint h;
+        h.setRef(e->id());
+        h.setValue(Hint::ListShowHeader, dlg->showHeader() ? "true" : "false");
+        h.setValue(Hint::ListShowSearch, dlg->showFilter() ? "true" : "false");
+        emit hintGenerated(h);
+    }
+    dlg->deleteLater();
 
-  ListActionDialog *dlg = new ListActionDialog( i18n("Edit %1", e->ref().toString()), e->widget() );
-  dlg->setShowHeader( prop.showHeader );
-  dlg->setShowFilter( prop.showFilter );
-  if( dlg->exec() == QDialog::Accepted ) {
-
-    Hint h;
-    h.setRef( e->id() );
-    h.setValue( Hint::ListShowHeader, dlg->showHeader() ? "true" : "false" );
-    h.setValue( Hint::ListShowSearch, dlg->showFilter() ? "true" : "false" );
-    emit hintGenerated( h );
-  }
-  dlg->deleteLater();
-
-  editor()->finishEdit();
+    editor()->finishEdit();
 }
 
 #include "listaction.moc"

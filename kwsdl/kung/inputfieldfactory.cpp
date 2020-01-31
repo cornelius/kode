@@ -40,84 +40,81 @@
 InputFieldFactory *InputFieldFactory::mSelf = 0;
 static K3StaticDeleter<InputFieldFactory> inputFieldFactoryDeleter;
 
-InputFieldFactory::InputFieldFactory()
+InputFieldFactory::InputFieldFactory() {}
+
+InputFieldFactory::~InputFieldFactory() {}
+
+void InputFieldFactory::setTypes(const XSD::Types &types)
 {
+    mTypes = types;
 }
 
-InputFieldFactory::~InputFieldFactory()
+InputField *InputFieldFactory::createField(const QString &name, const QString &typeName,
+                                           bool isList)
 {
-}
-
-void InputFieldFactory::setTypes( const XSD::Types &types )
-{
-  mTypes = types;
-}
-
-InputField *InputFieldFactory::createField( const QString &name, const QString &typeName, bool isList )
-{
-  XSD::SimpleType::List simpleTypes = mTypes.simpleTypes();
-  XSD::SimpleType::List::ConstIterator simpleIt;
-  for ( simpleIt = simpleTypes.constBegin(); simpleIt != simpleTypes.constEnd(); ++simpleIt ) {
-    if ( (*simpleIt).name() == typeName ) {
-      if ( isList )
-        return new ListInputField( name, typeName, 0 );
-      else
-        return new SimpleBaseInputField( name, &(*simpleIt) );
+    XSD::SimpleType::List simpleTypes = mTypes.simpleTypes();
+    XSD::SimpleType::List::ConstIterator simpleIt;
+    for (simpleIt = simpleTypes.constBegin(); simpleIt != simpleTypes.constEnd(); ++simpleIt) {
+        if ((*simpleIt).name() == typeName) {
+            if (isList)
+                return new ListInputField(name, typeName, 0);
+            else
+                return new SimpleBaseInputField(name, &(*simpleIt));
+        }
     }
-  }
 
-  XSD::ComplexType::List complexTypes = mTypes.complexTypes();
-  XSD::ComplexType::List::ConstIterator complexIt;
-  for ( complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt ) {
-    if ( (*complexIt).name() == typeName ) {
-      if ( isList )
-        return new ListInputField( name, typeName, 0 );
-      else
-        return new ComplexBaseInputField( name, &(*complexIt) );
+    XSD::ComplexType::List complexTypes = mTypes.complexTypes();
+    XSD::ComplexType::List::ConstIterator complexIt;
+    for (complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt) {
+        if ((*complexIt).name() == typeName) {
+            if (isList)
+                return new ListInputField(name, typeName, 0);
+            else
+                return new ComplexBaseInputField(name, &(*complexIt));
+        }
     }
-  }
 
-  return createBasicField( name, typeName, 0, isList );
+    return createBasicField(name, typeName, 0, isList);
 }
 
-InputField *InputFieldFactory::createBasicField( const QString &name, const QString &typeName,
-                                                 const XSD::SimpleType *type, bool isList )
+InputField *InputFieldFactory::createBasicField(const QString &name, const QString &typeName,
+                                                const XSD::SimpleType *type, bool isList)
 {
-  if ( isList )
-    return new ListInputField( name, typeName, 0 );
+    if (isList)
+        return new ListInputField(name, typeName, 0);
 
-  if ( typeName == "string" || typeName == "language" ) {
-    if ( type && type->facetType() & XSD::SimpleType::ENUM )
-      return new EnumInputField( name, type );
-    else
-      return new StringInputField( name, typeName, type );
-  } else if ( typeName == "int" || typeName == "unsignedInt" ||
-              typeName == "byte" || typeName == "unsignedByte" ||
-              typeName == "integer" || typeName == "positiveInteger" || typeName == "negativeInteger" ||
-              typeName == "nonNegativeInteger" || typeName == "nonPositiveInteger" ||
-              typeName == "long" || typeName == "unsignedLong" ||
-              typeName == "short" || typeName == "unsignedShort" ) {
-    return new IntegerInputField( name, typeName, type );
-  } else if ( typeName == "double" || typeName == "float" || typeName == "decimal" ) {
-    return new DoubleInputField( name, typeName, type );
-  } else if ( typeName == "boolean" ) {
-    return new BoolInputField( name, type );
-  } else if ( typeName == "date" ) {
-    return new DateInputField( name, type );
-  } else if ( typeName == "time" ) {
-    return new TimeInputField( name, type );
-  } else if ( typeName == "base64Binary" ) {
-    return new BinaryInputField( name, typeName, type );
-  } else {
-    qDebug( "InputFieldFactory: Unknown type %s", qPrintable( typeName ) );
-    return 0;
-  }
+    if (typeName == "string" || typeName == "language") {
+        if (type && type->facetType() & XSD::SimpleType::ENUM)
+            return new EnumInputField(name, type);
+        else
+            return new StringInputField(name, typeName, type);
+    } else if (typeName == "int" || typeName == "unsignedInt" || typeName == "byte"
+               || typeName == "unsignedByte" || typeName == "integer"
+               || typeName == "positiveInteger" || typeName == "negativeInteger"
+               || typeName == "nonNegativeInteger" || typeName == "nonPositiveInteger"
+               || typeName == "long" || typeName == "unsignedLong" || typeName == "short"
+               || typeName == "unsignedShort") {
+        return new IntegerInputField(name, typeName, type);
+    } else if (typeName == "double" || typeName == "float" || typeName == "decimal") {
+        return new DoubleInputField(name, typeName, type);
+    } else if (typeName == "boolean") {
+        return new BoolInputField(name, type);
+    } else if (typeName == "date") {
+        return new DateInputField(name, type);
+    } else if (typeName == "time") {
+        return new TimeInputField(name, type);
+    } else if (typeName == "base64Binary") {
+        return new BinaryInputField(name, typeName, type);
+    } else {
+        qDebug("InputFieldFactory: Unknown type %s", qPrintable(typeName));
+        return 0;
+    }
 }
 
-InputFieldFactory* InputFieldFactory::self()
+InputFieldFactory *InputFieldFactory::self()
 {
-  if ( !mSelf )
-    inputFieldFactoryDeleter.setObject( mSelf, new InputFieldFactory() );
+    if (!mSelf)
+        inputFieldFactoryDeleter.setObject(mSelf, new InputFieldFactory());
 
-  return mSelf;
+    return mSelf;
 }

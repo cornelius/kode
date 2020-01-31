@@ -28,8 +28,8 @@
 #include <common/qname.h>
 #include <schema/types.h>
 
-static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
-static const QString XMLSchemaInstanceURI( "http://www.w3.org/2001/XMLSchema-instance" );
+static const QString XMLSchemaURI("http://www.w3.org/2001/XMLSchema");
+static const QString XMLSchemaInstanceURI("http://www.w3.org/2001/XMLSchema-instance");
 
 class NSManager;
 
@@ -37,43 +37,42 @@ namespace KWSDL {
 
 class TypeMap
 {
-  public:
-
+public:
     TypeMap();
     ~TypeMap();
 
-    void setNSManager( NSManager *manager );
+    void setNSManager(NSManager *manager);
 
-    bool isBasicType( const QName &typeName ) const;
-    bool isBuiltinType( const QName &typeName ) const;
+    bool isBasicType(const QName &typeName) const;
+    bool isBuiltinType(const QName &typeName) const;
 
-    QString localType( const QName &typeName ) const;
-    QStringList headers( const QName &typeName ) const;
-    QStringList forwardDeclarations( const QName &typeName ) const;
-    QStringList headerIncludes( const QName &typeName ) const;
+    QString localType(const QName &typeName) const;
+    QStringList headers(const QName &typeName) const;
+    QStringList forwardDeclarations(const QName &typeName) const;
+    QStringList headerIncludes(const QName &typeName) const;
 
-    QString localTypeForElement( const QName &typeName ) const;
-    QStringList headersForElement( const QName &typeName ) const;
-    QStringList forwardDeclarationsForElement( const QName &typeName ) const;
+    QString localTypeForElement(const QName &typeName) const;
+    QStringList headersForElement(const QName &typeName) const;
+    QStringList forwardDeclarationsForElement(const QName &typeName) const;
 
-    QString localTypeForAttribute( const QName &typeName ) const;
-    QStringList headersForAttribute( const QName &typeName ) const;
-    QStringList forwardDeclarationsForAttribute( const QName &typeName ) const;
+    QString localTypeForAttribute(const QName &typeName) const;
+    QStringList headersForAttribute(const QName &typeName) const;
+    QStringList forwardDeclarationsForAttribute(const QName &typeName) const;
 
-    void addSchemaTypes( const XSD::Types &types );
+    void addSchemaTypes(const XSD::Types &types);
 
     /// Returns the type to use for an 'input' parameter,
     /// for instance "const QString&" for QString.
-    QString inputType( const QString& localType, bool isElement ) const;
+    QString inputType(const QString &localType, bool isElement) const;
 
     void dump() const;
 
-  private:
-    void addBuiltinType( const char* typeName, const char* localType );
+private:
+    void addBuiltinType(const char *typeName, const char *localType);
 
     class Entry
     {
-      public:
+    public:
         Entry() : basicType(false), builtinType(false) {}
         bool basicType;
         bool builtinType;
@@ -85,8 +84,8 @@ class TypeMap
         QStringList headerIncludes;
     };
 
-    QList<Entry>::ConstIterator typeEntry( const QName &typeName ) const;
-    QList<Entry>::ConstIterator elementEntry( const QName &typeName ) const;
+    QList<Entry>::ConstIterator typeEntry(const QName &typeName) const;
+    QList<Entry>::ConstIterator elementEntry(const QName &typeName) const;
 
     QList<Entry> mTypeMap;
     QList<Entry> mElementMap;
@@ -94,7 +93,6 @@ class TypeMap
 
     NSManager *mNSManager;
 };
-
 }
 
 #endif

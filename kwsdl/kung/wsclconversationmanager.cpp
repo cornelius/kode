@@ -21,30 +21,29 @@
 
 #include "wsclconversationmanager.h"
 
-WSCLConversationManager::WSCLConversationManager()
+WSCLConversationManager::WSCLConversationManager() {}
+
+WSCLConversationManager::WSCLConversationManager(const WSCL::Conversation &conversation)
+    : mConversation(conversation)
 {
 }
 
-WSCLConversationManager::WSCLConversationManager( const WSCL::Conversation &conversation )
-  : mConversation( conversation )
+void WSCLConversationManager::setConversation(const WSCL::Conversation &conversation)
 {
+    mConversation = conversation;
 }
 
-void WSCLConversationManager::setConversation( const WSCL::Conversation &conversation )
+QStringList WSCLConversationManager::nextActions(const QString &currentAction,
+                                                 const QString &condition)
 {
-  mConversation = conversation;
-}
-
-QStringList WSCLConversationManager::nextActions( const QString &currentAction, const QString &condition )
-{
-  const WSCL::Transition::List transitions = mConversation.transitions();
-  WSCL::Transition::List::ConstIterator it;
-  for ( it = transitions.constBegin(); it != transitions.constEnd(); ++it ) {
-    if ( (*it).sourceInteraction() == currentAction ) {
-      if ( (*it).sourceInteractionCondition() == condition )
-        return QStringList( (*it).destinationInteraction() );
+    const WSCL::Transition::List transitions = mConversation.transitions();
+    WSCL::Transition::List::ConstIterator it;
+    for (it = transitions.constBegin(); it != transitions.constEnd(); ++it) {
+        if ((*it).sourceInteraction() == currentAction) {
+            if ((*it).sourceInteractionCondition() == condition)
+                return QStringList((*it).destinationInteraction());
+        }
     }
-  }
 
-  return QStringList();
+    return QStringList();
 }

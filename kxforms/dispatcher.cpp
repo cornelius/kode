@@ -27,21 +27,20 @@ using namespace KXForms;
 
 Dispatcher::Dispatcher()
 {
-  connect( this, SIGNAL(valueChanged(QString,QString)),
-      SLOT(slotValueChanged(QString,QString)) );
+    connect(this, SIGNAL(valueChanged(QString, QString)), SLOT(slotValueChanged(QString, QString)));
 }
 
-void Dispatcher::registerElement( QObject *element )
+void Dispatcher::registerElement(QObject *element)
 {
-  connect( element, SIGNAL(valueChanged(QString,QString)),
-      SIGNAL(valueChanged(QString,QString)) );
-  connect( this, SIGNAL(valueChanged(QString,QString)),
-      element, SLOT(slotValueChanged(QString,QString)) );
+    connect(element, SIGNAL(valueChanged(QString, QString)),
+            SIGNAL(valueChanged(QString, QString)));
+    connect(this, SIGNAL(valueChanged(QString, QString)), element,
+            SLOT(slotValueChanged(QString, QString)));
 }
 
-void Dispatcher::slotValueChanged(const QString &ref, const QString &value )
+void Dispatcher::slotValueChanged(const QString &ref, const QString &value)
 {
-  kDebug() <<"Value changed:" << ref <<" ->" << value;
+    kDebug() << "Value changed:" << ref << " ->" << value;
 }
 
 #include "dispatcher.moc"

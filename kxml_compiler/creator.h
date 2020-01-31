@@ -41,29 +41,30 @@
 
 class Creator
 {
-  public:
-    class ClassFlags {
-      public:
-        ClassFlags( const Schema::Element &element );
-      
+public:
+    class ClassFlags
+    {
+    public:
+        ClassFlags(const Schema::Element &element);
+
         bool hasUpdatedTimestamp() const;
         bool hasId() const;
 
-      private:
+    private:
         bool m_hasUpdatedTimestamp;
         bool m_hasId;
     };
-  
+
     enum XmlParserType { XmlParserDom, XmlParserDomExternal };
 
-    Creator( const Schema::Document &document, XmlParserType p = XmlParserDom );
+    Creator(const Schema::Document &document, XmlParserType p = XmlParserDom);
 
-    void setVerbose( bool verbose );
+    void setVerbose(bool verbose);
 
-    void setUseKde( bool useKde );
+    void setUseKde(bool useKde);
     bool useKde() const;
 
-    void setCreateCrudFunctions( bool createCrud );
+    void setCreateCrudFunctions(bool createCrud);
 
     /**
      * @brief setCreateWriterFunctions
@@ -71,7 +72,7 @@ class Creator
      * generating codes.
      * @param createWriter
      */
-    void setCreateWriterFunctions( bool createWriter = true );
+    void setCreateWriterFunctions(bool createWriter = true);
 
     /**
      * @brief setCreateParserFunctions
@@ -79,45 +80,45 @@ class Creator
      * parsing codes.
      * @param createParser
      */
-    void setCreateParserFunctions( bool createParser = true );
+    void setCreateParserFunctions(bool createParser = true);
 
-    void setLicense( const KODE::License & );
+    void setLicense(const KODE::License &);
 
-    void setExportDeclaration( const QString &name );
+    void setExportDeclaration(const QString &name);
 
-    void setExternalClassPrefix( const QString & );
+    void setExternalClassPrefix(const QString &);
 
     bool externalParser() const;
     bool externalWriter() const;
 
     KODE::File &file();
-    void setFilename( const QString& baseName );
+    void setFilename(const QString &baseName);
 
-    void setParserClass( const KODE::Class & );
+    void setParserClass(const KODE::Class &);
     KODE::Class &parserClass();
 
     const Schema::Document &document() const;
 
     void create();
 
-    void createCrudFunctions( KODE::Class &c, const QString &type );
-    void createProperty( KODE::Class &c, const ClassDescription &,
-      const QString &type, const QString &name );
+    void createCrudFunctions(KODE::Class &c, const QString &type);
+    void createProperty(KODE::Class &c, const ClassDescription &, const QString &type,
+                        const QString &name);
 
-    ClassDescription createClassDescription( const Schema::Element &element );
-    void createClass( const Schema::Element &element );
+    ClassDescription createClassDescription(const Schema::Element &element);
+    void createClass(const Schema::Element &element);
 
-    void registerListTypedef( const QString &type );
+    void registerListTypedef(const QString &type);
 
     void createListTypedefs();
 
-    void createFileParser( const Schema::Element &element );
+    void createFileParser(const Schema::Element &element);
 
-    void setDtd( const QString &dtd );
+    void setDtd(const QString &dtd);
 
-    void createFileWriter( const Schema::Element &element );
+    void createFileWriter(const Schema::Element &element);
 
-    void printFiles( KODE::Printer & );
+    void printFiles(KODE::Printer &);
 
     QString errorStream() const;
     QString debugStream() const;
@@ -128,13 +129,13 @@ class Creator
 protected:
     void setExternalClassNames();
 
-    void createElementParser( KODE::Class &c, const Schema::Element &e );
+    void createElementParser(KODE::Class &c, const Schema::Element &e);
 
-    QString typeName( Schema::Node::Type );
+    QString typeName(Schema::Node::Type);
 
-  private:
+private:
     Schema::Document mDocument;
-  
+
     XmlParserType mXmlParserType;
     QString mExternalClassPrefix;
 
@@ -157,18 +158,17 @@ protected:
 
 class ParserCreator
 {
-  public:
-    ParserCreator( Creator * );
+public:
+    ParserCreator(Creator *);
     virtual ~ParserCreator();
-  
+
     Creator *creator() const;
 
-    virtual void createFileParser( const Schema::Element &element ) = 0;
-    virtual void createStringParser( const Schema::Element &element ) = 0;
-    virtual void createElementParser( KODE::Class &c,
-      const Schema::Element &e ) = 0;
-  
-  private:
+    virtual void createFileParser(const Schema::Element &element) = 0;
+    virtual void createStringParser(const Schema::Element &element) = 0;
+    virtual void createElementParser(KODE::Class &c, const Schema::Element &e) = 0;
+
+private:
     Creator *mCreator;
 };
 

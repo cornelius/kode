@@ -28,70 +28,71 @@
 
 void ParserXsdTest::initTestCase()
 {
-  RNG::ParserXsd parser;
-  QFile file("simple.xsd");
+    RNG::ParserXsd parser;
+    QFile file("simple.xsd");
 
-  if( !file.open( QIODevice::ReadOnly ) ) {
-    QFAIL( "The test file 'simple.xsd' could not be loaded" );
-    return;
-  }
+    if (!file.open(QIODevice::ReadOnly)) {
+        QFAIL("The test file 'simple.xsd' could not be loaded");
+        return;
+    }
 
-  mDoc = parser.parse( file.readAll() );
+    mDoc = parser.parse(file.readAll());
 }
 
 void ParserXsdTest::testElementParsing()
 {
-  QCOMPARE( mDoc.elements().size(), 10 );
+    QCOMPARE(mDoc.elements().size(), 10);
 
-  QCOMPARE( mDoc.usedElements().size(), 6 );
+    QCOMPARE(mDoc.usedElements().size(), 6);
 
-  QCOMPARE( mDoc.startElement().name(), QString("person") );
+    QCOMPARE(mDoc.startElement().name(), QString("person"));
 }
 
 void ParserXsdTest::testAttributeParsing()
 {
-  QCOMPARE( mDoc.attributes().size(), 2);
+    QCOMPARE(mDoc.attributes().size(), 2);
 
-  QCOMPARE( mDoc.attributes().first().name(), QString("id") );
+    QCOMPARE(mDoc.attributes().first().name(), QString("id"));
 }
 
 void ParserXsdTest::testTypeParsing()
 {
-  QCOMPARE( mDoc.startElement().type(), Schema::Node::ComplexType );
+    QCOMPARE(mDoc.startElement().type(), Schema::Node::ComplexType);
 
-  QCOMPARE( mDoc.element( "firstname" ).type(), Schema::Node::String );
+    QCOMPARE(mDoc.element("firstname").type(), Schema::Node::String);
 
-  QCOMPARE( mDoc.element( "age" ).type(), Schema::Node::ComplexType );
+    QCOMPARE(mDoc.element("age").type(), Schema::Node::ComplexType);
 
-  QCOMPARE( mDoc.element( "active" ).type(), Schema::Node::Boolean );
+    QCOMPARE(mDoc.element("active").type(), Schema::Node::Boolean);
 }
 
 void ParserXsdTest::testRelationParsing()
 {
-  QCOMPARE( mDoc.startElement().elementRelations().size(), 5 );
+    QCOMPARE(mDoc.startElement().elementRelations().size(), 5);
 
-  QCOMPARE( mDoc.startElement().attributeRelations().size(), 2 );
+    QCOMPARE(mDoc.startElement().attributeRelations().size(), 2);
 
-  QCOMPARE( mDoc.element( "beers" ).elementRelations().size(), 1 );
+    QCOMPARE(mDoc.element("beers").elementRelations().size(), 1);
 
-//   foreach( Schema::Relation e, doc.startElement().attributeRelations() ) {
-//     if( e.target() == QString("id") )
-//       QCOMPARE( e.isRequired(), true );
-//     else if( e.target() == QString("cc") )
-//       QCOMPARE( e.isRequired(), false );
-  //   }
+    //   foreach( Schema::Relation e, doc.startElement().attributeRelations() ) {
+    //     if( e.target() == QString("id") )
+    //       QCOMPARE( e.isRequired(), true );
+    //     else if( e.target() == QString("cc") )
+    //       QCOMPARE( e.isRequired(), false );
+    //   }
 }
 
 void ParserXsdTest::testSequenceOccurenceParsing()
 {
-  QCOMPARE( mDoc.element("beers").elementRelations().first().minOccurs(), 1 );
-  QCOMPARE( mDoc.element("beers").elementRelations().first().maxOccurs(), (int)Schema::Relation::Unbounded );
+    QCOMPARE(mDoc.element("beers").elementRelations().first().minOccurs(), 1);
+    QCOMPARE(mDoc.element("beers").elementRelations().first().maxOccurs(),
+             (int)Schema::Relation::Unbounded);
 }
 
 void ParserXsdTest::testSequenceElementOccurenceParsing()
 {
-  QCOMPARE( mDoc.element("wines").elementRelations().first().minOccurs(), 1 );
-  QCOMPARE( mDoc.element("wines").elementRelations().first().maxOccurs(), 2 );
+    QCOMPARE(mDoc.element("wines").elementRelations().first().minOccurs(), 1);
+    QCOMPARE(mDoc.element("wines").elementRelations().first().maxOccurs(), 2);
 }
 
 QTEST_MAIN(ParserXsdTest)

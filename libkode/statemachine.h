@@ -35,7 +35,7 @@ namespace KODE {
  */
 class KODE_EXPORT StateMachine
 {
-  public:
+public:
     /**
      * Creates a new state machine.
      */
@@ -44,7 +44,7 @@ class KODE_EXPORT StateMachine
     /**
      * Creates a new state machine from @param other.
      */
-    StateMachine( const StateMachine &other );
+    StateMachine(const StateMachine &other);
 
     /**
      * Destroys the state machine.
@@ -54,18 +54,18 @@ class KODE_EXPORT StateMachine
     /**
      * Assignment operator.
      */
-    StateMachine& operator=( const StateMachine &other );
+    StateMachine &operator=(const StateMachine &other);
 
     /**
      * Sets the @param code for a special @param state.
      */
-    void setState( const QString &state, const Code &code );
+    void setState(const QString &state, const Code &code);
 
     /**
      * Sets the initial @param state, which is used when the
      * machine is started.
      */
-    void setInitialState( const QString &state );
+    void setInitialState(const QString &state);
 
     /**
      * Returns the code for the state definitions.
@@ -77,11 +77,10 @@ class KODE_EXPORT StateMachine
      */
     Code transitionLogic() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

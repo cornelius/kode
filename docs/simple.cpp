@@ -28,166 +28,169 @@
 #include <QtCore/QtDebug>
 #include <QtCore/QFile>
 
-QString indent( int n = 0 )
+QString indent(int n = 0)
 {
-  static int i = 0;
-  i += n;
-  QString space;
-  return space.fill( ' ', i );
+    static int i = 0;
+    i += n;
+    QString space;
+    return space.fill(' ', i);
 }
 
-void Food::setName( const QString &v )
+void Food::setName(const QString &v)
 {
-  mName = v;
+    mName = v;
 }
 
 QString Food::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Food::setTaste( const QString &v )
+void Food::setTaste(const QString &v)
 {
-  mTaste = v;
+    mTaste = v;
 }
 
 QString Food::taste() const
 {
-  return mTaste;
+    return mTaste;
 }
 
-Food Food::parseElement( const QDomElement &element, bool *ok )
+Food Food::parseElement(const QDomElement &element, bool *ok)
 {
-  if ( element.tagName() != "food" ) {
-    qCritical() << "Expected 'food', got '" <<element.tagName() << "'.";
-    if ( ok ) *ok = false;
-    return Food();
-  }
-
-  Food result = Food();
-
-  QDomNode n;
-  for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if ( e.tagName() == "name" ) {
-      result.setName( e.text() );
+    if (element.tagName() != "food") {
+        qCritical() << "Expected 'food', got '" << element.tagName() << "'.";
+        if (ok)
+            *ok = false;
+        return Food();
     }
-    else if ( e.tagName() == "taste" ) {
-      result.setTaste( e.text() );
+
+    Food result = Food();
+
+    QDomNode n;
+    for (n = element.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        if (e.tagName() == "name") {
+            result.setName(e.text());
+        } else if (e.tagName() == "taste") {
+            result.setTaste(e.text());
+        }
     }
-  }
 
-
-  if ( ok ) *ok = true;
-  return result;
+    if (ok)
+        *ok = true;
+    return result;
 }
 
 QString Food::writeElement()
 {
-  QString xml;
-  xml += indent() + "<food>\n";
-  indent( 2 );
-  xml += indent() + "<name>" + name() + "</name>\n";
-  xml += indent() + "<taste>" + taste() + "</taste>\n";
-  indent( -2 );
-  xml += indent() + "</food>\n";
-  return xml;
+    QString xml;
+    xml += indent() + "<food>\n";
+    indent(2);
+    xml += indent() + "<name>" + name() + "</name>\n";
+    xml += indent() + "<taste>" + taste() + "</taste>\n";
+    indent(-2);
+    xml += indent() + "</food>\n";
+    return xml;
 }
 
-
-void Simple::addFood( const Food &v )
+void Simple::addFood(const Food &v)
 {
-  mFoodList.append( v );
+    mFoodList.append(v);
 }
 
-void Simple::setFoodList( const Food::List &v )
+void Simple::setFoodList(const Food::List &v)
 {
-  mFoodList = v;
+    mFoodList = v;
 }
 
 Food::List Simple::foodList() const
 {
-  return mFoodList;
+    return mFoodList;
 }
 
-Simple Simple::parseElement( const QDomElement &element, bool *ok )
+Simple Simple::parseElement(const QDomElement &element, bool *ok)
 {
-  if ( element.tagName() != "simple" ) {
-    qCritical() << "Expected 'simple', got '" <<element.tagName() << "'.";
-    if ( ok ) *ok = false;
-    return Simple();
-  }
-
-  Simple result = Simple();
-
-  QDomNode n;
-  for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if ( e.tagName() == "food" ) {
-      bool ok;
-      Food o = Food::parseElement( e, &ok );
-      if ( ok ) result.addFood( o );
+    if (element.tagName() != "simple") {
+        qCritical() << "Expected 'simple', got '" << element.tagName() << "'.";
+        if (ok)
+            *ok = false;
+        return Simple();
     }
-  }
 
+    Simple result = Simple();
 
-  if ( ok ) *ok = true;
-  return result;
+    QDomNode n;
+    for (n = element.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        if (e.tagName() == "food") {
+            bool ok;
+            Food o = Food::parseElement(e, &ok);
+            if (ok)
+                result.addFood(o);
+        }
+    }
+
+    if (ok)
+        *ok = true;
+    return result;
 }
 
 QString Simple::writeElement()
 {
-  QString xml;
-  xml += indent() + "<simple>\n";
-  indent( 2 );
-  foreach( Food e, foodList() ) {
-    xml += e.writeElement();
-  }
-  indent( -2 );
-  xml += indent() + "</simple>\n";
-  return xml;
+    QString xml;
+    xml += indent() + "<simple>\n";
+    indent(2);
+    foreach (Food e, foodList()) {
+        xml += e.writeElement();
+    }
+    indent(-2);
+    xml += indent() + "</simple>\n";
+    return xml;
 }
 
-Simple Simple::parseFile( const QString &filename, bool *ok )
+Simple Simple::parseFile(const QString &filename, bool *ok)
 {
-  QFile file( filename );
-  if ( !file.open( QIODevice::ReadOnly ) ) {
-    qCritical() << "Unable to open file '" << filename << "'";
-    if ( ok ) *ok = false;
-    return Simple();
-  }
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qCritical() << "Unable to open file '" << filename << "'";
+        if (ok)
+            *ok = false;
+        return Simple();
+    }
 
-  QString errorMsg;
-  int errorLine, errorCol;
-  QDomDocument doc;
-  if ( !doc.setContent( &file, false, &errorMsg, &errorLine, &errorCol ) ) {
-    qCritical() << errorMsg << " at " << errorLine << "," << errorCol;
-    if ( ok ) *ok = false;
-    return Simple();
-  }
+    QString errorMsg;
+    int errorLine, errorCol;
+    QDomDocument doc;
+    if (!doc.setContent(&file, false, &errorMsg, &errorLine, &errorCol)) {
+        qCritical() << errorMsg << " at " << errorLine << "," << errorCol;
+        if (ok)
+            *ok = false;
+        return Simple();
+    }
 
-  qDebug() << "CONTENT:" << doc.toString();
+    qDebug() << "CONTENT:" << doc.toString();
 
-  bool documentOk;
-  Simple c = parseElement( doc.documentElement(), &documentOk );
-  if ( ok ) {
-    *ok = documentOk;
-  }
-  return c;
+    bool documentOk;
+    Simple c = parseElement(doc.documentElement(), &documentOk);
+    if (ok) {
+        *ok = documentOk;
+    }
+    return c;
 }
 
-bool Simple::writeFile( const QString &filename )
+bool Simple::writeFile(const QString &filename)
 {
-  QFile file( filename );
-  if ( !file.open( QIODevice::WriteOnly ) ) {
-    qCritical() << "Unable to open file '" << filename << "'";
-    return false;
-  }
+    QFile file(filename);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qCritical() << "Unable to open file '" << filename << "'";
+        return false;
+    }
 
-  QTextStream ts( &file );
-  ts << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-  ts << writeElement();
-  file.close();
+    QTextStream ts(&file);
+    ts << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    ts << writeElement();
+    file.close();
 
-  return true;
+    return true;
 }

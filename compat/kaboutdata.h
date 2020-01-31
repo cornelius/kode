@@ -23,38 +23,29 @@
 
 class KAboutData
 {
-  public:
-
-    enum LicenseKey
-    {
-      License_Custom = -2,
-      License_File = -1,
-      License_Unknown = 0,
-      License_GPL  = 1,
-      License_GPL_V2 = 1,
-      License_LGPL = 2,
-      License_LGPL_V2 = 2,
-      License_BSD  = 3,
-      License_Artistic = 4,
-      License_QPL = 5,
-      License_QPL_V1_0 = 5
+public:
+    enum LicenseKey {
+        License_Custom = -2,
+        License_File = -1,
+        License_Unknown = 0,
+        License_GPL = 1,
+        License_GPL_V2 = 1,
+        License_LGPL = 2,
+        License_LGPL_V2 = 2,
+        License_BSD = 3,
+        License_Artistic = 4,
+        License_QPL = 5,
+        License_QPL_V1_0 = 5
     };
 
-    KAboutData( const char *appName,
-                const char *programName,
-		const char *version,
-		const char *shortDescription = 0,
-		enum LicenseKey licenseType = License_Unknown,
-		const char *copyrightStatement = 0,
-		const char *text = 0,
-		const char *homePageAddress = 0,
-		const char *bugsEmailAddress = "submit@bugs.kde.org"
-		);
+    KAboutData(const char *appName, const char *programName, const char *version,
+               const char *shortDescription = 0, enum LicenseKey licenseType = License_Unknown,
+               const char *copyrightStatement = 0, const char *text = 0,
+               const char *homePageAddress = 0,
+               const char *bugsEmailAddress = "submit@bugs.kde.org");
 
-    void addAuthor( const char *name,
-		    const char *task=0,
-		    const char *emailAddress=0,
-		    const char *webAddress=0 );
+    void addAuthor(const char *name, const char *task = 0, const char *emailAddress = 0,
+                   const char *webAddress = 0);
 };
 
 #endif

@@ -27,40 +27,35 @@
 
 class Settings
 {
-  public:
+public:
     typedef QMap<QString, QString> NSMapping;
 
-    enum Transport
-    {
-      QtTransport,
-      KDETransport,
-      CustomTransport
-    };
+    enum Transport { QtTransport, KDETransport, CustomTransport };
 
     ~Settings();
 
-    static Settings* self();
+    static Settings *self();
 
-    bool load( const QString &fileName );
+    bool load(const QString &fileName);
 
-    void setWsdlUrl( const QString &wsdlUrl );
+    void setWsdlUrl(const QString &wsdlUrl);
     QString wsdlUrl() const;
     QString wsdlBaseUrl() const;
     QString wsdlFileName() const;
 
-    void setOutputFileName( const QString &outputFileName );
+    void setOutputFileName(const QString &outputFileName);
     QString outputFileName() const;
 
-    void setOutputDirectory( const QString &outputDirectory );
+    void setOutputDirectory(const QString &outputDirectory);
     QString outputDirectory() const;
 
-    void setNamespaceMapping( const NSMapping &namespaceMapping );
+    void setNamespaceMapping(const NSMapping &namespaceMapping);
     NSMapping namespaceMapping() const;
 
-    void setTransport( Transport transport );
+    void setTransport(Transport transport);
     Transport transport() const;
 
-  private:
+private:
     Settings();
 
     static Settings *mSelf;

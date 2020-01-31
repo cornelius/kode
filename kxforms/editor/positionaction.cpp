@@ -32,57 +32,58 @@
 
 using namespace KXForms;
 
-PositionAction::PositionAction( Editor *e)
-: EditorAction( e )
+PositionAction::PositionAction(Editor *e) : EditorAction(e) {}
+
+PositionAction::~PositionAction() {}
+
+void PositionAction::perform(GuiElement *e)
 {
+    kDebug();
+    editor()->beginEdit();
+
+    KMessageBox::information(e->widget(),
+                             i18n("Select the new neighbour of %1", e->ref().toString()),
+                             i18n("New Neighbour"));
+    GuiElement *chosenElement = editor()->selectWidget(Editor::SelectSameGroupOnly);
+
+    if (!chosenElement) {
+        editor()->finishEdit();
+        return;
+    }
+    kDebug() << "Chosen element:" << chosenElement->ref().toString();
+
+    perform(e, chosenElement);
 }
 
-PositionAction::~PositionAction()
+void PositionAction::perform(GuiElement *e, GuiElement *target)
 {
-}
 
-void PositionAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    QString position;
+    QStringList list;
+    bool ok;
+    list << "above"
+         << "rightOf"
+         << "below"
+         << "leftOf";
+    position = KInputDialog::getItem(i18n("Select the relative Position"),
+                                     i18n("Relative Position of %1:", e->ref().toString()), list, 0,
+                                     false, &ok);
 
-  KMessageBox::information( e->widget(), i18n("Select the new neighbour of %1", e->ref().toString()), i18n("New Neighbour" ) );
-  GuiElement *chosenElement = editor()->selectWidget( Editor::SelectSameGroupOnly );
+    if (!ok) {
+        editor()->finishEdit();
+        return;
+    }
 
-  if( !chosenElement ) {
+    Hint h;
+    h.setRef(e->id());
+    QDomDocument doc;
+    QDomElement elem = doc.createElement(position);
+    QDomNode child = doc.createTextNode(target->ref().toString());
+    elem.appendChild(child);
+    h.addElement(Hint::Position, elem);
+    emit hintGenerated(h);
+
     editor()->finishEdit();
-    return;
-  }
-  kDebug() <<"Chosen element:" << chosenElement->ref().toString();
-
-  perform( e, chosenElement );
-}
-
-void PositionAction::perform( GuiElement *e, GuiElement *target )
-{
-
-  QString position;
-  QStringList list;
-  bool ok;
-  list << "above" << "rightOf" << "below" << "leftOf";
-  position = KInputDialog::getItem( i18n("Select the relative Position"), i18n("Relative Position of %1:", e->ref().toString()),
-      list, 0, false, &ok );
-
-  if( !ok ) {
-    editor()->finishEdit();
-    return;
-  }
-
-  Hint h;
-  h.setRef( e->id() );
-  QDomDocument doc;
-  QDomElement elem = doc.createElement( position );
-  QDomNode child = doc.createTextNode( target->ref().toString() );
-  elem.appendChild( child );
-  h.addElement( Hint::Position, elem );
-  emit hintGenerated( h );
-
-  editor()->finishEdit();
 }
 
 #include "positionaction.moc"

@@ -23,148 +23,152 @@
 
 using namespace KWSDL;
 
-void Converter::convertElement( const XSD::Element *element )
+void Converter::convertElement(const XSD::Element *element)
 {
-  const QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
-  KODE::Class newClass( className );
+    const QString className(
+            mTypeMap.localTypeForElement(QName(element->nameSpace(), element->name())));
+    KODE::Class newClass(className);
 
-  newClass.addInclude( QString(), "Serializer" );
+    newClass.addInclude(QString(), "Serializer");
 
-  if ( mTypeMap.isBuiltinType( element->type() ) ) {
-    QString typeName = mTypeMap.localType( element->type() );
+    if (mTypeMap.isBuiltinType(element->type())) {
+        QString typeName = mTypeMap.localType(element->type());
 
-    KODE::Code ctorCode;
-    KODE::Code dtorCode;
+        KODE::Code ctorCode;
+        KODE::Code dtorCode;
 
-    // member variables
-    KODE::MemberVariable variable( "value", typeName + '*' );
-    newClass.addMemberVariable( variable );
+        // member variables
+        KODE::MemberVariable variable("value", typeName + '*');
+        newClass.addMemberVariable(variable);
 
-    ctorCode += variable.name() + " = 0;";
-    dtorCode += "delete " + variable.name() + "; " + variable.name() + " = 0;";
+        ctorCode += variable.name() + " = 0;";
+        dtorCode += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
-    // setter method
-    KODE::Function setter( "setValue", "void" );
-    setter.addArgument( typeName + " *value" );
-    KODE::Code setterBody;
-    setterBody += variable.name() + " = value;";
-    setter.setBody( setterBody );
+        // setter method
+        KODE::Function setter("setValue", "void");
+        setter.addArgument(typeName + " *value");
+        KODE::Code setterBody;
+        setterBody += variable.name() + " = value;";
+        setter.setBody(setterBody);
 
-    // getter method
-    KODE::Function getter( "value", typeName + '*' );
-    getter.setBody( "return " + variable.name() + ';' );
-    getter.setConst( true );
+        // getter method
+        KODE::Function getter("value", typeName + '*');
+        getter.setBody("return " + variable.name() + ';');
+        getter.setConst(true);
 
-    // convenience constructor
-    KODE::Function conctor( upperlize( newClass.name() ) );
-    conctor.addArgument( typeName + " *value" );
-    KODE::Code code;
-    code += variable.name() + " = value;";
-    conctor.setBody( code );
+        // convenience constructor
+        KODE::Function conctor(upperlize(newClass.name()));
+        conctor.addArgument(typeName + " *value");
+        KODE::Code code;
+        code += variable.name() + " = value;";
+        conctor.setBody(code);
 
-    if ( typeName == "QString" ) {
-      KODE::Function charctor( upperlize( newClass.name() ) );
-      charctor.addArgument( "const char *charValue" );
-      KODE::Code code;
-      code += variable.name() + " = new QString( charValue );";
-      charctor.setBody( code );
+        if (typeName == "QString") {
+            KODE::Function charctor(upperlize(newClass.name()));
+            charctor.addArgument("const char *charValue");
+            KODE::Code code;
+            code += variable.name() + " = new QString( charValue );";
+            charctor.setBody(code);
 
-      newClass.addFunction( charctor );
+            newClass.addFunction(charctor);
+        }
+
+        // type operator
+        KODE::Function op("operator const " + typeName + '*');
+        op.setBody("return " + variable.name() + ';');
+        op.setConst(true);
+
+        KODE::Function ctor(className);
+        ctor.setBody(ctorCode);
+        KODE::Function dtor('~' + className);
+        dtor.setBody(dtorCode);
+
+        newClass.addFunction(ctor);
+        newClass.addFunction(dtor);
+        newClass.addFunction(conctor);
+        newClass.addFunction(op);
+        newClass.addFunction(setter);
+        newClass.addFunction(getter);
+    } else {
+        // we inherit from the anonymous type, so we can provide the same
+        // interface as the anonymous type
+        QString anonName = mTypeMap.localType(element->type());
+        newClass.addBaseClass(KODE::Class(anonName));
     }
 
-    // type operator
-    KODE::Function op( "operator const " + typeName + '*' );
-    op.setBody( "return " + variable.name() + ';' );
-    op.setConst( true );
+    if (!element->documentation().isEmpty())
+        newClass.setDocs(element->documentation().simplified());
 
-    KODE::Function ctor( className );
-    ctor.setBody( ctorCode );
-    KODE::Function dtor( '~' + className );
-    dtor.setBody( dtorCode );
+    mClasses.append(newClass);
 
-    newClass.addFunction( ctor );
-    newClass.addFunction( dtor );
-    newClass.addFunction( conctor );
-    newClass.addFunction( op );
-    newClass.addFunction( setter );
-    newClass.addFunction( getter );
-  } else {
-    // we inherit from the anonymous type, so we can provide the same
-    // interface as the anonymous type
-    QString anonName = mTypeMap.localType( element->type() );
-    newClass.addBaseClass( KODE::Class( anonName ) );
-  }
-
-  if ( !element->documentation().isEmpty() )
-    newClass.setDocs( element->documentation().simplified() );
-
-  mClasses.append( newClass );
-
-  createElementSerializer( element );
+    createElementSerializer(element);
 }
 
-void Converter::createElementSerializer( const XSD::Element *element )
+void Converter::createElementSerializer(const XSD::Element *element)
 {
-  QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
+    QString className(mTypeMap.localTypeForElement(QName(element->nameSpace(), element->name())));
 
-  // include header
-  mSerializer.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( element->qualifiedName() ) );
+    // include header
+    mSerializer.addIncludes(QStringList(),
+                            mTypeMap.forwardDeclarationsForElement(element->qualifiedName()));
 
-  KODE::Function marshal( "marshal", "void" );
-  marshal.setStatic( true );
-  marshal.addArgument( "QDomDocument &doc" );
-  marshal.addArgument( "QDomElement &parent" );
-  marshal.addArgument( "const QString &name" );
-  marshal.addArgument( "const " + className + " *value" );
-  marshal.addArgument( "bool noNamespace" );
+    KODE::Function marshal("marshal", "void");
+    marshal.setStatic(true);
+    marshal.addArgument("QDomDocument &doc");
+    marshal.addArgument("QDomElement &parent");
+    marshal.addArgument("const QString &name");
+    marshal.addArgument("const " + className + " *value");
+    marshal.addArgument("bool noNamespace");
 
-  KODE::Function demarshal( "demarshal", "void" );
-  demarshal.setStatic( true );
-  demarshal.addArgument( "const QDomElement &parent" );
-  demarshal.addArgument( className + " *value" );
+    KODE::Function demarshal("demarshal", "void");
+    demarshal.setStatic(true);
+    demarshal.addArgument("const QDomElement &parent");
+    demarshal.addArgument(className + " *value");
 
-  KODE::Code marshalCode, demarshalCode, code;
+    KODE::Code marshalCode, demarshalCode, code;
 
-  marshalCode += "if ( !value )";
-  marshalCode.indent();
-  marshalCode += "return;";
-  marshalCode.unindent();
-  marshalCode.newLine();
-
-  demarshalCode += "if ( !value )";
-  demarshalCode.indent();
-  demarshalCode += "return;";
-  demarshalCode.unindent();
-  demarshalCode.newLine();
-
-  QString typeName = mTypeMap.localType( element->type() );
-  if ( mTypeMap.isBuiltinType( element->type() ) ) {
-    marshalCode += "QDomElement element = doc.createElement( name );";
-    marshalCode += "parent.appendChild( element );";
+    marshalCode += "if ( !value )";
+    marshalCode.indent();
+    marshalCode += "return;";
+    marshalCode.unindent();
     marshalCode.newLine();
-    marshalCode += "element.appendChild( doc.createTextNode( Serializer::marshalValue( value->value() ) ) );";
 
-    demarshalCode += "const QString text = parent.text();";
-    demarshalCode.newLine();
-    demarshalCode += "if ( !text.isEmpty() ) {";
+    demarshalCode += "if ( !value )";
     demarshalCode.indent();
-    demarshalCode += typeName + " *data = new " + typeName + "();";
-    demarshalCode += "Serializer::demarshalValue( text, data );";
-    demarshalCode += "value->setValue( data );";
+    demarshalCode += "return;";
     demarshalCode.unindent();
-    demarshalCode += '}';
-  } else {
-    marshalCode += "QDomElement element = doc.createElement( name );";
-    marshalCode += "parent.appendChild( element );";
-    marshalCode.newLine();
-    marshalCode += "Serializer::marshal( doc, element, QString(), (" + typeName + "*)value, noNamespace );";
+    demarshalCode.newLine();
 
-    demarshalCode += "Serializer::demarshal( parent, (" + typeName + "*)value );";
-  }
+    QString typeName = mTypeMap.localType(element->type());
+    if (mTypeMap.isBuiltinType(element->type())) {
+        marshalCode += "QDomElement element = doc.createElement( name );";
+        marshalCode += "parent.appendChild( element );";
+        marshalCode.newLine();
+        marshalCode += "element.appendChild( doc.createTextNode( Serializer::marshalValue( "
+                       "value->value() ) ) );";
 
-  marshal.setBody( marshalCode );
-  demarshal.setBody( demarshalCode );
+        demarshalCode += "const QString text = parent.text();";
+        demarshalCode.newLine();
+        demarshalCode += "if ( !text.isEmpty() ) {";
+        demarshalCode.indent();
+        demarshalCode += typeName + " *data = new " + typeName + "();";
+        demarshalCode += "Serializer::demarshalValue( text, data );";
+        demarshalCode += "value->setValue( data );";
+        demarshalCode.unindent();
+        demarshalCode += '}';
+    } else {
+        marshalCode += "QDomElement element = doc.createElement( name );";
+        marshalCode += "parent.appendChild( element );";
+        marshalCode.newLine();
+        marshalCode += "Serializer::marshal( doc, element, QString(), (" + typeName
+                + "*)value, noNamespace );";
 
-  mSerializer.addFunction( marshal );
-  mSerializer.addFunction( demarshal );
+        demarshalCode += "Serializer::demarshal( parent, (" + typeName + "*)value );";
+    }
+
+    marshal.setBody(marshalCode);
+    demarshal.setBody(demarshalCode);
+
+    mSerializer.addFunction(marshal);
+    mSerializer.addFunction(demarshal);
 }

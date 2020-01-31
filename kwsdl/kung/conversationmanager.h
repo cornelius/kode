@@ -26,13 +26,14 @@
 
 class ConversationManager
 {
-  public:
-	virtual ~ConversationManager() {}
+public:
+    virtual ~ConversationManager() {}
     /**
       Returns a list of all actions which can be called after the
       current action with a special condition.
      */
-    virtual QStringList nextActions( const QString &currentAction, const QString &condition = QString() ) = 0;
+    virtual QStringList nextActions(const QString &currentAction,
+                                    const QString &condition = QString()) = 0;
 };
 
 #endif

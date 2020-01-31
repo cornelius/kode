@@ -26,62 +26,55 @@
 
 using namespace KWSDL;
 
-Import::Import()
-{
-}
+Import::Import() {}
 
-Import::Import( const QString &nameSpace )
-  : Element( nameSpace )
-{
-}
+Import::Import(const QString &nameSpace) : Element(nameSpace) {}
 
-Import::~Import()
-{
-}
+Import::~Import() {}
 
-void Import::setImportNamespace( const QString &nameSpace )
+void Import::setImportNamespace(const QString &nameSpace)
 {
-  mImportNamespace = nameSpace;
+    mImportNamespace = nameSpace;
 }
 
 QString Import::importNamespace() const
 {
-  return mImportNamespace;
+    return mImportNamespace;
 }
 
-void Import::setLocation( const QUrl &location )
+void Import::setLocation(const QUrl &location)
 {
-  mLocation = location;
+    mLocation = location;
 }
 
 QUrl Import::location() const
 {
-  return mLocation;
+    return mLocation;
 }
 
-void Import::loadXML( ParserContext *context, const QDomElement &element )
+void Import::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mImportNamespace = element.attribute( "namespace" );
-  if ( mImportNamespace.isEmpty() )
-    context->messageHandler()->warning( "Import: 'namespace' required" );
+    mImportNamespace = element.attribute("namespace");
+    if (mImportNamespace.isEmpty())
+        context->messageHandler()->warning("Import: 'namespace' required");
 
-  mLocation = element.attribute( "schemaLocation" );
-  if ( !mLocation.isValid() )
-    context->messageHandler()->warning( "Import: 'schemaLocation' required" );
+    mLocation = element.attribute("schemaLocation");
+    if (!mLocation.isValid())
+        context->messageHandler()->warning("Import: 'schemaLocation' required");
 }
 
-void Import::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void Import::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  QDomElement element = document.createElement( "import" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("import");
+    parent.appendChild(element);
 
-  if ( mImportNamespace.isEmpty() )
-    element.setAttribute( "namespace", mImportNamespace );
-  else
-    context->messageHandler()->warning( "Import: 'namespace' required" );
+    if (mImportNamespace.isEmpty())
+        element.setAttribute("namespace", mImportNamespace);
+    else
+        context->messageHandler()->warning("Import: 'namespace' required");
 
-  if ( mLocation.isValid() )
-    element.setAttribute( "schemaLocation", mLocation.toString() );
-  else
-    context->messageHandler()->warning( "Import: 'schemaLocation' required" );
+    if (mLocation.isValid())
+        element.setAttribute("schemaLocation", mLocation.toString());
+    else
+        context->messageHandler()->warning("Import: 'schemaLocation' required");
 }

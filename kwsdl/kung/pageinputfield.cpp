@@ -27,84 +27,85 @@
 
 #include "pageinputfield.h"
 
-PageInputField::PageInputField( const QString &name, const KWSDL::Message &message )
- : InputField( name ),
-   mMessage( message )
+PageInputField::PageInputField(const QString &name, const KWSDL::Message &message)
+    : InputField(name), mMessage(message)
 {
-  const KWSDL::Part::List parts = message.parts();
-  KWSDL::Part::List::ConstIterator it;
-  for ( it = parts.constBegin(); it != parts.constEnd(); ++it ) {
-    InputField *field = InputFieldFactory::self()->createField( (*it).name(), (*it).type().qname() );
-    if ( !field ) {
-      qDebug( "PageInputField: Unable to create input field for %s (%s)", qPrintable( (*it).name() ), qPrintable( (*it).type().qname() ) );
-    } else {
-      appendChild( field );
+    const KWSDL::Part::List parts = message.parts();
+    KWSDL::Part::List::ConstIterator it;
+    for (it = parts.constBegin(); it != parts.constEnd(); ++it) {
+        InputField *field =
+                InputFieldFactory::self()->createField((*it).name(), (*it).type().qname());
+        if (!field) {
+            qDebug("PageInputField: Unable to create input field for %s (%s)",
+                   qPrintable((*it).name()), qPrintable((*it).type().qname()));
+        } else {
+            appendChild(field);
+        }
     }
-  }
 }
 
-void PageInputField::setXMLData( const QDomElement &element )
+void PageInputField::setXMLData(const QDomElement &element)
 {
-  if ( mName != element.tagName() ) {
-    qDebug( "PageInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
-    return;
-  }
-
-  QDomNode node = element.firstChild();
-  while ( !node.isNull() ) {
-    QDomElement child = node.toElement();
-    if ( !child.isNull() ) {
-      InputField *field = childField( child.tagName() );
-      if ( !field ) {
-        qDebug( "PageInputField: Child field %s does not exists", qPrintable( child.tagName() ) );
-      } else {
-        field->setXMLData( child );
-      }
+    if (mName != element.tagName()) {
+        qDebug("PageInputField: Wrong dom element passed: expected %s, got %s", qPrintable(mName),
+               qPrintable(element.tagName()));
+        return;
     }
 
-    node = node.nextSibling();
-  }
+    QDomNode node = element.firstChild();
+    while (!node.isNull()) {
+        QDomElement child = node.toElement();
+        if (!child.isNull()) {
+            InputField *field = childField(child.tagName());
+            if (!field) {
+                qDebug("PageInputField: Child field %s does not exists",
+                       qPrintable(child.tagName()));
+            } else {
+                field->setXMLData(child);
+            }
+        }
+
+        node = node.nextSibling();
+    }
 }
 
-void PageInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void PageInputField::xmlData(QDomDocument &document, QDomElement &parent)
 {
-  QDomElement element = document.createElement( "ns1:" + mName );
+    QDomElement element = document.createElement("ns1:" + mName);
 
-  InputField::List::Iterator it;
-  for ( it = mFields.begin(); it != mFields.end(); ++it )
-    (*it)->xmlData( document, element );
+    InputField::List::Iterator it;
+    for (it = mFields.begin(); it != mFields.end(); ++it)
+        (*it)->xmlData(document, element);
 
-  parent.appendChild( element );
+    parent.appendChild(element);
 }
 
-void PageInputField::setData( const QString& )
-{
-}
+void PageInputField::setData(const QString &) {}
 
 QString PageInputField::data() const
 {
-  return QString();
+    return QString();
 }
 
-QWidget *PageInputField::createWidget( QWidget *parent )
+QWidget *PageInputField::createWidget(QWidget *parent)
 {
-  QWidget *mInputWidget = new QWidget( parent );
-  QGridLayout *layout = new QGridLayout( mInputWidget );
-  layout->setSpacing( 6 );
-  layout->setMargin( 11 );
+    QWidget *mInputWidget = new QWidget(parent);
+    QGridLayout *layout = new QGridLayout(mInputWidget);
+    layout->setSpacing(6);
+    layout->setMargin(11);
 
-  InputField::List::Iterator it;
-  int row = 0;
-  for ( it = mFields.begin(); it != mFields.end(); ++it, ++row ) {
-    QLabel *label = new QLabel( (*it)->name(), mInputWidget );
-    label->setAlignment( Qt::AlignTop );
-    layout->addWidget( label, row, 0 );
-    layout->addWidget( (*it)->createWidget( mInputWidget ), row, 1 );
-  }
+    InputField::List::Iterator it;
+    int row = 0;
+    for (it = mFields.begin(); it != mFields.end(); ++it, ++row) {
+        QLabel *label = new QLabel((*it)->name(), mInputWidget);
+        label->setAlignment(Qt::AlignTop);
+        layout->addWidget(label, row, 0);
+        layout->addWidget((*it)->createWidget(mInputWidget), row, 1);
+    }
 
-  layout->setRowStretch( ++row, 1 );
+    layout->setRowStretch(++row, 1);
 
-  return mInputWidget;
+    return mInputWidget;
 }
 
 #include "pageinputfield.moc"

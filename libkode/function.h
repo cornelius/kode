@@ -35,22 +35,22 @@ namespace KODE {
  */
 class KODE_EXPORT Function
 {
-  public:
-    class Argument {
-      public:
+public:
+    class Argument
+    {
+    public:
         typedef QList<Argument> List;
-      
-        Argument( const QString &declaration,
-          const QString &defaultArgument = QString() );
+
+        Argument(const QString &declaration, const QString &defaultArgument = QString());
 
         QString headerDeclaration() const;
         QString bodyDeclaration() const;
-    
-      private:
+
+    private:
         class ArgumentPrivate;
         ArgumentPrivate *d;
     };
-  
+
     typedef QList<Function> List;
 
     /**
@@ -72,7 +72,7 @@ class KODE_EXPORT Function
     /**
      * Creates a new function from @param other.
      */
-    Function( const Function &other );
+    Function(const Function &other);
 
     /**
      * Creates a new function with the given @param name.
@@ -81,8 +81,8 @@ class KODE_EXPORT Function
      * @param access The access type (@see AccessSpecifier).
      * @param isStatic If true, the function is marked as static.
      */
-    Function( const QString &name, const QString &returnType = QString(),
-              int access = Public, bool isStatic = false );
+    Function(const QString &name, const QString &returnType = QString(), int access = Public,
+             bool isStatic = false);
 
     /**
      * Destroys the function.
@@ -92,12 +92,12 @@ class KODE_EXPORT Function
     /**
      * Assignment operator.
      */
-    Function& operator=( const Function &other );
+    Function &operator=(const Function &other);
 
     /**
      * Sets the @param name of the function.
      */
-    void setName( const QString &name );
+    void setName(const QString &name);
 
     /**
      * Returns the name of the function.
@@ -107,7 +107,7 @@ class KODE_EXPORT Function
     /**
      * Sets the return type of the function.
      */
-    void setReturnType( const QString &returnType );
+    void setReturnType(const QString &returnType);
 
     /**
      * Returns the return type of the function.
@@ -117,7 +117,7 @@ class KODE_EXPORT Function
     /**
      * Sets whether the function is marked as const.
      */
-    void setConst( bool isConst );
+    void setConst(bool isConst);
 
     /**
      * Returns whether the function is marked as const.
@@ -127,7 +127,7 @@ class KODE_EXPORT Function
     /**
      * Sets whether the function is marked as static.
      */
-    void setStatic( bool isStatic );
+    void setStatic(bool isStatic);
 
     /**
      * Returns whether the function is marked as static.
@@ -138,7 +138,7 @@ class KODE_EXPORT Function
     /**
      * Sets whether the function is marked as virtual or pure virtual.
      */
-    void setVirtualMode( VirtualMode v );
+    void setVirtualMode(VirtualMode v);
 
     /**
      * Returns whether the function is marked as virtual or pure virtual.
@@ -148,18 +148,18 @@ class KODE_EXPORT Function
     /**
      * Adds an @param argument to the function.
      */
-    void addArgument( const Function::Argument &argument );
-    
+    void addArgument(const Function::Argument &argument);
+
     /**
      * Adds an @param argument to the function.
      */
-    void addArgument(const QString &argument , const QString &defaultArgument = QString());
+    void addArgument(const QString &argument, const QString &defaultArgument = QString());
 
     /**
      * Sets the complete argument string of the function.
      * This method does not support default values currently.
      */
-    void setArgumentString( const QString &argumentString );
+    void setArgumentString(const QString &argumentString);
 
     /**
      * Returns the list of all arguments.
@@ -175,7 +175,7 @@ class KODE_EXPORT Function
     /**
      * Adds an initializer to the function.
      */
-    void addInitializer( const QString &initializer );
+    void addInitializer(const QString &initializer);
 
     /**
      * Returns the list of all initializers.
@@ -185,17 +185,17 @@ class KODE_EXPORT Function
     /**
      * Sets the @param body code of the function.
      */
-    void setBody( const QString &body );
+    void setBody(const QString &body);
 
     /**
      * Sets the @param body code of the function.
      */
-    void setBody( const Code &body );
+    void setBody(const Code &body);
 
     /**
      * Adds a @param line to the body code of the function.
      */
-    void addBodyLine( const QString &line );
+    void addBodyLine(const QString &line);
 
     /**
      * Returns the body code of the function.
@@ -205,7 +205,7 @@ class KODE_EXPORT Function
     /**
      * Sets the access @param specifier of the function.
      */
-    void setAccess( int specifier );
+    void setAccess(int specifier);
 
     /**
      * Returns the access specifier of the function.
@@ -220,18 +220,17 @@ class KODE_EXPORT Function
     /**
      * Sets the @param documentation of the function.
      */
-    void setDocs( const QString &documentation );
+    void setDocs(const QString &documentation);
 
     /**
      * Returns the documentation of the function.
      */
     QString docs() const;
 
-  private:
+private:
     class FunctionPrivate;
     FunctionPrivate *d;
 };
-
 }
 
 #endif

@@ -21,29 +21,28 @@
 #ifndef NAMER_H
 #define NAMER_H
 
-
 #include <QString>
 
 class Namer
 {
-  public:
-    static QString getClassName( const QString & );
-    static QString getAccessor( const QString & );
-    static QString getListAccessor( const QString & );
-    static QString getMutator( const QString & );
+public:
+    static QString getClassName(const QString &);
+    static QString getAccessor(const QString &);
+    static QString getListAccessor(const QString &);
+    static QString getMutator(const QString &);
 
     /**
      * Replaces the characters which are forbidden
      * in the C type/varaible names with an underscore (_)
      * in the  @param name.
      */
-    static QString removeInvalidCharacters( const QString & name );
+    static QString removeInvalidCharacters(const QString &name);
 
     /**
      * If the @param name is a reserved C/C++/Qt keyword it suffixes
      * with an underscore (_)
      */
-    static QString substituteKeywords( const QString &name );
+    static QString substituteKeywords(const QString &name);
 
     /**
      * Returns a new version of @param name converted to a format
@@ -55,15 +54,13 @@ class Namer
      * - The non valid characters will be replaced with an
      * underscore
      */
-    static QString sanitize( const QString & name );
+    static QString sanitize(const QString &name);
 
+protected:
+    static QString upperFirst(const QString &str);
+    static QString lowerFirst(const QString &str);
 
-
-  protected:
-    static QString upperFirst( const QString &str );
-    static QString lowerFirst( const QString &str );
-
-  private:
+private:
     static QStringList m_reservedKeywords;
 };
 

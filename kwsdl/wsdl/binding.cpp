@@ -31,115 +31,108 @@ using namespace KWSDL;
 static QString soapStandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap/";
 static QString httpStandardNamespace = "http://schemas.xmlsoap.org/wsdl/http/";
 
-Binding::Binding()
-  : mType( UnknownBinding )
+Binding::Binding() : mType(UnknownBinding) {}
+
+Binding::Binding(const QString &nameSpace) : Element(nameSpace), mType(UnknownBinding) {}
+
+Binding::~Binding() {}
+
+void Binding::loadXML(ParserContext *context, const QDomElement &element)
 {
-}
+    mName = element.attribute("name");
+    if (mName.isEmpty())
+        context->messageHandler()->warning("Binding: 'name' required");
 
-Binding::Binding( const QString &nameSpace )
-  : Element( nameSpace ), mType( UnknownBinding )
-{
-}
+    mPortTypeName = element.attribute("type");
+    if (mPortTypeName.isEmpty())
+        context->messageHandler()->warning("Binding: 'type' required");
+    else if (mPortTypeName.nameSpace().isEmpty())
+        mPortTypeName.setNameSpace(nameSpace());
 
-Binding::~Binding()
-{
-}
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        QName tagName = child.tagName();
+        if (tagName.localName() == "operation") {
+            BindingOperation operation(nameSpace());
+            operation.loadXML(&mSoapBinding, context, child);
+            mOperations.append(operation);
+        } else if (child.tagName()
+                   == context->namespaceManager()->fullName(soapStandardNamespace, "binding")) {
+            mType = SOAPBinding;
+            mSoapBinding.parseBinding(context, child);
+        } else if (child.tagName()
+                   == context->namespaceManager()->fullName(httpStandardNamespace, "binding")) {
+            mType = HTTPBinding;
+            // TODO HTTPBinding
+        } else {
+            // TODO MIMEBinding
+        }
 
-void Binding::loadXML( ParserContext *context, const QDomElement &element )
-{
-  mName = element.attribute( "name" );
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Binding: 'name' required" );
-
-  mPortTypeName = element.attribute( "type" );
-  if ( mPortTypeName.isEmpty() )
-    context->messageHandler()->warning( "Binding: 'type' required" );
-  else
-    if ( mPortTypeName.nameSpace().isEmpty() )
-      mPortTypeName.setNameSpace( nameSpace() );
-
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    QName tagName = child.tagName();
-    if ( tagName.localName() == "operation" ) {
-      BindingOperation operation( nameSpace() );
-      operation.loadXML( &mSoapBinding, context, child );
-      mOperations.append( operation );
-    } else if ( child.tagName() == context->namespaceManager()->fullName( soapStandardNamespace, "binding" ) ) {
-      mType = SOAPBinding;
-      mSoapBinding.parseBinding( context, child );
-    } else if ( child.tagName() == context->namespaceManager()->fullName( httpStandardNamespace, "binding" ) ) {
-      mType = HTTPBinding;
-      // TODO HTTPBinding
-    } else {
-      // TODO MIMEBinding
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
-void Binding::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void Binding::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  QDomElement element = document.createElement( "binding" );
-  parent.appendChild( element );
+    QDomElement element = document.createElement("binding");
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
-  else
-    context->messageHandler()->warning( "Binding: 'name' required" );
+    if (!mName.isEmpty())
+        element.setAttribute("name", mName);
+    else
+        context->messageHandler()->warning("Binding: 'name' required");
 
-  if ( !mPortTypeName.isEmpty() )
-    element.setAttribute( "type", mPortTypeName.localName() );
-  else
-    context->messageHandler()->warning( "Binding: 'type' required" );
+    if (!mPortTypeName.isEmpty())
+        element.setAttribute("type", mPortTypeName.localName());
+    else
+        context->messageHandler()->warning("Binding: 'type' required");
 
-  mSoapBinding.synthesizeBinding( context, document, element );
+    mSoapBinding.synthesizeBinding(context, document, element);
 
-  BindingOperation::List::ConstIterator it( mOperations.begin() );
-  const BindingOperation::List::ConstIterator endIt( mOperations.end() );
-  for ( ; it != endIt; ++it )
-    (*it).saveXML( &mSoapBinding, context, document, element );
+    BindingOperation::List::ConstIterator it(mOperations.begin());
+    const BindingOperation::List::ConstIterator endIt(mOperations.end());
+    for (; it != endIt; ++it)
+        (*it).saveXML(&mSoapBinding, context, document, element);
 }
 
-void Binding::setName( const QString &name )
+void Binding::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString Binding::name() const
 {
-  return mName;
+    return mName;
 }
 
-void Binding::setPortTypeName( const QName &portTypeName )
+void Binding::setPortTypeName(const QName &portTypeName)
 {
-  mPortTypeName = portTypeName;
+    mPortTypeName = portTypeName;
 }
 
 QName Binding::portTypeName() const
 {
-  return mPortTypeName;
+    return mPortTypeName;
 }
 
-void Binding::setOperations( const BindingOperation::List &operations )
+void Binding::setOperations(const BindingOperation::List &operations)
 {
-  mOperations = operations;
+    mOperations = operations;
 }
 
 BindingOperation::List Binding::operations() const
 {
-  return mOperations;
+    return mOperations;
 }
 
-void Binding::setType( Type type )
+void Binding::setType(Type type)
 {
-  mType = type;
+    mType = type;
 }
 
 Binding::Type Binding::type() const
 {
-  return mType;
+    return mType;
 }
 
 #if 0
@@ -151,13 +144,13 @@ void Binding::setSoapBinding( const SoapBinding &soapBinding )
 
 SoapBinding Binding::soapBinding() const
 {
-  return mSoapBinding;
+    return mSoapBinding;
 }
 
 const AbstractBinding *Binding::binding() const
 {
-  if ( mType == SOAPBinding )
-    return &mSoapBinding;
-  else // TODO HTTPBinding and MIMEBinding
-    return 0;
+    if (mType == SOAPBinding)
+        return &mSoapBinding;
+    else // TODO HTTPBinding and MIMEBinding
+        return 0;
 }

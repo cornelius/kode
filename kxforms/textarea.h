@@ -30,8 +30,8 @@ namespace KXForms {
 class TextArea : public GuiElement
 {
     Q_OBJECT
-  public:
-    TextArea( Manager *, const QString &label, QWidget *parent, Properties *p );
+public:
+    TextArea(Manager *, const QString &label, QWidget *parent, Properties *p);
 
     void loadData();
     void saveData();
@@ -39,16 +39,15 @@ class TextArea : public GuiElement
 
     int space() const { return 30; }
 
-  protected slots:
+protected slots:
     void emitValueChanged();
 
-  protected:
+protected:
     virtual void applyProperties();
 
-  private:
+private:
     QTextEdit *mEdit;
 };
-
 }
 
 #endif

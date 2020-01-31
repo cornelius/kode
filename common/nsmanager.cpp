@@ -25,86 +25,84 @@
 
 // maybe port to QXmlNamespaceSupport?
 
-NSManager::NSManager()
+NSManager::NSManager() {}
+
+void NSManager::setPrefix(const QString &prefix, const QString &uri)
 {
+    // Note that it's allowed to have two prefixes for the same namespace uri.
+    // qDebug() << "NSManager::setPrefix" << uri << "->" << prefix;
+    mMap.insert(uri, prefix);
 }
 
-void NSManager::setPrefix( const QString &prefix, const QString &uri )
+QString NSManager::prefix(const QString &uri) const
 {
-  // Note that it's allowed to have two prefixes for the same namespace uri.
-  //qDebug() << "NSManager::setPrefix" << uri << "->" << prefix;
-  mMap.insert( uri, prefix );
+    return mMap.value(uri);
 }
 
-QString NSManager::prefix( const QString &uri ) const
+QString NSManager::uri(const QString &prefix) const
 {
-  return mMap.value( uri );
+    return mMap.key(prefix); // linear search
 }
 
-QString NSManager::uri( const QString &prefix ) const
+void NSManager::splitName(const QString &qname, QString &prefix, QString &localname) const
 {
-  return mMap.key( prefix ); // linear search
+    int pos = qname.indexOf(':');
+    if (pos != -1) {
+        prefix = qname.left(pos);
+        localname = qname.mid(pos + 1);
+    } else {
+        prefix = QString();
+        localname = qname;
+    }
 }
 
-void NSManager::splitName( const QString &qname, QString &prefix, QString &localname ) const
+QString NSManager::fullName(const QString &nameSpace, const QString &localname) const
 {
-  int pos = qname.indexOf( ':' );
-  if ( pos != -1 ) {
-    prefix = qname.left( pos );
-    localname = qname.mid( pos + 1 );
-  } else {
-    prefix = QString();
-    localname = qname;
-  }
+    if (prefix(nameSpace).isEmpty())
+        return localname;
+    else
+        return prefix(nameSpace) + ':' + localname;
 }
 
-QString NSManager::fullName( const QString &nameSpace, const QString &localname ) const
+QString NSManager::fullName(const QName &name) const
 {
-  if ( prefix( nameSpace ).isEmpty() )
-    return localname;
-  else
-    return prefix( nameSpace ) + ':' + localname;
-}
-
-QString NSManager::fullName( const QName &name ) const
-{
-  return fullName( name.nameSpace(), name.localName() );
+    return fullName(name.nameSpace(), name.localName());
 }
 
 QStringList NSManager::prefixes() const
 {
-  return mMap.values();
+    return mMap.values();
 }
 
 QStringList NSManager::uris() const
 {
-  return mMap.keys();
+    return mMap.keys();
 }
 
 QString NSManager::schemaPrefix() const
 {
-  return prefix( "http://www.w3.org/2001/XMLSchema" );
+    return prefix("http://www.w3.org/2001/XMLSchema");
 }
 
 QString NSManager::schemaInstancePrefix() const
 {
-  return prefix( "http://www.w3.org/2001/XMLSchema-instance" );
+    return prefix("http://www.w3.org/2001/XMLSchema-instance");
 }
 
 QString NSManager::soapEncPrefix() const
 {
-  return prefix( "http://schemas.xmlsoap.org/soap/encoding/" );
+    return prefix("http://schemas.xmlsoap.org/soap/encoding/");
 }
 
 void NSManager::reset()
 {
-  mMap.clear();
+    mMap.clear();
 }
 
 void NSManager::dump() const
 {
-  QMap<QString, QString>::ConstIterator it;
-  for ( it = mMap.begin(); it != mMap.end(); ++it ) {
-    qDebug( "%s\t%s", qPrintable( it.value() ), qPrintable( it.key() ) );
-  }
+    QMap<QString, QString>::ConstIterator it;
+    for (it = mMap.begin(); it != mMap.end(); ++it) {
+        qDebug("%s\t%s", qPrintable(it.value()), qPrintable(it.key()));
+    }
 }

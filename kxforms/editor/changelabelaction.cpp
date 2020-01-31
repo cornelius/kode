@@ -34,40 +34,35 @@
 
 using namespace KXForms;
 
-ChangeLabelAction::ChangeLabelAction( Editor *e)
-: EditorAction( e )
+ChangeLabelAction::ChangeLabelAction(Editor *e) : EditorAction(e) {}
+
+ChangeLabelAction::~ChangeLabelAction() {}
+
+void ChangeLabelAction::perform(GuiElement *e)
 {
-}
+    kDebug();
+    editor()->beginEdit();
 
-ChangeLabelAction::~ChangeLabelAction()
-{
-}
+    QString newLabel;
+    bool ok;
 
-void ChangeLabelAction::perform( GuiElement *e )
-{
-  kDebug() ;
-  editor()->beginEdit();
+    QString currentLabel;
+    QLabel *labelWidget = dynamic_cast<QLabel *>(e->labelWidget());
+    if (labelWidget)
+        currentLabel = labelWidget->text();
 
-  QString newLabel;
-  bool ok;
+    newLabel = KInputDialog::getText(i18n("Enter the new label"),
+                                     i18n("Label for %1:", e->ref().toString()), currentLabel, &ok);
 
-  QString currentLabel;
-  QLabel *labelWidget = dynamic_cast<QLabel *>( e->labelWidget() );
-  if( labelWidget )
-    currentLabel = labelWidget->text();
+    if (ok) {
+        kDebug() << "New Label:" << newLabel;
+        Hint h;
+        h.setRef(e->id());
+        h.setValue(Hint::Label, newLabel);
+        emit hintGenerated(h);
+    }
 
-  newLabel = KInputDialog::getText( i18n("Enter the new label"), i18n("Label for %1:", e->ref().toString()),
-      currentLabel, &ok );
-
-  if( ok ) {
-    kDebug() <<"New Label:" << newLabel;
-    Hint h;
-    h.setRef( e->id() );
-    h.setValue( Hint::Label, newLabel );
-    emit hintGenerated( h );
-  }
-
-  editor()->finishEdit();
+    editor()->finishEdit();
 }
 
 #include "changelabelaction.moc"

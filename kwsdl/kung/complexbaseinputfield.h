@@ -26,16 +26,16 @@
 
 class ComplexBaseInputField : public ComplexInputField
 {
-  public:
-    ComplexBaseInputField( const QString &name, const XSD::ComplexType *type );
+public:
+    ComplexBaseInputField(const QString &name, const XSD::ComplexType *type);
 
-    virtual void setXMLData( const QDomElement &element );
-    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+    virtual void setXMLData(const QDomElement &element);
+    virtual void xmlData(QDomDocument &document, QDomElement &parent);
 
-    virtual void setData( const QString &data );
+    virtual void setData(const QString &data);
     virtual QString data() const;
 
-    virtual QWidget *createWidget( QWidget *parent );
+    virtual QWidget *createWidget(QWidget *parent);
 };
 
 #endif

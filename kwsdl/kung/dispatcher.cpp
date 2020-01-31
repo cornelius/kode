@@ -37,132 +37,127 @@
 
 #include "dispatcher.h"
 
-Dispatcher::Dispatcher()
-  : QObject( 0 ),
-    mConversationManager( 0 )
+Dispatcher::Dispatcher() : QObject(0), mConversationManager(0)
 {
-  setObjectName( "Dispatcher" );
+    setObjectName("Dispatcher");
 }
 
 Dispatcher::~Dispatcher()
 {
-  delete mConversationManager;
-  mConversationManager = 0;
+    delete mConversationManager;
+    mConversationManager = 0;
 }
 
-void Dispatcher::setWSDL( const KWSDL::WSDL &wsdl )
+void Dispatcher::setWSDL(const KWSDL::WSDL &wsdl)
 {
-  mWSDL = wsdl;
+    mWSDL = wsdl;
 
-  InputFieldFactory::self()->setTypes( mWSDL.definitions().type().types() );
+    InputFieldFactory::self()->setTypes(mWSDL.definitions().type().types());
 
-  mConversationManager = new GeneralConversationManager( mWSDL );
+    mConversationManager = new GeneralConversationManager(mWSDL);
 
-  QUrl locationurl = mWSDL.definitions().bindings().first().soapBinding().address().location();
-  QString location = locationurl.toEncoded();
-  mTransport = new Transport( location );
-  connect( mTransport, SIGNAL( result( const QString& ) ),
-           this, SLOT( result( const QString& ) ) );
-  connect( mTransport, SIGNAL( error( const QString& ) ),
-           this, SLOT( error( const QString& ) ) );
+    QUrl locationurl = mWSDL.definitions().bindings().first().soapBinding().address().location();
+    QString location = locationurl.toEncoded();
+    mTransport = new Transport(location);
+    connect(mTransport, SIGNAL(result(const QString &)), this, SLOT(result(const QString &)));
+    connect(mTransport, SIGNAL(error(const QString &)), this, SLOT(error(const QString &)));
 }
 
 void Dispatcher::run()
 {
-  nextMessage();
+    nextMessage();
 }
 
 void Dispatcher::nextMessage()
 {
-  if ( !mConversationManager ) {
-    qDebug( "No conversation manager set... aborting" );
-    return;
-  }
-
-  QStringList items = mConversationManager->nextActions( mLastMessage, QString() );
-
-  mCurrentMessage = QString();
-  if ( items.count() > 1 ) {
-    mCurrentMessage = KInputDialog::getItem( i18n( "Select a functionality of the service:" ), i18n( "Functions" ),
-                                         items );
-  } else
-    mCurrentMessage = items.first();
-
-  if ( mCurrentMessage.isEmpty() ) {
-    qApp->quit();
-    return;
-  }
-
-  KWSDL::Message message = mWSDL.findMessage( mCurrentMessage );
-  InputField *field = new PageInputField( message.name(), message );
-  QWidget *page = field->createWidget( 0 );
-
-  InputDialog dlg( page, 0 );
-  if ( dlg.exec() ) {
-    QDomDocument doc( "kwsdl" );
-    doc.appendChild( doc.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
-    QDomElement env = doc.createElement( "SOAP-ENV:Envelope" );
-    env.setAttribute( "xmlns:SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/" );
-    env.setAttribute( "xmlns:xsi", "http://www.w3.org/1999/XMLSchema-instance" );
-    env.setAttribute( "xmlns:xsd", "http://www.w3.org/1999/XMLSchema" );
-    doc.appendChild( env );
-
-    QDomElement body = doc.createElement( "SOAP-ENV:Body" );
-    env.appendChild( body );
-
-    field->xmlData( doc, body );
-
-    QDomElement method = body.firstChild().toElement();
-    KWSDL::Binding binding;
-// KUNGPORT
-//    //QString nameSpace = mWSDL.findBindingOperation( binding, message.name() ).input().nameSpace();
-//    SoapBinding sbinding = binding.soapBinding();
-//    Operation::Map op = sbinding.operations();
-//    Operation::Map::Iterator it = op.begin();
-//    Body b = (*it).input();
-//    QString nameSpace = b.nameSpace();
-//
-//    //Address a = sbinding.address();
-//    Q_UNUSED(nameSpace);
- 
-    method.setAttribute( "xmlns:ns1", "urn:GoogleSearch" );
-    method.setAttribute( "SOAP-ENV:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/" );
-    body.appendChild( method );
-
-    if ( mTransport ) {
-      qDebug( "%s", qPrintable( doc.toString( 2 ) ) );
-      mTransport->query( doc.toString( 2 ) );
+    if (!mConversationManager) {
+        qDebug("No conversation manager set... aborting");
+        return;
     }
-  } else
-    qApp->quit();
+
+    QStringList items = mConversationManager->nextActions(mLastMessage, QString());
+
+    mCurrentMessage = QString();
+    if (items.count() > 1) {
+        mCurrentMessage = KInputDialog::getItem(i18n("Select a functionality of the service:"),
+                                                i18n("Functions"), items);
+    } else
+        mCurrentMessage = items.first();
+
+    if (mCurrentMessage.isEmpty()) {
+        qApp->quit();
+        return;
+    }
+
+    KWSDL::Message message = mWSDL.findMessage(mCurrentMessage);
+    InputField *field = new PageInputField(message.name(), message);
+    QWidget *page = field->createWidget(0);
+
+    InputDialog dlg(page, 0);
+    if (dlg.exec()) {
+        QDomDocument doc("kwsdl");
+        doc.appendChild(
+                doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\""));
+        QDomElement env = doc.createElement("SOAP-ENV:Envelope");
+        env.setAttribute("xmlns:SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/");
+        env.setAttribute("xmlns:xsi", "http://www.w3.org/1999/XMLSchema-instance");
+        env.setAttribute("xmlns:xsd", "http://www.w3.org/1999/XMLSchema");
+        doc.appendChild(env);
+
+        QDomElement body = doc.createElement("SOAP-ENV:Body");
+        env.appendChild(body);
+
+        field->xmlData(doc, body);
+
+        QDomElement method = body.firstChild().toElement();
+        KWSDL::Binding binding;
+        // KUNGPORT
+        //    //QString nameSpace = mWSDL.findBindingOperation( binding, message.name()
+        //    ).input().nameSpace(); SoapBinding sbinding = binding.soapBinding(); Operation::Map op
+        //    = sbinding.operations(); Operation::Map::Iterator it = op.begin(); Body b =
+        //    (*it).input(); QString nameSpace = b.nameSpace();
+        //
+        //    //Address a = sbinding.address();
+        //    Q_UNUSED(nameSpace);
+
+        method.setAttribute("xmlns:ns1", "urn:GoogleSearch");
+        method.setAttribute("SOAP-ENV:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/");
+        body.appendChild(method);
+
+        if (mTransport) {
+            qDebug("%s", qPrintable(doc.toString(2)));
+            mTransport->query(doc.toString(2));
+        }
+    } else
+        qApp->quit();
 }
 
-void Dispatcher::result( const QString &xml )
+void Dispatcher::result(const QString &xml)
 {
-  qDebug( "Got data %s", qPrintable( xml ) );
+    qDebug("Got data %s", qPrintable(xml));
 
-  KWSDL::Message message = mWSDL.findMessage( mCurrentMessage );
-  InputField *field = new PageInputField( message.name(), message );
+    KWSDL::Message message = mWSDL.findMessage(mCurrentMessage);
+    InputField *field = new PageInputField(message.name(), message);
 
-  QDomDocument doc;
-  doc.setContent( xml, true );
+    QDomDocument doc;
+    doc.setContent(xml, true);
 
-  field->setXMLData( doc.documentElement().firstChild().firstChild().toElement() );
-  QWidget *page = field->createWidget( 0 );
+    field->setXMLData(doc.documentElement().firstChild().firstChild().toElement());
+    QWidget *page = field->createWidget(0);
 
-  OutputDialog dlg( page, 0 );
-  dlg.exec();
+    OutputDialog dlg(page, 0);
+    dlg.exec();
 
-  mLastMessage = mCurrentMessage;
+    mLastMessage = mCurrentMessage;
 
-  QTimer::singleShot( 0, this, SLOT( nextMessage() ) );
+    QTimer::singleShot(0, this, SLOT(nextMessage()));
 }
 
-void Dispatcher::error( const QString &errorMsg )
+void Dispatcher::error(const QString &errorMsg)
 {
-  KMessageBox::error( 0, errorMsg );
+    KMessageBox::error(0, errorMsg);
 
-  QTimer::singleShot( 0, this, SLOT( nextMessage() ) );
+    QTimer::singleShot(0, this, SLOT(nextMessage()));
 }
 
 #include "dispatcher.moc"

@@ -2,9 +2,9 @@
 
 #include <QtTest/QTest>
 
-QTEST_KDEMAIN_CORE( TestParser )
+QTEST_KDEMAIN_CORE(TestParser)
 
 void TestParser::testParseAccount()
 {
-  QCOMPARE( 1, 1 );
+    QCOMPARE(1, 1);
 }

@@ -35,7 +35,7 @@ namespace KODE {
  */
 class KODE_EXPORT File
 {
-  public:
+public:
     /**
      * Creates a new file.
      */
@@ -44,7 +44,7 @@ class KODE_EXPORT File
     /**
      * Creates a new file from @param other.
      */
-    File( const File &other );
+    File(const File &other);
 
     /**
      * Destroys the file.
@@ -54,23 +54,23 @@ class KODE_EXPORT File
     /**
      * Assignment operator.
      */
-    File& operator=( const File &other );
+    File &operator=(const File &other);
 
     /**
      * Sets the filenames of both the .h and .cpp file.
      * The extensions will be automatically added.
      */
-    void setFilename( const QString& baseName );
+    void setFilename(const QString &baseName);
 
     /**
      * Sets the @param filename of the cpp file.
      */
-    void setImplementationFilename( const QString &filename );
+    void setImplementationFilename(const QString &filename);
 
     /**
      * Sets the @param filename of the header file.
      */
-    void setHeaderFilename( const QString &filename );
+    void setHeaderFilename(const QString &filename);
 
     /**
       Return filename of header file.
@@ -81,11 +81,11 @@ class KODE_EXPORT File
       Return filename of implementation file.
     */
     QString filenameImplementation() const;
-    
+
     /**
      * Sets the name space of the file.
      */
-    void setNameSpace( const QString &nameSpace );
+    void setNameSpace(const QString &nameSpace);
 
     /**
      * Returns the name space of the file.
@@ -95,7 +95,7 @@ class KODE_EXPORT File
     /**
      * Sets the @param project name of the file.
      */
-    void setProject( const QString &project );
+    void setProject(const QString &project);
 
     /**
      * Returns the project name of the file.
@@ -109,7 +109,7 @@ class KODE_EXPORT File
      * @param name The name of the author.
      * @param email The email address of the author.
      */
-    void addCopyright( int year, const QString &name, const QString &email );
+    void addCopyright(int year, const QString &name, const QString &email);
 
     /**
      * Returns the list of all copyright statements.
@@ -119,7 +119,7 @@ class KODE_EXPORT File
     /**
      * Sets the @param license of the file.
      */
-    void setLicense( const License &license );
+    void setLicense(const License &license);
 
     /**
      * Returns the license of the file.
@@ -129,7 +129,7 @@ class KODE_EXPORT File
     /**
      * Adds an include to the file.
      */
-    void addInclude( const QString &include );
+    void addInclude(const QString &include);
 
     /**
      * Returns the list of all includes.
@@ -139,7 +139,7 @@ class KODE_EXPORT File
     /**
      * Inserts a class to the file.
      */
-    void insertClass( const Class &newClass );
+    void insertClass(const Class &newClass);
 
     /**
      * Returns a list of all classes.
@@ -150,12 +150,12 @@ class KODE_EXPORT File
      * Returns whether the file contains a class
      * with the given @param name.
      */
-    bool hasClass( const QString &name );
+    bool hasClass(const QString &name);
 
     /**
      * Returns the class with the given @param name.
      */
-    Class findClass( const QString &name );
+    Class findClass(const QString &name);
 
     /**
      * Removes all classes from the file.
@@ -180,7 +180,7 @@ class KODE_EXPORT File
     /**
      * Adds a file @param variable to the file.
      */
-    void addFileVariable( const Variable &variable );
+    void addFileVariable(const Variable &variable);
 
     /**
      * Returns the list of all file variables.
@@ -190,7 +190,7 @@ class KODE_EXPORT File
     /**
      * Adds a file @param function to the file.
      */
-    void addFileFunction( const Function &function );
+    void addFileFunction(const Function &function);
 
     /**
      * Returns the list of all file functions.
@@ -200,7 +200,7 @@ class KODE_EXPORT File
     /**
      * Adds a file enum to the file.
      */
-    void addFileEnum( const Enum &enumValue );
+    void addFileEnum(const Enum &enumValue);
 
     /**
      * Returns the list of all file enums.
@@ -210,7 +210,7 @@ class KODE_EXPORT File
     /**
      * Adds an external C declaration to the file.
      */
-    void addExternCDeclaration( const QString &externalCDeclaration );
+    void addExternCDeclaration(const QString &externalCDeclaration);
 
     /**
      * Returns the list of all external C declarations.
@@ -220,18 +220,17 @@ class KODE_EXPORT File
     /**
      * Adds a file @param code block to the file.
      */
-    void addFileCode( const Code &code );
+    void addFileCode(const Code &code);
 
     /**
      * Returns the file code block.
      */
     Code fileCode() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

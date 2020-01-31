@@ -24,136 +24,132 @@
 #include <klocale.h>
 #include <kdebug.h>
 
-KResult::KResult()
-  : mType( Ok ), mErrorType( NotAnError ), mChainedResult( 0 )
+KResult::KResult() : mType(Ok), mErrorType(NotAnError), mChainedResult(0) {}
+
+KResult::KResult(Type type) : mType(type), mChainedResult(0)
 {
+    if (mType == Error)
+        mErrorType = Undefined;
+    else
+        mErrorType = NotAnError;
 }
 
-KResult::KResult( Type type )
-  : mType( type ), mChainedResult( 0 )
-{
-  if ( mType == Error ) mErrorType = Undefined;
-  else mErrorType = NotAnError;
-}
-
-KResult::KResult( ErrorType error, const QString &details )
-  : mType( Error ), mErrorType( error ), mDetails( details ),
-    mChainedResult( 0 )
+KResult::KResult(ErrorType error, const QString &details)
+    : mType(Error), mErrorType(error), mDetails(details), mChainedResult(0)
 {
 }
 
 KResult::~KResult()
 {
-  delete mChainedResult;
+    delete mChainedResult;
 }
 
-KResult::KResult( const KResult &o )
+KResult::KResult(const KResult &o)
 {
-  mType = o.mType;
-  mErrorType = o.mErrorType;
-  mDetails = o.mDetails;
-  if ( o.mChainedResult ) mChainedResult = new KResult( *o.mChainedResult );
-  else mChainedResult = 0;
+    mType = o.mType;
+    mErrorType = o.mErrorType;
+    mDetails = o.mDetails;
+    if (o.mChainedResult)
+        mChainedResult = new KResult(*o.mChainedResult);
+    else
+        mChainedResult = 0;
 }
 
 KResult::operator bool() const
 {
-  return !isError();
+    return !isError();
 }
 
 bool KResult::isOk() const
 {
-  return mType == Ok;
+    return mType == Ok;
 }
 
 bool KResult::isInProgress() const
 {
-  return mType == InProgress;
+    return mType == InProgress;
 }
 
 bool KResult::isError() const
 {
-  return mType == Error;
+    return mType == Error;
 }
-
 
 KResult::ErrorType KResult::error() const
 {
-  return mErrorType;
+    return mErrorType;
 }
-
 
 QString KResult::message() const
 {
-  switch ( mType ) {
+    switch (mType) {
     case Ok:
-      return i18n("Ok");
+        return i18n("Ok");
     case InProgress:
-      return i18n("In progress");
+        return i18n("In progress");
     case Error:
-      switch ( mErrorType ) {
+        switch (mErrorType) {
         case NotAnError:
-          return i18n("Not an error");
+            return i18n("Not an error");
         case Undefined:
-          return i18n("Error");
+            return i18n("Error");
         case InvalidUrl:
-          return i18n("Invalid URL");
+            return i18n("Invalid URL");
         case ConnectionFailed:
-          return i18n("Connection failed");
+            return i18n("Connection failed");
         case WriteError:
-          return i18n("Write error");
+            return i18n("Write error");
         case ReadError:
-          return i18n("Read error");
+            return i18n("Read error");
         case WrongParameter:
-          return i18n("Wrong Parameter");
+            return i18n("Wrong Parameter");
         case ParseError:
-          return i18n("Parse Error");
-      }
-  }
+            return i18n("Parse Error");
+        }
+    }
 
-  kError() <<"KResult::message(): Unhandled case";
-  return QString();
+    kError() << "KResult::message(): Unhandled case";
+    return QString();
 }
 
-
-void KResult::setDetails( const QString &details )
+void KResult::setDetails(const QString &details)
 {
-  mDetails = details;
+    mDetails = details;
 }
 
 QString KResult::details() const
 {
-  return mDetails;
+    return mDetails;
 }
 
-
-KResult &KResult::chain( const KResult &result )
+KResult &KResult::chain(const KResult &result)
 {
-  mChainedResult = new KResult( result );
-  return *this;
+    mChainedResult = new KResult(result);
+    return *this;
 }
 
 bool KResult::hasChainedResult() const
 {
-  return mChainedResult;
+    return mChainedResult;
 }
 
 KResult KResult::chainedResult() const
 {
-  return *mChainedResult;
+    return *mChainedResult;
 }
-
 
 QString KResult::fullMessage() const
 {
-  QString msg = message();
-  if ( !details().isEmpty() ) msg += ": " + details();
-  return msg;
+    QString msg = message();
+    if (!details().isEmpty())
+        msg += ": " + details();
+    return msg;
 }
 
 QString KResult::chainedMessage() const
 {
-  QString msg = fullMessage();
-  if ( hasChainedResult() ) msg += '\n' + chainedResult().chainedMessage();
-  return msg;
+    QString msg = fullMessage();
+    if (hasChainedResult())
+        msg += '\n' + chainedResult().chainedMessage();
+    return msg;
 }

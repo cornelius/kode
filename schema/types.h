@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -32,40 +32,40 @@ namespace XSD {
 
 class SCHEMA_EXPORT Types
 {
-  public:
+public:
     Types();
-    Types( const Types &other );
+    Types(const Types &other);
     ~Types();
 
-    Types &operator=( const Types &other );
+    Types &operator=(const Types &other);
 
-    void setSimpleTypes( const SimpleType::List &simpleTypes );
+    void setSimpleTypes(const SimpleType::List &simpleTypes);
     SimpleType::List simpleTypes() const;
 
-    void setComplexTypes( const ComplexType::List &complexTypes );
+    void setComplexTypes(const ComplexType::List &complexTypes);
     ComplexType::List complexTypes() const;
 
-    void setElements( const Element::List &elements );
+    void setElements(const Element::List &elements);
     Element::List elements() const;
 
-    void setAttributes( const Attribute::List &attributes );
+    void setAttributes(const Attribute::List &attributes);
     Attribute::List attributes() const;
 
-    void setAttributeGroups( const AttributeGroup::List &attributeGroups );
+    void setAttributeGroups(const AttributeGroup::List &attributeGroups);
     AttributeGroup::List attributeGroups() const;
 
-    void setNamespaces( const QStringList &namespaces );
+    void setNamespaces(const QStringList &namespaces);
     QStringList namespaces() const;
 
-    ComplexType complexType( const Element & ) const;
+    ComplexType complexType(const Element &) const;
 
-    SimpleType simpleType(const QName &simpleTypeName, const QString &elementFilter = QString("") ) const;
+    SimpleType simpleType(const QName &simpleTypeName,
+                          const QString &elementFilter = QString("")) const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

@@ -27,16 +27,15 @@ namespace KXForms {
 
 class AppearanceAction : public EditorAction
 {
-  Q_OBJECT
-  public:
-    AppearanceAction( Editor *e );
+    Q_OBJECT
+public:
+    AppearanceAction(Editor *e);
     ~AppearanceAction();
 
-    void perform( GuiElement *e );
+    void perform(GuiElement *e);
 
-  Q_SIGNALS:
-    void hintGenerated( const Hint &hint );
+Q_SIGNALS:
+    void hintGenerated(const Hint &hint);
 };
-
 }
 #endif

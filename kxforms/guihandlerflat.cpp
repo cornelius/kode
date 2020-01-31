@@ -37,20 +37,16 @@
 
 using namespace KXForms;
 
-BreadCrumbLabel::BreadCrumbLabel( QWidget *parent )
-  : K3ActiveLabel( parent )
+BreadCrumbLabel::BreadCrumbLabel(QWidget *parent) : K3ActiveLabel(parent) {}
+
+void BreadCrumbLabel::openLink(const QUrl &link)
 {
+    emit crumbClicked(link.toString().toInt());
 }
 
-void BreadCrumbLabel::openLink( const QUrl &link )
+BreadCrumbNavigator::BreadCrumbNavigator(QWidget *parent) : QFrame(parent)
 {
-  emit crumbClicked( link.toString().toInt() );
-}
-
-BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
-  : QFrame( parent )
-{
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+    QBoxLayout *topLayout = new QVBoxLayout(this);
 
 #if 0
   // Why doesn't this work?
@@ -64,227 +60,225 @@ BreadCrumbNavigator::BreadCrumbNavigator( QWidget *parent )
   setLineWidth( 1 );
 #endif
 
-  mLabel = new BreadCrumbLabel( this );
-  topLayout->addWidget( mLabel );
-  connect( mLabel, SIGNAL( crumbClicked( int ) ),
-    SLOT( slotCrumbClicked( int ) ) );
+    mLabel = new BreadCrumbLabel(this);
+    topLayout->addWidget(mLabel);
+    connect(mLabel, SIGNAL(crumbClicked(int)), SLOT(slotCrumbClicked(int)));
 }
 
-void BreadCrumbNavigator::push( FormGui *gui )
+void BreadCrumbNavigator::push(FormGui *gui)
 {
-  mHistory.push( gui );
+    mHistory.push(gui);
 
-  updateLabel();
+    updateLabel();
 }
 
 FormGui *BreadCrumbNavigator::pop()
 {
-  FormGui *result;
+    FormGui *result;
 
-  if ( mHistory.isEmpty() ) result = 0;
-  else result = mHistory.pop();
+    if (mHistory.isEmpty())
+        result = 0;
+    else
+        result = mHistory.pop();
 
-  updateLabel();
+    updateLabel();
 
-  if ( result ) {
-    result->saveData();
-  }
-  return result;
+    if (result) {
+        result->saveData();
+    }
+    return result;
 }
 
 FormGui *BreadCrumbNavigator::last() const
 {
-  if ( mHistory.isEmpty() ) return 0;
-  else return mHistory.last();
+    if (mHistory.isEmpty())
+        return 0;
+    else
+        return mHistory.last();
 }
 
 int BreadCrumbNavigator::count() const
 {
-  return mHistory.count();
+    return mHistory.count();
 }
 
 void BreadCrumbNavigator::updateLabel()
 {
-  QString text;
-  for( int i = 0; i < mHistory.size(); ++i ) {
-    if ( !text.isEmpty() ) {
-      text.append( " / " );
-    } else {
+    QString text;
+    for (int i = 0; i < mHistory.size(); ++i) {
+        if (!text.isEmpty()) {
+            text.append(" / ");
+        } else {
 #if 0
       text.append( "/ " );
 #endif
+        }
+        QString label = mHistory[i]->label();
+        if (label.isEmpty()) {
+            label = "...";
+        }
+        if (i == mHistory.size() - 1) {
+            text.append("<b>" + label + "</b>");
+        } else {
+            text.append("<a href=\"" + QString::number(i) + "\">" + label + "</a>");
+        }
     }
-    QString label = mHistory[ i ]->label();
-    if ( label.isEmpty() ) {
-      label = "...";
+    mLabel->setHtml("<qt>" + text + "</qt>");
+}
+
+void BreadCrumbNavigator::slotCrumbClicked(int index)
+{
+    if (mHistory.size() <= index)
+        return;
+
+    FormGui *gui = last();
+    gui->saveData();
+
+    while (mHistory.size() > index + 1) {
+        gui = mHistory.pop();
     }
-    if ( i == mHistory.size() - 1 ) {
-      text.append( "<b>" + label + "</b>" );
-    } else {
-      text.append( "<a href=\"" + QString::number( i ) + "\">" + label + "</a>" );
+
+    updateLabel();
+
+    emit guiSelected(last());
+}
+
+GuiHandlerFlat::GuiHandlerFlat(Manager *m) : GuiHandler(m) {}
+
+QWidget *GuiHandlerFlat::createRootGui(QWidget *parent)
+{
+    kDebug() << "GuiHandlerFlat::createRootGui()";
+
+    mMainWidget = new QWidget(parent);
+
+    QBoxLayout *topLayout = new QVBoxLayout(mMainWidget);
+    topLayout->setMargin(0);
+
+    mBreadCrumbNavigator = new BreadCrumbNavigator(mMainWidget);
+    topLayout->addWidget(mBreadCrumbNavigator);
+    connect(mBreadCrumbNavigator, SIGNAL(guiSelected(FormGui *)), SLOT(showGui(FormGui *)));
+
+    QFrame *line = new QFrame(mMainWidget);
+    topLayout->addWidget(line);
+    line->setFrameStyle(QFrame::HLine | QFrame::Plain);
+    line->setLineWidth(1);
+
+    mStackWidget = new QStackedWidget(mMainWidget);
+    topLayout->addWidget(mStackWidget, 1);
+
+    Form *f = manager()->rootForm();
+
+    if (!f) {
+        KMessageBox::sorry(parent, i18n("Root form not found."));
+        return 0;
     }
-  }
-  mLabel->setHtml( "<qt>" + text + "</qt>" );
+
+    FormGui *gui = createGui(f, mStackWidget);
+
+    gui->setRef('/' + f->ref());
+    gui->parseElement(f->element());
+
+    if (manager()->hasData()) {
+        kDebug() << "Manager::createGui() Load data on creation";
+        manager()->loadData(gui);
+    }
+
+    mStackWidget->addWidget(gui);
+
+    QBoxLayout *buttonLayout = new QHBoxLayout();
+    topLayout->addLayout(buttonLayout);
+    buttonLayout->setMargin(KDialog::marginHint());
+
+    buttonLayout->addStretch(1);
+
+    mBackButton = new QPushButton(i18n("Back"), mMainWidget);
+    buttonLayout->addWidget(mBackButton);
+    connect(mBackButton, SIGNAL(clicked()), SLOT(goBack()));
+    mBackButton->setEnabled(false);
+
+    return mMainWidget;
 }
 
-void BreadCrumbNavigator::slotCrumbClicked( int index )
+void GuiHandlerFlat::createGui(const Reference &ref, QWidget *parent)
 {
-  if ( mHistory.size() <= index ) return;
+    kDebug() << "GuiHandlerFlat::createGui() ref: '" << ref.toString() << "'";
 
-  FormGui *gui = last();
-  gui->saveData();
+    if (ref.isEmpty()) {
+        KMessageBox::sorry(parent, i18n("No reference."));
+        return;
+    }
 
-  while( mHistory.size() > index + 1 ) {
-    gui = mHistory.pop();
-  }
+    QString r = ref.segments().last().name();
 
-  updateLabel();
+    Form *f = manager()->form(r);
 
-  emit guiSelected( last() );
+    if (!f) {
+        KMessageBox::sorry(parent, i18n("Form '%1' not found.", ref.toString()));
+        return;
+    }
+
+    FormGui *gui = createGui(f, mMainWidget);
+    if (!gui) {
+        KMessageBox::sorry(parent, i18n("Unable to create GUI for '%1'.", ref.toString()));
+        return;
+    }
+
+    gui->setRef(ref);
+    gui->parseElement(f->element());
+
+    mStackWidget->addWidget(gui);
+    mBackButton->setEnabled(true);
+
+    if (manager()->hasData()) {
+        kDebug() << "Manager::createGui() Load data on creation";
+        manager()->loadData(gui);
+    }
+
+    mStackWidget->setCurrentWidget(gui);
 }
 
-
-GuiHandlerFlat::GuiHandlerFlat( Manager *m )
-  : GuiHandler( m )
+FormGui *GuiHandlerFlat::createGui(Form *form, QWidget *parent)
 {
-}
+    if (!form) {
+        kError() << "KXForms::Manager::createGui(): form is null.";
+        return 0;
+    }
 
-QWidget *GuiHandlerFlat::createRootGui( QWidget *parent )
-{
-  kDebug() <<"GuiHandlerFlat::createRootGui()";
+    kDebug() << "Manager::createGui() form: '" << form->ref() << "'";
 
-  mMainWidget = new QWidget( parent );
+    if (mStackWidget->currentWidget())
+        static_cast<FormGui *>(mStackWidget->currentWidget())->saveData();
 
-  QBoxLayout *topLayout = new QVBoxLayout( mMainWidget );
-  topLayout->setMargin( 0 );
+    FormGui *gui = new FormGui(form->label(), manager(), parent);
 
-  mBreadCrumbNavigator = new BreadCrumbNavigator( mMainWidget );
-  topLayout->addWidget( mBreadCrumbNavigator );
-  connect( mBreadCrumbNavigator, SIGNAL( guiSelected( FormGui * ) ),
-    SLOT( showGui( FormGui * ) ) );
+    if (gui) {
+        manager()->registerGui(gui);
+        mBreadCrumbNavigator->push(gui);
+        connect(gui, SIGNAL(editingFinished()), SLOT(goBack()));
+        gui->setLabelHidden(true);
+    }
 
-  QFrame *line = new QFrame( mMainWidget );
-  topLayout->addWidget( line );
-  line->setFrameStyle( QFrame::HLine | QFrame::Plain );
-  line->setLineWidth( 1 );
-
-  mStackWidget = new QStackedWidget( mMainWidget );
-  topLayout->addWidget( mStackWidget, 1 );
-
-  Form *f = manager()->rootForm();
-
-  if ( !f ) {
-    KMessageBox::sorry( parent, i18n("Root form not found.") );
-    return 0;
-  }
-
-  FormGui *gui = createGui( f, mStackWidget );
-
-  gui->setRef( '/' + f->ref() );
-  gui->parseElement( f->element() );
-
-  if ( manager()->hasData() ) {
-    kDebug() <<"Manager::createGui() Load data on creation";
-    manager()->loadData( gui );
-  }
-
-  mStackWidget->addWidget( gui );
-
-  QBoxLayout *buttonLayout = new QHBoxLayout();
-  topLayout->addLayout( buttonLayout );
-  buttonLayout->setMargin( KDialog::marginHint() );
-
-  buttonLayout->addStretch( 1 );
-
-  mBackButton = new QPushButton( i18n("Back"), mMainWidget );
-  buttonLayout->addWidget( mBackButton );
-  connect( mBackButton, SIGNAL( clicked() ), SLOT( goBack() ) );
-  mBackButton->setEnabled( false );
-
-  return mMainWidget;
-}
-
-void GuiHandlerFlat::createGui( const Reference &ref, QWidget *parent )
-{
-  kDebug() <<"GuiHandlerFlat::createGui() ref: '" << ref.toString() <<"'";
-
-  if ( ref.isEmpty() ) {
-    KMessageBox::sorry( parent, i18n("No reference.") );
-    return;
-  }
-
-  QString r = ref.segments().last().name();
-
-  Form *f = manager()->form( r );
-
-  if ( !f ) {
-    KMessageBox::sorry( parent, i18n("Form '%1' not found.", ref.toString() ) );
-    return;
-  }
-
-  FormGui *gui = createGui( f, mMainWidget );
-  if ( !gui ) {
-    KMessageBox::sorry( parent, i18n("Unable to create GUI for '%1'.",
-        ref.toString() ) );
-    return;
-  }
-
-  gui->setRef( ref );
-  gui->parseElement( f->element() );
-
-  mStackWidget->addWidget( gui );
-  mBackButton->setEnabled( true );
-
-  if ( manager()->hasData() ) {
-    kDebug() <<"Manager::createGui() Load data on creation";
-    manager()->loadData( gui );
-  }
-
-  mStackWidget->setCurrentWidget( gui );
-}
-
-FormGui *GuiHandlerFlat::createGui( Form *form, QWidget *parent )
-{
-  if ( !form ) {
-    kError() <<"KXForms::Manager::createGui(): form is null.";
-    return 0;
-  }
-
-  kDebug() <<"Manager::createGui() form: '" << form->ref() <<"'";
-
-  if( mStackWidget->currentWidget() )
-    static_cast<FormGui *>(mStackWidget->currentWidget())->saveData();
-
-  FormGui *gui = new FormGui( form->label(), manager(), parent );
-
-  if ( gui ) {
-    manager()->registerGui( gui );
-    mBreadCrumbNavigator->push( gui );
-    connect( gui, SIGNAL( editingFinished() ), SLOT( goBack() ) );
-    gui->setLabelHidden( true );
-  }
-
-  return gui;
+    return gui;
 }
 
 void GuiHandlerFlat::goBack()
 {
-  mBreadCrumbNavigator->pop();
+    mBreadCrumbNavigator->pop();
 
-  FormGui *current = mBreadCrumbNavigator->last();
-  showGui( current );
+    FormGui *current = mBreadCrumbNavigator->last();
+    showGui(current);
 }
 
-void GuiHandlerFlat::showGui( FormGui *gui )
+void GuiHandlerFlat::showGui(FormGui *gui)
 {
-  if ( gui ) {
-    mStackWidget->setCurrentWidget( gui );
-    manager()->loadData( gui );
-  }
+    if (gui) {
+        mStackWidget->setCurrentWidget(gui);
+        manager()->loadData(gui);
+    }
 
-  if ( mBreadCrumbNavigator->count() == 1 ) {
-    mBackButton->setEnabled( false );
-  }
+    if (mBreadCrumbNavigator->count() == 1) {
+        mBackButton->setEnabled(false);
+    }
 }
 
 #include "guihandlerflat.moc"

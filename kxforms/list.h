@@ -35,60 +35,61 @@ class ListProxyModel;
 class List : public GuiElement
 {
     Q_OBJECT
-  public:
-    List( Manager *, const QString &label, QWidget *parent, Properties *p );
+public:
+    List(Manager *, const QString &label, QWidget *parent, Properties *p);
 
-    struct ListProperties {
-      ListProperties() : showHeader( false ), showFilter( false ) {}
-      bool showHeader;
-      bool showFilter;
+    struct ListProperties
+    {
+        ListProperties() : showHeader(false), showFilter(false) {}
+        bool showHeader;
+        bool showFilter;
     };
 
     class ItemClass
     {
-      public:
+    public:
         typedef QList<ItemClass> List;
 
         ItemClass() {}
 
         bool isValid() const { return !mRef.isEmpty(); }
 
-        void setRefName( const QString &r ) { mRef = r; }
+        void setRefName(const QString &r) { mRef = r; }
         QString refName() const { return mRef; }
-        
-        void addLabelDom( const QDomElement &e ) { mLabelDoms.append( e ); }
-        QList<QDomElement> labelDoms() const { return mLabelDoms; } 
 
-        void setList( bool l ) { mList = l; }
+        void addLabelDom(const QDomElement &e) { mLabelDoms.append(e); }
+        QList<QDomElement> labelDoms() const { return mLabelDoms; }
+
+        void setList(bool l) { mList = l; }
         bool isList() { return mList; }
-      private:
+
+    private:
         QString mRef;
         QList<QDomElement> mLabelDoms;
         bool mList;
     };
 
-    void parseElement( const QDomElement & );
+    void parseElement(const QDomElement &);
 
     void loadData();
     void saveData();
 
-    void setId( const Reference &id ) { mId = id; }
+    void setId(const Reference &id) { mId = id; }
     virtual Reference id() const { return mId; }
 
     int space() const { return 40; }
 
-    ItemClass itemClass( const QString &ref );
+    ItemClass itemClass(const QString &ref);
 
-    QStringList itemLabels( const ItemClass &itemClass,
-      const QDomElement &itemElement );
+    QStringList itemLabels(const ItemClass &itemClass, const QDomElement &itemElement);
 
     ListProperties listProperties() { return mListProperties; }
 
-  protected:
-    void loadElement( QDomElement &e, ListItem *parent, QMap<QString, int> &counts );
+protected:
+    void loadElement(QDomElement &e, ListItem *parent, QMap<QString, int> &counts);
     QModelIndex selectedItem();
 
-  protected slots:
+protected slots:
     void newItem();
     void deleteItem();
     void editItem();
@@ -97,7 +98,7 @@ class List : public GuiElement
 
     void resizeColumns();
 
-  private:
+private:
     ItemClass::List mItemClasses;
 
     ListProperties mListProperties;
@@ -111,7 +112,6 @@ class List : public GuiElement
 
     Reference mId;
 };
-
 }
 
 #endif

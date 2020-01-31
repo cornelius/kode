@@ -26,62 +26,62 @@
 
 #include "enuminputfield.h"
 
-EnumInputField::EnumInputField( const QString &name, const XSD::SimpleType *type )
-  : SimpleInputField( name, type )
+EnumInputField::EnumInputField(const QString &name, const XSD::SimpleType *type)
+    : SimpleInputField(name, type)
 {
-  mEnums = type->facetEnums();
+    mEnums = type->facetEnums();
 
-  mValue = mEnums.first();
+    mValue = mEnums.first();
 }
 
-void EnumInputField::setXMLData( const QDomElement &element )
+void EnumInputField::setXMLData(const QDomElement &element)
 {
-  if ( mName != element.tagName() ) {
-    qDebug( "EnumInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
-    return;
-  }
+    if (mName != element.tagName()) {
+        qDebug("EnumInputField: Wrong dom element passed: expected %s, got %s", qPrintable(mName),
+               qPrintable(element.tagName()));
+        return;
+    }
 
-  setData( element.text() );
+    setData(element.text());
 }
 
-void EnumInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void EnumInputField::xmlData(QDomDocument &document, QDomElement &parent)
 {
-  QDomElement element = document.createElement( mName );
-  element.setAttribute( "xsi:type", "xsd:string" );
-  QDomText text = document.createTextNode( data() );
-  element.appendChild( text );
+    QDomElement element = document.createElement(mName);
+    element.setAttribute("xsi:type", "xsd:string");
+    QDomText text = document.createTextNode(data());
+    element.appendChild(text);
 
-  parent.appendChild( element );
+    parent.appendChild(element);
 }
 
-void EnumInputField::setData( const QString &data )
+void EnumInputField::setData(const QString &data)
 {
-  mValue = data;
+    mValue = data;
 }
 
 QString EnumInputField::data() const
 {
-  return mValue;
+    return mValue;
 }
 
-QWidget *EnumInputField::createWidget( QWidget *parent )
+QWidget *EnumInputField::createWidget(QWidget *parent)
 {
-  mInputWidget = new KComboBox( parent );
+    mInputWidget = new KComboBox(parent);
 
-  mInputWidget->addItems( mEnums );
-  mInputWidget->setCurrentIndex( mEnums.indexOf( mValue ) );
+    mInputWidget->addItems(mEnums);
+    mInputWidget->setCurrentIndex(mEnums.indexOf(mValue));
 
-  connect( mInputWidget, SIGNAL( activated( int ) ),
-           this, SLOT( inputChanged( int ) ) );
+    connect(mInputWidget, SIGNAL(activated(int)), this, SLOT(inputChanged(int)));
 
-  return mInputWidget;
+    return mInputWidget;
 }
 
-void EnumInputField::inputChanged( int value )
+void EnumInputField::inputChanged(int value)
 {
-  mValue = mEnums[ value ];
+    mValue = mEnums[value];
 
-  emit modified();
+    emit modified();
 }
 
 #include "enuminputfield.moc"

@@ -23,26 +23,24 @@
 
 using namespace KXForms;
 
-XFormsCommon::XFormsCommon()
-{
-}
+XFormsCommon::XFormsCommon() {}
 
-XFormsCommon XFormsCommon::parseElement( const QDomElement &element )
+XFormsCommon XFormsCommon::parseElement(const QDomElement &element)
 {
-  XFormsCommon c;
-  
-  QDomNode n;
-  for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    QString tag = e.tagName();
-    if ( tag == "xf:label" ) {
-      c.setLabel( e.text() );
-    } else if ( tag == "xf:hint" ) {
-      c.setHint( e.text() );
-    } else if ( tag == "tip" ) {
-      c.setTip( e.text() );
+    XFormsCommon c;
+
+    QDomNode n;
+    for (n = element.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        QString tag = e.tagName();
+        if (tag == "xf:label") {
+            c.setLabel(e.text());
+        } else if (tag == "xf:hint") {
+            c.setHint(e.text());
+        } else if (tag == "tip") {
+            c.setTip(e.text());
+        }
     }
-  }
-  
-  return c;
+
+    return c;
 }

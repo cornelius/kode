@@ -31,122 +31,121 @@
 
 using namespace KXForms;
 
-Select::Select( Manager *m, const QString &label, QWidget *parent, Properties *p )
-  : GuiElement( parent, m, p )
+Select::Select(Manager *m, const QString &label, QWidget *parent, Properties *p)
+    : GuiElement(parent, m, p)
 {
-  mManager->dispatcher()->registerElement( this );
-  setActionTypes( Editor::CommonActions | Editor::AppearanceActions );
+    mManager->dispatcher()->registerElement(this);
+    setActionTypes(Editor::CommonActions | Editor::AppearanceActions);
 
-  mLabel = new QLabel( label, parent );
-  QWidget *w;
-  if( mProperties->appearance == Full ) {
-    w = new QWidget( parent );
-    w->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    w->setLayout( new QVBoxLayout( parent ) );
-  } else {
-    mListWidget = new QListWidget( parent );
-    mListWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    mListWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    w = mListWidget;
-  }
+    mLabel = new QLabel(label, parent);
+    QWidget *w;
+    if (mProperties->appearance == Full) {
+        w = new QWidget(parent);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        w->setLayout(new QVBoxLayout(parent));
+    } else {
+        mListWidget = new QListWidget(parent);
+        mListWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        mListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        w = mListWidget;
+    }
 
-  setWidget( w );
-  applyProperties();
+    setWidget(w);
+    applyProperties();
 }
 
-void Select::parseElement( const QDomElement &formElement )
+void Select::parseElement(const QDomElement &formElement)
 {
-  QDomNode n;
-  for( n = formElement.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    if ( e.tagName() == "xf:item" ) {
-      QString label;
-      QString value;
-      QDomNode n2;
-      for( n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling() ) {
-        QDomElement e2 = n2.toElement();
-        if ( e2.tagName() == "xf:label" ) {
-          label = e2.text();
-        } else if ( e2.tagName() == "xf:value" ) {
-          value = e2.text();
+    QDomNode n;
+    for (n = formElement.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        if (e.tagName() == "xf:item") {
+            QString label;
+            QString value;
+            QDomNode n2;
+            for (n2 = e.firstChild(); !n2.isNull(); n2 = n2.nextSibling()) {
+                QDomElement e2 = n2.toElement();
+                if (e2.tagName() == "xf:label") {
+                    label = e2.text();
+                } else if (e2.tagName() == "xf:value") {
+                    value = e2.text();
+                }
+            }
+            if (!label.isEmpty() && !value.isEmpty()) {
+                mValues.append(value);
+                if (mProperties->appearance == Full) {
+                    QCheckBox *chk = new QCheckBox(label, mWidget);
+                    mWidget->layout()->addWidget(chk);
+                    mCheckBoxes.append(chk);
+                } else {
+                    mListWidget->addItem(label);
+                }
+            }
         }
-      }
-      if ( !label.isEmpty() && !value.isEmpty() ) {
-        mValues.append( value );
-        if( mProperties->appearance == Full ) {
-          QCheckBox *chk = new QCheckBox( label, mWidget );
-          mWidget->layout()->addWidget( chk );
-          mCheckBoxes.append( chk );
-        } else {
-          mListWidget->addItem( label );
-        }
-      }
     }
-  }
 }
 
 void Select::loadData()
 {
-  kDebug() << ref().toString() <<"context:"
-    << context().tagName();
+    kDebug() << ref().toString() << "context:" << context().tagName();
 
-  Reference::Segment s = ref().segments().last();
+    Reference::Segment s = ref().segments().last();
 
-  QDomNode parent = ref().applyElement( context() );
-  QDomNode n;
-  for( n = parent.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
-    QString s = e.tagName();
-    int count = 0;
-    QStringList::ConstIterator it;
-    for( it = mValues.constBegin(); it != mValues.constEnd(); ++it, ++count ) {
-      if ( *it == s ) break;
-    } 
-    if ( it != mValues.constEnd() ) {
-      if( mProperties->appearance == Full ) {
-        QCheckBox *chk = mCheckBoxes[count];
-        if( chk )
-          chk->setChecked( true );
-      } else {
-        mListWidget->item( count )->setSelected( true );
-      }
-    } else {
-      kWarning() <<"Select::loadData() unknown value:" << s;
+    QDomNode parent = ref().applyElement(context());
+    QDomNode n;
+    for (n = parent.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        QDomElement e = n.toElement();
+        QString s = e.tagName();
+        int count = 0;
+        QStringList::ConstIterator it;
+        for (it = mValues.constBegin(); it != mValues.constEnd(); ++it, ++count) {
+            if (*it == s)
+                break;
+        }
+        if (it != mValues.constEnd()) {
+            if (mProperties->appearance == Full) {
+                QCheckBox *chk = mCheckBoxes[count];
+                if (chk)
+                    chk->setChecked(true);
+            } else {
+                mListWidget->item(count)->setSelected(true);
+            }
+        } else {
+            kWarning() << "Select::loadData() unknown value:" << s;
+        }
     }
-  }
 }
 
 void Select::saveData()
 {
-  kDebug() <<"Select::saveData()";
-  kDebug() << ref().toString();
-  kDebug() <<"Context:" << context().nodeName();
-  Reference::Segment s = ref().segments().last();
+    kDebug() << "Select::saveData()";
+    kDebug() << ref().toString();
+    kDebug() << "Context:" << context().nodeName();
+    Reference::Segment s = ref().segments().last();
 
-  QStringList values;
-  if( mProperties->appearance == Full ) {
-    for( int i = 0; i < mCheckBoxes.size(); ++i ) {
-      if( mCheckBoxes[i]->isChecked() ) {
-        values.append( mValues[ i ] );
-      }
+    QStringList values;
+    if (mProperties->appearance == Full) {
+        for (int i = 0; i < mCheckBoxes.size(); ++i) {
+            if (mCheckBoxes[i]->isChecked()) {
+                values.append(mValues[i]);
+            }
+        }
+    } else {
+        for (int i = 0; i < mListWidget->count(); ++i) {
+            if (mListWidget->item(i)->isSelected()) {
+                values.append(mValues[i]);
+            }
+        }
     }
-  } else {
-    for( int i = 0; i < mListWidget->count(); ++i ) {
-      if( mListWidget->item( i )->isSelected() ) {
-        values.append( mValues[ i ] );
-      }
+
+    QDomElement e = ref().applyElement(context());
+    if (e.isNull()) {
+        e = createElement(ref());
     }
-  }
-
-
-  QDomElement e = ref().applyElement( context() );
-  if ( e.isNull() ) {
-    e = createElement( ref() );
-  }
-  while( !e.firstChild().isNull() )
-    e.removeChild( e.firstChild() );
-  foreach( QString s, values ) {
-    QDomNode n = mManager->document().createElement( s );
-    e.appendChild( n );
-  }
+    while (!e.firstChild().isNull())
+        e.removeChild(e.firstChild());
+    foreach (QString s, values) {
+        QDomNode n = mManager->document().createElement(s);
+        e.appendChild(n);
+    }
 }

@@ -39,57 +39,55 @@
 #include <unistd.h>
 #include <limits.h>
 
-static const char description[] =
-    I18N_NOOP("XML Forms Editor");
+static const char description[] = I18N_NOOP("XML Forms Editor");
 
-KUrl makeURL( const QString &arg )
+KUrl makeURL(const QString &arg)
 {
-   if (!QDir::isRelativePath( arg ))
-   {
-      KUrl result;
-      result.setPath( arg );
-      return result; // Absolute path.
-   }
+    if (!QDir::isRelativePath(arg)) {
+        KUrl result;
+        result.setPath(arg);
+        return result; // Absolute path.
+    }
 
-   if ( !KUrl::isRelativeUrl( arg ) )
-     return KUrl( arg ); // Argument is a URL
+    if (!KUrl::isRelativeUrl(arg))
+        return KUrl(arg); // Argument is a URL
 
-  KUrl result;
-  char cwd[ PATH_MAX + 1 ];
-  getcwd( cwd, PATH_MAX );
-  result.setPath( QFile::decodeName( QByteArray( cwd ) ) + '/' + arg );
-  result.cleanPath();
-  return result;  // Relative path
+    KUrl result;
+    char cwd[PATH_MAX + 1];
+    getcwd(cwd, PATH_MAX);
+    result.setPath(QFile::decodeName(QByteArray(cwd)) + '/' + arg);
+    result.cleanPath();
+    return result; // Relative path
 }
 
 int main(int argc, char **argv)
 {
-  KAboutData about("kxforms", 0, ki18n("KXForms"), "0.1", ki18n(description),
-    KAboutData::License_GPL, ki18n("(C) 2005 Cornelius Schumacher"), KLocalizedString(), 0,
-    "schumacher@kde.org");
-  about.addAuthor( ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org" );
-  KCmdLineArgs::init(argc, argv, &about);
+    KAboutData about("kxforms", 0, ki18n("KXForms"), "0.1", ki18n(description),
+                     KAboutData::License_GPL, ki18n("(C) 2005 Cornelius Schumacher"),
+                     KLocalizedString(), 0, "schumacher@kde.org");
+    about.addAuthor(ki18n("Cornelius Schumacher"), KLocalizedString(), "schumacher@kde.org");
+    KCmdLineArgs::init(argc, argv, &about);
 
-  KCmdLineOptions options;
-  options.add("+[URL]", ki18n( "Document to open" ));
-  options.add("kxform <URL>", ki18n( "KXForms description" ));
-  options.add("schema <URL>", ki18n( "XML Schema" ));
-  options.add("ugh <URL>", ki18n( "UI Generation Hints" ));
-  options.add("xml <URL>", ki18n( "XML file" ));
-  options.add("dialogs", ki18n( "Use dialogs" ));
-  options.add("developer", ki18n( "Use developer mode of user interface" ));
-  options.add("vertical-list-buttons", ki18n( "Use vertical list buttons" ));
-  KCmdLineArgs::addCmdLineOptions(options);
+    KCmdLineOptions options;
+    options.add("+[URL]", ki18n("Document to open"));
+    options.add("kxform <URL>", ki18n("KXForms description"));
+    options.add("schema <URL>", ki18n("XML Schema"));
+    options.add("ugh <URL>", ki18n("UI Generation Hints"));
+    options.add("xml <URL>", ki18n("XML file"));
+    options.add("dialogs", ki18n("Use dialogs"));
+    options.add("developer", ki18n("Use developer mode of user interface"));
+    options.add("vertical-list-buttons", ki18n("Use vertical list buttons"));
+    KCmdLineArgs::addCmdLineOptions(options);
 #if 1
-  KApplication app;
+    KApplication app;
 #else
-  QApplication app( argc, argv );
+    QApplication app(argc, argv);
 #endif
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-  Prefs::setDeveloperMode( args->isSet( "developer" ) );
-  Prefs::setVerticalListButtons( args->isSet( "vertical-list-buttons" ) );
+    Prefs::setDeveloperMode(args->isSet("developer"));
+    Prefs::setVerticalListButtons(args->isSet("vertical-list-buttons"));
 
 #if 0
   // Hack: force a decent font
@@ -97,44 +95,44 @@ int main(int argc, char **argv)
   QApplication::setFont( f );
 #endif
 
-  MainWindow *mainWindow = new MainWindow;
-  KXForms::GuiHandler *guiHandler;
-  if ( args->isSet( "dialogs" ) ) {
-    guiHandler = new KXForms::GuiHandlerDialogs( mainWindow->formsManager() );
-  } else {
-    guiHandler = new KXForms::GuiHandlerFlat( mainWindow->formsManager() );
-  }
-
-  mainWindow->show();
-
-  if ( args->isSet( "schema" ) && args->isSet( "kxform" ) ) {
-    kWarning() <<"KXForm will be generated from schema. Ignoring --kxform"
-      << "option";
-  }
-
-  if ( args->isSet( "ugh" ) ) {
-    QString ugh = args->getOption( "ugh" );
-    mainWindow->loadHints( makeURL( ugh ) );
-  }
-
-  if ( args->isSet( "schema" ) ) {
-    QString schema = args->getOption( "schema" );
-    mainWindow->loadSchema( makeURL( schema ) );
-  } else {
-    if ( args->isSet( "kxform" ) ) {
-      QString form = args->getOption( "kxform" );
-      mainWindow->loadForm( makeURL( form ) );
+    MainWindow *mainWindow = new MainWindow;
+    KXForms::GuiHandler *guiHandler;
+    if (args->isSet("dialogs")) {
+        guiHandler = new KXForms::GuiHandlerDialogs(mainWindow->formsManager());
+    } else {
+        guiHandler = new KXForms::GuiHandlerFlat(mainWindow->formsManager());
     }
-  }
 
-  if ( args->isSet( "xml" ) ) {
-    QString xml = args->getOption( "xml" );
-    mainWindow->load( xml );
-  }
+    mainWindow->show();
 
-  if ( args->count() == 1 ) {
-    mainWindow->load( args->url( 0 ) );
-  }
+    if (args->isSet("schema") && args->isSet("kxform")) {
+        kWarning() << "KXForm will be generated from schema. Ignoring --kxform"
+                   << "option";
+    }
 
-  return app.exec();
+    if (args->isSet("ugh")) {
+        QString ugh = args->getOption("ugh");
+        mainWindow->loadHints(makeURL(ugh));
+    }
+
+    if (args->isSet("schema")) {
+        QString schema = args->getOption("schema");
+        mainWindow->loadSchema(makeURL(schema));
+    } else {
+        if (args->isSet("kxform")) {
+            QString form = args->getOption("kxform");
+            mainWindow->loadForm(makeURL(form));
+        }
+    }
+
+    if (args->isSet("xml")) {
+        QString xml = args->getOption("xml");
+        mainWindow->load(xml);
+    }
+
+    if (args->count() == 1) {
+        mainWindow->load(args->url(0));
+    }
+
+    return app.exec();
 }

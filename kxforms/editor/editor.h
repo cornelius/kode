@@ -41,25 +41,21 @@ class GuiElement;
 
 class Editor : public QObject
 {
-  Q_OBJECT
-  public:
-    enum ActionType{
-      CommonActions = 0x1,
-      ListActions = 0x2,
-      AppearanceActions = 0x4,
-      InputActions = 0x8
+    Q_OBJECT
+public:
+    enum ActionType {
+        CommonActions = 0x1,
+        ListActions = 0x2,
+        AppearanceActions = 0x4,
+        InputActions = 0x8
     };
     Q_DECLARE_FLAGS(ActionTypes, ActionType)
-    enum SelectionMode { 
-      SelectAllElements, 
-      SelectSameGroupOnly 
-    };
+    enum SelectionMode { SelectAllElements, SelectSameGroupOnly };
 
-
-    Editor( Manager *);
+    Editor(Manager *);
     ~Editor();
 
-    void registerElement( GuiElement * );
+    void registerElement(GuiElement *);
     bool editMode() const { return mEditMode; }
 
     void beginEdit();
@@ -67,42 +63,42 @@ class Editor : public QObject
 
     bool inEdit() const { return mInEdit; }
 
-    KActionMenu *actionMenu( GuiElement *e );
+    KActionMenu *actionMenu(GuiElement *e);
 
-    void performAction( const QString &actionId, GuiElement *w );
-    EditorAction *action( const QString &actionId ) { return mActions[actionId]; }
+    void performAction(const QString &actionId, GuiElement *w);
+    EditorAction *action(const QString &actionId) { return mActions[actionId]; }
 
-    void addHints( const Hints &h ) { mHints.merge( h ); }
+    void addHints(const Hints &h) { mHints.merge(h); }
     Hints hints() const { return mHints; }
 
-    void setCurrentHintsUrl( const KUrl &url ) { mHintsUrl = url; }
+    void setCurrentHintsUrl(const KUrl &url) { mHintsUrl = url; }
 
-    GuiElement *selectWidget( SelectionMode sm );
+    GuiElement *selectWidget(SelectionMode sm);
 
     Manager *manager() { return mManager; }
 
-  Q_SIGNALS:
-    void hintsChanged( const Hints &h );
+Q_SIGNALS:
+    void hintsChanged(const Hints &h);
 
-  public Q_SLOTS:
-    void setEditMode( bool );
+public Q_SLOTS:
+    void setEditMode(bool);
     void toggleEditMode();
 
-    void applyHint( const Hint &h );
-    void applyHints( const Hints &h );
+    void applyHint(const Hint &h);
+    void applyHints(const Hints &h);
 
     void saveHints();
     void saveHintsAs();
 
-  private Q_SLOTS:
+private Q_SLOTS:
     void actionTriggered();
 
-  private:
+private:
     void setupActions();
 
-  private:
-    QList< GuiElement *> mElements;
-    QMap< QString, EditorAction * > mActions;
+private:
+    QList<GuiElement *> mElements;
+    QMap<QString, EditorAction *> mActions;
     QEventLoop *mEventLoop;
     bool mEditMode;
     bool mInEdit;
@@ -115,7 +111,6 @@ class Editor : public QObject
 
     Manager *mManager;
 };
-
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(KXForms::Editor::ActionTypes)

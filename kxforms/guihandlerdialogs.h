@@ -37,47 +37,46 @@ class Form;
 class FormDialog : public KDialog
 {
     Q_OBJECT
-  public:
-    FormDialog( QWidget *parent, const QString &title, Manager * );
+public:
+    FormDialog(QWidget *parent, const QString &title, Manager *);
 
-    void setGui( FormGui * );
+    void setGui(FormGui *);
 
-  signals:
+signals:
     void aboutToClose();
 
-  protected slots:
+protected slots:
     void slotOk();
 
-  private:
+private:
     QBoxLayout *mTopLayout;
-    
+
     FormGui *mFormGui;
-    
+
     Manager *mManager;
 };
 
 class GuiHandlerDialogs : public QObject, public GuiHandler
 {
-  Q_OBJECT
-  public:
-    GuiHandlerDialogs( Manager * );
+    Q_OBJECT
+public:
+    GuiHandlerDialogs(Manager *);
 
-    QWidget *createRootGui( QWidget *parent );
-    void createGui( const Reference &ref, QWidget *parent );
+    QWidget *createRootGui(QWidget *parent);
+    void createGui(const Reference &ref, QWidget *parent);
 
-    FormGui *currentGui() { return static_cast<FormGui *>( mWidgetStack.last() ); }
+    FormGui *currentGui() { return static_cast<FormGui *>(mWidgetStack.last()); }
 
-  protected slots:
+protected slots:
     void slotDialogClosed();
 
-  protected:
-    FormGui *createGui( Form *form, QWidget *parent );
+protected:
+    FormGui *createGui(Form *form, QWidget *parent);
 
-  private:
+private:
     FormGui *mRootGui;
-    QList< QWidget *> mWidgetStack;
+    QList<QWidget *> mWidgetStack;
 };
-
 }
 
 #endif

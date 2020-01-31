@@ -6,7 +6,7 @@
 class TestParser : public QObject
 {
     Q_OBJECT
-  private Q_SLOTS:
+private Q_SLOTS:
     void testParseAccount();
 };
 

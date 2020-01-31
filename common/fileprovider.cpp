@@ -30,61 +30,58 @@
 
 #include "fileprovider.h"
 
-FileProvider::FileProvider(QObject *parent)
-  : QObject( parent )
+FileProvider::FileProvider(QObject *parent) : QObject(parent)
 {
-    connect(&mManager, SIGNAL(finished(QNetworkReply*)),
-               this, SLOT(downloadFinished(QNetworkReply*)));
+    connect(&mManager, SIGNAL(finished(QNetworkReply *)), this,
+            SLOT(downloadFinished(QNetworkReply *)));
 }
 
-bool FileProvider::get( const QString &url, QString &target )
+bool FileProvider::get(const QString &url, QString &target)
 {
-  if ( !mFileName.isEmpty() )
-    cleanUp();
+    if (!mFileName.isEmpty())
+        cleanUp();
 
-  if ( target.isEmpty() ) {
-    QTemporaryFile tmpFile;
-    tmpFile.setAutoRemove(false);
-    tmpFile.open();
-    target = tmpFile.fileName();
-    mFileName = target;
-  }
+    if (target.isEmpty()) {
+        QTemporaryFile tmpFile;
+        tmpFile.setAutoRemove(false);
+        tmpFile.open();
+        target = tmpFile.fileName();
+        mFileName = target;
+    }
 
-  qDebug( "Downloading external schema '%s'", qPrintable( url ) );
+    qDebug("Downloading external schema '%s'", qPrintable(url));
 
-  QNetworkRequest request = QNetworkRequest(QUrl(url));
-  QNetworkReply *reply = mManager.get(request);
+    QNetworkRequest request = QNetworkRequest(QUrl(url));
+    QNetworkReply *reply = mManager.get(request);
 
-  while ( !reply->isFinished() ) {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-    usleep( 500 );
-  }
+    while (!reply->isFinished()) {
+        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        usleep(500);
+    }
 
-  return (reply->error() == QNetworkReply::NoError);
+    return (reply->error() == QNetworkReply::NoError);
 }
 
 void FileProvider::cleanUp()
 {
-  ::unlink( QFile::encodeName( mFileName ) );
-  mFileName = QString();
+    ::unlink(QFile::encodeName(mFileName));
+    mFileName = QString();
 }
 
-
-void FileProvider::downloadFinished(QNetworkReply *reply )
+void FileProvider::downloadFinished(QNetworkReply *reply)
 {
-  if ( reply->error() != QNetworkReply::NoError) {
-    qDebug( "%s", qPrintable( reply->errorString() ) );
-    return;
-  }
+    if (reply->error() != QNetworkReply::NoError) {
+        qDebug("%s", qPrintable(reply->errorString()));
+        return;
+    }
 
-  QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) ) {
-    qDebug( "Unable to create temporary file" );
-    return;
-  }
+    QFile file(mFileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qDebug("Unable to create temporary file");
+        return;
+    }
 
-  qDebug( "Download successful" );
-  file.write( reply->readAll() );
-  file.close();
+    qDebug("Download successful");
+    file.write(reply->readAll());
+    file.close();
 }
-

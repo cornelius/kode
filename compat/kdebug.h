@@ -26,19 +26,19 @@
 
 class kDebug : public QTextStream
 {
-  public:
+public:
     kDebug();
 };
 
 class kWarning : public QTextStream
 {
-  public:
+public:
     kWarning();
 };
 
 class kError : public QTextStream
 {
-  public:
+public:
     kError();
 };
 

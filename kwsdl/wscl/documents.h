@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -29,67 +29,67 @@ namespace WSCL {
 
 class XMLDocument
 {
-  public:
+public:
     typedef QList<XMLDocument> List;
 
-    void setId( const QString &id );
+    void setId(const QString &id);
     QString id() const;
 
-    void setSchema( const QString &schema );
+    void setSchema(const QString &schema);
     QString schema() const;
 
-  private:
+private:
     QString mId;
     QString mSchema;
 };
 
 class ReceiveSendDocument
 {
-  public:
-    void setInputDocument( const XMLDocument &document );
+public:
+    void setInputDocument(const XMLDocument &document);
     XMLDocument inputDocument() const;
 
-    void setOutputDocuments( const XMLDocument::List &documents );
+    void setOutputDocuments(const XMLDocument::List &documents);
     XMLDocument::List outputDocuments() const;
 
-  private:
+private:
     XMLDocument mInputDocument;
     XMLDocument::List mOutputDocuments;
 };
 
 class SendReceiveDocument
 {
-  public:
-    void setInputDocuments( const XMLDocument::List &documents );
+public:
+    void setInputDocuments(const XMLDocument::List &documents);
     XMLDocument::List inputDocuments() const;
 
-    void setOutputDocument( const XMLDocument &document );
+    void setOutputDocument(const XMLDocument &document);
     XMLDocument outputDocument() const;
 
-  private:
+private:
     XMLDocument::List mInputDocuments;
     XMLDocument mOutputDocument;
 };
 
 class ReceiveDocument
 {
-  public:
-    void setInputDocument( const XMLDocument &document );
+public:
+    void setInputDocument(const XMLDocument &document);
     XMLDocument inputDocument() const;
-  private:
+
+private:
     XMLDocument mInputDocument;
 };
 
 class SendDocument
 {
-  public:
-    void setOutputDocument( const XMLDocument &document );
+public:
+    void setOutputDocument(const XMLDocument &document);
     XMLDocument outputDocument() const;
 
-  private:
+private:
     XMLDocument mOutputDocument;
 };
-
 }
 
 #endif

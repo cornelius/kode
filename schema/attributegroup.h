@@ -31,28 +31,27 @@ namespace XSD {
 
 class SCHEMA_EXPORT AttributeGroup : public XmlElement
 {
-  public:
+public:
     typedef QList<AttributeGroup> List;
 
     AttributeGroup();
-    AttributeGroup( const AttributeGroup &other );
+    AttributeGroup(const AttributeGroup &other);
     ~AttributeGroup();
 
-    AttributeGroup &operator=( const AttributeGroup &other );
+    AttributeGroup &operator=(const AttributeGroup &other);
 
-    void setReference( const QName &reference );
+    void setReference(const QName &reference);
     QName reference() const;
 
-    void setAttributes( const Attribute::List &attributes );
+    void setAttributes(const Attribute::List &attributes);
     Attribute::List attributes() const;
 
     bool isResolved() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

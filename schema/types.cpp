@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -36,118 +36,112 @@ public:
     QStringList mNamespaces;
 };
 
-Types::Types()
-  : d(new Private)
-{
-}
+Types::Types() : d(new Private) {}
 
-Types::Types( const Types &other )
-  : d(new Private)
+Types::Types(const Types &other) : d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Types::~Types()
 {
-  delete d;
+    delete d;
 }
 
-Types &Types::operator=( const Types &other )
+Types &Types::operator=(const Types &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void Types::setSimpleTypes( const SimpleType::List &simpleTypes )
+void Types::setSimpleTypes(const SimpleType::List &simpleTypes)
 {
-  d->mSimpleTypes = simpleTypes;
+    d->mSimpleTypes = simpleTypes;
 }
 
 SimpleType::List Types::simpleTypes() const
 {
-  return d->mSimpleTypes;
+    return d->mSimpleTypes;
 }
 
-void Types::setComplexTypes( const ComplexType::List &complexTypes )
+void Types::setComplexTypes(const ComplexType::List &complexTypes)
 {
-  d->mComplexTypes = complexTypes;
+    d->mComplexTypes = complexTypes;
 }
 
 ComplexType::List Types::complexTypes() const
 {
-  return d->mComplexTypes;
+    return d->mComplexTypes;
 }
 
-void Types::setElements( const Element::List &elements )
+void Types::setElements(const Element::List &elements)
 {
-  d->mElements = elements;
+    d->mElements = elements;
 }
 
 Element::List Types::elements() const
 {
-  return d->mElements;
+    return d->mElements;
 }
 
-void Types::setAttributes( const Attribute::List &attributes )
+void Types::setAttributes(const Attribute::List &attributes)
 {
-  d->mAttributes = attributes;
+    d->mAttributes = attributes;
 }
 
 Attribute::List Types::attributes() const
 {
-  return d->mAttributes;
+    return d->mAttributes;
 }
 
-void Types::setAttributeGroups( const AttributeGroup::List &attributeGroups )
+void Types::setAttributeGroups(const AttributeGroup::List &attributeGroups)
 {
-  d->mAttributeGroups = attributeGroups;
+    d->mAttributeGroups = attributeGroups;
 }
 
 AttributeGroup::List Types::attributeGroups() const
 {
-  return d->mAttributeGroups;
+    return d->mAttributeGroups;
 }
 
-void Types::setNamespaces( const QStringList &namespaces )
+void Types::setNamespaces(const QStringList &namespaces)
 {
-  d->mNamespaces = namespaces;
+    d->mNamespaces = namespaces;
 }
 
 QStringList Types::namespaces() const
 {
-  return d->mNamespaces;
+    return d->mNamespaces;
 }
 
-
-ComplexType Types::complexType( const Element &element ) const
+ComplexType Types::complexType(const Element &element) const
 {
-  foreach( ComplexType type, d->mComplexTypes ) {
-    if( element.type() == type.name() ) return type;
-  }
-  return ComplexType();
-}
-
-SimpleType Types::simpleType(const QName &simpleTypeName , const QString &elementFilter) const
-{
-  qDebug() << "Types::simpleType()" << simpleTypeName.qname();
-  qDebug() << "  In complextype: " << elementFilter;
-  foreach( SimpleType type, d->mSimpleTypes ) {
-    qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname();
-    if (elementFilter.isEmpty()) {
-      if ( type.qualifiedName() == simpleTypeName )
-        return type;
-    } else {
-      if ( type.qualifiedName() == simpleTypeName
-           && elementFilter == type.elementName())
-        return type;
+    foreach (ComplexType type, d->mComplexTypes) {
+        if (element.type() == type.name())
+            return type;
     }
-  }
-  qDebug() << "not found";
-  return SimpleType();
+    return ComplexType();
 }
 
+SimpleType Types::simpleType(const QName &simpleTypeName, const QString &elementFilter) const
+{
+    qDebug() << "Types::simpleType()" << simpleTypeName.qname();
+    qDebug() << "  In complextype: " << elementFilter;
+    foreach (SimpleType type, d->mSimpleTypes) {
+        qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname();
+        if (elementFilter.isEmpty()) {
+            if (type.qualifiedName() == simpleTypeName)
+                return type;
+        } else {
+            if (type.qualifiedName() == simpleTypeName && elementFilter == type.elementName())
+                return type;
+        }
+    }
+    qDebug() << "not found";
+    return SimpleType();
+}
 }

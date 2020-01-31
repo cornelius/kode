@@ -23,12 +23,11 @@
 
 #include "outputdialog.h"
 
-OutputDialog::OutputDialog( QWidget *page, QWidget *parent )
-  : KDialog( parent)
+OutputDialog::OutputDialog(QWidget *page, QWidget *parent) : KDialog(parent)
 {
-  setButtons(Ok);
-  setDefaultButton(Ok);
-  setModal(true);
-  showButtonSeparator(true);
-  setMainWidget( page );
+    setButtons(Ok);
+    setDefaultButton(Ok);
+    setModal(true);
+    showButtonSeparator(true);
+    setMainWidget(page);
 }

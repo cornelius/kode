@@ -24,9 +24,8 @@
 
 class KStatusBar : public QStatusBar
 {
-  public:
-
-    void message( const QString &msg ) { showMessage( msg ); }
+public:
+    void message(const QString &msg) { showMessage(msg); }
 };
 
 #endif

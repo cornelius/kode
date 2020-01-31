@@ -31,7 +31,7 @@ namespace KODE {
 
 class KODE_EXPORT Enum
 {
-  public:
+public:
     typedef QList<Enum> List;
 
     /**
@@ -42,7 +42,7 @@ class KODE_EXPORT Enum
     /**
      * Creates a new enum from @param other.
      */
-    Enum( const Enum &other );
+    Enum(const Enum &other);
 
     /**
      * Creates a new enum with the given name and enum values.
@@ -52,7 +52,8 @@ class KODE_EXPORT Enum
      * @param combinable If true the integer associations will be a power of two,
      *                   so the enum flags will be combinable.
      */
-    Enum( const QString &name, const QStringList &enums, bool isQEnum = false, bool combinable = false);
+    Enum(const QString &name, const QStringList &enums, bool isQEnum = false,
+         bool combinable = false);
 
     /**
      * Destroys the enum.
@@ -62,13 +63,13 @@ class KODE_EXPORT Enum
     /**
      * Assignment operator.
      */
-    Enum& operator=( const Enum &other );
+    Enum &operator=(const Enum &other);
 
     /**
      * Return name of enum.
-    */
+     */
     QString name() const;
-    
+
     /**
      * Returns the textual presentation of the enum.
      */
@@ -77,11 +78,10 @@ class KODE_EXPORT Enum
     KODE::Function parserMethod() const;
     KODE::Function writerMethod() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif

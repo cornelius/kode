@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -27,52 +27,42 @@ namespace XSD {
 class XSDType::Private
 {
 public:
-    Private()
-      : mContentModel( SIMPLE )
-    {}
+    Private() : mContentModel(SIMPLE) {}
 
     ContentModel mContentModel;
 };
 
-XSDType::XSDType()
-  : XmlElement(), d(new Private)
-{
-}
+XSDType::XSDType() : XmlElement(), d(new Private) {}
 
-XSDType::XSDType( const QString &nameSpace )
-  : XmlElement( nameSpace ), d(new Private)
-{
-}
+XSDType::XSDType(const QString &nameSpace) : XmlElement(nameSpace), d(new Private) {}
 
-XSDType::XSDType( const XSDType &other )
-  : XmlElement( other ), d(new Private)
+XSDType::XSDType(const XSDType &other) : XmlElement(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 XSDType::~XSDType()
 {
-  delete d;
+    delete d;
 }
 
-XSDType &XSDType::operator=( const XSDType &other )
+XSDType &XSDType::operator=(const XSDType &other)
 {
-  if ( this == &other )
+    if (this == &other)
+        return *this;
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void XSDType::setContentModel( ContentModel contentModel )
+void XSDType::setContentModel(ContentModel contentModel)
 {
-  d->mContentModel = contentModel;
+    d->mContentModel = contentModel;
 }
 
 XSDType::ContentModel XSDType::contentModel() const
 {
-  return d->mContentModel;
+    return d->mContentModel;
 }
-
 }

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE WSCL Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -23,41 +23,36 @@
 
 using namespace WSCL;
 
-Transition::Transition()
-{
-}
+Transition::Transition() {}
 
-Transition::~Transition()
-{
-}
+Transition::~Transition() {}
 
-void Transition::setSourceInteraction( const QString &sourceInteraction )
+void Transition::setSourceInteraction(const QString &sourceInteraction)
 {
-  mSourceInteraction = sourceInteraction;
+    mSourceInteraction = sourceInteraction;
 }
 
 QString Transition::sourceInteraction() const
 {
-  return mSourceInteraction;
+    return mSourceInteraction;
 }
 
-void Transition::setDestinationInteraction( const QString &destinationInteraction )
+void Transition::setDestinationInteraction(const QString &destinationInteraction)
 {
-  mDestinationInteraction = destinationInteraction;
+    mDestinationInteraction = destinationInteraction;
 }
 
 QString Transition::destinationInteraction() const
 {
-  return mDestinationInteraction;
+    return mDestinationInteraction;
 }
 
-void Transition::setSourceInteractionCondition( const QString &sourceInteractionCondition )
+void Transition::setSourceInteractionCondition(const QString &sourceInteractionCondition)
 {
-  mSourceInteractionCondition = sourceInteractionCondition;
+    mSourceInteractionCondition = sourceInteractionCondition;
 }
 
 QString Transition::sourceInteractionCondition() const
 {
-  return mSourceInteractionCondition;
+    return mSourceInteractionCondition;
 }
-

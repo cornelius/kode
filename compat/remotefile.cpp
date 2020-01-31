@@ -24,57 +24,54 @@
 
 #include <QWidget>
 
-RemoteFile::RemoteFile( QWidget *parent )
-  : QObject( parent )
+RemoteFile::RemoteFile(QWidget *parent) : QObject(parent) {}
+
+void RemoteFile::get(const KUrl &)
 {
+    kError() << "RemoteFile::get() not implemented";
 }
 
-void RemoteFile::get( const KUrl & )
+void RemoteFile::put(const KUrl &, const QString &data)
 {
-  kError() <<"RemoteFile::get() not implemented";
+    kError() << "RemoteFile::put() not implemented";
 }
 
-void RemoteFile::put( const KUrl &, const QString &data )
+void RemoteFile::put(const QString &data)
 {
-  kError() <<"RemoteFile::put() not implemented";
-}
-
-void RemoteFile::put( const QString &data )
-{
-  put( mUrl, data );
+    put(mUrl, data);
 }
 
 QString RemoteFile::data() const
 {
-  return mData;
+    return mData;
 }
 
 QString RemoteFile::putResult() const
 {
-  return mPutResult;
+    return mPutResult;
 }
 
-void RemoteFile::setUrl( const KUrl &url )
+void RemoteFile::setUrl(const KUrl &url)
 {
-  mUrl = url;
+    mUrl = url;
 }
 
 KUrl RemoteFile::url() const
 {
-  return mUrl;
+    return mUrl;
 }
 
 bool RemoteFile::isValid() const
 {
-  return mUrl.isValid();
+    return mUrl.isValid();
 }
 
 bool RemoteFile::isLoading() const
 {
-  return false;
+    return false;
 }
 
 bool RemoteFile::isLoaded() const
 {
-  return false;
+    return false;
 }

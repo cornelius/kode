@@ -33,135 +33,130 @@
 
 using namespace KXForms;
 
-FormDialog::FormDialog( QWidget *parent, const QString &title, Manager *m )
-  : KDialog( parent ),
-    mFormGui( 0 ), mManager( m )
+FormDialog::FormDialog(QWidget *parent, const QString &title, Manager *m)
+    : KDialog(parent), mFormGui(0), mManager(m)
 {
-  QFrame *topFrame = new QFrame( this );
-  setMainWidget( topFrame );
-  mTopLayout = new QVBoxLayout( topFrame );
+    QFrame *topFrame = new QFrame(this);
+    setMainWidget(topFrame);
+    mTopLayout = new QVBoxLayout(topFrame);
 
-  setCaption( title );
-  setButtons( Ok );
-  connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
+    setCaption(title);
+    setButtons(Ok);
+    connect(this, SIGNAL(okClicked()), SLOT(slotOk()));
 }
 
-void FormDialog::setGui( FormGui *gui )
+void FormDialog::setGui(FormGui *gui)
 {
-  mTopLayout->addWidget( gui );
-  mFormGui = gui;
+    mTopLayout->addWidget(gui);
+    mFormGui = gui;
 }
 
 void FormDialog::slotOk()
 {
-  kDebug() <<"FormDialog::slotOk()";
+    kDebug() << "FormDialog::slotOk()";
 
-  mFormGui->saveData();
+    mFormGui->saveData();
 
-  mManager->unregisterGui( mFormGui );
+    mManager->unregisterGui(mFormGui);
 
-  emit aboutToClose();
+    emit aboutToClose();
 
-  accept();
+    accept();
 }
 
+GuiHandlerDialogs::GuiHandlerDialogs(Manager *m) : GuiHandler(m), mRootGui(0) {}
 
-GuiHandlerDialogs::GuiHandlerDialogs( Manager *m )
-  : GuiHandler( m ), mRootGui( 0 )
+QWidget *GuiHandlerDialogs::createRootGui(QWidget *parent)
 {
+    kDebug() << "GuiHandlerDialogs::createRootGui()";
+
+    Form *f = manager()->rootForm();
+
+    if (!f) {
+        KMessageBox::sorry(parent, i18n("Root form not found."));
+        return 0;
+    }
+
+    FormGui *gui = createGui(f, parent);
+
+    gui->setRef('/' + f->ref());
+    gui->parseElement(f->element());
+
+    if (manager()->hasData()) {
+        kDebug() << "Manager::createGui() Load data on creation";
+        manager()->loadData(gui);
+    }
+
+    mRootGui = gui;
+    mWidgetStack.push_back(gui);
+    return gui;
 }
 
-QWidget *GuiHandlerDialogs::createRootGui( QWidget *parent )
+void GuiHandlerDialogs::createGui(const Reference &ref, QWidget *parent)
 {
-  kDebug() <<"GuiHandlerDialogs::createRootGui()";
+    kDebug() << "GuiHandlerDialogs::createGui() ref: '" << ref.toString() << "'";
 
-  Form *f = manager()->rootForm();
+    if (ref.isEmpty()) {
+        KMessageBox::sorry(parent, i18n("No reference."));
+        return;
+    }
 
-  if ( !f ) {
-    KMessageBox::sorry( parent, i18n("Root form not found.") );
-    return 0;
-  }
+    QString r = ref.segments().last().name();
 
-  FormGui *gui = createGui( f, parent );
+    Form *f = manager()->form(r);
 
-  gui->setRef( '/' + f->ref() );
-  gui->parseElement( f->element() );
+    if (!f) {
+        KMessageBox::sorry(parent, i18n("Form '%1' not found.", ref.toString()));
+        return;
+    }
 
-  if ( manager()->hasData() ) {
-    kDebug() <<"Manager::createGui() Load data on creation";
-    manager()->loadData( gui );
-  }
+    FormDialog dlg(parent, i18n("Edit %1", ref.toString()), manager());
+    connect(&dlg, SIGNAL(aboutToClose()), this, SLOT(slotDialogClosed()));
 
-  mRootGui = gui;
-  mWidgetStack.push_back( gui );
-  return gui;
+    FormGui *gui = createGui(f, dlg.mainWidget());
+    if (!gui) {
+        KMessageBox::sorry(parent, i18n("Unable to create GUI for '%1'.", ref.toString()));
+        return;
+    }
+
+    gui->setRef(ref);
+    gui->parseElement(f->element());
+
+    dlg.setGui(gui);
+
+    if (manager()->hasData()) {
+        kDebug() << "Manager::createGui() Load data on creation";
+        manager()->loadData(gui);
+    }
+
+    mWidgetStack.push_back(gui);
+    dlg.exec();
 }
 
-void GuiHandlerDialogs::createGui( const Reference &ref, QWidget *parent )
+FormGui *GuiHandlerDialogs::createGui(Form *form, QWidget *parent)
 {
-  kDebug() <<"GuiHandlerDialogs::createGui() ref: '" << ref.toString() <<"'";
+    if (!form) {
+        kError() << "KXForms::Manager::createGui(): form is null.";
+        return 0;
+    }
 
-  if ( ref.isEmpty() ) {
-    KMessageBox::sorry( parent, i18n("No reference.") );
-    return;
-  }
+    kDebug() << "Manager::createGui() form: '" << form->ref() << "'";
 
-  QString r = ref.segments().last().name();
+    if (mRootGui)
+        mRootGui->saveData();
 
-  Form *f = manager()->form( r );
+    FormGui *gui = new FormGui(form->label(), manager(), parent);
+    if (gui)
+        manager()->registerGui(gui);
 
-  if ( !f ) {
-    KMessageBox::sorry( parent, i18n("Form '%1' not found.", ref.toString() ) );
-    return;
-  }
-
-  FormDialog dlg( parent, i18n("Edit %1", ref.toString() ), manager() );
-  connect( &dlg, SIGNAL(aboutToClose()), this, SLOT(slotDialogClosed()) );
-
-  FormGui *gui = createGui( f, dlg.mainWidget() );
-  if ( !gui ) {
-    KMessageBox::sorry( parent, i18n("Unable to create GUI for '%1'.",
-        ref.toString() ) );
-    return;
-  }
-
-  gui->setRef( ref );
-  gui->parseElement( f->element() );
-
-  dlg.setGui( gui );
-
-  if ( manager()->hasData() ) {
-    kDebug() <<"Manager::createGui() Load data on creation";
-    manager()->loadData( gui );
-  }
-
-  mWidgetStack.push_back( gui );
-  dlg.exec();
-}
-
-FormGui *GuiHandlerDialogs::createGui( Form *form, QWidget *parent )
-{
-  if ( !form ) {
-    kError() <<"KXForms::Manager::createGui(): form is null.";
-    return 0;
-  }
-
-  kDebug() <<"Manager::createGui() form: '" << form->ref() <<"'";
-
-  if( mRootGui )
-    mRootGui->saveData();
-
-  FormGui *gui = new FormGui( form->label(), manager(), parent );
-  if ( gui ) manager()->registerGui( gui );
-
-  return gui;
+    return gui;
 }
 
 void GuiHandlerDialogs::slotDialogClosed()
 {
-  mWidgetStack.pop_back();
-  if( mRootGui )
-    manager()->loadData( mRootGui );
+    mWidgetStack.pop_back();
+    if (mRootGui)
+        manager()->loadData(mRootGui);
 }
 
 #include "guihandlerdialogs.moc"

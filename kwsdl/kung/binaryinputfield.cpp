@@ -39,152 +39,153 @@
 
 #include "binaryinputfield.h"
 
-BinaryInputField::BinaryInputField( const QString &name, const QString &typeName, const XSD::SimpleType *type )
-  : SimpleInputField( name, type ),
-    mValue( 0 ), mTypeName( typeName )
+BinaryInputField::BinaryInputField(const QString &name, const QString &typeName,
+                                   const XSD::SimpleType *type)
+    : SimpleInputField(name, type), mValue(0), mTypeName(typeName)
 {
 }
 
-void BinaryInputField::setXMLData( const QDomElement &element )
+void BinaryInputField::setXMLData(const QDomElement &element)
 {
-  if ( mName != element.tagName() ) {
-    qDebug( "BinaryInputField: Wrong dom element passed: expected %s, got %s", qPrintable( mName ), qPrintable( element.tagName() ) );
-    return;
-  }
+    if (mName != element.tagName()) {
+        qDebug("BinaryInputField: Wrong dom element passed: expected %s, got %s", qPrintable(mName),
+               qPrintable(element.tagName()));
+        return;
+    }
 
-  setData( element.text() );
+    setData(element.text());
 }
 
-void BinaryInputField::xmlData( QDomDocument &document, QDomElement &parent )
+void BinaryInputField::xmlData(QDomDocument &document, QDomElement &parent)
 {
-  QDomElement element = document.createElement( mName );
-  element.setAttribute( "xsi:type", "xsd:" + mTypeName );
-  QDomText text = document.createTextNode( data() );
-  element.appendChild( text );
+    QDomElement element = document.createElement(mName);
+    element.setAttribute("xsi:type", "xsd:" + mTypeName);
+    QDomText text = document.createTextNode(data());
+    element.appendChild(text);
 
-  parent.appendChild( element );
+    parent.appendChild(element);
 }
 
-void BinaryInputField::setData( const QString &data )
+void BinaryInputField::setData(const QString &data)
 {
-  mValue = QByteArray::fromBase64( data.toLatin1() );
+    mValue = QByteArray::fromBase64(data.toLatin1());
 }
 
 QString BinaryInputField::data() const
 {
-  return QString::fromLatin1( mValue.toBase64() );
+    return QString::fromLatin1(mValue.toBase64());
 }
 
-QWidget *BinaryInputField::createWidget( QWidget *parent )
+QWidget *BinaryInputField::createWidget(QWidget *parent)
 {
-  mInputWidget = new BinaryWidget( parent );
+    mInputWidget = new BinaryWidget(parent);
 
-  if ( !mValue.isEmpty() )
-    mInputWidget->setData( mValue );
+    if (!mValue.isEmpty())
+        mInputWidget->setData(mValue);
 
-  return mInputWidget;
+    return mInputWidget;
 }
 
-void BinaryInputField::valueChanged( const QByteArray &value )
+void BinaryInputField::valueChanged(const QByteArray &value)
 {
-  mValue = value;
+    mValue = value;
 
-  emit modified();
+    emit modified();
 }
 
-
-BinaryWidget::BinaryWidget( QWidget *parent )
-  : QWidget( parent ),
-    mMainWidget( 0 )
+BinaryWidget::BinaryWidget(QWidget *parent) : QWidget(parent), mMainWidget(0)
 {
-  setObjectName( "BinaryWidget" );
+    setObjectName("BinaryWidget");
 
-  mLayout = new QGridLayout( this );
-  mLayout->setSpacing( 6 );
-  mLayout->setMargin( 11 );
+    mLayout = new QGridLayout(this);
+    mLayout->setSpacing(6);
+    mLayout->setMargin(11);
 
-  mLoadButton = new QPushButton( i18n( "Load..." ), this );
-  mSaveButton = new QPushButton( i18n( "Save..." ), this );
-  mSaveButton->setEnabled( false );
+    mLoadButton = new QPushButton(i18n("Load..."), this);
+    mSaveButton = new QPushButton(i18n("Save..."), this);
+    mSaveButton->setEnabled(false);
 
-  mLayout->addWidget( mLoadButton, 0, 1 );
-  mLayout->addWidget( mSaveButton, 1, 1 );
+    mLayout->addWidget(mLoadButton, 0, 1);
+    mLayout->addWidget(mSaveButton, 1, 1);
 
-  connect( mLoadButton, SIGNAL( clicked() ), SLOT( load() ) );
-  connect( mSaveButton, SIGNAL( clicked() ), SLOT( save() ) );
+    connect(mLoadButton, SIGNAL(clicked()), SLOT(load()));
+    connect(mSaveButton, SIGNAL(clicked()), SLOT(save()));
 }
 
-void BinaryWidget::setData( const QByteArray &data )
+void BinaryWidget::setData(const QByteArray &data)
 {
-  delete mMainWidget;
+    delete mMainWidget;
 
-  QString mimetype;
-  KMimeType::Ptr mime = KMimeType::findByContent( data );
-  if ( mime && !mime->isDefault() )
-    mimetype = mime->name();
+    QString mimetype;
+    KMimeType::Ptr mime = KMimeType::findByContent(data);
+    if (mime && !mime->isDefault())
+        mimetype = mime->name();
 
-  if ( !mimetype.isEmpty() ) {
-    KParts::ReadOnlyPart *part = KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>( mimetype, QString(), this, this );
-    if ( part ) {
-      KTemporaryFile file;
-      file.setAutoRemove(false);
-      file.open();
-      file.write( data );
-      file.flush();
-      part->openUrl( KUrl( file.fileName() ) );
-      mMainWidget = part->widget();
+    if (!mimetype.isEmpty()) {
+        KParts::ReadOnlyPart *part =
+                KParts::ComponentFactory::createPartInstanceFromQuery<KParts::ReadOnlyPart>(
+                        mimetype, QString(), this, this);
+        if (part) {
+            KTemporaryFile file;
+            file.setAutoRemove(false);
+            file.open();
+            file.write(data);
+            file.flush();
+            part->openUrl(KUrl(file.fileName()));
+            mMainWidget = part->widget();
+        } else {
+            mMainWidget = new QLabel(
+                    i18n("No part found for visualization of mimetype %1", mimetype), this);
+        }
+
+        mData = data;
+        mSaveButton->setEnabled(true);
     } else {
-      mMainWidget = new QLabel( i18n( "No part found for visualization of mimetype %1", mimetype ), this );
+        mMainWidget = new QLabel(i18n("Got data of unknown mimetype"), this);
     }
 
-    mData = data;
-    mSaveButton->setEnabled( true );
-  } else {
-    mMainWidget = new QLabel( i18n( "Got data of unknown mimetype" ), this );
-  }
-
-  mLayout->addWidget( mMainWidget, 0, 0, 3, 1);
-  mMainWidget->show();
+    mLayout->addWidget(mMainWidget, 0, 0, 3, 1);
+    mMainWidget->show();
 }
 
 void BinaryWidget::load()
 {
-  KUrl url = KFileDialog::getOpenUrl( QString(), QString(), this );
-  if ( url.isEmpty() )
-    return;
+    KUrl url = KFileDialog::getOpenUrl(QString(), QString(), this);
+    if (url.isEmpty())
+        return;
 
-  QString tempFile;
-  if ( KIO::NetAccess::download( url, tempFile, this ) ) {
-    QFile file( tempFile );
-    if ( !file.open( QIODevice::ReadOnly ) ) {
-      KMessageBox::error( this, i18n( "Unable to open file %1", url.url() ) );
-      return;
-    }
+    QString tempFile;
+    if (KIO::NetAccess::download(url, tempFile, this)) {
+        QFile file(tempFile);
+        if (!file.open(QIODevice::ReadOnly)) {
+            KMessageBox::error(this, i18n("Unable to open file %1", url.url()));
+            return;
+        }
 
-    QByteArray data = file.readAll();
-    setData( data );
+        QByteArray data = file.readAll();
+        setData(data);
 
-    file.close();
-    KIO::NetAccess::removeTempFile( tempFile );
+        file.close();
+        KIO::NetAccess::removeTempFile(tempFile);
 
-    emit valueChanged( data );
-  } else
-    KMessageBox::error( this, KIO::NetAccess::lastErrorString() );
+        emit valueChanged(data);
+    } else
+        KMessageBox::error(this, KIO::NetAccess::lastErrorString());
 }
 
 void BinaryWidget::save()
 {
-  KUrl url = KFileDialog::getSaveUrl( QString(), QString(), this );
-  if ( url.isEmpty() )
-    return;
+    KUrl url = KFileDialog::getSaveUrl(QString(), QString(), this);
+    if (url.isEmpty())
+        return;
 
-  KTemporaryFile tempFile;
-  tempFile.open();
-  tempFile.write( mData );
-  tempFile.flush();
+    KTemporaryFile tempFile;
+    tempFile.open();
+    tempFile.write(mData);
+    tempFile.flush();
 
-  if ( !KIO::NetAccess::upload( tempFile.fileName(), url, this ) )
-    KMessageBox::error( this, KIO::NetAccess::lastErrorString() );
+    if (!KIO::NetAccess::upload(tempFile.fileName(), url, this))
+        KMessageBox::error(this, KIO::NetAccess::lastErrorString());
 }
 
 #include "binaryinputfield.moc"

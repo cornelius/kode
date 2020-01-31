@@ -27,8 +27,8 @@
 
 class KSCHEMAWIDGETS_EXPORT OutputDialog : public KDialog
 {
-  public:
-    OutputDialog( QWidget *page, QWidget *parent );
+public:
+    OutputDialog(QWidget *page, QWidget *parent);
 };
 
 #endif

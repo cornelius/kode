@@ -20,9 +20,8 @@
 
 #include "kinputdialog.h"
 
-QString KInputDialog::getItem( const QString &caption, const QString &label,
-      const QStringList &list, int current, bool editable,
-      bool *ok, QWidget *parent )
+QString KInputDialog::getItem(const QString &caption, const QString &label, const QStringList &list,
+                              int current, bool editable, bool *ok, QWidget *parent)
 {
-  return QString();
+    return QString();
 }

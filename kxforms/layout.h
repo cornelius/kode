@@ -31,58 +31,67 @@ class GuiElement;
 class Layout
 {
 public:
-  class Element {
-  public:
-    Element(  GuiElement *e ): mElement( e ), mRight(0), mLeft(0), mAbove(0), mBelow(0) {}
-    
-    GuiElement *element() const { return mElement; }
+    class Element
+    {
+    public:
+        Element(GuiElement *e) : mElement(e), mRight(0), mLeft(0), mAbove(0), mBelow(0) {}
 
-    Element *rightElement() const { return mRight; }
-    void setRight( Element *e ) { mRight = e; mChildren.append( e ); }
-    Element *leftElement() const { return mLeft; }
-    void setLeft( Element *e ) { mLeft = e; }
-    Element *aboveElement() const { return mAbove; }
-    void setAbove( Element *e ) { mAbove = e; }
-    Element *belowElement() const { return mBelow; }
-    void setBelow( Element *e ) { mBelow = e; mChildren.append( e ); }
+        GuiElement *element() const { return mElement; }
 
-    QList< Element *> children() const { return mChildren; }
+        Element *rightElement() const { return mRight; }
+        void setRight(Element *e)
+        {
+            mRight = e;
+            mChildren.append(e);
+        }
+        Element *leftElement() const { return mLeft; }
+        void setLeft(Element *e) { mLeft = e; }
+        Element *aboveElement() const { return mAbove; }
+        void setAbove(Element *e) { mAbove = e; }
+        Element *belowElement() const { return mBelow; }
+        void setBelow(Element *e)
+        {
+            mBelow = e;
+            mChildren.append(e);
+        }
 
+        QList<Element *> children() const { return mChildren; }
+
+        int width() const;
+        int height() const;
+        int space() const;
+
+    private:
+        GuiElement *mElement;
+        Element *mRight;
+        Element *mLeft;
+        Element *mAbove;
+        Element *mBelow;
+        QList<Element *> mChildren;
+    };
+
+    Layout() : mOrdered(false) {}
+    ~Layout();
+
+    QList<Element *> orderedList() const;
+    QList<GuiElement *> elements() const { return mElements; }
+
+    void addElement(GuiElement *e);
+
+    void order();
+    int space() const;
     int width() const;
     int height() const;
-    int space() const;
-  private:
-    GuiElement *mElement;
-    Element *mRight;
-    Element *mLeft;
-    Element *mAbove;
-    Element *mBelow;
-    QList< Element *> mChildren;
-  };
-
-  Layout(): mOrdered( false ) {}
-  ~Layout();
-
-  QList< Element * > orderedList() const;
-  QList< GuiElement *> elements() const { return mElements; }
-  
-  void addElement( GuiElement *e );
-
-  void order();
-  int space() const;
-  int width() const;
-  int height() const;
 
 private:
-  Element *findElement( const Reference &ref ) const;
-  Element *findElement( Element *e, const Reference &ref ) const;
+    Element *findElement(const Reference &ref) const;
+    Element *findElement(Element *e, const Reference &ref) const;
 
 private:
-  QList< Element * > mOrderedList;
-  QList< GuiElement * > mElements;
-  bool mOrdered;
+    QList<Element *> mOrderedList;
+    QList<GuiElement *> mElements;
+    bool mOrdered;
 };
-
 }
 
 #endif

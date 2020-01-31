@@ -26,16 +26,16 @@
 
 class SimpleBaseInputField : public SimpleInputField
 {
-  public:
-    SimpleBaseInputField( const QString &name, const XSD::SimpleType *type );
+public:
+    SimpleBaseInputField(const QString &name, const XSD::SimpleType *type);
 
-    virtual void setXMLData( const QDomElement &element );
-    virtual void xmlData( QDomDocument &document, QDomElement &parent );
+    virtual void setXMLData(const QDomElement &element);
+    virtual void xmlData(QDomDocument &document, QDomElement &parent);
 
-    virtual void setData( const QString &data );
+    virtual void setData(const QString &data);
     virtual QString data() const;
 
-    virtual QWidget *createWidget( QWidget *parent );
+    virtual QWidget *createWidget(QWidget *parent);
 };
 
 #endif

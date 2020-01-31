@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -33,47 +33,46 @@ namespace XSD {
 
 class SCHEMA_EXPORT Attribute : public XmlElement
 {
-  public:
+public:
     typedef QList<Attribute> List;
 
     Attribute();
-    Attribute( const QString &nameSpace );
-    Attribute( const Attribute &other );
+    Attribute(const QString &nameSpace);
+    Attribute(const Attribute &other);
     ~Attribute();
 
-    Attribute &operator=( const Attribute &other );
+    Attribute &operator=(const Attribute &other);
 
-    void setType( const QName &type );
+    void setType(const QName &type);
     QName type() const;
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
-    void setDefaultValue( const QString &defaultValue );
+    void setDefaultValue(const QString &defaultValue);
     QString defaultValue() const;
 
-    void setFixedValue( const QString &fixedValue );
+    void setFixedValue(const QString &fixedValue);
     QString fixedValue() const;
 
-    void setIsQualified( bool isQualified );
+    void setIsQualified(bool isQualified);
     bool isQualified() const;
 
-    void setIsUsed( bool isUsed );
+    void setIsUsed(bool isUsed);
     bool isUsed() const;
 
-    void setReference( const QName &reference );
+    void setReference(const QName &reference);
     QName reference() const;
 
     bool isResolved() const;
 
-    void setArrayType( const QName &arrayType );
+    void setArrayType(const QName &arrayType);
     QName arrayType() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
-
 }
 
 #endif
