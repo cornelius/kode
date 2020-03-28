@@ -19,6 +19,7 @@ set(kode_LIB_SRCS
    function.cpp
    variable.cpp
    membervariable.cpp
+   namer.cpp
    typedef.cpp
    statemachine.cpp
    automakefile.cpp )

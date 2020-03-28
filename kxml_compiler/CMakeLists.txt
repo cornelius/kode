@@ -27,7 +27,6 @@ install(
 
 set( kxml_compiler_SRCS
   classdescription.cpp
-  namer.cpp
   writercreator.cpp
   creator.cpp
   kxml_compiler.cpp
