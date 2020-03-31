@@ -8,7 +8,6 @@ difference.
 Kode consists of three tools:
 
 * kxml_compiler, a code generator for XML parsing and writing
-* kwsdl_compiler, a code generator for clients using a SOAP API
 * kxforms, a graphical user interface for editing XML data
 
 They make use of two libraries:
@@ -16,7 +15,7 @@ They make use of two libraries:
 * schema, a library for reading XML Schema
 * libkode, a library supporting C++ code generation
 
-kxml_compiler and kwsdl_compiler are in use by a number of projects. They rely
+kxml_compiler is in use by a number of projects. They rely
 on the code generation and schema library. The code generation is fun, the
 schema parsing is the harder part. It is an interesting problem to solve,
 though.

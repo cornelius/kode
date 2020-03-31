@@ -93,14 +93,4 @@
 #    endif
 #endif
 
-#ifndef KWSDL_EXPORT
-#    if defined(MAKE_WSDL_LIB)
-/* We are building this library */
-#        define KWSDL_EXPORT Q_DECL_EXPORT
-#    else
-/* We are using this library */
-#        define KWSDL_EXPORT Q_DECL_IMPORT
-#    endif
-#endif
-
 #endif /* KODE_EXPORT_H */
