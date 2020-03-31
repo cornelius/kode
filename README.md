@@ -11,11 +11,6 @@ libkode is a helper library for programmatic generation of C++ code, the program
 kxml_compiler  is a tool for generation of C++ classes representing XML data described by RelaxNG , W3C
 Schema, or example XML schemas.
 
-## kwsdl
-
-The subdirectory kwsdl contains various tools for accessing web services
-specified through WSDL descriptions.
-
 # Developer information
 
 ## Coding style
