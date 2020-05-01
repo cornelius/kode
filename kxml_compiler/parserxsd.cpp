@@ -185,6 +185,8 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
                     a.setType(Schema::Node::Date);
                 } else if (attribute.type().qname() == "xs:dateTime") {
                     a.setType(Schema::Node::DateTime);
+                } else if (attribute.type().qname() == "xs:unsignedLong") {
+                    a.setType(Schema::Node::UnsignedLong);
                 } else {
                     QName name = attribute.type();
                     XSD::SimpleType simpleType = types.simpleType(name, element.name());
