@@ -183,6 +183,8 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
                     a.setType(Schema::Node::Boolean);
                 } else if (attribute.type().qname() == "xs:date") {
                     a.setType(Schema::Node::Date);
+                } else if (attribute.type().qname() == "xs:dateTime") {
+                    a.setType(Schema::Node::DateTime);
                 } else {
                     QName name = attribute.type();
                     XSD::SimpleType simpleType = types.simpleType(name, element.name());
