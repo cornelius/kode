@@ -98,11 +98,12 @@ public:
         Int, // xs:int -> signed 32-bit integer
         Date,
         Enumeration,
-        ComplexType,
         DateTime,
         Decimal,
-        Boolean
+        Boolean,
+        ComplexType // always keep this as a last
     };
+
     Node();
     virtual ~Node();
 

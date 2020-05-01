@@ -292,7 +292,9 @@ int main(int argc, char **argv)
         qDebug() << "Create classes";
     }
     foreach (Schema::Element e, schemaDocument.usedElements()) {
-        if (!e.text()) {
+        // only generate classes for the simple types (nodes with no childs/attributes)
+        if (!e.text()
+            && !(e.attributeRelations().count() == 0 && e.elementRelations().count() == 0)) {
             c.createClass(e);
         }
     }

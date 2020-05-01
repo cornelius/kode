@@ -260,7 +260,8 @@ ClassDescription Creator::createClassDescription(const Schema::Element &element)
 
         QString targetClassName = Namer::getClassName(targetElement.name());
 
-        if (targetElement.text() && !targetElement.hasAttributeRelations() && !r.isList()) {
+        if ((targetElement.text() || targetElement.type() < Schema::Element::ComplexType)
+            && !targetElement.hasAttributeRelations() && !r.isList()) {
             if (mVerbose) {
                 qDebug() << "  FLATTEN";
             }

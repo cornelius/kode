@@ -370,6 +370,7 @@ void Parser::parseCompositor(ParserContext *context, const QDomElement &element,
         foreach (Element e, newElements) {
             e.setCompositor(compositor);
             ct.addElement(e);
+            d->mElements.append(e);
         }
     }
 }
@@ -734,7 +735,7 @@ void Parser::addGlobalElement(const Element &newElement)
     }
 
     if (!found) {
-        d->mElements.append(newElement);
+        d->mElements.prepend(newElement);
     }
 }
 

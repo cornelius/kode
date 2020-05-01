@@ -96,7 +96,8 @@ void ParserCreatorDom::createElementParser(KODE::Class &c, const Schema::Element
 
             Schema::Element targetElement = creator()->document().element((*it).target());
 
-            if (targetElement.text() && !targetElement.hasAttributeRelations() && !(*it).isList()) {
+            if ((targetElement.text() || targetElement.type() < Schema::Node::ComplexType)
+                && !targetElement.hasAttributeRelations() && !(*it).isList()) {
                 QString data = stringToDataConverter("e.text()", targetElement.type());
                 code += "result.set" + className + "( " + data + " );";
             } else {
