@@ -1,0 +1,3 @@
+[submodule "libkode"]
+	path = libkode
+	url = git@github.com:cornelius/libkode.git

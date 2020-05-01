@@ -190,7 +190,7 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
                 }
             }
 
-            a.setRequired(attribute.isUsed());
+            a.setRequired(attribute.isRequired());
             a.setDefaultValue(attribute.defaultValue());
 
             mDocument.addAttribute(a);

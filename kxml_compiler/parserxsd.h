@@ -31,7 +31,7 @@
 
 namespace RNG {
 
-class KSCHEMA_EXPORT ParserXsd
+class SCHEMA_EXPORT ParserXsd
 {
 public:
     ParserXsd();

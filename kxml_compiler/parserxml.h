@@ -32,7 +32,7 @@
 
 namespace KXML {
 
-class KSCHEMA_EXPORT ParserXml
+class SCHEMA_EXPORT ParserXml
 {
 public:
     ParserXml();

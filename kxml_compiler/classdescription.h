@@ -25,7 +25,7 @@
 #include <QStringList>
 #include <QList>
 
-#include <libkode/enum.h>
+#include <enum.h>
 
 class ClassProperty
 {
