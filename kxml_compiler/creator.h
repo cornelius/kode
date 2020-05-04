@@ -24,10 +24,10 @@
 #include "schema.h"
 #include "classdescription.h"
 
-#include <libkode/code.h>
-#include <libkode/printer.h>
-#include <libkode/typedef.h>
-#include <libkode/file.h>
+#include <code.h>
+#include <printer.h>
+#include <typedef.h>
+#include <file.h>
 
 #include <QDebug>
 

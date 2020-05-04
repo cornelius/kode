@@ -26,10 +26,10 @@
 #include "parsercreatordom.h"
 #include "writercreator.h"
 
-#include <libkode/code.h>
-#include <libkode/printer.h>
-#include <libkode/typedef.h>
-#include <libkode/statemachine.h>
+#include <code_generation/code.h>
+#include <code_generation/printer.h>
+#include <code_generation/typedef.h>
+#include <code_generation/statemachine.h>
 
 #include <QDebug>
 

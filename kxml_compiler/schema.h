@@ -26,11 +26,11 @@
 #include <QStringList>
 #include <QDomElement>
 
-#include "../common/kode_export.h"
+#include <kode_export.h>
 
 namespace Schema {
 
-class KSCHEMA_EXPORT Relation
+class SCHEMA_EXPORT Relation
 {
 public:
     typedef QList<Relation> List;
@@ -67,7 +67,7 @@ private:
     QString mChoice;
 };
 
-class KSCHEMA_EXPORT Annotatable
+class SCHEMA_EXPORT Annotatable
 {
 public:
     void setDocumentation(const QString &);
@@ -86,7 +86,7 @@ private:
     QList<QDomElement> mAnnotations;
 };
 
-class KSCHEMA_EXPORT Node : public Annotatable
+class SCHEMA_EXPORT Node : public Annotatable
 {
 public:
     enum Type {
@@ -134,7 +134,7 @@ private:
     QStringList mEnumerationValues;
 };
 
-class KSCHEMA_EXPORT Attribute : public Node
+class SCHEMA_EXPORT Attribute : public Node
 {
 public:
     typedef QList<Attribute> List;
@@ -157,7 +157,7 @@ private:
     QString mElementName;
 };
 
-class KSCHEMA_EXPORT Element : public Node
+class SCHEMA_EXPORT Element : public Node
 {
 public:
     typedef QList<Element> List;
@@ -197,7 +197,7 @@ private:
     Relation mNullRelation;
 };
 
-class KSCHEMA_EXPORT Document : public Annotatable
+class SCHEMA_EXPORT Document : public Annotatable
 {
 public:
     Document();

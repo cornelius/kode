@@ -30,7 +30,7 @@
 
 namespace RNG {
 
-class KSCHEMA_EXPORT Pattern
+class SCHEMA_EXPORT Pattern
 {
 public:
     Pattern();
@@ -47,7 +47,7 @@ public:
     bool choice;
 };
 
-class KSCHEMA_EXPORT Reference
+class SCHEMA_EXPORT Reference
 {
 public:
     typedef QList<Reference *> List;
@@ -60,7 +60,7 @@ public:
     bool substituted;
 };
 
-class KSCHEMA_EXPORT Attribute
+class SCHEMA_EXPORT Attribute
 {
 public:
     typedef QList<Attribute *> List;
@@ -71,7 +71,7 @@ public:
     Pattern pattern;
 };
 
-class KSCHEMA_EXPORT Element
+class SCHEMA_EXPORT Element
 {
 public:
     typedef QList<Element *> List;
@@ -87,7 +87,7 @@ public:
     bool isEmpty;
 };
 
-class KSCHEMA_EXPORT ParserRelaxng
+class SCHEMA_EXPORT ParserRelaxng
 {
 public:
     ParserRelaxng();

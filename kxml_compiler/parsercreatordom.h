@@ -25,7 +25,7 @@
 
 #include "creator.h"
 
-#include <libkode/class.h>
+#include <code_generation/class.h>
 
 class ParserCreatorDom : public ParserCreator
 {

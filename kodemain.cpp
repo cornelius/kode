@@ -19,7 +19,6 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "automakefile.h"
 #include "code.h"
 #include "license.h"
 #include "printer.h"

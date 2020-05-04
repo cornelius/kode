@@ -25,9 +25,9 @@
 #include "creator.h"
 #include "schema.h"
 
-#include <libkode/code.h>
-#include <libkode/printer.h>
-#include <libkode/typedef.h>
+#include <code_generation/code.h>
+#include <code_generation/printer.h>
+#include <code_generation/typedef.h>
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
@@ -307,7 +307,6 @@ int main(int argc, char **argv)
     c.setFilename(baseName);
 
     KODE::Printer printer;
-    printer.setVerbose(verbose);
     printer.setCreationWarning(true);
     printer.setGenerator(QCoreApplication::applicationName());
     printer.setOutputDirectory(baseDir);
