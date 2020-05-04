@@ -101,7 +101,8 @@ public:
         ComplexType,
         DateTime,
         Decimal,
-        Boolean
+        Boolean,
+        UnsignedLong // xs:unsignedLong -> Unsigned integer of 64 bits
     };
     Node();
     virtual ~Node();

@@ -332,6 +332,8 @@ QString ParserCreatorDom::stringToDataConverter(const QString &data, Schema::Nod
     QString converter;
     if (type == Schema::Element::Int) {
         converter = data + ".toInt()";
+    } else if (type == Schema::Element::UnsignedLong) {
+        converter = data + ".toULongLong()";
     } else if (type == Schema::Element::Integer) {
         converter = data + ".toLongLong()";
     } else if (type == Schema::Element::Decimal) {
