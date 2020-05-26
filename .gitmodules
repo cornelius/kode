@@ -1,3 +1,4 @@
 [submodule "libkode"]
 	path = libkode
-	url = git@github.com:cornelius/libkode.git
+	url = https://github.com/cornelius/libkode.git
+
