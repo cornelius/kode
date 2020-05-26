@@ -1,44 +1,57 @@
+set(KSCHEMA_SOURCES
+	parserrelaxng.cpp
+	parserxsd.cpp
+	parserxml.cpp
+	schema.cpp
+)
+set(KSCHEMA_HEADERS
+	parserrelaxng.h
+	parserxsd.h
+	parserxml.h
+	schema.h
+)
 
-add_subdirectory( tests )
+add_library(kschema SHARED ${KSCHEMA_SOURCES} ${KSCHEMA_HEADERS})
+target_link_libraries(kschema
+	Qt5::Xml
+	xmlschema
+	xmlcommon
+)
+
+#set_target_properties(kschema PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION})
+
+install(
+	TARGETS kschema
+	LIBRARY DESTINATION lib
+)
 
 ########### next target ###############
 
-set( kschema_LIB_SRCS
-    parserrelaxng.cpp
-    parserxsd.cpp
-    parserxml.cpp
-    schema.cpp
+set(KXML_COMPILER_SOURCES
+	classdescription.cpp
+	creator.cpp
+	kxml_compiler.cpp
+	parsercreatordom.cpp
+	writercreator.cpp
 )
 
-
-add_library( kschema SHARED ${kschema_LIB_SRCS} )
-
-target_link_libraries( kschema  schema kxmlcommon ${QT_QTXML_LIBRARY} )
-target_link_libraries( kschema LINK_INTERFACE_LIBRARIES schema kxmlcommon )
-
-set_target_properties( kschema PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
-
-install( 
-    TARGETS kschema  ${INSTALL_TARGETS_DEFAULT_ARGS} 
-    LIBRARY DESTINATION lib
+set(KXML_COMPILER_HEADERS
+	classdescription.h
+	creator.h
+	parsercreatordom.h
+	writercreator.h
 )
 
-########### next target ###############
+add_executable(kxml_compiler ${KXML_COMPILER_SOURCES} ${KXML_COMPILER_HEADERS})
 
-set( kxml_compiler_SRCS
-  classdescription.cpp
-  writercreator.cpp
-  creator.cpp
-  kxml_compiler.cpp
-  parsercreatordom.cpp
+target_link_libraries(kxml_compiler
+	kode
+	kschema
 )
 
-add_executable( kxml_compiler ${kxml_compiler_SRCS} )
-
-target_link_libraries( kxml_compiler kode kschema )
-
-install( 
-    TARGETS kxml_compiler ${INSTALL_TARGETS_DEFAULT_ARGS} 
-    RUNTIME DESTINATION bin
+install(
+	TARGETS kxml_compiler
+	RUNTIME DESTINATION bin
 )
 
+#add_subdirectory(tests)
