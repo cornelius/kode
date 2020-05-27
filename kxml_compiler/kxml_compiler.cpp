@@ -116,13 +116,13 @@ int main(int argc, char **argv)
     cmdLine.addOption(createCRUDFunctionsOption);
 
     QCommandLineOption outputFileName(
-            QStringLiteral("output-filename"),
+            "output-filename",
             QCoreApplication::translate("main",
                                         "Set the filename of the output files.\n"
                                         "If this options is set the basename of the generated "
-                                        "files will be the <output-filename> \n"
+                                        "files will be the <output-filename> "
                                         "instead of the basename of the source XML/XSD/RNG file.)"),
-            QStringLiteral("output-filename"), QString());
+            "output-filename", QString());
     cmdLine.addOption(outputFileName);
 
     QCommandLineOption generateQEnums(
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
             QCoreApplication::translate(
                     "main",
                     "Do not create XML generating methods to the generated classes\n"
-                    "(useful for applications which require onyl an XML parser code)."));
+                    "(useful for applications which require only an XML parser code)."));
     cmdLine.addOption(dontCreateWriteFunctionsOption);
 
     QCommandLineOption dontCreateParseFunctionsOption(
@@ -153,21 +153,21 @@ int main(int argc, char **argv)
     cmdLine.process(app);
 
     if (!cmdLine.parse(QCoreApplication::arguments())) {
-        qCritical() << cmdLine.errorText();
+        qCritical().noquote() << cmdLine.errorText();
         return -1;
     }
 
     if (cmdLine.isSet(dontCreateParseFunctionsOption)
         && cmdLine.isSet(dontCreateWriteFunctionsOption)) {
-        qCritical() << QCoreApplication::translate(
+        qCritical().noquote() << QCoreApplication::translate(
                 "main",
-                "It is not allowed to pass both dont-create-parse-functions\n"
+                "It is not allowed to pass both dont-create-parse-functions "
                 "and dont-create-write-functions together");
         return -1;
     }
 
     if (cmdLine.positionalArguments().count() < 1) {
-        qCritical() << "No filename argument passed";
+        qCritical().noquote() << QCoreApplication::translate("main", "No filename argument passed");
         return -1;
     }
 
@@ -187,7 +187,7 @@ int main(int argc, char **argv)
 
     QFile schemaFile(schemaFilename);
     if (!schemaFile.open(QIODevice::ReadOnly)) {
-        qCritical() << "Unable to open '" << schemaFilename << "'";
+        qCritical().noquote() << "Unable to open '" << schemaFilename << "'";
         return 1;
     }
 
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
         p.setVerbose(verbose);
         RNG::Element *start = p.parse(doc.documentElement());
         if (!start) {
-            qCritical() << "Could not find start element";
+            qCritical().noquote() << "Could not find start element";
             return 1;
         }
 
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
         schemaParser.setVerbose(verbose);
         schemaDocument = schemaParser.parse(schemaFile);
     } else {
-        qCritical() << "Unable to determine schema type.";
+        qCritical().noquote() << "Unable to determine schema type.";
         return 1;
     }
 
