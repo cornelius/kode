@@ -1,3 +1,7 @@
+!exists($$PWD/libkode/common) {
+    error("Please do git submodule update --init --recursive")
+}
+
 include(libkode/libkode.pri)
 
 INCLUDEPATH += libkode

@@ -11,6 +11,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/libkode/common")
+	message(FATAL_ERROR "Please do git submodule update --init --recursive")
+endif()
+
+
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5Network REQUIRED)
