@@ -150,6 +150,7 @@ int main(int argc, char **argv)
                     "Do not create XML parsing methods to the generated classes\n"
                     "(useful for applications which require XML writing code)"));
     cmdLine.addOption(dontCreateParseFunctionsOption);
+    cmdLine.process(app);
 
     if (!cmdLine.parse(QCoreApplication::arguments())) {
         qCritical() << cmdLine.errorText();

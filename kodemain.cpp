@@ -632,6 +632,7 @@ int main(int argc, char **argv)
     QCommandLineOption filename("filename",
                                 QCoreApplication::translate("main", "Source code file name"));
     cmdLine.addOption(filename);
+    cmdLine.process(app);
 
     if (!cmdLine.parse(QCoreApplication::arguments())) {
         qDebug() << cmdLine.errorText();
