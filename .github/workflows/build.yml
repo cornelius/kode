@@ -1,0 +1,35 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: macos-latest, cxx: "clang++" }
+          - { os: ubuntu-latest, cxx: "g++" }
+          - { os: windows-latest, cxx: "cl" }
+    runs-on: ${{ matrix.config.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.1.1
+        with:
+          submodules: recursive
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1.2.0
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2.6.2
+        with:
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+      - name: Build with CMake in ${{ matrix.config.os }} / ${{ matrix.config.cxx }}
+        env:
+          CXX: ${{ matrix.config.cxx }}
+        run: |
+          cmake -B cmake_build
+          cmake --build cmake_build -j2 -v
