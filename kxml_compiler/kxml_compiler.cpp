@@ -93,8 +93,8 @@ int main(int argc, char **argv)
 
     QCommandLineOption licenseOption(
             "license",
-            QCoreApplication::translate(
-                    "main", "License of generated files. Possible values: gpl, bsd, lgpl"),
+            QCoreApplication::translate("main", "License of generated files. Possible values: ")
+                    + KODE::License::getSupportedLicenses().join(", "),
             "license");
     cmdLine.addOption(licenseOption);
 
@@ -279,14 +279,14 @@ int main(int argc, char **argv)
     }
 
     if (cmdLine.isSet("license")) {
-        QString l = cmdLine.value("license");
-        if (l == "gpl") {
-            c.setLicense(KODE::License(KODE::License::GPL));
-        } else if (l == "bsd") {
-            c.setLicense(KODE::License(KODE::License::BSD));
-        } else if (l == "lgpl") {
-            c.setLicense(KODE::License(KODE::License::LGPL));
+        KODE::License license = KODE::License::licenseByTypeName(cmdLine.value("license"));
+        if (license.type() == KODE::License::Type::NoLicense) {
+            qDebug() << "License" << cmdLine.value("license") << "is not valid.";
         }
+        if (verbose) {
+            qDebug() << "Setting license" << license.typeName();
+        }
+        c.setLicense(license);
     }
 
     if (verbose) {
