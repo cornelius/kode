@@ -33,3 +33,14 @@ jobs:
         run: |
           cmake -B cmake_build
           cmake --build cmake_build -j2 -v
+      - name: Build with QMake in ${{ matrix.config.os }} / ${{ matrix.config.cxx }}
+        if: matrix.config.os != 'windows-latest'
+        env:
+          CXX: ${{ matrix.config.cxx }}
+        run: |
+          mkdir qmake_build && cd qmake_build
+          qmake ..
+          make -j2
+          mkdir kxml_compiler && cd kxml_compiler
+          qmake ../../kxml_compiler
+          make -j2
