@@ -131,7 +131,8 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
         foreach (XSD::Element subElement, complexType.elements()) {
             if (mVerbose) {
                 qDebug() << "  Element: " << subElement.name();
-                qDebug() << "    " << subElement.minOccurs() << "," << subElement.maxOccurs();
+                qDebug() << "    minOccurs" << subElement.minOccurs() << ", maxOccurs"
+                         << subElement.maxOccurs();
             }
 
             Schema::Relation eRelation(subElement.name());
@@ -143,7 +144,7 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
             }
             XSD::Compositor compositor = subElement.compositor();
             if (mVerbose) {
-                qDebug() << "  Compositor " << compositor.type();
+                qDebug() << "  Compositor " << compositor.typeName();
             }
             if (compositor.type() == XSD::Compositor::Choice) {
                 QString choice;

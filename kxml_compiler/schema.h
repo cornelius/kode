@@ -22,6 +22,7 @@
 #define SCHEMA_H
 
 #include <QList>
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
@@ -88,6 +89,7 @@ private:
 
 class SCHEMA_EXPORT Node : public Annotatable
 {
+    Q_GADGET
 public:
     enum Type {
         None,
@@ -104,11 +106,13 @@ public:
         Boolean,
         UnsignedLong // xs:unsignedLong -> Unsigned integer of 64 bits
     };
+    Q_ENUM(Type)
     Node();
     virtual ~Node();
 
     void setType(Type);
     Type type() const;
+    QString typeName() const;
 
     void setIdentifier(const QString &);
     QString identifier() const;
