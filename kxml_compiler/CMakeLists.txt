@@ -1,7 +1,6 @@
 set(KXML_COMPILER_SOURCES
 	classdescription.cpp
 	creator.cpp
-	kxml_compiler.cpp
 	parsercreatordom.cpp
 	parserrelaxng.cpp
 	parserxsd.cpp
@@ -21,11 +20,14 @@ set(KXML_COMPILER_HEADERS
 	writercreator.h
 )
 
-add_executable(kxml_compiler ${KXML_COMPILER_SOURCES} ${KXML_COMPILER_HEADERS})
+add_library(libkxml_compiler OBJECT ${KXML_COMPILER_SOURCES} ${KXML_COMPILER_HEADERS})
+target_link_libraries(libkxml_compiler Qt5::Xml)
+add_executable(kxml_compiler kxml_compiler.cpp)
 
 target_link_libraries(kxml_compiler
 	Qt5::Xml
 	kode
+	libkxml_compiler
 	xmlschema
 	xmlcommon
 )
@@ -34,5 +36,6 @@ install(
 	TARGETS kxml_compiler
 	RUNTIME DESTINATION bin
 )
-
-#add_subdirectory(tests)
+if(BUILD_TESTING)
+	add_subdirectory(tests)
+endif(BUILD_TESTING)

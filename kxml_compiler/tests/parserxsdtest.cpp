@@ -24,16 +24,15 @@
 #include "../parserxsd.h"
 
 #include <QFile>
-#include <QDebug>
 
 void ParserXsdTest::initTestCase()
 {
     RNG::ParserXsd parser;
-    QFile file("simple.xsd");
+    QFile file(QFINDTESTDATA("simple.xsd"));
+    QVERIFY(!file.fileName().isEmpty());
 
     if (!file.open(QIODevice::ReadOnly)) {
         QFAIL("The test file 'simple.xsd' could not be loaded");
-        return;
     }
 
     mDoc = parser.parse(file.readAll());
@@ -96,5 +95,3 @@ void ParserXsdTest::testSequenceElementOccurenceParsing()
 }
 
 QTEST_MAIN(ParserXsdTest)
-
-#include "parserxsdtest.moc"
