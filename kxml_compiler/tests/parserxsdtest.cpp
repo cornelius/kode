@@ -84,14 +84,13 @@ void ParserXsdTest::testRelationParsing()
 void ParserXsdTest::testSequenceOccurenceParsing()
 {
     QCOMPARE(mDoc.element("beers").elementRelations().first().minOccurs(), 1);
-    QCOMPARE(mDoc.element("beers").elementRelations().first().maxOccurs(),
-             (int)Schema::Relation::Unbounded);
+    QCOMPARE(mDoc.element("beers").elementRelations().first().maxOccurs(), 1);
 }
 
 void ParserXsdTest::testSequenceElementOccurenceParsing()
 {
-    QCOMPARE(mDoc.element("wines").elementRelations().first().minOccurs(), 1);
-    QCOMPARE(mDoc.element("wines").elementRelations().first().maxOccurs(), 2);
+    QCOMPARE(mDoc.element("wines").elementRelations().first().minOccurs(), 2);
+    QCOMPARE(mDoc.element("wines").elementRelations().first().maxOccurs(), 4);
 }
 
 QTEST_MAIN(ParserXsdTest)
