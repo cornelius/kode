@@ -8,6 +8,7 @@
                 <xs:element ref="surname"/>
                 <xs:element ref="age"/>
                 <xs:element ref="weight"/>
+                <xs:element ref="active"/>
             </xs:sequence>
             <xs:attributeGroup ref="attlist.person"/>
         </xs:complexType>
@@ -29,6 +30,7 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="active" type="xs:boolean"/>
     <xs:element name="firstname" type="xs:string"/>
     <xs:element name="surname" type="xs:string"/>
     <xs:element name="age" type="xs:integer"/>

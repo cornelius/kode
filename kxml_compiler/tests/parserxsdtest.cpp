@@ -40,7 +40,7 @@ void ParserXsdTest::initTestCase()
 
 void ParserXsdTest::testElementParsing()
 {
-    QCOMPARE(mDoc.elements().size(), 10);
+    QCOMPARE(mDoc.elements().size(), 11);
 
     QCOMPARE(mDoc.usedElements().size(), 6);
 
