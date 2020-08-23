@@ -22,6 +22,7 @@
 #include "schema.h"
 
 #include <QDebug>
+#include <QMetaEnum>
 
 using namespace Schema;
 
@@ -153,7 +154,7 @@ bool Document::isEmpty() const
 void Document::dump() const
 {
     foreach (Element e, mElements) {
-        qDebug() << "ELEMENT" << e.identifier() << ":" << e.name() << e.type();
+        qDebug() << "ELEMENT" << e.identifier() << ":" << e.name() << e.typeName();
         if (e.text())
             qDebug() << " TEXT";
         if (e.mixed())
@@ -254,6 +255,12 @@ void Node::setType(Type t)
 Node::Type Node::type() const
 {
     return mType;
+}
+
+QString Node::typeName() const
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<Node::Type>();
+    return metaEnum.valueToKey(mType);
 }
 
 void Node::setIdentifier(const QString &i)

@@ -24,16 +24,15 @@
 #include "../parserxsd.h"
 
 #include <QFile>
-#include <QDebug>
 
 void ParserXsdTest::initTestCase()
 {
     RNG::ParserXsd parser;
-    QFile file("simple.xsd");
+    QFile file(QFINDTESTDATA("simple.xsd"));
+    QVERIFY(!file.fileName().isEmpty());
 
     if (!file.open(QIODevice::ReadOnly)) {
         QFAIL("The test file 'simple.xsd' could not be loaded");
-        return;
     }
 
     mDoc = parser.parse(file.readAll());
@@ -41,7 +40,7 @@ void ParserXsdTest::initTestCase()
 
 void ParserXsdTest::testElementParsing()
 {
-    QCOMPARE(mDoc.elements().size(), 10);
+    QCOMPARE(mDoc.elements().size(), 11);
 
     QCOMPARE(mDoc.usedElements().size(), 6);
 
@@ -85,16 +84,13 @@ void ParserXsdTest::testRelationParsing()
 void ParserXsdTest::testSequenceOccurenceParsing()
 {
     QCOMPARE(mDoc.element("beers").elementRelations().first().minOccurs(), 1);
-    QCOMPARE(mDoc.element("beers").elementRelations().first().maxOccurs(),
-             (int)Schema::Relation::Unbounded);
+    QCOMPARE(mDoc.element("beers").elementRelations().first().maxOccurs(), 1);
 }
 
 void ParserXsdTest::testSequenceElementOccurenceParsing()
 {
-    QCOMPARE(mDoc.element("wines").elementRelations().first().minOccurs(), 1);
-    QCOMPARE(mDoc.element("wines").elementRelations().first().maxOccurs(), 2);
+    QCOMPARE(mDoc.element("wines").elementRelations().first().minOccurs(), 2);
+    QCOMPARE(mDoc.element("wines").elementRelations().first().maxOccurs(), 4);
 }
 
 QTEST_MAIN(ParserXsdTest)
-
-#include "parserxsdtest.moc"

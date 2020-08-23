@@ -1,45 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-  
-  <xs:element name="person">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="firstname"/>
-        <xs:element ref="surname"/>
-        <xs:element ref="age"/>
-        <xs:element ref="weight"/>
-      </xs:sequence>
-      <xs:attributeGroup ref="attlist.person"/>
-    </xs:complexType>
-  </xs:element>
-  
+
+    <xs:element name="person">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="firstname"/>
+                <xs:element ref="surname"/>
+                <xs:element ref="age"/>
+                <xs:element ref="weight"/>
+                <xs:element ref="active"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="attlist.person"/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="beers">
-    <xs:complexType>
-      <xs:sequence minOccurs="1" maxOccurs="unbounded">
-        <xs:element ref="beer"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  
+        <xs:complexType>
+            <xs:sequence minOccurs="2" maxOccurs="unbounded">
+                <xs:element ref="beer"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="wines">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="wine"  minOccurs="1" maxOccurs="2" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  
-  <xs:element name="firstname" type="xs:string"/>
-  <xs:element name="surname" type="xs:string"/>
-  <xs:element name="age" type="xs:integer"/>
-  <xs:element name="weight" type="xs:decimal"/>
-  <xs:element name="notused" type="xs:integer"/>
-  <xs:element name="beer" type="xs:string"/>
-  <xs:element name="wine" type="xs:string"/>
-  
-  <xs:attributeGroup name="attlist.person">
-    <xs:attribute name="id" use="required"/>
-    <xs:attribute name="cc"/>
-  </xs:attributeGroup>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="wine" minOccurs="2" maxOccurs="4"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="active" type="xs:boolean"/>
+    <xs:element name="firstname" type="xs:string"/>
+    <xs:element name="surname" type="xs:string"/>
+    <xs:element name="age" type="xs:integer"/>
+    <xs:element name="weight" type="xs:decimal"/>
+    <xs:element name="notused" type="xs:integer"/>
+    <xs:element name="beer" type="xs:string"/>
+    <xs:element name="wine" type="xs:string"/>
+
+    <xs:attributeGroup name="attlist.person">
+        <xs:attribute name="id" use="required" type="xs:int"/>
+        <xs:attribute name="cc" type="xs:string"/>
+    </xs:attributeGroup>
 </xs:schema>
 
