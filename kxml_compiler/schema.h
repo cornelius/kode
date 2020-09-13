@@ -157,7 +157,7 @@ public:
     QString elementName() const;
 
 private:
-    bool mRequired;
+    bool mRequired = false;
     QString mDefVal;
     QString mElementName;
 };
