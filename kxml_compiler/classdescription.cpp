@@ -80,11 +80,8 @@ ClassProperty::List ClassDescription::properties() const
 
 bool ClassDescription::hasProperty(const QString &name) const
 {
-    foreach (ClassProperty p, m_properties) {
-        if (p.name() == name)
-            return true;
-    }
-    return false;
+    return std::any_of(m_properties.begin(), m_properties.end(),
+                       [name](const ClassProperty &p) { return p.name() == name; });
 }
 
 void ClassDescription::addEnum(const KODE::Enum &classEnum)
@@ -104,9 +101,6 @@ KODE::Enum::List ClassDescription::enums() const
 
 bool ClassDescription::hasEnum(const QString &name) const
 {
-    foreach (KODE::Enum e, m_enums) {
-        if (e.name() == name)
-            return true;
-    }
-    return false;
+    return std::any_of(m_enums.begin(), m_enums.end(),
+                       [name](const KODE::Enum &e) { return e.name() == name; });
 }

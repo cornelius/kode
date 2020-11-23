@@ -292,7 +292,8 @@ int main(int argc, char **argv)
     if (verbose) {
         qDebug() << "Create classes";
     }
-    foreach (Schema::Element e, schemaDocument.usedElements()) {
+    const auto usedElements = schemaDocument.usedElements();
+    for (const Schema::Element &e : usedElements) {
         if (!e.text()) {
             c.createClass(e);
         }

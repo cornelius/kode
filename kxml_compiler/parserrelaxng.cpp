@@ -325,7 +325,7 @@ Schema::Element ParserRelaxng::convertToSchemaElement(Element *e)
     if (e->hasText)
         schemaElement.setText(true);
 
-    foreach (Element *element, e->elements) {
+    for (Element *element : qAsConst(e->elements)) {
         QString id = element->name;
         if (!mDocument.element(id).isValid()) {
             Schema::Element relatedElement = convertToSchemaElement(element);
@@ -334,7 +334,7 @@ Schema::Element ParserRelaxng::convertToSchemaElement(Element *e)
         schemaElement.addElementRelation(relation);
     }
 
-    foreach (Attribute *attribute, e->attributes) {
+    for (Attribute *attribute : qAsConst(e->attributes)) {
         QString id = schemaElement.identifier() + '/' + attribute->name;
         if (!mDocument.attribute(id).isValid()) {
             Schema::Attribute relatedAttribute =
@@ -344,7 +344,7 @@ Schema::Element ParserRelaxng::convertToSchemaElement(Element *e)
         schemaElement.addAttributeRelation(relation);
     }
 
-    foreach (Reference *reference, e->references) {
+    for (Reference *reference : qAsConst(e->references)) {
         QString id = reference->name;
         Schema::Relation relation = convertToRelation(reference->pattern, id);
         schemaElement.addElementRelation(relation);
