@@ -24,7 +24,7 @@ jobs:
           path: ../Qt
           key: ${{ runner.os }}-QtCache
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2.6.2
+        uses: jurplel/install-qt-action@v2.10.0
         with:
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
       - name: Build with CMake in ${{ matrix.config.os }} / ${{ matrix.config.cxx }}
