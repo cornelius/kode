@@ -24,10 +24,8 @@
 #include <schema/parser.h>
 
 #include <QDebug>
-
-#include <QDebug>
 #include <QXmlStreamReader>
-#include <math.h>
+#include <cmath>
 
 using namespace KXML;
 
@@ -74,9 +72,8 @@ Schema::Element ParserXml::parseElement(QXmlStreamReader &xml, bool isArray)
     element.setIdentifier(elementName);
     element.setName(elementName);
 
-    QXmlStreamAttributes attributes = xml.attributes();
-
-    foreach (QXmlStreamAttribute attribute, attributes) {
+    const QXmlStreamAttributes attributes = xml.attributes();
+    for (const QXmlStreamAttribute &attribute : attributes) {
         //          qDebug() << "  ATTRIBUTE" << attribute.name();
         Schema::Attribute a;
         a.setType(detectType(attribute.value().toString()));

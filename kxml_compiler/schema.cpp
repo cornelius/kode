@@ -23,6 +23,7 @@
 
 #include <QDebug>
 #include <QMetaEnum>
+#include <utility>
 
 using namespace Schema;
 
@@ -50,16 +51,14 @@ Element::List Document::elements() const
 
 bool Document::hasElement(const Element &element)
 {
-    foreach (Element e, mElements) {
-        if (e.identifier() == element.identifier())
-            return true;
-    }
-    return false;
+    return std::any_of(mElements.begin(), mElements.end(), [element](const Element &e) {
+        return e.identifier() == element.identifier();
+    });
 }
 
 Element Document::element(const QString &identifier) const
 {
-    foreach (Element e, mElements) {
+    for (const Element &e : mElements) {
         if (e.identifier() == identifier)
             return e;
     }
@@ -82,7 +81,8 @@ void Document::findUsedElements(const Element &e) const
 {
     addUsedElement(e);
 
-    foreach (Relation r, e.elementRelations()) {
+    const auto elementRelations = e.elementRelations();
+    for (const Relation &r : elementRelations) {
         Element e2 = element(r);
         if ((!e2.mixed() || r.isList()) && addUsedElement(e2)) {
             findUsedElements(e2);
@@ -93,7 +93,7 @@ void Document::findUsedElements(const Element &e) const
 bool Document::addUsedElement(const Element &element) const
 {
     bool found = false;
-    foreach (Element usedElement, mUsedElements) {
+    for (const Element &usedElement : mUsedElements) {
         if (usedElement.identifier() == element.identifier()) {
             found = true;
             break;
@@ -119,16 +119,14 @@ Attribute::List Document::attributes() const
 
 bool Document::hasAttribute(const Attribute &attribute)
 {
-    foreach (Attribute a, mAttributes) {
-        if (a.identifier() == attribute.identifier())
-            return true;
-    }
-    return false;
+    return std::any_of(mAttributes.begin(), mAttributes.end(), [attribute](const Attribute &a) {
+        return a.identifier() == attribute.identifier();
+    });
 }
 
 Attribute Document::attribute(const QString &identifier, const QString &elementName) const
 {
-    foreach (Attribute a, mAttributes) {
+    for (const Attribute &a : mAttributes) {
         if (a.identifier() == identifier) {
             if (elementName.isEmpty())
                 return a;
@@ -153,20 +151,22 @@ bool Document::isEmpty() const
 
 void Document::dump() const
 {
-    foreach (Element e, mElements) {
+    for (const Element &e : mElements) {
         qDebug() << "ELEMENT" << e.identifier() << ":" << e.name() << e.typeName();
         if (e.text())
             qDebug() << " TEXT";
         if (e.mixed())
             qDebug() << " MIXED";
-        foreach (Relation r, e.elementRelations()) {
+        const auto elementRelations = e.elementRelations();
+        for (const Relation &r : elementRelations) {
             qDebug() << r.asString("ELEMENT");
         }
-        foreach (Relation r, e.attributeRelations()) {
+        const auto attributeRelations = e.attributeRelations();
+        for (const Relation &r : attributeRelations) {
             qDebug() << r.asString("ATTRIBUTE");
         }
     }
-    foreach (Attribute a, mAttributes) {
+    for (const Attribute &a : mAttributes) {
         qDebug() << "ATTRIBUTE " << a.identifier() << ": " << a.name() << a.type();
     }
 }

@@ -237,7 +237,8 @@ ClassDescription Creator::createClassDescription(const Schema::Element &element)
 {
     ClassDescription description(Namer::getClassName(element.name()));
 
-    foreach (Schema::Relation r, element.attributeRelations()) {
+    const auto attributeRelations = element.attributeRelations();
+    for (const Schema::Relation &r : attributeRelations) {
         Schema::Attribute a = mDocument.attribute(r, element.name());
         if (a.enumerationValues().count()) {
             if (!description.hasEnum(a.name())) {
@@ -255,7 +256,8 @@ ClassDescription Creator::createClassDescription(const Schema::Element &element)
         description.addProperty(typeName(element.type()), "Value");
     }
 
-    foreach (Schema::Relation r, element.elementRelations()) {
+    const auto elementRelations = element.elementRelations();
+    for (const Schema::Relation &r : elementRelations) {
         Schema::Element targetElement = mDocument.element(r);
 
         QString targetClassName = Namer::getClassName(targetElement.name());
@@ -310,7 +312,8 @@ void Creator::createClass(const Schema::Element &element)
     QString className = Namer::getClassName(element.name());
     if (mVerbose) {
         qDebug() << "Creator::createClass()" << element.identifier() << className;
-        foreach (Schema::Relation r, element.elementRelations()) {
+        const auto elementRelations = element.elementRelations();
+        for (const Schema::Relation &r : elementRelations) {
             qDebug() << "  SUBELEMENTS" << r.target();
         }
     }
@@ -359,8 +362,8 @@ void Creator::createClass(const Schema::Element &element)
             c.addFunction(isValid);
         }
     }
-
-    foreach (ClassProperty p, description.properties()) {
+    const auto properties = description.properties();
+    for (const ClassProperty &p : properties) {
         if (p.isList()) {
             registerListTypedef(p.type());
 
@@ -387,7 +390,8 @@ void Creator::createClass(const Schema::Element &element)
         }
     }
 
-    foreach (KODE::Enum e, description.enums()) {
+    const auto descEnums = description.enums();
+    for (const KODE::Enum &e : descEnums) {
         c.addEnum(e);
     }
 

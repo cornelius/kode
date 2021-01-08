@@ -45,7 +45,7 @@ protected:
 
     void setType(Schema::Node &node, const XSD::SimpleType &simpleType);
 
-    void setAnnotations(Schema::Annotatable &annotatable, XSD::Annotation::List annotations);
+    void setAnnotations(Schema::Annotatable &annotatable, const XSD::Annotation::List &annotations);
 
 private:
     Schema::Document mDocument;

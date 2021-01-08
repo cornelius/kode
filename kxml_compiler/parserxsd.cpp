@@ -87,7 +87,8 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
 {
     XSD::Types types = parser.types();
 
-    foreach (XSD::Element element, types.elements()) {
+    const auto typesElements = types.elements();
+    for (const XSD::Element &element : typesElements) {
         if (mVerbose) {
             qDebug() << "Element: " << element.name();
             //      qDebug() << "  Annotations: " << element.annotations().count();
@@ -128,9 +129,10 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
             e.setType(Schema::Node::ComplexType);
         }
 
-        foreach (XSD::Element subElement, complexType.elements()) {
+        const auto complexTypeElements = complexType.elements();
+        for (const XSD::Element &subElement : complexTypeElements) {
             if (mVerbose) {
-                qDebug() << "  Element: " << subElement.name();
+                qDebug() << "  Element: " << subElement.name() << "type:" << subElement.type();
                 qDebug() << "    minOccurs" << subElement.minOccurs() << ", maxOccurs"
                          << subElement.maxOccurs();
             }
@@ -148,7 +150,8 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
             }
             if (compositor.type() == XSD::Compositor::Choice) {
                 QString choice;
-                foreach (QName qname, compositor.children()) {
+                const auto children = compositor.children();
+                for (const QName &qname : children) {
                     if (!choice.isEmpty())
                         choice += '+';
                     choice += qname.qname();
@@ -158,7 +161,8 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
             e.addElementRelation(eRelation);
         }
 
-        foreach (XSD::Attribute attribute, complexType.attributes()) {
+        const auto complexTypeAttributes = complexType.attributes();
+        for (const XSD::Attribute &attribute : complexTypeAttributes) {
             if (mVerbose) {
                 qDebug() << "  Attribute: " << attribute.name();
             }
@@ -221,11 +225,12 @@ Schema::Document ParserXsd::parse(const XSD::Parser &parser)
     return mDocument;
 }
 
-void ParserXsd::setAnnotations(Schema::Annotatable &annotatable, XSD::Annotation::List annotations)
+void ParserXsd::setAnnotations(Schema::Annotatable &annotatable,
+                               const XSD::Annotation::List &annotations)
 {
     QString documentation;
     QList<QDomElement> domElements;
-    foreach (XSD::Annotation a, annotations) {
+    for (const XSD::Annotation &a : annotations) {
         if (a.isDocumentation())
             documentation.append(a.documentation());
         if (a.isAppinfo()) {

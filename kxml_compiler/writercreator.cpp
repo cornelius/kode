@@ -108,7 +108,8 @@ void WriterCreator::createElementWriter(KODE::Class &c, const Schema::Element &e
             if (element.elementRelations().isEmpty()) {
                 pureList = false;
             } else {
-                foreach (Schema::Relation r, element.elementRelations()) {
+                const auto elementRelations = element.elementRelations();
+                for (const Schema::Relation &r : elementRelations) {
                     if (!r.isList()) {
                         pureList = false;
                         break;
@@ -119,7 +120,8 @@ void WriterCreator::createElementWriter(KODE::Class &c, const Schema::Element &e
 
         if (pureList) {
             QStringList conditions;
-            foreach (Schema::Relation r, element.elementRelations()) {
+            const auto elementRelations = element.elementRelations();
+            for (const Schema::Relation &r : elementRelations) {
                 if (r.isList()) {
                     conditions.append("!" + Namer::getListAccessor(r.target()) + "().isEmpty()");
                 }
@@ -132,7 +134,8 @@ void WriterCreator::createElementWriter(KODE::Class &c, const Schema::Element &e
 
         code += createAttributeWriter(element);
 
-        foreach (Schema::Relation r, element.elementRelations()) {
+        const auto elementRelations = element.elementRelations();
+        for (const Schema::Relation &r : elementRelations) {
             QString type = Namer::getClassName(r.target());
             if (r.isList()) {
                 code += "foreach( " + type + " e, " + Namer::getListAccessor(r.target()) + "() ) {";
@@ -178,8 +181,7 @@ QString WriterCreator::dataToStringConverter(const QString &data, Schema::Node::
 {
     QString converter;
 
-    if (type == Schema::Element::Integer || type == Schema::Element::Integer
-        || type == Schema::Element::Decimal) {
+    if (type == Schema::Element::Integer || type == Schema::Element::Decimal) {
         converter = "QString::number( " + data + " )";
     } else if (type == Schema::Element::Boolean) {
         converter = data + " ? \"true\" : \"false\"";
@@ -198,7 +200,8 @@ KODE::Code WriterCreator::createAttributeWriter(const Schema::Element &element)
 {
     KODE::Code code;
 
-    foreach (Schema::Relation r, element.attributeRelations()) {
+    const auto attributeRelations = element.attributeRelations();
+    for (const Schema::Relation &r : attributeRelations) {
         Schema::Attribute a = mDocument.attribute(r);
 
         QString data = Namer::getAccessor(a.name()) + "()";

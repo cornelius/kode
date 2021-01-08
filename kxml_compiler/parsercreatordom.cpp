@@ -130,7 +130,8 @@ void ParserCreatorDom::createElementParser(KODE::Class &c, const Schema::Element
         code += "result.setValue( " + stringToDataConverter("element.text()", e.type()) + " );";
     }
 
-    foreach (Schema::Relation r, e.attributeRelations()) {
+    const auto attributeRelations = e.attributeRelations();
+    for (const Schema::Relation &r : attributeRelations) {
         Schema::Attribute a = creator()->document().attribute(r, e.name());
 
         if (a.enumerationValues().count()) {
